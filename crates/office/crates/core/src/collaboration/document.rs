@@ -241,7 +241,7 @@ pub(super) fn inspect_document(
             return Err(collaboration_error(
                 "office.collaboration.root_invalid",
                 format!("The collaboration root '{initializer_root}' must be a Y.Array."),
-            ))
+            ));
         }
         None => None,
     };
@@ -289,7 +289,7 @@ pub(super) fn inspect_document(
             return Err(collaboration_error(
                 "office.collaboration.root_invalid",
                 format!("The collaboration root '{metadata_root}' must be a Y.Map."),
-            ))
+            ));
         }
         None => (None, 0, false),
     };

@@ -799,6 +799,11 @@ pub(super) fn dispatch_demote_to_background(app: &mut AppView) -> Vec<Effect> {
         return vec![];
     };
 
+    if app.is_aster {
+        app.show_toast("Background execution is unavailable with the Code backend. Let the command finish or press Ctrl+C to cancel it.");
+        return vec![];
+    }
+
     tracing::info!(tool_call_id = %tool_call_id, "Demoting execute tool to background");
 
     vec![Effect::DemoteToBackground {

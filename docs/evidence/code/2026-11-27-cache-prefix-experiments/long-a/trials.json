@@ -1,0 +1,457 @@
+[
+  {
+    "label": "1-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "stop": "end_turn",
+        "report": {
+          "revision": 1,
+          "currency": "USD",
+          "units": 5,
+          "subtotal_cents": 547,
+          "discount_cents": 0,
+          "tax_cents": 41,
+          "total_cents": 588
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 2,
+        "stop": "end_turn",
+        "report": {
+          "revision": 2,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 922,
+          "discount_cents": 0,
+          "tax_cents": 69,
+          "total_cents": 991
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 3,
+        "stop": "end_turn",
+        "report": {
+          "revision": 3,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 0,
+          "tax_cents": 0,
+          "total_cents": 952
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 4,
+        "stop": "end_turn",
+        "report": {
+          "revision": 4,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 5,
+        "stop": "end_turn",
+        "report": {
+          "revision": 5,
+          "currency": "EUR",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 6,
+        "stop": "end_turn",
+        "report": {
+          "revision": 6,
+          "currency": "EUR",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      }
+    ],
+    "meter_drained": true,
+    "api_requests": 30,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 149895,
+      "completion_tokens": 3021,
+      "total_tokens": 152916,
+      "prompt_cache_hit_tokens": 129524,
+      "prompt_cache_miss_tokens": 20371
+    },
+    "tool_calls": {
+      "read": 6,
+      "write": 5,
+      "edit": 1
+    },
+    "primary_requests": 18,
+    "native_workflow": true,
+    "passed": true
+  },
+  {
+    "label": "2-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "stop": "end_turn",
+        "report": {
+          "revision": 1,
+          "currency": "USD",
+          "units": 5,
+          "subtotal_cents": 547,
+          "discount_cents": 0,
+          "tax_cents": 41,
+          "total_cents": 588
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 2,
+        "stop": "end_turn",
+        "report": {
+          "revision": 2,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 922,
+          "discount_cents": 0,
+          "tax_cents": 69,
+          "total_cents": 991
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 3,
+        "stop": "end_turn",
+        "report": {
+          "revision": 3,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 0,
+          "tax_cents": 0,
+          "total_cents": 952
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 4,
+        "stop": "end_turn",
+        "report": {
+          "revision": 4,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 5,
+        "stop": "end_turn",
+        "report": {
+          "revision": 5,
+          "currency": "EUR",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 6,
+        "stop": "end_turn",
+        "report": {
+          "revision": 6,
+          "currency": "EUR",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      }
+    ],
+    "meter_drained": true,
+    "api_requests": 32,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 166663,
+      "completion_tokens": 5002,
+      "total_tokens": 171665,
+      "prompt_cache_hit_tokens": 152820,
+      "prompt_cache_miss_tokens": 13843
+    },
+    "tool_calls": {
+      "read": 8,
+      "write": 6
+    },
+    "primary_requests": 20,
+    "native_workflow": true,
+    "passed": true
+  },
+  {
+    "label": "3-dsh",
+    "arm": "dsh",
+    "turns": [
+      {
+        "turn": 1,
+        "stop": "end_turn",
+        "report": {
+          "revision": 1,
+          "currency": "USD",
+          "units": 5,
+          "subtotal_cents": 547,
+          "discount_cents": 0,
+          "tax_cents": 41,
+          "total_cents": 588
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": null,
+        "permissions": [],
+        "settled_tools": true
+      },
+      {
+        "turn": 2,
+        "stop": "end_turn",
+        "report": {
+          "revision": 2,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 922,
+          "discount_cents": 0,
+          "tax_cents": 69,
+          "total_cents": 991
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": null,
+        "permissions": [],
+        "settled_tools": true
+      },
+      {
+        "turn": 3,
+        "stop": "end_turn",
+        "report": {
+          "revision": 3,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 0,
+          "tax_cents": 0,
+          "total_cents": 952
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": null,
+        "permissions": [],
+        "settled_tools": true
+      },
+      {
+        "turn": 4,
+        "stop": "end_turn",
+        "report": {
+          "revision": 4,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": null,
+        "permissions": [],
+        "settled_tools": true
+      },
+      {
+        "turn": 5,
+        "stop": "end_turn",
+        "report": {
+          "revision": 5,
+          "currency": "EUR",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": null,
+        "permissions": [],
+        "settled_tools": true
+      },
+      {
+        "turn": 6,
+        "stop": "end_turn",
+        "report": {
+          "revision": 6,
+          "currency": "EUR",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": null,
+        "permissions": [],
+        "settled_tools": true
+      }
+    ],
+    "meter_drained": true,
+    "api_requests": 26,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 263217,
+      "completion_tokens": 5116,
+      "total_tokens": 268333,
+      "prompt_cache_hit_tokens": 255744,
+      "prompt_cache_miss_tokens": 7473
+    },
+    "tool_calls": {
+      "read": 30,
+      "glob": 1,
+      "write": 6
+    },
+    "primary_requests": 26,
+    "native_workflow": false,
+    "passed": false
+  }
+]

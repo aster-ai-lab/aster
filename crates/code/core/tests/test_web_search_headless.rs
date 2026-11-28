@@ -195,6 +195,67 @@ async fn test_moli_headless_search_actual() {
 }
 
 #[tokio::test]
+#[ignore = "requires the user's logged-in Quark browser on 127.0.0.1:9222"]
+async fn test_quark_is_preferred_without_an_explicit_engine() {
+    let executor = ToolExecutor::new("/tmp".to_string());
+    let output = executor
+        .execute_with_context(
+            "web_search",
+            &serde_json::json!({
+                "query": "Rust 编程",
+                "limit": 1,
+                "timeout": 30,
+                "format": "json"
+            }),
+            &ToolContext::new(PathBuf::from("/tmp")),
+        )
+        .await
+        .expect("default search should dispatch");
+    assert_eq!(output.exit_code, 0, "{}", output.output);
+    let payload: serde_json::Value = serde_json::from_str(&output.output).unwrap();
+    let results = payload.as_array().expect("default search results array");
+    assert!(!results.is_empty(), "{}", output.output);
+    let metadata = output.metadata.expect("default selection metadata");
+    assert_eq!(metadata["engine_selection_source"], "logged_in_quark");
+    assert_eq!(metadata["search_fallback"]["engines"][0], "quark");
+}
+
+#[tokio::test]
+#[ignore = "requires the user's logged-in Quark browser on 127.0.0.1:9222"]
+async fn test_quark_browser_search_actual() {
+    let executor = ToolExecutor::new("/tmp".to_string());
+    let context = make_context(Some(HeadlessConfig {
+        backend: BrowserBackend::Quark,
+        cdp_url: Some("http://127.0.0.1:9222".to_string()),
+        ..HeadlessConfig::default()
+    }));
+    let output = executor
+        .execute_with_context(
+            "web_search",
+            &serde_json::json!({
+                "query": "Rust 编程",
+                "engines": ["quark"],
+                "limit": 1,
+                "timeout": 30,
+                "format": "json"
+            }),
+            &context,
+        )
+        .await
+        .expect("Quark search should dispatch");
+    assert_eq!(output.exit_code, 0, "{}", output.output);
+    let payload: serde_json::Value = serde_json::from_str(&output.output).unwrap();
+    let results = payload.as_array().expect("Quark search results array");
+    assert!(!results.is_empty(), "{}", output.output);
+    assert!(results[0]["url"]
+        .as_str()
+        .is_some_and(|url| url.starts_with("https://") || url.starts_with("http://")));
+    assert!(results[0]["engines"]
+        .as_array()
+        .is_some_and(|engines| engines.iter().any(|engine| engine == "Quark")));
+}
+
+#[tokio::test]
 #[ignore] // Requires a browser to be installed
 async fn test_baidu_headless_search_actual() {
     let executor = ToolExecutor::new("/tmp".to_string());

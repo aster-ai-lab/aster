@@ -335,7 +335,7 @@ fn resolve_columns(
             return Err(structured_error(
                 StructuredReferenceErrorKind::Unsupported,
                 "Structured-reference column selection is incomplete.",
-            ))
+            ));
         }
     };
     let first = u32::try_from(first).map_err(|_| invalid_column_index())?;

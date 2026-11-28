@@ -259,7 +259,12 @@ fn hook_denied_finalize_requeues_blocked_prompt_and_opens_card() {
     stash_in_flight(&mut agent);
     // dispatch_send_prompt sets this at send; the test mirrors that
     agent.session.tracker.expect_user_echo();
-    let bubbles_before = agent.scrollback.len();
+    let prompt_entry = agent
+        .session
+        .in_flight_prompt
+        .as_ref()
+        .unwrap()
+        .scrollback_entry;
     let _ = finalize_turn_from_terminal(&mut agent, "s1", hook_denied_signal(Some(&context)));
     assert!(
         !agent.session.tracker.expects_user_echo(),
@@ -330,7 +335,10 @@ fn hook_denied_finalize_requeues_blocked_prompt_and_opens_card() {
         "the composer is stashed behind the card"
     );
     assert!(
-        agent.scrollback.len() > bubbles_before,
+        agent
+            .scrollback
+            .get_by_id(prompt_entry)
+            .is_some_and(|entry| matches!(entry.block, RenderBlock::UserPrompt(_))),
         "the prompt bubble stays (plus the terminal marker); requeue is not a rewind"
     );
 
@@ -836,6 +844,23 @@ fn viewer_finalize_stop_reason_to_marker_mapping() {
         other => panic!("expected TurnFailed, got {other:?}"),
     }
 
+    let mut agent = running_viewer("p1");
+    let _ = finalize_turn_from_terminal(
+        &mut agent,
+        "s1",
+        TerminalSignal {
+            prompt_id: Some("p1"),
+            stop_reason: Some("error"),
+            agent_result: Some("completion gate: workspace mutation has no bound verification"),
+            error_kind: Some(WireErrorType::PriorVerificationPending),
+            ..Default::default()
+        },
+    );
+    assert!(matches!(
+        last_session_event(&agent.scrollback),
+        Some(SessionEvent::PriorVerificationPending)
+    ));
+
     // An "error" stop with a dedicated banner already in the trailing run: the banner explains the failure, so no redundant TurnFailed marker
     let mut agent = running_viewer("p1");
     agent
@@ -974,6 +999,7 @@ fn driver_mismatched_prompt_id_does_not_arm() {
 #[test]
 fn driver_missing_prompt_id_arms_against_current_when_idle_in_turn() {
     let mut agent = running_driver("p1");
+    stream_agent_text(&mut agent, "response");
     let outcome = finalize_turn_from_terminal(
         &mut agent,
         "s1",

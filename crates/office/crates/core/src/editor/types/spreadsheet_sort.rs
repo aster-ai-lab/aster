@@ -185,7 +185,7 @@ impl NativeSpreadsheetSort {
                             "Spreadsheet sort key '{}' has an invalid direction.",
                             child.path
                         ),
-                    ))
+                    ));
                 }
             };
             keys.push(NativeSpreadsheetSortKey { column, direction });

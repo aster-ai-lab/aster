@@ -1006,6 +1006,10 @@ impl WorkspaceCommandRunner for ManifestWorkspaceBackend {
         self.local.execution_target()
     }
 
+    fn supports_background_execution(&self) -> bool {
+        self.local.supports_background_execution()
+    }
+
     async fn exec(&self, request: CommandRequest) -> Result<CommandOutput> {
         self.local.exec(request).await
     }

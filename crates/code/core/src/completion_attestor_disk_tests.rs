@@ -7,7 +7,7 @@ use std::io::Write;
 fn record(path: &str, content: &str) -> MutatedPathRecord {
     MutatedPathRecord {
         path: path.into(),
-        content_digest: sha256::digest(content),
+        content_digest: crate::content_digest::sha256_hex(content),
     }
 }
 

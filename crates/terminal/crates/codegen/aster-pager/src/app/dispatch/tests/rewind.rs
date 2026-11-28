@@ -19,7 +19,18 @@ fn cancel_does_not_rewind_when_in_flight_block_committed() {
 
     dispatch(Action::SendPrompt("queued prompt".into()), &mut app);
     assert!(agent_ref(&app, id).session.in_flight_prompt.is_some());
-    assert_eq!(agent_ref(&app, id).scrollback.len(), 1);
+    assert_eq!(
+        (0..agent_ref(&app, id).scrollback.len())
+            .filter(|index| matches!(
+                agent_ref(&app, id)
+                    .scrollback
+                    .entry(*index)
+                    .map(|entry| &entry.block),
+                Some(RenderBlock::UserPrompt(_))
+            ))
+            .count(),
+        1
+    );
 
     // Simulate minimal's commit pass printing the user block into native scrollback (sets the entry's `committed` flag)
     let entry_id = agent_ref(&app, id)

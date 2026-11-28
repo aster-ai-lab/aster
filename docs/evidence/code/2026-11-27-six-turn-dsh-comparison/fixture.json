@@ -1,0 +1,90 @@
+{
+  "readme": "Maintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n",
+  "notes": "Unrelated user draft: preserve this exact text.\n",
+  "turns": [
+    {
+      "prompt": "Revision 1: Read README.md, current order.json and policy.json. Update report.json to satisfy the stated contract. Preserve all source files and unrelated user work. Use native read/edit tools only; do not run commands or code. Finish with a concise account of the current result.",
+      "order": "{\"revision\":1,\"currency\":\"USD\",\"items\":[{\"sku\":\"cedar\",\"quantity\":2,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":99}]}",
+      "policy": "{\"tax_bps\":750,\"discount_bps\":0}",
+      "expected": {
+        "revision": 1,
+        "currency": "USD",
+        "units": 5,
+        "subtotal_cents": 547,
+        "discount_cents": 0,
+        "tax_cents": 41,
+        "total_cents": 588
+      }
+    },
+    {
+      "prompt": "Revision 2: Read README.md, current order.json and policy.json. Update report.json to satisfy the stated contract. Preserve all source files and unrelated user work. Use native read/edit tools only; do not run commands or code. Finish with a concise account of the current result.",
+      "order": "{\"revision\":2,\"currency\":\"USD\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":99}]}",
+      "policy": "{\"tax_bps\":750,\"discount_bps\":0}",
+      "expected": {
+        "revision": 2,
+        "currency": "USD",
+        "units": 8,
+        "subtotal_cents": 922,
+        "discount_cents": 0,
+        "tax_cents": 69,
+        "total_cents": 991
+      }
+    },
+    {
+      "prompt": "Revision 3: Read README.md, current order.json and policy.json. Update report.json to satisfy the stated contract. Preserve all source files and unrelated user work. Use native read/edit tools only; do not run commands or code. Finish with a concise account of the current result.",
+      "order": "{\"revision\":3,\"currency\":\"USD\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":109}]}",
+      "policy": "{\"tax_bps\":0,\"discount_bps\":0}",
+      "expected": {
+        "revision": 3,
+        "currency": "USD",
+        "units": 8,
+        "subtotal_cents": 952,
+        "discount_cents": 0,
+        "tax_cents": 0,
+        "total_cents": 952
+      }
+    },
+    {
+      "prompt": "Revision 4: Read README.md, current order.json and policy.json. Update report.json to satisfy the stated contract. Preserve all source files and unrelated user work. Use native read/edit tools only; do not run commands or code. Finish with a concise account of the current result.",
+      "order": "{\"revision\":4,\"currency\":\"USD\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":109}]}",
+      "policy": "{\"tax_bps\":750,\"discount_bps\":500}",
+      "expected": {
+        "revision": 4,
+        "currency": "USD",
+        "units": 8,
+        "subtotal_cents": 952,
+        "discount_cents": 48,
+        "tax_cents": 68,
+        "total_cents": 972
+      }
+    },
+    {
+      "prompt": "Revision 5: Read README.md, current order.json and policy.json. Update report.json to satisfy the stated contract. Preserve all source files and unrelated user work. Use native read/edit tools only; do not run commands or code. Finish with a concise account of the current result.",
+      "order": "{\"revision\":5,\"currency\":\"EUR\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":109}]}",
+      "policy": "{\"tax_bps\":750,\"discount_bps\":500}",
+      "expected": {
+        "revision": 5,
+        "currency": "EUR",
+        "units": 8,
+        "subtotal_cents": 952,
+        "discount_cents": 48,
+        "tax_cents": 68,
+        "total_cents": 972
+      }
+    },
+    {
+      "prompt": "Revision 6: Read README.md, current order.json and policy.json. Update report.json to satisfy the stated contract. Preserve all source files and unrelated user work. Use native read/edit tools only; do not run commands or code. Finish with a concise account of the current result.",
+      "order": "{\"revision\":6,\"currency\":\"EUR\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":109}]}",
+      "policy": "{\"tax_bps\":750,\"discount_bps\":500}",
+      "expected": {
+        "revision": 6,
+        "currency": "EUR",
+        "units": 8,
+        "subtotal_cents": 952,
+        "discount_cents": 48,
+        "tax_cents": 68,
+        "total_cents": 972
+      }
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "label": "1-release",
+    "files_arguments": [
+      [
+        {
+          "path": "catalog notes.txt"
+        },
+        {
+          "path": "active.txt"
+        }
+      ],
+      [
+        {
+          "path": "backup.txt"
+        },
+        {
+          "path": "catalog notes.txt"
+        }
+      ]
+    ]
+  },
+  {
+    "label": "1-candidate",
+    "files_arguments": [
+      [
+        {
+          "path": "catalog notes.txt"
+        },
+        {
+          "path": "active.txt"
+        }
+      ],
+      [
+        {
+          "path": "backup.txt"
+        },
+        {
+          "path": "catalog notes.txt"
+        }
+      ]
+    ]
+  },
+  {
+    "label": "2-candidate",
+    "files_arguments": [
+      [
+        {
+          "path": "catalog notes.txt"
+        },
+        {
+          "path": "active.txt"
+        }
+      ],
+      [
+        {
+          "path": "backup.txt"
+        },
+        {
+          "path": "catalog notes.txt"
+        }
+      ]
+    ]
+  },
+  {
+    "label": "2-release",
+    "files_arguments": [
+      [
+        {
+          "path": "catalog notes.txt"
+        },
+        {
+          "path": "active.txt"
+        }
+      ],
+      [
+        {
+          "path": "backup.txt"
+        },
+        {
+          "path": "catalog notes.txt"
+        }
+      ]
+    ]
+  }
+]

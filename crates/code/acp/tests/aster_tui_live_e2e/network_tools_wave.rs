@@ -29,10 +29,18 @@ fn kimi_download_binary_unicode_destination_matches_sha256_and_real_checker() {
     } else {
         format!("test -f '{destination}'")
     };
-    let facts = request(&mut tui, "download-binary", "download", json!({
-        "url":format!("{ORIGIN}/blob"),"file_path":destination,"connections":1,
-        "expected_sha256":expected_sha,"max_bytes":131072,"timeout":10
-    }), &format!("After success, use bash exactly once with this exact independent verification command: {check}. Report its actual result. Do not call other tools, modify any other file or retry."));
+    let facts = request(
+        &mut tui,
+        "download-binary",
+        "download",
+        json!({
+            "url":format!("{ORIGIN}/blob"),"file_path":destination,"connections":1,
+            "expected_sha256":expected_sha,"max_bytes":131072,"timeout":10
+        }),
+        &format!(
+            "After success, use bash exactly once with this exact independent verification command: {check}. Report its actual result. Do not call other tools, modify any other file or retry."
+        ),
+    );
     let output = one(&facts, "download");
     assert_eq!(output["exit_code"], 0);
     assert_eq!(output["metadata"]["file_path"], destination);
@@ -134,9 +142,15 @@ fn kimi_web_fetch_semantic_main_retains_real_markdown_link_and_source() {
     let server = HttpFixture::new();
     let mut tui = start(case, &server);
     let url = format!("{ORIGIN}/main.html");
-    let facts = request(&mut tui, "fetch-main", "web_fetch", json!({
-        "url":url,"format":"markdown","body_only":true,"timeout":5,"max_chars":1000
-    }), "Report the actual main content and link, without retrying, inventing content or calling other tools.");
+    let facts = request(
+        &mut tui,
+        "fetch-main",
+        "web_fetch",
+        json!({
+            "url":url,"format":"markdown","body_only":true,"timeout":5,"max_chars":1000
+        }),
+        "Report the actual main content and link, without retrying, inventing content or calling other tools.",
+    );
     let output = one(&facts, "web_fetch");
     assert_eq!(output["exit_code"], 0);
     let text = output["text"].as_str().unwrap();
@@ -185,7 +199,13 @@ fn kimi_web_fetch_unicode_pages_and_retained_artifact_preserve_content() {
     assert!(uri.starts_with("aster://tool-output/"));
     tui.record("web-fetch-unicode-first-page", "the first real response uses Unicode character offsets, reports next_offset=17 and retains a content-addressed full-text artifact");
     let before = server.requests.lock().unwrap().len();
-    let facts = request(&mut tui, "fetch-artifact", "read", json!({"file_path":uri}), "Report the actual retained content without fetching any URL, retrying or calling other tools.");
+    let facts = request(
+        &mut tui,
+        "fetch-artifact",
+        "read",
+        json!({"file_path":uri}),
+        "Report the actual retained content without fetching any URL, retrying or calling other tools.",
+    );
     let artifact = one(&facts, "read");
     assert_eq!(artifact["exit_code"], 0);
     assert!(artifact["text"].as_str().unwrap().contains(&server.text));
@@ -337,7 +357,13 @@ fn fetch_failure(case: &str, route: &str, timeout: u64, needle: &str, no_http: b
     } else {
         format!("{ORIGIN}{route}")
     };
-    let facts = request(&mut tui, "fetch-error", "web_fetch", json!({"url":url,"format":"text","timeout":timeout}), "Report the exact failure without retrying, switching source, inventing content or calling other tools.");
+    let facts = request(
+        &mut tui,
+        "fetch-error",
+        "web_fetch",
+        json!({"url":url,"format":"text","timeout":timeout}),
+        "Report the exact failure without retrying, switching source, inventing content or calling other tools.",
+    );
     let output = one(&facts, "web_fetch");
     assert_eq!(output["is_error"], true);
     assert!(output["text"].as_str().unwrap().contains(needle));
@@ -447,7 +473,9 @@ impl HttpFixture {
                     .query()
                     .map_or_else(|| route.to_owned(), |q| format!("{route}?{q}"));
                 seen.lock().unwrap().push((method.into(), path));
-                let html = format!("<html><body><header>OUTSIDE-HEADER</header><main><h1>Fixture main</h1><p>{main_token}</p><a href='{ORIGIN}/target'>Target</a><script>SHOULD-NOT-EXECUTE</script></main><footer>OUTSIDE-FOOTER</footer></body></html>");
+                let html = format!(
+                    "<html><body><header>OUTSIDE-HEADER</header><main><h1>Fixture main</h1><p>{main_token}</p><a href='{ORIGIN}/target'>Target</a><script>SHOULD-NOT-EXECUTE</script></main><footer>OUTSIDE-FOOTER</footer></body></html>"
+                );
                 let (status, content_type, body, extra) = match route {
                     "/blob" => ("200 OK", "application/octet-stream", blob.clone(), ""),
                     "/truncated" => (
@@ -491,7 +519,9 @@ impl HttpFixture {
                 } else {
                     body.len()
                 };
-                let response = format!("HTTP/1.1 {status}\r\nContent-Type: {content_type}\r\nContent-Length: {declared}\r\nConnection: close\r\n{extra}\r\n");
+                let response = format!(
+                    "HTTP/1.1 {status}\r\nContent-Type: {content_type}\r\nContent-Length: {declared}\r\nConnection: close\r\n{extra}\r\n"
+                );
                 let _ = stream.write_all(response.as_bytes());
                 if method != "HEAD" {
                     let _ = stream.write_all(&body);
@@ -557,7 +587,9 @@ fn kimi_web_fetch_unicode_pagination_and_one_inline_artifact_read() {
     tui.record("web-fetch-unicode-first-page", "the actual first response returns exactly 17 Unicode characters and binds a full-text content-addressed artifact");
     let before = server.requests.lock().unwrap().len();
     let args = json!({"file_path":uri});
-    let prompt = format!("Call read exactly once with these exact arguments: {args}. Report the actual retained content without fetching a URL, retrying or calling any other tools.");
+    let prompt = format!(
+        "Call read exactly once with these exact arguments: {args}. Report the actual retained content without fetching a URL, retrying or calling any other tools."
+    );
     let facts = tui.turn(&prompt, None);
     let calls = facts
         .iter()

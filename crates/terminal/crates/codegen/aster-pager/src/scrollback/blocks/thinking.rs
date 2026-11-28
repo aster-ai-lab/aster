@@ -106,7 +106,8 @@ fn apply_body_rail(output: &mut BlockOutput, ctx: &BlockContext) {
 /// Body wrap width: the in-body rail prefix spends [`BODY_RAIL_WIDTH`] of the content columns.
 /// The markdown must wrap that much narrower to keep `desired_height` and the painted rows in agreement.
 fn body_wrap_width(ctx: &BlockContext) -> usize {
-    let width = ctx.width as usize;
+    let width =
+        (ctx.width as usize).min(crate::appearance::cache::load_max_thoughts_width() as usize);
     if rail_under_bullet(ctx) {
         width.saturating_sub(BODY_RAIL_WIDTH).max(1)
     } else {
@@ -607,6 +608,29 @@ mod tests {
             is_selected: false,
             cwd: None,
         }
+    }
+
+    #[test]
+    fn thinking_body_uses_ui_width_limit_and_terminal_boundary() {
+        std::thread::spawn(|| {
+            crate::appearance::cache::set_max_thoughts_width(50);
+            assert_eq!(body_wrap_width(&ctx(DisplayMode::Expanded, 160)), 50);
+
+            crate::appearance::cache::set_max_thoughts_width(120);
+            assert_eq!(body_wrap_width(&ctx(DisplayMode::Expanded, 80)), 80);
+
+            crate::appearance::cache::set_max_thoughts_width(50);
+            let mut appearance = AppearanceConfig::default();
+            appearance.scrollback.blocks.thinking.rail_under_bullet = true;
+            appearance.scrollback.blocks.thinking.accent_enabled = true;
+            let rail_ctx = BlockContext {
+                appearance: std::sync::Arc::new(appearance),
+                ..ctx(DisplayMode::Expanded, 160)
+            };
+            assert_eq!(body_wrap_width(&rail_ctx), 48);
+        })
+        .join()
+        .unwrap();
     }
 
     #[test]

@@ -1,0 +1,422 @@
+[
+  {
+    "label": "1-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3845,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5094,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 333,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 30681,
+      "completion_tokens": 266,
+      "total_tokens": 30947,
+      "prompt_cache_hit_tokens": 23552,
+      "prompt_cache_miss_tokens": 7129
+    },
+    "tool_calls": {
+      "read": 2
+    },
+    "primary_requests": 4,
+    "tool_catalog_sizes": [
+      26,
+      26,
+      26,
+      26
+    ],
+    "compact_requests": 0,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 14637,
+        "outputTokens": 130,
+        "totalTokens": 14767,
+        "cachedReadTokens": 8320,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 15068,
+        "outputTokens": 126,
+        "totalTokens": 15194,
+        "cachedReadTokens": 14720,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [
+      [
+        "read",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ]
+    ],
+    "read_ranges": [
+      [
+        "addresses.txt",
+        42,
+        3
+      ],
+      [
+        "addresses.txt",
+        69,
+        2
+      ]
+    ],
+    "read_window_exact": true,
+    "required_tool_succeeded": true,
+    "qualified_pass": true
+  },
+  {
+    "label": "1-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3632,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 4998,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 330,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 22570,
+      "completion_tokens": 253,
+      "total_tokens": 22823,
+      "prompt_cache_hit_tokens": 17792,
+      "prompt_cache_miss_tokens": 4778
+    },
+    "tool_calls": {
+      "read": 2
+    },
+    "primary_requests": 4,
+    "tool_catalog_sizes": [
+      27,
+      27,
+      27,
+      27
+    ],
+    "compact_requests": 4,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 10599,
+        "outputTokens": 119,
+        "totalTokens": 10718,
+        "cachedReadTokens": 6656,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 11008,
+        "outputTokens": 124,
+        "totalTokens": 11132,
+        "cachedReadTokens": 10624,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [
+      [
+        "read",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ]
+    ],
+    "read_ranges": [
+      [
+        "addresses.txt",
+        42,
+        3
+      ],
+      [
+        "addresses.txt",
+        69,
+        2
+      ]
+    ],
+    "read_window_exact": true,
+    "required_tool_succeeded": true,
+    "qualified_pass": true
+  },
+  {
+    "label": "2-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3866,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 4730,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 194,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 22602,
+      "completion_tokens": 263,
+      "total_tokens": 22865,
+      "prompt_cache_hit_tokens": 21248,
+      "prompt_cache_miss_tokens": 1354
+    },
+    "tool_calls": {
+      "read": 2
+    },
+    "primary_requests": 4,
+    "tool_catalog_sizes": [
+      27,
+      27,
+      27,
+      27
+    ],
+    "compact_requests": 4,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 10599,
+        "outputTokens": 130,
+        "totalTokens": 10729,
+        "cachedReadTokens": 10112,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 11030,
+        "outputTokens": 123,
+        "totalTokens": 11153,
+        "cachedReadTokens": 10624,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [
+      [
+        "read",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ]
+    ],
+    "read_ranges": [
+      [
+        "addresses.txt",
+        42,
+        3
+      ],
+      [
+        "addresses.txt",
+        69,
+        2
+      ]
+    ],
+    "read_window_exact": true,
+    "required_tool_succeeded": true,
+    "qualified_pass": true
+  },
+  {
+    "label": "2-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3876,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5084,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 250,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 30683,
+      "completion_tokens": 268,
+      "total_tokens": 30951,
+      "prompt_cache_hit_tokens": 29440,
+      "prompt_cache_miss_tokens": 1243
+    },
+    "tool_calls": {
+      "read": 2
+    },
+    "primary_requests": 4,
+    "tool_catalog_sizes": [
+      26,
+      26,
+      26,
+      26
+    ],
+    "compact_requests": 0,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 14637,
+        "outputTokens": 130,
+        "totalTokens": 14767,
+        "cachedReadTokens": 14208,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 15068,
+        "outputTokens": 128,
+        "totalTokens": 15196,
+        "cachedReadTokens": 14720,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [
+      [
+        "read",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ]
+    ],
+    "read_ranges": [
+      [
+        "addresses.txt",
+        42,
+        3
+      ],
+      [
+        "addresses.txt",
+        69,
+        2
+      ]
+    ],
+    "read_window_exact": true,
+    "required_tool_succeeded": true,
+    "qualified_pass": true
+  }
+]

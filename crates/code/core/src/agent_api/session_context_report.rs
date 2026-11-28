@@ -1,13 +1,13 @@
 //! Session-level context and cost view.
 //!
-//! Provider usage comes from the session totals; tool-result weight comes from
-//! the session fact log, so the view matches what the model actually received.
+//! Provider usage comes from the session totals. Tool-result bytes measure
+//! the retained observations in the session fact log.
 
 use crate::llm::TokenUsage;
 
 const HEAVIEST_SHOWN: usize = 5;
 
-/// One of the heaviest tool results the model received in this session.
+/// One of the heaviest tool results retained in this session.
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
 pub struct HeavyToolResult {
     pub tool: String,

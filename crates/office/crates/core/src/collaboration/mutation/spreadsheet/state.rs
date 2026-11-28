@@ -50,12 +50,12 @@ pub(super) fn read_sheet_state(
         Some(_) => {
             return Err(invalid_shared_spreadsheet(format!(
                 "Shared Spreadsheet sheet '{sheet_id}' is not a typed map."
-            )))
+            )));
         }
         None => {
             return Err(spreadsheet_match_conflict(format!(
                 "Spreadsheet sheet ID '{sheet_id}' does not exist."
-            )))
+            )));
         }
     };
     match record.get(&transaction, "id") {
@@ -63,7 +63,7 @@ pub(super) fn read_sheet_state(
         _ => {
             return Err(invalid_shared_spreadsheet(format!(
                 "Shared Spreadsheet sheet '{sheet_id}' has an invalid identity field."
-            )))
+            )));
         }
     }
     let fields = required_map(&record, &transaction, CELLS_KEY, "cell field map")?;
@@ -115,13 +115,13 @@ pub(super) fn read_sheet_state(
             (FlatJsonEntryKind::Object, _) => {
                 return Err(invalid_shared_spreadsheet(
                     "A shared Spreadsheet cell contains an invalid object marker.",
-                ))
+                ));
             }
             (FlatJsonEntryKind::Value, Out::Any(value)) => any_to_json(value, 0)?,
             (FlatJsonEntryKind::Value, _) => {
                 return Err(invalid_shared_spreadsheet(
                     "A shared Spreadsheet cell contains a shared-type field.",
-                ))
+                ));
             }
         };
         grouped
@@ -152,7 +152,7 @@ pub(super) fn read_sheet_state(
         _ => {
             return Err(invalid_shared_spreadsheet(
                 "The shared Spreadsheet cell projection mode is invalid.",
-            ))
+            ));
         }
     };
     let row_lengths = read_row_lengths(&row_lengths_ref, &transaction)?;
@@ -160,12 +160,12 @@ pub(super) fn read_sheet_state(
         None if !coordinates.is_empty() || !row_lengths.is_empty() => {
             return Err(invalid_shared_spreadsheet(
                 "The shared Spreadsheet has cells without a projection mode.",
-            ))
+            ));
         }
         Some(SpreadsheetCellMode::CellData) if !row_lengths.is_empty() => {
             return Err(invalid_shared_spreadsheet(
                 "The shared Spreadsheet sparse projection contains dense row lengths.",
-            ))
+            ));
         }
         Some(SpreadsheetCellMode::Data) => {
             for (row, column) in &coordinates {
@@ -535,7 +535,7 @@ fn read_row_lengths<T: yrs::ReadTxn>(values: &ArrayRef, transaction: &T) -> UseR
             _ => {
                 return Err(invalid_shared_spreadsheet(format!(
                     "The shared Spreadsheet data row length at row {index} is invalid."
-                )))
+                )));
             }
         };
         materialized += u64::from(value);

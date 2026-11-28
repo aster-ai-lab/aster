@@ -2515,9 +2515,17 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
         init_tracing_simple(HEADLESS_ENTRYPOINT);
         let _otel_guard = aster_telemetry::otel_layer::otel_guard();
         enforce_version_policy_or_exit();
+        let new_session = args.resume_session.is_none()
+            && args.load_session.is_none()
+            && !args.continue_last_session;
+        let launch_permission_mode = if new_session {
+            args.launch_permission_mode().map(str::to_owned)
+        } else {
+            args.permission_mode_flag.clone()
+        };
         let launch_yolo = aster_shell::util::config::effective_yolo_for_launch(
             args.yolo,
-            args.permission_mode_flag.as_deref(),
+            launch_permission_mode.as_deref(),
             None,
         );
         if let Some(warning) = launch_yolo.blocked_warning {
@@ -2563,7 +2571,7 @@ async fn async_main(mut args: PagerArgs) -> Result<()> {
                 allow_rules: args.allow_rules.clone(),
                 deny_rules: args.deny_rules.clone(),
                 max_turns: args.max_turns,
-                permission_mode_flag: args.permission_mode_flag.clone(),
+                permission_mode_flag: launch_permission_mode,
                 reasoning_effort: args.reasoning_effort.clone(),
                 wait_for_background: !args.no_wait_for_background,
                 background_wait_timeout: std::time::Duration::from_secs(

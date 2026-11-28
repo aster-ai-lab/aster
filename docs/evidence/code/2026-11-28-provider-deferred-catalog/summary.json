@@ -1,0 +1,1512 @@
+{
+  "annotated-batch_mixed": {
+    "candidate": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 21320.5,
+      "uncached_median": 2870.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 6
+    },
+    "release": {
+      "trials": 2,
+      "passes": 1,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 31088.5,
+      "uncached_median": 4321.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "annotated-directory_discovery": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 27476.0,
+      "uncached_median": 3667.5,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 6
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 39611.0,
+      "uncached_median": 4943.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "annotated-form": {
+    "candidate": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 15,
+      "total_median": 40145.0,
+      "uncached_median": 5062.0,
+      "status_counts": {
+        "200": 15
+      },
+      "native_primary_calls": 13,
+      "lookups": 1,
+      "direct_dormant_calls": 7
+    },
+    "release": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 15,
+      "total_median": 55195.5,
+      "uncached_median": 7328.5,
+      "status_counts": {
+        "200": 15
+      },
+      "native_primary_calls": 13,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "annotated-mcp_schema": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 14,
+      "total_median": 27013.5,
+      "uncached_median": 3025.0,
+      "status_counts": {
+        "200": 14
+      },
+      "native_primary_calls": 10,
+      "lookups": 2,
+      "direct_dormant_calls": 2
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 31194.0,
+      "uncached_median": 4367.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "annotated-program_approved": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 21101.0,
+      "uncached_median": 2862.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 4
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30573.0,
+      "uncached_median": 4281.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "annotated-read_batch_repeat": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 25298.0,
+      "uncached_median": 3510.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 4
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 34949.0,
+      "uncached_median": 4875.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "annotated-read_window": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 21015.0,
+      "uncached_median": 2591.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 4
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30558.0,
+      "uncached_median": 4193.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "annotated-search": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 28439.5,
+      "uncached_median": 3661.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 8
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 40384.5,
+      "uncached_median": 5043.5,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "annotated-short": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 21490.0,
+      "uncached_median": 2716.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 6
+    },
+    "dsh": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 8,
+      "total_median": 25155.0,
+      "uncached_median": 1002.5,
+      "status_counts": {
+        "200": 8
+      },
+      "native_primary_calls": 0,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30961.0,
+      "uncached_median": 4076.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "annotated-verified_edit_exact_count": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 32645.5,
+      "uncached_median": 3550.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 12,
+      "lookups": 0,
+      "direct_dormant_calls": 8
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 46770.5,
+      "uncached_median": 4765.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 12,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "first-line-form": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 14,
+      "total_median": 24179.0,
+      "uncached_median": 3883.0,
+      "status_counts": {
+        "200": 14
+      },
+      "native_primary_calls": 10,
+      "lookups": 2,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 1,
+      "usage_complete": 2,
+      "requests": 14,
+      "total_median": 45970.0,
+      "uncached_median": 7367.5,
+      "status_counts": {
+        "200": 14
+      },
+      "native_primary_calls": 11,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "first-line-mcp_schema": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 14,
+      "total_median": 21137.5,
+      "uncached_median": 2410.0,
+      "status_counts": {
+        "200": 14
+      },
+      "native_primary_calls": 10,
+      "lookups": 2,
+      "direct_dormant_calls": 2
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 31258.0,
+      "uncached_median": 4216.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "first-line-short": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 16680.0,
+      "uncached_median": 2142.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 8
+    },
+    "dsh": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 8,
+      "total_median": 25206.0,
+      "uncached_median": 1035.0,
+      "status_counts": {
+        "200": 8
+      },
+      "native_primary_calls": 0,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30980.0,
+      "uncached_median": 4090.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "first-line-verified_edit_exact_count": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 17,
+      "total_median": 27717.5,
+      "uncached_median": 3065.5,
+      "status_counts": {
+        "200": 17
+      },
+      "native_primary_calls": 13,
+      "lookups": 0,
+      "direct_dormant_calls": 9
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 46776.0,
+      "uncached_median": 4769.5,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 12,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "annotated-long-forward": {
+    "candidate": {
+      "trials": 1,
+      "passes": 0,
+      "usage_complete": 1,
+      "requests": 28,
+      "total_median": 166572,
+      "uncached_median": 16221,
+      "status_counts": {
+        "200": 28
+      },
+      "native_primary_calls": 21,
+      "lookups": 0,
+      "direct_dormant_calls": 15,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 6,
+      "settled_tools": 6
+    },
+    "dsh": {
+      "trials": 1,
+      "passes": 1,
+      "usage_complete": 1,
+      "requests": 25,
+      "total_median": 262084,
+      "uncached_median": 7583,
+      "status_counts": {
+        "200": 25
+      },
+      "native_primary_calls": 0,
+      "lookups": 0,
+      "direct_dormant_calls": 0,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 0,
+      "settled_tools": 6
+    },
+    "release": {
+      "trials": 1,
+      "passes": 0,
+      "usage_complete": 1,
+      "requests": 28,
+      "total_median": 212663,
+      "uncached_median": 17639,
+      "status_counts": {
+        "200": 28
+      },
+      "native_primary_calls": 21,
+      "lookups": 0,
+      "direct_dormant_calls": 0,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 6,
+      "settled_tools": 6
+    }
+  },
+  "annotated-long-reverse": {
+    "candidate": {
+      "trials": 1,
+      "passes": 0,
+      "usage_complete": 1,
+      "requests": 26,
+      "total_median": 148198,
+      "uncached_median": 14762,
+      "status_counts": {
+        "200": 26
+      },
+      "native_primary_calls": 19,
+      "lookups": 0,
+      "direct_dormant_calls": 13,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 6,
+      "settled_tools": 6
+    },
+    "dsh": {
+      "trials": 1,
+      "passes": 1,
+      "usage_complete": 1,
+      "requests": 25,
+      "total_median": 263344,
+      "uncached_median": 8082,
+      "status_counts": {
+        "200": 25
+      },
+      "native_primary_calls": 0,
+      "lookups": 0,
+      "direct_dormant_calls": 0,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 0,
+      "settled_tools": 6
+    },
+    "release": {
+      "trials": 1,
+      "passes": 0,
+      "usage_complete": 1,
+      "requests": 26,
+      "total_median": 192522,
+      "uncached_median": 17405,
+      "status_counts": {
+        "200": 26
+      },
+      "native_primary_calls": 19,
+      "lookups": 0,
+      "direct_dormant_calls": 0,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 6,
+      "settled_tools": 6
+    }
+  },
+  "first-line-batch_mixed": {
+    "candidate": {
+      "trials": 2,
+      "passes": 1,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 16771.0,
+      "uncached_median": 2274.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 5
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 31259.5,
+      "uncached_median": 4216.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "first-line-directory_discovery": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 21810.0,
+      "uncached_median": 2912.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 6
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 39606.5,
+      "uncached_median": 4853.5,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "first-line-long-forward": {
+    "candidate": {
+      "trials": 1,
+      "passes": 0,
+      "usage_complete": 1,
+      "requests": 26,
+      "total_median": 130609,
+      "uncached_median": 14996,
+      "status_counts": {
+        "200": 26
+      },
+      "native_primary_calls": 19,
+      "lookups": 0,
+      "direct_dormant_calls": 31,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 6,
+      "settled_tools": 6
+    },
+    "dsh": {
+      "trials": 1,
+      "passes": 0,
+      "usage_complete": 1,
+      "requests": 26,
+      "total_median": 265944,
+      "uncached_median": 8225,
+      "status_counts": {
+        "200": 26
+      },
+      "native_primary_calls": 0,
+      "lookups": 0,
+      "direct_dormant_calls": 0,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 0,
+      "settled_tools": 6
+    },
+    "release": {
+      "trials": 1,
+      "passes": 0,
+      "usage_complete": 1,
+      "requests": 28,
+      "total_median": 213155,
+      "uncached_median": 16720,
+      "status_counts": {
+        "200": 28
+      },
+      "native_primary_calls": 21,
+      "lookups": 0,
+      "direct_dormant_calls": 0,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 6,
+      "settled_tools": 6
+    }
+  },
+  "first-line-long-reverse": {
+    "candidate": {
+      "trials": 1,
+      "passes": 0,
+      "usage_complete": 1,
+      "requests": 26,
+      "total_median": 124372,
+      "uncached_median": 13034,
+      "status_counts": {
+        "200": 26
+      },
+      "native_primary_calls": 19,
+      "lookups": 0,
+      "direct_dormant_calls": 13,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 6,
+      "settled_tools": 6
+    },
+    "dsh": {
+      "trials": 1,
+      "passes": 1,
+      "usage_complete": 1,
+      "requests": 24,
+      "total_median": 250136,
+      "uncached_median": 7603,
+      "status_counts": {
+        "200": 24
+      },
+      "native_primary_calls": 0,
+      "lookups": 0,
+      "direct_dormant_calls": 0,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 0,
+      "settled_tools": 6
+    },
+    "release": {
+      "trials": 1,
+      "passes": 0,
+      "usage_complete": 1,
+      "requests": 28,
+      "total_median": 213397,
+      "uncached_median": 18139,
+      "status_counts": {
+        "200": 28
+      },
+      "native_primary_calls": 21,
+      "lookups": 0,
+      "direct_dormant_calls": 0,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 6,
+      "settled_tools": 6
+    }
+  },
+  "first-line-program_approved": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 16394.0,
+      "uncached_median": 2172.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 4
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30678.0,
+      "uncached_median": 4123.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "first-line-read_batch_repeat": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 20355.0,
+      "uncached_median": 2817.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 4
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 34858.5,
+      "uncached_median": 4815.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "first-line-read_window": {
+    "candidate": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 16632.0,
+      "uncached_median": 2137.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 4
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30557.0,
+      "uncached_median": 4070.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "first-line-search": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 18,
+      "total_median": 25041.0,
+      "uncached_median": 3384.5,
+      "status_counts": {
+        "200": 18
+      },
+      "native_primary_calls": 11,
+      "lookups": 0,
+      "direct_dormant_calls": 10
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 40381.0,
+      "uncached_median": 4987.5,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "parameter-notes-batch_mixed": {
+    "candidate": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 20538.5,
+      "uncached_median": 2708.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 6
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 31227.5,
+      "uncached_median": 4326.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "parameter-notes-directory_discovery": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 26163.0,
+      "uncached_median": 3422.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 6
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 39616.0,
+      "uncached_median": 4818.5,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "parameter-notes-form": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 11,
+      "total_median": 22077.5,
+      "uncached_median": 4587.5,
+      "status_counts": {
+        "200": 11
+      },
+      "native_primary_calls": 8,
+      "lookups": 2,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 14,
+      "total_median": 50524.0,
+      "uncached_median": 7196.0,
+      "status_counts": {
+        "200": 14
+      },
+      "native_primary_calls": 12,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "parameter-notes-mcp_schema": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 14,
+      "total_median": 26097.0,
+      "uncached_median": 2845.5,
+      "status_counts": {
+        "200": 14
+      },
+      "native_primary_calls": 10,
+      "lookups": 2,
+      "direct_dormant_calls": 2
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 31263.0,
+      "uncached_median": 4280.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "parameter-notes-program_approved": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 20230.0,
+      "uncached_median": 2736.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 4
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30697.0,
+      "uncached_median": 4121.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "parameter-notes-read_batch_repeat": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 24405.5,
+      "uncached_median": 3464.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 4
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 34812.0,
+      "uncached_median": 4757.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "parameter-notes-read_window": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 20090.0,
+      "uncached_median": 2557.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 4
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30569.0,
+      "uncached_median": 4076.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "parameter-notes-search": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 18,
+      "total_median": 30840.0,
+      "uncached_median": 4109.0,
+      "status_counts": {
+        "200": 18
+      },
+      "native_primary_calls": 11,
+      "lookups": 0,
+      "direct_dormant_calls": 10
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 40926.5,
+      "uncached_median": 5305.5,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "parameter-notes-short": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 20548.0,
+      "uncached_median": 2605.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 6
+    },
+    "dsh": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 8,
+      "total_median": 25232.5,
+      "uncached_median": 1007.0,
+      "status_counts": {
+        "200": 8
+      },
+      "native_primary_calls": 0,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 31138.0,
+      "uncached_median": 4069.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "parameter-notes-verified_edit_exact_count": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 31151.0,
+      "uncached_median": 3186.5,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 12,
+      "lookups": 0,
+      "direct_dormant_calls": 8
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 46846.5,
+      "uncached_median": 4848.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 12,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-batch": {
+    "candidate": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 25871.5,
+      "uncached_median": 3213.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30636.5,
+      "uncached_median": 4237.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-batch_mixed": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 26621.0,
+      "uncached_median": 3501.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 1,
+      "usage_complete": 2,
+      "requests": 11,
+      "total_median": 27090.5,
+      "uncached_median": 4130.5,
+      "status_counts": {
+        "200": 11
+      },
+      "native_primary_calls": 7,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-directory_discovery": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 33640.0,
+      "uncached_median": 4106.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 2
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 39554.5,
+      "uncached_median": 4707.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 10,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-form": {
+    "candidate": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 17,
+      "total_median": 55200.5,
+      "uncached_median": 6425.0,
+      "status_counts": {
+        "200": 17
+      },
+      "native_primary_calls": 15,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 14,
+      "total_median": 50450.5,
+      "uncached_median": 7271.5,
+      "status_counts": {
+        "200": 14
+      },
+      "native_primary_calls": 12,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-mcp_schema": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 14,
+      "total_median": 33113.5,
+      "uncached_median": 3568.0,
+      "status_counts": {
+        "200": 14
+      },
+      "native_primary_calls": 10,
+      "lookups": 2,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 31094.0,
+      "uncached_median": 4337.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-program_approved": {
+    "candidate": {
+      "trials": 2,
+      "passes": 1,
+      "usage_complete": 2,
+      "requests": 11,
+      "total_median": 22646.0,
+      "uncached_median": 3185.5,
+      "status_counts": {
+        "200": 11
+      },
+      "native_primary_calls": 7,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30641.0,
+      "uncached_median": 4139.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-read_batch_repeat": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30161.5,
+      "uncached_median": 3839.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 34893.5,
+      "uncached_median": 4753.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-read_window": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 25885.0,
+      "uncached_median": 3234.5,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30570.0,
+      "uncached_median": 4077.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-search": {
+    "candidate": {
+      "trials": 2,
+      "passes": 0,
+      "usage_complete": 2,
+      "requests": 8,
+      "total_median": 13018.0,
+      "uncached_median": 2894.5,
+      "status_counts": {
+        "200": 8
+      },
+      "native_primary_calls": 4,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 15,
+      "total_median": 36271.5,
+      "uncached_median": 4894.5,
+      "status_counts": {
+        "200": 15
+      },
+      "native_primary_calls": 9,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-short": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 26429.0,
+      "uncached_median": 3341.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "dsh": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 8,
+      "total_median": 25285.5,
+      "uncached_median": 1106.5,
+      "status_counts": {
+        "200": 8
+      },
+      "native_primary_calls": 0,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 12,
+      "total_median": 30971.0,
+      "uncached_median": 4083.0,
+      "status_counts": {
+        "200": 12
+      },
+      "native_primary_calls": 8,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  },
+  "composite-eager-verified_edit_exact_count": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 39812.5,
+      "uncached_median": 4075.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 12,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "usage_complete": 2,
+      "requests": 16,
+      "total_median": 46788.0,
+      "uncached_median": 4665.0,
+      "status_counts": {
+        "200": 16
+      },
+      "native_primary_calls": 12,
+      "lookups": 0,
+      "direct_dormant_calls": 0
+    }
+  }
+}

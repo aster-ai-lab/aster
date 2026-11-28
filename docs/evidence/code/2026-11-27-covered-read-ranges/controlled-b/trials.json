@@ -1,0 +1,224 @@
+[
+  {
+    "label": "covered-reference",
+    "case": "covered",
+    "arm": "reference",
+    "passed": true,
+    "stop": "end_turn",
+    "answer": "**结论（Complete）**：已用原生 `read` 读取 `装置 log.txt`，文件未被修改。\n\n- **OPENING**（第 1 行）：`OPENING=CEDAR-2048`\n- **FINAL**（第 43 行，文件最后一行）：`FINAL=FALLOW-9158`\n\n**证据**：文件共 43 行，第 2–42 行为 `01:`–`41:` 的 gauge observation 记录；第 43 行为 `FINAL=FALLOW-9158`，且文件末尾无换行符（工具提示 “no final newline”）。两次读取（含从第 2 行起的复核）结果一致。\n\n**缺口**：无。无需进一步操作。",
+    "permissions": [],
+    "observations": [
+      {
+        "tool_text_bytes": [
+          2235,
+          2209
+        ],
+        "tool_text_sha256": [
+          "239d14bd7e44925d2631b388d6a9d7c5734f1a85fefc9be2d71642d20fcba38c",
+          "a4c16fc50155cdf9dcf1824cd9a29d3362240c389d3dec43bcf96604687e7e0f"
+        ],
+        "covered_read_notes": 0,
+        "visible_markers": {
+          "OPENING=CEDAR-2048": true,
+          "FINAL=FALLOW-9158": true
+        }
+      }
+    ],
+    "api_requests": 2,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 8848,
+      "completion_tokens": 170,
+      "total_tokens": 9018,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 7696
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "covered-candidate",
+    "case": "covered",
+    "arm": "candidate",
+    "passed": true,
+    "stop": "end_turn",
+    "answer": "**结论（已确认）**\n\n- **OPENING**（第 1 行）：`OPENING=CEDAR-2048`\n- **FINAL**（第 43 行，文件最后一行）：`FINAL=FALLOW-9158`\n\n**证据**\n\n- 使用原生 `read` 读取 `装置 log.txt`，共 43 行，退出码 0。\n- 第 1 行为 `OPENING=CEDAR-2048`；第 2–42 行为编号 01–41 的 `gauge observation in calibration log …` 记录（数值从 27 起每次递增 27，至 1107）。\n- 第 43 行为 `FINAL=FALLOW-9158`，文件末尾无换行符（`[End of file: no final newline.]`）。\n- 第二次 `read`（offset=1）返回“该范围无新文本”，确认第 43 行即文件末尾，无后续内容。\n\n**缺口**\n\n- 无。OPENING 与 FINAL 均为唯一出现且位置明确（首行/末行）。\n\n**文件状态**\n\n- 仅执行只读操作，未修改、未写入，文件保持原样。\n\n无需进一步工作。",
+    "permissions": [],
+    "observations": [
+      {
+        "tool_text_bytes": [
+          2235,
+          175
+        ],
+        "tool_text_sha256": [
+          "239d14bd7e44925d2631b388d6a9d7c5734f1a85fefc9be2d71642d20fcba38c",
+          "3175e7844e2a6aa2802d1dd0ec1c487eade69d3a8a143a9ed7bc7c7059f94d9c"
+        ],
+        "covered_read_notes": 1,
+        "visible_markers": {
+          "OPENING=CEDAR-2048": true,
+          "FINAL=FALLOW-9158": true
+        }
+      }
+    ],
+    "api_requests": 2,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 8336,
+      "completion_tokens": 275,
+      "total_tokens": 8611,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 7184
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "changed-candidate",
+    "case": "changed",
+    "arm": "candidate",
+    "passed": false,
+    "stop": "end_turn",
+    "answer": "**结论（以第二次读取为准）**\n\n- **OPENING**：`OPENING=CEDAR-2048`（第 1 行）\n- **FINAL**：`FINAL=CLOVER-4071`（第 43 行，文件末行，无结尾换行）\n\n**证据与说明**\n\n- 两次读取均使用原生 `read`，文件未被修改（只读操作）。\n- 第一次读取显示 `FINAL=FALLOW-9158`，第二次读取同一位置显示 `FINAL=CLOVER-4071`。两次结果不一致，说明该文件在两次读取之间被外部改动（非本次操作所致）。按“当前 FINAL”的要求，采用最新一次读取的值 `CLOVER-4071`。\n- 文件共 43 行：第 1 行为 OPENING，第 2–42 行为编号 01–41 的观测记录（数值为 27 的等差递增，末项 1107），第 43 行为 FINAL。\n\n**缺口**\n\n- 无法从文件本身判断哪一版 FINAL 是“权威”值；若需要确定性，建议确认是否有其他进程在写入该文件，或提供校验和/版本信息。\n\n**是否需要更多工作**：不需要。所需两项条目已由最新读取直接给出。",
+    "permissions": [],
+    "observations": [
+      {
+        "tool_text_bytes": [
+          2235,
+          2209
+        ],
+        "tool_text_sha256": [
+          "239d14bd7e44925d2631b388d6a9d7c5734f1a85fefc9be2d71642d20fcba38c",
+          "4748071d89fcdb6e2e91e1e3be85a3dcf6754b768c769b09a1fb54e1b9b063b8"
+        ],
+        "covered_read_notes": 0,
+        "visible_markers": {
+          "OPENING=CEDAR-2048": true,
+          "FINAL=CLOVER-4071": true
+        }
+      }
+    ],
+    "api_requests": 2,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 8849,
+      "completion_tokens": 286,
+      "total_tokens": 9135,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 7697
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "changed-reference",
+    "case": "changed",
+    "arm": "reference",
+    "passed": false,
+    "stop": "end_turn",
+    "answer": "**结论：文件内容在两次读取之间发生了变化，因此无法给出唯一确定的 FINAL 值。**\n\n**证据（均来自原生 `read`，文件未被修改）**\n\n| 读取 | 行号 | 内容 |\n|---|---|---|\n| 第 1 次 | 1 | `OPENING=CEDAR-2048` |\n| 第 1 次 | 43（末行） | `FINAL=FALLOW-9158` |\n| 第 2 次 | 43（末行） | `FINAL=CLOVER-4071` |\n\n- 两次读取的 OPENING 一致：`OPENING=CEDAR-2048`（第 1 行）。\n- 两次读取的 FINAL 不一致：先为 `FALLOW-9158`，后为 `CLOVER-4071`。\n- 文件共 43 行，第 2–42 行为 `01:`–`41:` 的 gauge 记录（数值为 27 的等差序列，末项 1107），两次读取中这部分完全相同。\n- 文件末尾无换行符（两次读取均提示 `no final newline`）。\n\n**支持的结论**\n- OPENING 稳定为 `CEDAR-2048`。\n- FINAL 是\"当前\"值，且该文件正被外部进程写入/轮换：第 2 次读取反映的是较新的状态，即 `FINAL=CLOVER-4071`。\n\n**缺口**\n- 无法确认 `CLOVER-4071` 是否为最终稳定值——它可能仍在被改写。要确认需在写入停止后重新读取末行（例如再次 `read` 并比对），或查看写入方进程；这属于新的验证动作，本次预算已用尽，未执行。\n\n**是否需要更多工作**：若只需\"当前\"快照，答案是 OPENING=`CEDAR-2048`、FINAL=`CLOVER-4071`（最新一次读取）；若需\"最终\"确定值，则需在文件静止后复读一次末行。",
+    "permissions": [],
+    "observations": [
+      {
+        "tool_text_bytes": [
+          2235,
+          2209
+        ],
+        "tool_text_sha256": [
+          "239d14bd7e44925d2631b388d6a9d7c5734f1a85fefc9be2d71642d20fcba38c",
+          "4748071d89fcdb6e2e91e1e3be85a3dcf6754b768c769b09a1fb54e1b9b063b8"
+        ],
+        "covered_read_notes": 0,
+        "visible_markers": {
+          "OPENING=CEDAR-2048": true,
+          "FINAL=CLOVER-4071": true
+        }
+      }
+    ],
+    "api_requests": 2,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 8848,
+      "completion_tokens": 449,
+      "total_tokens": 9297,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 7696
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "continuation-reference",
+    "case": "continuation",
+    "arm": "reference",
+    "passed": true,
+    "stop": "end_turn",
+    "answer": "**结论（Complete）**\n\n文件 `装置 log.txt` 只有一行，没有结尾换行符，内容由 `OPENING=` 开头、`FINAL=` 结尾，中间是大量重复的 `long calibration` 填充文本。文件未被修改。\n\n- **OPENING**：`CEDAR-2048`\n- **FINAL**：`ORBIT-5883`\n\n**证据**\n- 第 1 行开头：`OPENING=CEDAR-2048 long calibration ...`（`read` 首次读取，行被截断于 2000 字节处）\n- 文件末尾（`byte_offset=2000` 续读）：`... long calibration FINAL=ORBIT-5883`，并标注 `[End of file: no final newline.]`\n\n**说明与缺口**\n- 中间填充文本过长，未逐字完整转录；但 OPENING 与 FINAL 两个值均已在文件首尾直接观察到，足以确定答案。\n- 无需进一步工作。",
+    "permissions": [],
+    "observations": [
+      {
+        "tool_text_bytes": [
+          2127,
+          1239
+        ],
+        "tool_text_sha256": [
+          "77d8b1637c179b9947c6ee81dd258b66393ea659ba69f0f39ed7707358d34926",
+          "8f18516ffda0b386691d7f5929dd41e09ae0450fee64036868d7936ce6284488"
+        ],
+        "covered_read_notes": 0,
+        "visible_markers": {
+          "OPENING=CEDAR-2048": true,
+          "FINAL=ORBIT-5883": true
+        }
+      }
+    ],
+    "api_requests": 2,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 8154,
+      "completion_tokens": 222,
+      "total_tokens": 8376,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 7002
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "continuation-candidate",
+    "case": "continuation",
+    "arm": "candidate",
+    "passed": true,
+    "stop": "end_turn",
+    "answer": "**结论（已确认）**\n\n文件 `装置 log.txt` 只有一行，没有末尾换行符，内容由 `OPENING=...` 开头、以 `FINAL=...` 结尾，中间是大量重复的 `long calibration` 填充文本。\n\n- **OPENING 条目**：`OPENING=CEDAR-2048`\n- **当前 FINAL 条目**：`FINAL=ORBIT-5883`\n\n**证据**\n- 首次 `read`（偏移 0）显示第 1 行以 `OPENING=CEDAR-2048` 开头，随后是重复的 `long calibration`，该行被截断（省略 1180 字节），并提示 `[End of file: no final newline.]`。\n- 第二次 `read`（`byte_offset=2000`）显示同一行的续接部分，以 `... long calibration FINAL=ORBIT-5883` 结束，同样提示 `[End of file: no final newline.]`。\n\n**缺口**\n- 中间填充文本的确切长度和完整字节内容未逐字核对（仅确认其为重复的 `long calibration` 序列）。这不影响 OPENING 与 FINAL 两个条目的取值。\n\n**文件状态**\n- 仅使用原生 `read` 访问，未做任何写入或修改，文件保持原样。\n\n**是否需要更多工作**：不需要。所需的两条条目已完整取得。",
+    "permissions": [],
+    "observations": [
+      {
+        "tool_text_bytes": [
+          2127,
+          1239
+        ],
+        "tool_text_sha256": [
+          "77d8b1637c179b9947c6ee81dd258b66393ea659ba69f0f39ed7707358d34926",
+          "8f18516ffda0b386691d7f5929dd41e09ae0450fee64036868d7936ce6284488"
+        ],
+        "covered_read_notes": 0,
+        "visible_markers": {
+          "OPENING=CEDAR-2048": true,
+          "FINAL=ORBIT-5883": true
+        }
+      }
+    ],
+    "api_requests": 2,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 8155,
+      "completion_tokens": 314,
+      "total_tokens": 8469,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 7003
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  }
+]

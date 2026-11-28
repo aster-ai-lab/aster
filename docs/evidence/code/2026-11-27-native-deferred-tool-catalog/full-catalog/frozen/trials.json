@@ -1,0 +1,473 @@
+[
+  {
+    "label": "1-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 4284,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5614,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 1851,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 3,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 31313,
+      "completion_tokens": 397,
+      "total_tokens": 31710,
+      "prompt_cache_hit_tokens": 24192,
+      "prompt_cache_miss_tokens": 7121
+    },
+    "tool_calls": {
+      "read": 2,
+      "bash": 1
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "1-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 4607,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5138,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 228,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 3,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 23177,
+      "completion_tokens": 359,
+      "total_tokens": 23536,
+      "prompt_cache_hit_tokens": 18432,
+      "prompt_cache_miss_tokens": 4745
+    },
+    "tool_calls": {
+      "read": 2,
+      "bash": 1
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "1-dsh",
+    "arm": "dsh",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3766,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "other:completed": 3
+        },
+        "permissions": []
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 3534,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "other:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": null,
+    "model_options": [
+      "[\"benchmark\",\"deepseek-flash\"]"
+    ],
+    "startup_ms": 1388,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "api_requests": 4,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 24578,
+      "completion_tokens": 302,
+      "total_tokens": 24880,
+      "prompt_cache_hit_tokens": 23552,
+      "prompt_cache_miss_tokens": 1026
+    },
+    "tool_calls": {
+      "read": 3,
+      "bash": 1
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "2-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3977,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5169,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 339,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 3,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 23049,
+      "completion_tokens": 307,
+      "total_tokens": 23356,
+      "prompt_cache_hit_tokens": 21760,
+      "prompt_cache_miss_tokens": 1289
+    },
+    "tool_calls": {
+      "read": 2,
+      "bash": 1
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "2-dsh",
+    "arm": "dsh",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 4163,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "other:completed": 3
+        },
+        "permissions": []
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 3200,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "other:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": null,
+    "model_options": [
+      "[\"benchmark\",\"deepseek-flash\"]"
+    ],
+    "startup_ms": 1236,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "api_requests": 4,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 24643,
+      "completion_tokens": 338,
+      "total_tokens": 24981,
+      "prompt_cache_hit_tokens": 23808,
+      "prompt_cache_miss_tokens": 835
+    },
+    "tool_calls": {
+      "read": 3,
+      "bash": 1
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "2-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 4467,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5443,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 275,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 3,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 31034,
+      "completion_tokens": 264,
+      "total_tokens": 31298,
+      "prompt_cache_hit_tokens": 29824,
+      "prompt_cache_miss_tokens": 1210
+    },
+    "tool_calls": {
+      "read": 2,
+      "bash": 1
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "3-dsh",
+    "arm": "dsh",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3900,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "other:completed": 3
+        },
+        "permissions": []
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 3912,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "other:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": null,
+    "model_options": [
+      "[\"benchmark\",\"deepseek-flash\"]"
+    ],
+    "startup_ms": 742,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "api_requests": 4,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 24574,
+      "completion_tokens": 300,
+      "total_tokens": 24874,
+      "prompt_cache_hit_tokens": 23680,
+      "prompt_cache_miss_tokens": 894
+    },
+    "tool_calls": {
+      "read": 3,
+      "bash": 1
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "3-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3887,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 4801,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 174,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 3,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 31045,
+      "completion_tokens": 265,
+      "total_tokens": 31310,
+      "prompt_cache_hit_tokens": 29952,
+      "prompt_cache_miss_tokens": 1093
+    },
+    "tool_calls": {
+      "read": 2,
+      "bash": 1
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "3-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 4078,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5473,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 293,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 3,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 23087,
+      "completion_tokens": 351,
+      "total_tokens": 23438,
+      "prompt_cache_hit_tokens": 21888,
+      "prompt_cache_miss_tokens": 1199
+    },
+    "tool_calls": {
+      "read": 2,
+      "bash": 1
+    },
+    "primary_requests": 4
+  }
+]

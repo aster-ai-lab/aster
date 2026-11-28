@@ -1,0 +1,350 @@
+[
+  {
+    "label": "1-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3952,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 4305,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 254,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 40510,
+      "completion_tokens": 164,
+      "total_tokens": 40674,
+      "prompt_cache_hit_tokens": 29568,
+      "prompt_cache_miss_tokens": 10942
+    },
+    "tool_calls": {
+      "bash": 2
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "1-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 4646,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5017,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 1497,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 38631,
+      "completion_tokens": 175,
+      "total_tokens": 38806,
+      "prompt_cache_hit_tokens": 37248,
+      "prompt_cache_miss_tokens": 1383
+    },
+    "tool_calls": {
+      "bash": 2
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "2-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3887,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 4631,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 66,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 38619,
+      "completion_tokens": 171,
+      "total_tokens": 38790,
+      "prompt_cache_hit_tokens": 37376,
+      "prompt_cache_miss_tokens": 1243
+    },
+    "tool_calls": {
+      "bash": 2
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "2-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3335,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5844,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 56,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 40586,
+      "completion_tokens": 422,
+      "total_tokens": 41008,
+      "prompt_cache_hit_tokens": 39552,
+      "prompt_cache_miss_tokens": 1034
+    },
+    "tool_calls": {
+      "bash": 2
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "3-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3773,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5884,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 52,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 40570,
+      "completion_tokens": 346,
+      "total_tokens": 40916,
+      "prompt_cache_hit_tokens": 39552,
+      "prompt_cache_miss_tokens": 1018
+    },
+    "tool_calls": {
+      "bash": 2
+    },
+    "primary_requests": 4
+  },
+  {
+    "label": "3-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3464,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5045,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 52,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 38624,
+      "completion_tokens": 173,
+      "total_tokens": 38797,
+      "prompt_cache_hit_tokens": 37376,
+      "prompt_cache_miss_tokens": 1248
+    },
+    "tool_calls": {
+      "bash": 2
+    },
+    "primary_requests": 4
+  }
+]

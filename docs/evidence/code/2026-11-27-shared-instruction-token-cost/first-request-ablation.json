@@ -1,0 +1,114 @@
+[
+  {
+    "arm": "release",
+    "part": "user",
+    "usage": {
+      "prompt_tokens": 43,
+      "completion_tokens": 1,
+      "total_tokens": 44,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 43
+    }
+  },
+  {
+    "arm": "release",
+    "part": "system_and_environment",
+    "usage": {
+      "prompt_tokens": 1778,
+      "completion_tokens": 1,
+      "total_tokens": 1779,
+      "prompt_tokens_details": {
+        "cached_tokens": 1536
+      },
+      "prompt_cache_hit_tokens": 1536,
+      "prompt_cache_miss_tokens": 242
+    }
+  },
+  {
+    "arm": "release",
+    "part": "tools",
+    "usage": {
+      "prompt_tokens": 6018,
+      "completion_tokens": 1,
+      "total_tokens": 6019,
+      "prompt_tokens_details": {
+        "cached_tokens": 512
+      },
+      "prompt_cache_hit_tokens": 512,
+      "prompt_cache_miss_tokens": 5506
+    }
+  },
+  {
+    "arm": "release",
+    "part": "full",
+    "usage": {
+      "prompt_tokens": 7751,
+      "completion_tokens": 1,
+      "total_tokens": 7752,
+      "prompt_tokens_details": {
+        "cached_tokens": 7552
+      },
+      "prompt_cache_hit_tokens": 7552,
+      "prompt_cache_miss_tokens": 199
+    }
+  },
+  {
+    "arm": "dsh",
+    "part": "user",
+    "usage": {
+      "prompt_tokens": 43,
+      "completion_tokens": 1,
+      "total_tokens": 44,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 43
+    }
+  },
+  {
+    "arm": "dsh",
+    "part": "system_and_environment",
+    "usage": {
+      "prompt_tokens": 792,
+      "completion_tokens": 1,
+      "total_tokens": 793,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 408
+    }
+  },
+  {
+    "arm": "dsh",
+    "part": "tools",
+    "usage": {
+      "prompt_tokens": 5059,
+      "completion_tokens": 1,
+      "total_tokens": 5060,
+      "prompt_tokens_details": {
+        "cached_tokens": 4864
+      },
+      "prompt_cache_hit_tokens": 4864,
+      "prompt_cache_miss_tokens": 195
+    }
+  },
+  {
+    "arm": "dsh",
+    "part": "full",
+    "usage": {
+      "prompt_tokens": 5806,
+      "completion_tokens": 1,
+      "total_tokens": 5807,
+      "prompt_tokens_details": {
+        "cached_tokens": 5632
+      },
+      "prompt_cache_hit_tokens": 5632,
+      "prompt_cache_miss_tokens": 174
+    }
+  }
+]

@@ -615,10 +615,10 @@ fn limit_schema_description(modes: &[&str]) -> String {
         .filter(|mode| matches!(*mode, "bm25" | "semantic" | "hybrid"))
         .collect::<Vec<_>>();
     if ranked.is_empty() {
-        return "grep/glob page cap (default 200, max 1000).".to_string();
+        return "grep/glob default 200.".to_string();
     }
     format!(
-        "grep/glob page cap (default 200, max 1000); {} (default 10, max 25).",
+        "grep/glob default 200; {} default 10, max 25.",
         ranked.join("/")
     )
 }

@@ -276,23 +276,24 @@ pub(super) fn remove(
     let part_name = slide_part_for_path(snapshot, &requested.path)?;
     let part = package.xml_part(&part_name)?;
     let index = index_xml(&part)?;
-    let edited =
-        match requested.node_type {
-            OfficeNodeType::Table => {
-                let frame = locate_path(&index, &requested.path)?;
-                apply_patches(
-                    &part,
-                    vec![XmlPatch::new(frame.full_range.clone(), Vec::new())],
-                )?
-            }
-            OfficeNodeType::TableRow => remove_row(&part, &index, &requested.path)?,
-            OfficeNodeType::TableColumn => remove_column(&part, &index, &requested.path)?,
-            OfficeNodeType::TableCell => remove_cell(&part, &index, &requested.path)?,
-            _ => return Err(editor_error(
+    let edited = match requested.node_type {
+        OfficeNodeType::Table => {
+            let frame = locate_path(&index, &requested.path)?;
+            apply_patches(
+                &part,
+                vec![XmlPatch::new(frame.full_range.clone(), Vec::new())],
+            )?
+        }
+        OfficeNodeType::TableRow => remove_row(&part, &index, &requested.path)?,
+        OfficeNodeType::TableColumn => remove_column(&part, &index, &requested.path)?,
+        OfficeNodeType::TableCell => remove_cell(&part, &index, &requested.path)?,
+        _ => {
+            return Err(editor_error(
                 "use.office.mutation_type_unsupported",
                 "Native Presentation table removal requires a table, row, column, or cell path.",
-            )),
-        };
+            ));
+        }
+    };
     package.set_part(&part_name, edited)
 }
 

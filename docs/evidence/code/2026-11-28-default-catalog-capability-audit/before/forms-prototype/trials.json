@@ -1,0 +1,91 @@
+[
+  {
+    "arm": "default",
+    "label": "1-default",
+    "forms": [],
+    "shape_ok": false,
+    "response": "",
+    "permissions": [],
+    "passed": false,
+    "api_requests": 7,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 49590,
+      "completion_tokens": 2011,
+      "total_tokens": 51601,
+      "prompt_cache_hit_tokens": 42240,
+      "prompt_cache_miss_tokens": 7350
+    },
+    "tool_calls": {
+      "ask_user_form": 6
+    },
+    "primary_requests": 6
+  },
+  {
+    "arm": "deferred",
+    "label": "1-deferred",
+    "forms": [],
+    "shape_ok": false,
+    "response": "",
+    "permissions": [],
+    "passed": false,
+    "api_requests": 12,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 72112,
+      "completion_tokens": 2690,
+      "total_tokens": 74802,
+      "prompt_cache_hit_tokens": 61056,
+      "prompt_cache_miss_tokens": 11056
+    },
+    "tool_calls": {
+      "ask_user_form": 9,
+      "load_tool_definitions": 2
+    },
+    "primary_requests": 11
+  },
+  {
+    "arm": "deferred",
+    "label": "2-deferred",
+    "forms": [],
+    "shape_ok": false,
+    "response": "",
+    "permissions": [],
+    "passed": false,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 30244,
+      "completion_tokens": 1507,
+      "total_tokens": 31751,
+      "prompt_cache_hit_tokens": 25088,
+      "prompt_cache_miss_tokens": 5156
+    },
+    "tool_calls": {
+      "ask_user_form": 5
+    },
+    "primary_requests": 5
+  },
+  {
+    "arm": "default",
+    "label": "2-default",
+    "forms": [],
+    "shape_ok": false,
+    "response": "",
+    "permissions": [],
+    "passed": false,
+    "api_requests": 11,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 88934,
+      "completion_tokens": 3227,
+      "total_tokens": 92161,
+      "prompt_cache_hit_tokens": 81024,
+      "prompt_cache_miss_tokens": 7910
+    },
+    "tool_calls": {
+      "ask_user_form": 10
+    },
+    "primary_requests": 10
+  }
+]

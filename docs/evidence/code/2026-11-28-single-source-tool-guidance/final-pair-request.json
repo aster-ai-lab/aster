@@ -1,0 +1,64 @@
+{
+  "current_build": "aster-cli-pair-v1:53de35f9931bce6824847ad04147713a04d7628e:aarch64-apple-darwin",
+  "equal_except_workspace_path": true,
+  "tool_catalog_exact": true,
+  "wire_sha256": {
+    "measured": "48299f3fedcbd6e60825fb4cf7102e6326a6b1e5b1aab61c0dc8ee29a19b76a7",
+    "current": "35410c20d206d4aa69a7f11c810ffeafea09b36c97b618dccc7149529551b0dc"
+  },
+  "trial": {
+    "label": "1-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3564,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 2,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 4692,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 387,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 4,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 30793,
+      "completion_tokens": 274,
+      "total_tokens": 31067,
+      "prompt_cache_hit_tokens": 23680,
+      "prompt_cache_miss_tokens": 7113
+    },
+    "tool_calls": {
+      "read": 3,
+      "bash": 1
+    },
+    "primary_requests": 4
+  }
+}

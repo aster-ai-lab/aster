@@ -244,7 +244,7 @@ impl SecurityProvider for DefaultSecurityProvider {
             let mut tainted = self.tainted_data.write().unwrap();
             for (name, value) in matches {
                 // Hash the value for privacy
-                let hash = format!("{}:{}", name, sha256::digest(value));
+                let hash = format!("{}:{}", name, crate::content_digest::sha256_hex(value));
                 tainted.insert(hash);
             }
         }

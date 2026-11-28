@@ -48,6 +48,7 @@ pub struct NonRetryableLlmError {
     message: String,
     provider: Option<String>,
     status: Option<u16>,
+    context_overflow: bool,
 }
 
 impl NonRetryableLlmError {
@@ -56,6 +57,7 @@ impl NonRetryableLlmError {
             message: bound_message(message.into()),
             provider: None,
             status: None,
+            context_overflow: false,
         }
     }
 
@@ -65,6 +67,7 @@ impl NonRetryableLlmError {
     pub fn from_status(provider: impl Into<String>, status: u16, body: impl Into<String>) -> Self {
         let provider = provider.into();
         let body = body.into();
+        let context_overflow = is_context_length_exceeded(status, &body);
         // Boyue reports an empty account as HTTP 401 "Invalid token". That is
         // no balance, not a missing child credential.
         let message = if boyue_account_has_no_balance(&provider, status, &body) {
@@ -75,6 +78,7 @@ impl NonRetryableLlmError {
         let mut error = Self::new(message);
         error.provider = Some(provider);
         error.status = Some(status);
+        error.context_overflow = context_overflow;
         error
     }
 
@@ -87,6 +91,29 @@ impl NonRetryableLlmError {
     pub fn status(&self) -> Option<u16> {
         self.status
     }
+
+    /// True when the provider rejected the prompt for exceeding its context window.
+    pub fn is_context_overflow(&self) -> bool {
+        self.context_overflow
+    }
+}
+
+fn is_context_length_exceeded(status: u16, body: &str) -> bool {
+    if !matches!(status, 400 | 413 | 422) {
+        return false;
+    }
+    let lower = body.to_ascii_lowercase();
+    lower.contains("context_length_exceeded")
+        || lower.contains("maximum context length")
+        || lower.contains("prompt is too long")
+        || lower.contains("input is too long")
+        || lower.contains("too many tokens")
+        || lower.contains("exceeds the context window")
+        || lower.contains("exceeds the maximum number of tokens")
+        || lower.contains("request_too_large")
+        || lower.contains("token limit exceeded")
+        || ((lower.contains("prompt_tokens") || lower.contains("input token count"))
+            && lower.contains("exceed"))
 }
 
 fn boyue_account_has_no_balance(provider: &str, status: u16, body: &str) -> bool {
@@ -125,6 +152,13 @@ pub(crate) fn non_retryable_llm_error_message(error: &anyhow::Error) -> Option<&
     error
         .downcast_ref::<crate::retry::RetryExhaustedError>()
         .map(crate::retry::RetryExhaustedError::non_retryable_message)
+}
+
+pub(crate) fn context_overflow_llm_error_message(error: &anyhow::Error) -> Option<&str> {
+    error
+        .downcast_ref::<NonRetryableLlmError>()
+        .filter(|err| err.is_context_overflow())
+        .map(|err| err.message.as_str())
 }
 
 #[cfg(test)]
@@ -180,5 +214,39 @@ mod tests {
         assert!(message.contains("LLM API request failed after 3 attempts"));
         assert!(message.contains("429"));
         assert!(message.contains("rate limited"));
+    }
+
+    #[test]
+    fn context_length_exceeded_status_is_typed_overflow_across_providers() {
+        for (provider, status, body) in [
+            (
+                "openai",
+                400,
+                r#"{"error":{"code":"context_length_exceeded","message":"This model's maximum context length is 128000 tokens."}}"#,
+            ),
+            (
+                "anthropic",
+                400,
+                r#"{"error":{"type":"invalid_request_error","message":"prompt is too long: 210000 tokens > 200000 maximum"}}"#,
+            ),
+            ("gemini", 413, "input is too long; request_too_large"),
+            (
+                "azure",
+                422,
+                "prompt_tokens count exceeds the context window limit",
+            ),
+        ] {
+            let err = NonRetryableLlmError::from_status(provider, status, body);
+            assert!(
+                err.is_context_overflow(),
+                "{provider} ({status}) must be classified as context overflow"
+            );
+            let boxed = anyhow::Error::new(err);
+            assert!(context_overflow_llm_error_message(&boxed).is_some());
+        }
+
+        let ordinary = NonRetryableLlmError::from_status("openai", 400, "invalid tool schema");
+        assert!(!ordinary.is_context_overflow());
+        assert!(context_overflow_llm_error_message(&anyhow::Error::new(ordinary)).is_none());
     }
 }

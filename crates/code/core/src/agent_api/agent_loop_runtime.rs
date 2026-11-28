@@ -178,6 +178,13 @@ impl crate::permissions::PermissionChecker for RuntimePermissionChecker {
         }
         crate::fact_control::execution_permission(&self.policy, self.ceiling.as_deref(), name, args)
     }
+
+    fn denial_code(&self, name: &str, args: &serde_json::Value) -> Option<&'static str> {
+        if self.policy.check(name, args) == crate::permissions::PermissionDecision::Deny {
+            return Some("policy_denied");
+        }
+        self.ceiling.as_ref()?.denial_code(name, args)
+    }
 }
 
 pub(super) fn build_agent_loop(session: &AgentSession) -> AgentLoop {

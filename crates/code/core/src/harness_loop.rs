@@ -1505,9 +1505,9 @@ fn push_nested_calls<'a>(
 
 fn content_digest(metadata: &Value) -> String {
     if let Some(after) = metadata.get("after").and_then(Value::as_str) {
-        return sha256::digest(after.as_bytes());
+        return crate::content_digest::sha256_hex(after.as_bytes());
     }
-    sha256::digest(metadata.to_string().as_bytes())
+    crate::content_digest::sha256_hex(metadata.to_string().as_bytes())
 }
 
 fn effect_digest(records: &[MutationRecord]) -> String {
@@ -1542,7 +1542,7 @@ fn effect_digest(records: &[MutationRecord]) -> String {
                 }
             }
         }
-        return sha256::digest(canonical);
+        return crate::content_digest::sha256_hex(canonical);
     }
     // Legacy checkpoints retain their original digest until typed state is
     // observed; absent fields do not invent a stronger historical identity.
@@ -1551,7 +1551,7 @@ fn effect_digest(records: &[MutationRecord]) -> String {
         .map(|record| format!("{}|{}|{}", record.tool, record.path, record.content_digest))
         .collect::<Vec<_>>()
         .join("\n");
-    sha256::digest(canonical.as_bytes())
+    crate::content_digest::sha256_hex(canonical.as_bytes())
 }
 
 fn effect_digest_with_failed_effects(
@@ -1582,7 +1582,7 @@ fn effect_digest_with_failed_effects(
             None => canonical.push(0),
         }
     }
-    sha256::digest(canonical)
+    crate::content_digest::sha256_hex(canonical)
 }
 
 fn append_effect_field(canonical: &mut Vec<u8>, field: &[u8]) {
@@ -1628,6 +1628,36 @@ pub enum CompletionGate {
     Incomplete {
         message: String,
     },
+}
+
+/// A text-only reply left an earlier turn's mutation verification outstanding.
+#[derive(Debug, thiserror::Error)]
+#[error(transparent)]
+pub(crate) struct PriorVerificationPending(pub(crate) UnverifiedMutation);
+
+#[derive(Debug, thiserror::Error)]
+#[error("{message}")]
+pub(crate) struct UnverifiedMutation {
+    pub(crate) digest: String,
+    pub(crate) message: String,
+    pub(crate) host_contract_guidance: Option<String>,
+}
+
+impl UnverifiedMutation {
+    pub(crate) fn model_context(&self, bash_refused: bool) -> String {
+        if !bash_refused {
+            return format_model_verification_context(&self.message);
+        }
+        let mut context = format!(
+            "[host verification state]\nWorkspace verification still pending for {}. Use an authorized alternative that proves the current changes, if available. Otherwise report the original refusal and leave verification pending.",
+            self.digest
+        );
+        if let Some(guidance) = &self.host_contract_guidance {
+            context.push_str("\nHost contract diagnostic data: ");
+            context.push_str(&Value::String(guidance.clone()).to_string());
+        }
+        context
+    }
 }
 
 /// Recovery requires evidence for these exact invocations in the same session.
@@ -1679,10 +1709,31 @@ pub(crate) fn decide_with_contracts(
     observations: &[crate::external_observation::ExternalObservationV1],
     contracts: &[crate::verification::VerificationContractV1],
 ) -> CompletionGate {
+    evaluate_with_contracts(
+        ledger,
+        reports,
+        waivers,
+        allow_continuation,
+        observations,
+        contracts,
+    )
+    .unwrap_or_else(|error| CompletionGate::Incomplete {
+        message: error.message,
+    })
+}
+
+pub(crate) fn evaluate_with_contracts(
+    ledger: &MutationLedger,
+    reports: &[VerificationReport],
+    waivers: &[CompletionWaiverV1],
+    allow_continuation: bool,
+    observations: &[crate::external_observation::ExternalObservationV1],
+    contracts: &[crate::verification::VerificationContractV1],
+) -> Result<CompletionGate, UnverifiedMutation> {
     if let Some(error) = ToolEffectUnresolved::from_ledger(ledger) {
-        return CompletionGate::Incomplete {
+        return Ok(CompletionGate::Incomplete {
             message: error.to_string(),
-        };
+        });
     }
     let open = crate::external_observation::still_open(observations, waivers, ledger.digest());
     if crate::external_observation::blocks_success(&open) {
@@ -1694,11 +1745,11 @@ pub(crate) fn decide_with_contracts(
         let message = format!(
             "completion gate: external observation {digest} still requires a workspace change. A final answer does not clear it. Bind a newer observation of the same subject or a host waiver for the observation digest."
         );
-        return if allow_continuation {
+        return Ok(if allow_continuation {
             CompletionGate::Continue { message }
         } else {
             CompletionGate::Incomplete { message }
-        };
+        });
     }
     if ledger.has_open_children() {
         let ids = ledger
@@ -1710,36 +1761,36 @@ pub(crate) fn decide_with_contracts(
         let message = format!(
             "completion gate: background workspace task {ids} has not been observed. A final answer does not observe its writes."
         );
-        return CompletionGate::Incomplete { message };
+        return Ok(CompletionGate::Incomplete { message });
     }
     if ledger.observation_incomplete() {
-        return CompletionGate::Incomplete {
+        return Ok(CompletionGate::Incomplete {
             message: "completion gate: workspace observation is incomplete, so this digest is not the effect. A final answer, a waiver, or a verification of a partial list does not close it.".to_string(),
-        };
+        });
     }
     if ledger.is_empty() {
-        return CompletionGate::Allow(CompletionTerminal::Narrative);
+        return Ok(CompletionGate::Allow(CompletionTerminal::Narrative));
     }
     let digest = ledger.digest().to_string();
     if waivers.iter().any(|waiver| waiver.effect_digest == digest) {
-        return CompletionGate::Allow(CompletionTerminal::Waived {
+        return Ok(CompletionGate::Allow(CompletionTerminal::Waived {
             effect_digest: digest,
-        });
+        }));
     }
     if reports
         .iter()
         .any(|report| report_binds_pass(report, &digest))
     {
-        return CompletionGate::Allow(CompletionTerminal::Verified {
+        return Ok(CompletionGate::Allow(CompletionTerminal::Verified {
             effect_digest: digest,
-        });
+        }));
     }
     let paths = mutation_paths_for_gate(ledger);
-    let next = if contracts.is_empty() {
-        unbound_mutation_next_step(ledger)
-    } else {
-        host_contract_next_step(ledger, contracts)
-    };
+    let host_contract_guidance =
+        (!contracts.is_empty()).then(|| host_contract_next_step(ledger, contracts));
+    let next = host_contract_guidance
+        .clone()
+        .unwrap_or_else(|| unbound_mutation_next_step(ledger));
     let message = format!(
         "{UNBOUND_MUTATION_GATE}{digest}{paths} has no bound Passed verification and no host waiver. Assistant text does not count. Bind a verification_report.effect_digest to this digest with required checks Passed, or obtain a host waiver for this digest.{next}"
     );
@@ -1750,7 +1801,11 @@ pub(crate) fn decide_with_contracts(
     // decision. Spending the one continuation here cannot close the gate; it
     // only invites another tool call. An open external observation still
     // continues, because a workspace write can satisfy that subject.
-    CompletionGate::Incomplete { message }
+    Err(UnverifiedMutation {
+        digest,
+        message,
+        host_contract_guidance,
+    })
 }
 
 const UNBOUND_MUTATION_GATE: &str = "completion gate: workspace mutation ";
@@ -1960,10 +2015,14 @@ pub(crate) fn model_verification_context(gate: CompletionGate) -> Option<String>
         return None;
     }
     unbound_mutation_digest(&message)?;
-    let diagnostic = serde_json::Value::String(message);
-    Some(format!(
+    Some(format_model_verification_context(&message))
+}
+
+fn format_model_verification_context(message: &str) -> String {
+    let diagnostic = serde_json::Value::String(message.to_owned());
+    format!(
         "[host verification state]\nWorkspace verification incomplete (exit 0 alone does not bind current changes). Run an admitted verification check unchanged after the last edit using exposed tools; keep cleanup/status separate; do not repeat completed edits. Grants no permission/waiver. Diagnostic data:\n{diagnostic}"
-    ))
+    )
 }
 
 pub fn attach_observation(metadata: &mut Option<Value>, observation: &MutationObservationV1) {

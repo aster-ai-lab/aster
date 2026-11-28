@@ -1,0 +1,180 @@
+{
+  "runs": {
+    "candidate": [
+      {
+        "run": "system-a",
+        "correct_reports": 6,
+        "protected_exact": 6,
+        "verified": 6,
+        "strict_pass": false,
+        "main_requests": 21,
+        "all_requests": 33,
+        "prompt_tokens": 178599,
+        "completion_tokens": 5741,
+        "total_tokens": 184340,
+        "prompt_cache_hit_tokens": 160884,
+        "prompt_cache_miss_tokens": 17715
+      },
+      {
+        "run": "system-b",
+        "correct_reports": 6,
+        "protected_exact": 6,
+        "verified": 6,
+        "strict_pass": false,
+        "main_requests": 21,
+        "all_requests": 33,
+        "prompt_tokens": 172779,
+        "completion_tokens": 5599,
+        "total_tokens": 178378,
+        "prompt_cache_hit_tokens": 160244,
+        "prompt_cache_miss_tokens": 12535
+      }
+    ],
+    "release": [
+      {
+        "run": "system-a",
+        "correct_reports": 6,
+        "protected_exact": 6,
+        "verified": 6,
+        "strict_pass": false,
+        "main_requests": 22,
+        "all_requests": 34,
+        "prompt_tokens": 181124,
+        "completion_tokens": 4357,
+        "total_tokens": 185481,
+        "prompt_cache_hit_tokens": 163316,
+        "prompt_cache_miss_tokens": 17808
+      },
+      {
+        "run": "system-b",
+        "correct_reports": 6,
+        "protected_exact": 6,
+        "verified": 6,
+        "strict_pass": false,
+        "main_requests": 21,
+        "all_requests": 33,
+        "prompt_tokens": 173885,
+        "completion_tokens": 5357,
+        "total_tokens": 179242,
+        "prompt_cache_hit_tokens": 157172,
+        "prompt_cache_miss_tokens": 16713
+      }
+    ],
+    "dsh": [
+      {
+        "run": "system-a",
+        "correct_reports": 6,
+        "protected_exact": 6,
+        "verified": null,
+        "strict_pass": false,
+        "main_requests": 26,
+        "all_requests": 26,
+        "prompt_tokens": 260401,
+        "completion_tokens": 4717,
+        "total_tokens": 265118,
+        "prompt_cache_hit_tokens": 252928,
+        "prompt_cache_miss_tokens": 7473
+      },
+      {
+        "run": "system-b",
+        "correct_reports": 6,
+        "protected_exact": 6,
+        "verified": null,
+        "strict_pass": true,
+        "main_requests": 25,
+        "all_requests": 25,
+        "prompt_tokens": 252830,
+        "completion_tokens": 4776,
+        "total_tokens": 257606,
+        "prompt_cache_hit_tokens": 245504,
+        "prompt_cache_miss_tokens": 7326
+      }
+    ]
+  },
+  "first_request": {
+    "system-a": {
+      "candidate": {
+        "first_system": [
+          6468,
+          "f1d7d8b7541db71b018690f97dee73352eed3382f48f24d0679d643d69a200a8"
+        ],
+        "system_messages": 2,
+        "prompt_cache_miss_tokens": 4128,
+        "tool_definitions": 27,
+        "second_system": [
+          953,
+          "878478c11924421ec4c60f96d87140ea4bf28ec9790abac87ebcfa4b998c4754"
+        ]
+      },
+      "release": {
+        "first_system": [
+          7391,
+          "58bc3b96aeb9048d124c0fa3471c8819004f936e8b17c13c6bbb01ef6e866924"
+        ],
+        "system_messages": 1,
+        "prompt_cache_miss_tokens": 4127,
+        "tool_definitions": 27
+      },
+      "dsh": {
+        "first_system": [
+          2802,
+          "79df676553641b669fbe7a99d3121b9a4bd121672811f1bf5aafb12067ef32a7"
+        ],
+        "system_messages": 1,
+        "prompt_cache_miss_tokens": 318,
+        "tool_definitions": 23
+      }
+    },
+    "system-b": {
+      "dsh": {
+        "first_system": [
+          2802,
+          "79df676553641b669fbe7a99d3121b9a4bd121672811f1bf5aafb12067ef32a7"
+        ],
+        "system_messages": 1,
+        "prompt_cache_miss_tokens": 318,
+        "tool_definitions": 23
+      },
+      "release": {
+        "first_system": [
+          7391,
+          "e4512cc224d3102dedc1d17a40bfbe083c07bd6fbc8dca1f8eb7dc457853cdf4"
+        ],
+        "system_messages": 1,
+        "prompt_cache_miss_tokens": 4127,
+        "tool_definitions": 27
+      },
+      "candidate": {
+        "first_system": [
+          6468,
+          "f1d7d8b7541db71b018690f97dee73352eed3382f48f24d0679d643d69a200a8"
+        ],
+        "system_messages": 2,
+        "prompt_cache_miss_tokens": 416,
+        "tool_definitions": 27,
+        "second_system": [
+          953,
+          "bd884aa9bbee6cf9ffd9795d9b42f10e38ca307cf9ed11e255a0f86888ae5e15"
+        ]
+      }
+    }
+  },
+  "medians": {
+    "candidate": {
+      "total_tokens": 181359.0,
+      "prompt_cache_miss_tokens": 15125.0,
+      "main_requests": 21.0
+    },
+    "release": {
+      "total_tokens": 182361.5,
+      "prompt_cache_miss_tokens": 17260.5,
+      "main_requests": 21.5
+    },
+    "dsh": {
+      "total_tokens": 261362.0,
+      "prompt_cache_miss_tokens": 7399.5,
+      "main_requests": 25.5
+    }
+  },
+  "provider_requests": 184
+}

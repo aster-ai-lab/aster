@@ -16,6 +16,8 @@ mod sogou;
 mod baidu;
 #[cfg(feature = "headless")]
 mod google;
+#[cfg(feature = "headless")]
+mod quark;
 
 pub use bing::{Bing, BingBrowser, BingBrowserParser, BingParser};
 pub use brave::{Brave, BraveBrowser, BraveBrowserParser, BraveParser};
@@ -30,3 +32,5 @@ pub use sogou::{Sogou, SogouParser};
 pub use baidu::{Baidu, BaiduParser};
 #[cfg(feature = "headless")]
 pub use google::{Google, GoogleParser};
+#[cfg(feature = "headless")]
+pub use quark::{Quark, QuarkParser};

@@ -308,7 +308,7 @@ fn parse_suggestion_identity(value: &Any) -> UseResult<DocumentSuggestionIdentit
         _ => {
             return Err(permission_denied(
                 "A shared Document suggestion kind must be 'insertion' or 'deletion'.",
-            ))
+            ));
         }
     };
     validate_identifier(&id, "suggestion ID")?;

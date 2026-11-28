@@ -81,10 +81,18 @@ async fn assistant_delivery_receives_current_disk_attestation_instead_of_an_extr
         let delivered = request_text(&delivery.messages);
         if open_observation {
             assert!(!delivered.contains("current workspace changes are verified"));
+            assert!(!delivered.contains("already read back the changed files"));
         } else {
             assert!(
                 delivered.contains("current workspace changes are verified"),
                 "the next real model input must include the host's current attestation"
+            );
+            assert!(
+                delivered.contains("already read back the changed files"),
+                "the assistant needs to know which check the host already performed"
+            );
+            assert!(
+                delivered.contains("Run exact commands unchanged without adding other operations")
             );
             assert!(!delivered.contains("Next step: run one `bash`"));
         }

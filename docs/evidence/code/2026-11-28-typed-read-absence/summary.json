@@ -1,0 +1,537 @@
+{
+  "artifacts": {
+    "aster": {
+      "build_id": "aster-cli-pair-v1:6e049c267f06fc40a755dd77e6d2f91ced0b36f5:aarch64-apple-darwin",
+      "sha256": "efe452f6fbe9658ede1143dbf71a152a7eefaefbb624fa353ac4fa7d52edd655"
+    },
+    "aster_acp": {
+      "build_id": "aster-cli-pair-v1:6e049c267f06fc40a755dd77e6d2f91ced0b36f5:aarch64-apple-darwin",
+      "sha256": "3bf222be49703f651d779f0ee93f8ebf90cb3d41cf8546938270335fc1a5eff0"
+    },
+    "reference_acp": {
+      "build_id": "aster-cli-pair-v1:af12f52580916acf8dfe8a5fdc28a5f9ae053643:aarch64-apple-darwin",
+      "sha256": "a5ac8519a9004d14c58f9abb9c09272ba1c9b32aaa4605c7dcac98c2ef8410a7"
+    }
+  },
+  "provider_usage_records": 350,
+  "first_wire": {
+    "1-candidate-first-wire.json": {
+      "sha256": "51e381b3a1dd8571f83dd0d90c60cdcd49b121741de1bb3a39e2fd1592fa277c",
+      "tool_count": 26,
+      "tool_sha256_ordered": "fdaba535b50a9e2e08b1746e768f1db072a1e34bee346a4d93e1435c8a1bd0e7",
+      "system_bytes": 7220
+    },
+    "1-dsh-first-wire.json": {
+      "sha256": "1ace55d468abc1b7f1a4cced0bc9c8229bdbdfbe34b02b860298d527b35a6413",
+      "tool_count": 23,
+      "tool_sha256_ordered": "159bbb2b52a00ed9aac514aa172a64bb473ee37cce888960463cc010f2371b66",
+      "system_bytes": 2746
+    },
+    "1-release-first-wire.json": {
+      "sha256": "51e381b3a1dd8571f83dd0d90c60cdcd49b121741de1bb3a39e2fd1592fa277c",
+      "tool_count": 26,
+      "tool_sha256_ordered": "fdaba535b50a9e2e08b1746e768f1db072a1e34bee346a4d93e1435c8a1bd0e7",
+      "system_bytes": 7220
+    },
+    "2-candidate-first-wire.json": {
+      "sha256": "51e381b3a1dd8571f83dd0d90c60cdcd49b121741de1bb3a39e2fd1592fa277c",
+      "tool_count": 26,
+      "tool_sha256_ordered": "fdaba535b50a9e2e08b1746e768f1db072a1e34bee346a4d93e1435c8a1bd0e7",
+      "system_bytes": 7220
+    },
+    "2-dsh-first-wire.json": {
+      "sha256": "1ace55d468abc1b7f1a4cced0bc9c8229bdbdfbe34b02b860298d527b35a6413",
+      "tool_count": 23,
+      "tool_sha256_ordered": "159bbb2b52a00ed9aac514aa172a64bb473ee37cce888960463cc010f2371b66",
+      "system_bytes": 2746
+    },
+    "2-release-first-wire.json": {
+      "sha256": "51e381b3a1dd8571f83dd0d90c60cdcd49b121741de1bb3a39e2fd1592fa277c",
+      "tool_count": 26,
+      "tool_sha256_ordered": "fdaba535b50a9e2e08b1746e768f1db072a1e34bee346a4d93e1435c8a1bd0e7",
+      "system_bytes": 7220
+    }
+  },
+  "short": {
+    "release": {
+      "total_tokens_median": 30961.0,
+      "uncached_input_median": 1265.0,
+      "primary_requests_median": 4.0,
+      "all_requests_median": 6.0,
+      "passed": 2
+    },
+    "candidate": {
+      "total_tokens_median": 31358.5,
+      "uncached_input_median": 4219.5,
+      "primary_requests_median": 4.0,
+      "all_requests_median": 6.0,
+      "passed": 2
+    },
+    "dsh": {
+      "total_tokens_median": 25215.0,
+      "uncached_input_median": 974.0,
+      "primary_requests_median": 4.0,
+      "all_requests_median": 4.0,
+      "passed": 2
+    }
+  },
+  "long": {
+    "release": {
+      "total_tokens_median": 213530.0,
+      "uncached_input_median": 16007.5,
+      "primary_requests_median": 20.0,
+      "all_requests_median": 27.0,
+      "passed": 0,
+      "correct_artifacts": 12,
+      "protected_input_passes": 12,
+      "bound_verifications": 12,
+      "directory_queries": 2
+    },
+    "candidate": {
+      "total_tokens_median": 218917.0,
+      "uncached_input_median": 16031.0,
+      "primary_requests_median": 21.0,
+      "all_requests_median": 28.0,
+      "passed": 0,
+      "correct_artifacts": 12,
+      "protected_input_passes": 12,
+      "bound_verifications": 12,
+      "directory_queries": 2
+    },
+    "dsh": {
+      "total_tokens_median": 270335.0,
+      "uncached_input_median": 8271.5,
+      "primary_requests_median": 26.0,
+      "all_requests_median": 26.0,
+      "passed": 1,
+      "correct_artifacts": 12,
+      "protected_input_passes": 12,
+      "bound_verifications": 0,
+      "directory_queries": 1
+    }
+  },
+  "first_turn_diagnoses": {
+    "previous": [
+      {
+        "direction": "long-forward",
+        "trial": "1-candidate",
+        "events": [
+          {
+            "seq": 10,
+            "tool": "ls",
+            "outcome": "succeeded",
+            "model_cycle": 0
+          },
+          {
+            "seq": 20,
+            "tool": "ls",
+            "outcome": "succeeded",
+            "model_cycle": 5
+          },
+          {
+            "seq": 24,
+            "tool": "write",
+            "outcome": "succeeded",
+            "model_cycle": 6
+          }
+        ]
+      },
+      {
+        "direction": "long-forward",
+        "trial": "2-release",
+        "events": [
+          {
+            "seq": 14,
+            "tool": "read",
+            "outcome": "failed",
+            "model_cycle": 0,
+            "detail": "Failed to resolve path: No such file or directory (absolute path omitted)",
+            "result_text_bytes": 214,
+            "estimated_tokens": 54
+          },
+          {
+            "seq": 17,
+            "tool": "ls",
+            "outcome": "succeeded",
+            "model_cycle": 4
+          },
+          {
+            "seq": 24,
+            "tool": "write",
+            "outcome": "succeeded",
+            "model_cycle": 6
+          }
+        ]
+      },
+      {
+        "direction": "long-reverse",
+        "trial": "2-release",
+        "events": [
+          {
+            "seq": 14,
+            "tool": "read",
+            "outcome": "failed",
+            "model_cycle": 0,
+            "detail": "Failed to resolve path: No such file or directory (absolute path omitted)",
+            "result_text_bytes": 214,
+            "estimated_tokens": 54
+          },
+          {
+            "seq": 17,
+            "tool": "ls",
+            "outcome": "succeeded",
+            "model_cycle": 4
+          },
+          {
+            "seq": 24,
+            "tool": "write",
+            "outcome": "succeeded",
+            "model_cycle": 6
+          }
+        ]
+      },
+      {
+        "direction": "long-reverse",
+        "trial": "3-candidate",
+        "events": [
+          {
+            "seq": 14,
+            "tool": "read",
+            "outcome": "failed",
+            "model_cycle": 0,
+            "detail": "Failed to resolve path: No such file or directory (absolute path omitted)",
+            "result_text_bytes": 214,
+            "estimated_tokens": 54
+          },
+          {
+            "seq": 17,
+            "tool": "ls",
+            "outcome": "succeeded",
+            "model_cycle": 4
+          },
+          {
+            "seq": 24,
+            "tool": "write",
+            "outcome": "succeeded",
+            "model_cycle": 6
+          }
+        ]
+      }
+    ],
+    "measured": [
+      {
+        "direction": "long-forward",
+        "trial": "1-candidate",
+        "events": [
+          {
+            "seq": 16,
+            "tool": "read",
+            "outcome": "failed",
+            "model_cycle": 3,
+            "detail": "Failed to read file report.json: no file found at this exact workspace path.",
+            "result_text_bytes": 76,
+            "estimated_tokens": 19
+          },
+          {
+            "seq": 17,
+            "tool": "ls",
+            "outcome": "succeeded",
+            "model_cycle": 3
+          },
+          {
+            "seq": 24,
+            "tool": "write",
+            "outcome": "succeeded",
+            "model_cycle": 6
+          }
+        ]
+      },
+      {
+        "direction": "long-forward",
+        "trial": "2-release",
+        "events": [
+          {
+            "seq": 16,
+            "tool": "read",
+            "outcome": "failed",
+            "model_cycle": 3,
+            "detail": "Failed to resolve path: No such file or directory (absolute path omitted)",
+            "result_text_bytes": 208,
+            "estimated_tokens": 52
+          },
+          {
+            "seq": 17,
+            "tool": "ls",
+            "outcome": "succeeded",
+            "model_cycle": 3
+          },
+          {
+            "seq": 21,
+            "tool": "write",
+            "outcome": "succeeded",
+            "model_cycle": 5
+          }
+        ]
+      },
+      {
+        "direction": "long-reverse",
+        "trial": "2-release",
+        "events": [
+          {
+            "seq": 14,
+            "tool": "read",
+            "outcome": "failed",
+            "model_cycle": 0,
+            "detail": "Failed to resolve path: No such file or directory (absolute path omitted)",
+            "result_text_bytes": 208,
+            "estimated_tokens": 52
+          },
+          {
+            "seq": 17,
+            "tool": "ls",
+            "outcome": "succeeded",
+            "model_cycle": 4
+          },
+          {
+            "seq": 24,
+            "tool": "write",
+            "outcome": "succeeded",
+            "model_cycle": 6
+          }
+        ]
+      },
+      {
+        "direction": "long-reverse",
+        "trial": "3-candidate",
+        "events": [
+          {
+            "seq": 14,
+            "tool": "read",
+            "outcome": "failed",
+            "model_cycle": 0,
+            "detail": "Failed to read file report.json: no file found at this exact workspace path.",
+            "result_text_bytes": 76,
+            "estimated_tokens": 19
+          },
+          {
+            "seq": 17,
+            "tool": "ls",
+            "outcome": "succeeded",
+            "model_cycle": 4
+          },
+          {
+            "seq": 24,
+            "tool": "write",
+            "outcome": "succeeded",
+            "model_cycle": 6
+          }
+        ]
+      }
+    ]
+  },
+  "holdouts": {
+    "directory_discovery": {
+      "release": {
+        "total_tokens_median": 39203.0,
+        "uncached_input_median": 4802.0,
+        "primary_requests_median": 5.0,
+        "all_requests_median": 8.0,
+        "passed": 2
+      },
+      "candidate": {
+        "total_tokens_median": 39297.5,
+        "uncached_input_median": 1970.0,
+        "primary_requests_median": 5.0,
+        "all_requests_median": 8.0,
+        "passed": 2
+      }
+    },
+    "read_window": {
+      "release": {
+        "total_tokens_median": 30394.0,
+        "uncached_input_median": 4093.0,
+        "primary_requests_median": 4.0,
+        "all_requests_median": 6.0,
+        "passed": 2
+      },
+      "candidate": {
+        "total_tokens_median": 30400.0,
+        "uncached_input_median": 1216.0,
+        "primary_requests_median": 4.0,
+        "all_requests_median": 6.0,
+        "passed": 2
+      }
+    },
+    "batch_mixed": {
+      "release": {
+        "total_tokens_median": 30963.0,
+        "uncached_input_median": 4222.5,
+        "primary_requests_median": 4.0,
+        "all_requests_median": 6.0,
+        "passed": 2
+      },
+      "candidate": {
+        "total_tokens_median": 31014.0,
+        "uncached_input_median": 1408.5,
+        "primary_requests_median": 4.0,
+        "all_requests_median": 6.0,
+        "passed": 2
+      }
+    },
+    "search": {
+      "release": {
+        "total_tokens_median": 40360.5,
+        "uncached_input_median": 5031.5,
+        "primary_requests_median": 5.0,
+        "all_requests_median": 8.0,
+        "passed": 2
+      },
+      "candidate": {
+        "total_tokens_median": 40287.5,
+        "uncached_input_median": 2231.5,
+        "primary_requests_median": 5.0,
+        "all_requests_median": 8.0,
+        "passed": 2
+      }
+    },
+    "verified_edit_exact_count": {
+      "release": {
+        "total_tokens_median": 34746.0,
+        "uncached_input_median": 4232.5,
+        "primary_requests_median": 4.5,
+        "all_requests_median": 6.5,
+        "passed": 1
+      },
+      "candidate": {
+        "total_tokens_median": 22777.0,
+        "uncached_input_median": 879.0,
+        "primary_requests_median": 3.0,
+        "all_requests_median": 5.0,
+        "passed": 0
+      }
+    },
+    "verified-edit-repeat": {
+      "release": {
+        "total_tokens_median": 19052.5,
+        "uncached_input_median": 3754.0,
+        "primary_requests_median": 2.5,
+        "all_requests_median": 4.5,
+        "passed": 0
+      },
+      "candidate": {
+        "total_tokens_median": 30747.5,
+        "uncached_input_median": 1141.5,
+        "primary_requests_median": 4.0,
+        "all_requests_median": 6.0,
+        "passed": 1
+      }
+    }
+  },
+  "relay_only_long_probes": {
+    "readback": {
+      "release": {
+        "total_tokens_median": 220945.5,
+        "uncached_input_median": 16254.0,
+        "primary_requests_median": 21.0,
+        "all_requests_median": 28.0,
+        "passed": 0,
+        "correct_artifacts": 12,
+        "protected_input_passes": 12,
+        "bound_verifications": 12,
+        "directory_queries": 3
+      },
+      "candidate": {
+        "total_tokens_median": 211018.0,
+        "uncached_input_median": 16194.5,
+        "primary_requests_median": 20.0,
+        "all_requests_median": 27.0,
+        "passed": 0,
+        "correct_artifacts": 12,
+        "protected_input_passes": 12,
+        "bound_verifications": 12,
+        "directory_queries": 2
+      },
+      "dsh": {
+        "total_tokens_median": 262318.5,
+        "uncached_input_median": 8068.5,
+        "primary_requests_median": 25.5,
+        "all_requests_median": 25.5,
+        "passed": 0,
+        "correct_artifacts": 12,
+        "protected_input_passes": 12,
+        "bound_verifications": 0,
+        "directory_queries": 2
+      }
+    },
+    "scope": {
+      "release": {
+        "total_tokens_median": 204713.5,
+        "uncached_input_median": 18828.5,
+        "primary_requests_median": 20.0,
+        "all_requests_median": 26.5,
+        "passed": 1,
+        "correct_artifacts": 12,
+        "protected_input_passes": 12,
+        "bound_verifications": 12,
+        "directory_queries": 1
+      },
+      "candidate": {
+        "total_tokens_median": 209426.0,
+        "uncached_input_median": 19054.0,
+        "primary_requests_median": 20.5,
+        "all_requests_median": 27.5,
+        "passed": 0,
+        "correct_artifacts": 12,
+        "protected_input_passes": 12,
+        "bound_verifications": 12,
+        "directory_queries": 2
+      },
+      "dsh": {
+        "total_tokens_median": 251159.0,
+        "uncached_input_median": 7889.5,
+        "primary_requests_median": 24.5,
+        "all_requests_median": 24.5,
+        "passed": 2,
+        "correct_artifacts": 12,
+        "protected_input_passes": 12,
+        "bound_verifications": 0,
+        "directory_queries": 0
+      }
+    },
+    "workflow": {
+      "release": {
+        "total_tokens_median": 220497.0,
+        "uncached_input_median": 20368.0,
+        "primary_requests_median": 21.0,
+        "all_requests_median": 28.0,
+        "passed": 0,
+        "correct_artifacts": 12,
+        "protected_input_passes": 12,
+        "bound_verifications": 12,
+        "directory_queries": 2
+      },
+      "candidate": {
+        "total_tokens_median": 206620.0,
+        "uncached_input_median": 18636.0,
+        "primary_requests_median": 20.5,
+        "all_requests_median": 27.5,
+        "passed": 0,
+        "correct_artifacts": 12,
+        "protected_input_passes": 12,
+        "bound_verifications": 12,
+        "directory_queries": 2
+      },
+      "dsh": {
+        "total_tokens_median": 321339.0,
+        "uncached_input_median": 8171.0,
+        "primary_requests_median": 30.0,
+        "all_requests_median": 30.0,
+        "passed": 2,
+        "correct_artifacts": 12,
+        "protected_input_passes": 12,
+        "bound_verifications": 0,
+        "directory_queries": 0
+      }
+    }
+  }
+}

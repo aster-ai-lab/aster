@@ -1,0 +1,122 @@
+[
+  {
+    "presentation": "names-and-signatures",
+    "trial": "1-release",
+    "provider_primary_tokens": 30267,
+    "acp_prompt_total_tokens": 30267,
+    "lookup_tokens": 0,
+    "primary_difference": 0,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "names-and-signatures",
+    "trial": "1-candidate",
+    "provider_primary_tokens": 22224,
+    "acp_prompt_total_tokens": 18000,
+    "lookup_tokens": 4224,
+    "primary_difference": 4224,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "names-and-signatures",
+    "trial": "2-candidate",
+    "provider_primary_tokens": 22242,
+    "acp_prompt_total_tokens": 18006,
+    "lookup_tokens": 4236,
+    "primary_difference": 4236,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "names-and-signatures",
+    "trial": "2-release",
+    "provider_primary_tokens": 30267,
+    "acp_prompt_total_tokens": 30267,
+    "lookup_tokens": 0,
+    "primary_difference": 0,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "native-required-root",
+    "trial": "1-release",
+    "provider_primary_tokens": 30262,
+    "acp_prompt_total_tokens": 30262,
+    "lookup_tokens": 0,
+    "primary_difference": 0,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "native-required-root",
+    "trial": "1-candidate",
+    "provider_primary_tokens": 30332,
+    "acp_prompt_total_tokens": 24502,
+    "lookup_tokens": 5830,
+    "primary_difference": 5830,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "native-required-root",
+    "trial": "2-candidate",
+    "provider_primary_tokens": 30273,
+    "acp_prompt_total_tokens": 24443,
+    "lookup_tokens": 5830,
+    "primary_difference": 5830,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "native-required-root",
+    "trial": "2-release",
+    "provider_primary_tokens": 30255,
+    "acp_prompt_total_tokens": 30255,
+    "lookup_tokens": 0,
+    "primary_difference": 0,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "native-required-enum",
+    "trial": "1-release",
+    "provider_primary_tokens": 30245,
+    "acp_prompt_total_tokens": 30245,
+    "lookup_tokens": 0,
+    "primary_difference": 0,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "native-required-enum",
+    "trial": "1-candidate",
+    "provider_primary_tokens": 28273,
+    "acp_prompt_total_tokens": 22848,
+    "lookup_tokens": 5425,
+    "primary_difference": 5425,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "native-required-enum",
+    "trial": "2-candidate",
+    "provider_primary_tokens": 28273,
+    "acp_prompt_total_tokens": 22848,
+    "lookup_tokens": 5425,
+    "primary_difference": 5425,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 4
+  },
+  {
+    "presentation": "native-required-enum",
+    "trial": "2-release",
+    "provider_primary_tokens": 30296,
+    "acp_prompt_total_tokens": 30296,
+    "lookup_tokens": 0,
+    "primary_difference": 0,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4
+  }
+]

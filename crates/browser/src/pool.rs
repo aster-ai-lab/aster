@@ -1,7 +1,7 @@
 //! Browser provider lifecycle for Chrome and Lightpanda.
 
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 #[cfg(feature = "lightpanda")]
 use std::time::Duration;
 
@@ -10,7 +10,9 @@ use futures::StreamExt;
 use tokio::sync::{Mutex, Semaphore};
 use tracing::{debug, warn};
 
-use aster_use_core::{UseError, UseResult};
+pub use crate::cdp::LocalCdpEndpoint;
+pub(crate) use crate::cdp::browser_error;
+use aster_use_core::UseResult;
 
 /// Selects which headless browser backend the pool uses.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -34,6 +36,9 @@ pub enum BrowserProvider {
     ManagedChrome,
     /// Use this exact Chrome-compatible executable.
     ChromeExecutable(std::path::PathBuf),
+    /// Attach to a browser the user started with local remote debugging.
+    /// Aster never owns or closes this browser process.
+    ExistingCdp(LocalCdpEndpoint),
 
     /// Use an already installed or previously managed Lightpanda executable.
     #[cfg(feature = "lightpanda")]
@@ -47,11 +52,16 @@ pub enum BrowserProvider {
 }
 
 impl BrowserProvider {
+    fn is_attached(&self) -> bool {
+        matches!(self, Self::ExistingCdp(_))
+    }
+
     pub fn backend(&self) -> BrowserBackend {
         match self {
-            Self::DiscoveredChrome | Self::ManagedChrome | Self::ChromeExecutable(_) => {
-                BrowserBackend::Chrome
-            }
+            Self::DiscoveredChrome
+            | Self::ManagedChrome
+            | Self::ChromeExecutable(_)
+            | Self::ExistingCdp(_) => BrowserBackend::Chrome,
             #[cfg(feature = "lightpanda")]
             Self::DiscoveredLightpanda
             | Self::ManagedLightpanda
@@ -125,6 +135,17 @@ impl BrowserPool {
         }
     }
 
+    pub(crate) fn config_provider_is_attached(&self) -> bool {
+        self.config.provider.is_attached()
+    }
+
+    pub(crate) fn attached_cdp_endpoint(&self) -> Option<&LocalCdpEndpoint> {
+        match &self.config.provider {
+            BrowserProvider::ExistingCdp(endpoint) => Some(endpoint),
+            _ => None,
+        }
+    }
+
     /// Returns the tab semaphore for acquiring permits before opening tabs.
     pub(crate) fn tab_semaphore(&self) -> &Arc<Semaphore> {
         &self.tab_semaphore
@@ -180,8 +201,35 @@ impl BrowserPool {
         if self.config.provider.backend() == BrowserBackend::Lightpanda {
             return self.acquire_lightpanda().await;
         }
+        if let BrowserProvider::ExistingCdp(endpoint) = &self.config.provider {
+            return self.acquire_existing_cdp(endpoint).await;
+        }
 
         self.acquire_chrome().await
+    }
+
+    async fn acquire_existing_cdp(&self, endpoint: &LocalCdpEndpoint) -> UseResult<Arc<Browser>> {
+        let mut runtime = self.runtime.lock().await;
+        if self.closed.load(Ordering::Acquire) {
+            return Err(browser_error("Browser pool has already been shut down"));
+        }
+        if let Some(browser) = &runtime.browser {
+            return Ok(Arc::clone(browser));
+        }
+        let websocket = endpoint.websocket_url().await?;
+        let (browser, mut handler) = Browser::connect(&websocket).await.map_err(|error| {
+            browser_error(format!("Failed to connect to the local browser: {error}"))
+        })?;
+        tokio::spawn(async move {
+            while let Some(event) = handler.next().await {
+                if let Err(error) = event {
+                    warn!("Connected browser CDP handler error: {error}");
+                }
+            }
+        });
+        let browser = Arc::new(browser);
+        runtime.browser = Some(Arc::clone(&browser));
+        Ok(browser)
     }
 
     async fn acquire_chrome(&self) -> UseResult<Arc<Browser>> {
@@ -208,11 +256,16 @@ impl BrowserPool {
             BrowserProvider::DiscoveredChrome => crate::chrome::resolve_chrome()?,
             BrowserProvider::ManagedChrome => crate::chrome::ensure_chrome().await?,
             BrowserProvider::ChromeExecutable(path) => path.clone(),
+            BrowserProvider::ExistingCdp(_) => {
+                return Err(browser_error(
+                    "An existing CDP browser must use its connection path",
+                ));
+            }
             #[cfg(feature = "lightpanda")]
             _ => {
                 return Err(browser_error(
                     "The selected provider is not Chrome-compatible.",
-                ))
+                ));
             }
         };
         debug!("Using Chrome at: {}", chrome_path.display());
@@ -350,6 +403,12 @@ impl BrowserPool {
             let mut guard = self.runtime.lock().await;
             std::mem::take(&mut *guard)
         };
+        if self.config.provider.is_attached() {
+            // Dropping the connection releases only this Aster client. Sending
+            // Browser.close or killing a child would terminate the user's browser.
+            drop(runtime);
+            return;
+        }
         let profile_dir = self.chrome_profile_dir.clone();
         let cleanup = tokio::spawn(async move {
             let browser_reaped = crate::cleanup::close_and_reap_browser(runtime.browser).await;
@@ -405,10 +464,6 @@ async fn wait_for_cdp_ready(host: &str, port: u16, timeout: Duration) -> UseResu
     }
 }
 
-pub(crate) fn browser_error(message: impl Into<String>) -> UseError {
-    UseError::new("use.browser.provider_failed", message)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -418,6 +473,18 @@ mod tests {
         let config = BrowserPoolConfig::default();
         assert_eq!(config.provider, BrowserProvider::DiscoveredChrome);
         assert_eq!(config.provider.backend(), BrowserBackend::Chrome);
+    }
+
+    #[tokio::test]
+    async fn attached_browser_shutdown_never_takes_browser_ownership() {
+        let endpoint = LocalCdpEndpoint::parse("http://127.0.0.1:9").unwrap();
+        let pool = BrowserPool::new(BrowserPoolConfig {
+            provider: BrowserProvider::ExistingCdp(endpoint),
+            ..BrowserPoolConfig::default()
+        });
+        pool.shutdown().await;
+        assert!(pool.tab_semaphore().try_acquire().is_err());
+        assert!(pool.warm_up().await.is_err());
     }
 
     #[test]

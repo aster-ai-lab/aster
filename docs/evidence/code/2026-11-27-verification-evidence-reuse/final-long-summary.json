@@ -1,0 +1,38 @@
+{
+  "candidate": {
+    "trials": 2,
+    "strict_passes": 0,
+    "semantic_revisions_passed": 12,
+    "total_tokens_median": 170350.0,
+    "cache_miss_tokens_median": 17726.5,
+    "main_requests_median": 20.0,
+    "provider_receipts": 64
+  },
+  "release": {
+    "trials": 2,
+    "strict_passes": 0,
+    "semantic_revisions_passed": 12,
+    "total_tokens_median": 209768.0,
+    "cache_miss_tokens_median": 18903.0,
+    "main_requests_median": 23.5,
+    "provider_receipts": 71
+  },
+  "dsh": {
+    "trials": 2,
+    "strict_passes": 2,
+    "semantic_revisions_passed": 12,
+    "total_tokens_median": 252143.5,
+    "cache_miss_tokens_median": 7006.0,
+    "main_requests_median": 24.5,
+    "provider_receipts": 49
+  },
+  "adaptive": {
+    "trials": 1,
+    "strict_passes": 0,
+    "semantic_revisions_passed": 6,
+    "total_tokens_median": 209538,
+    "cache_miss_tokens_median": 19539,
+    "main_requests_median": 20,
+    "provider_receipts": 32
+  }
+}

@@ -147,6 +147,7 @@ Aster Search 不维护私有网页索引。没有显式选择、也没有 ACL �
 | HTTP/RSS | `brave` | Brave Search | 仅无头功能关闭的构建 |
 | 浏览器 | `g` | Google | 显式 |
 | 浏览器 | `baidu` | Baidu | 显式 |
+| 浏览器 | `quark` | 本机已登录夸克，通过回环 CDP | 登录探测成功且未指定引擎时优先，或显式 |
 | HTTP/RSS | `sogou` | Sogou | 显式 |
 | HTTP/RSS | `360` | 360 搜索 | 显式 |
 | HTTP/RSS | `bing_cn` | Bing 中国 RSS | 显式 |
@@ -157,6 +158,8 @@ Aster Search 不维护私有网页索引。没有显式选择、也没有 ACL �
 | 原生 API | `firecrawl` | Firecrawl Search | 显式，计费 |
 | 原生 API | `doubao` | 火山引擎豆包搜索 | 显式，计费 |
 | 原生 API | `deepseek` | DeepSeek Search | 显式，计费 |
+
+本机夸克搜索使用 `--engines quark --browser quark`，默认连接 `127.0.0.1:9222`。搜索通过现有夸克页面的 CDP 后台资源读取完成，不启动应用、不新建窗口或标签页，也不导航或关闭现有页面；没有可用会话时回退原搜索级联。请求和 ACL 都未指定引擎时，Aster 以同样的无界面方式探测登录态；成功则优先使用夸克。显式引擎和非夸克浏览器后端不会被覆盖。启动参数和模型账号的 `import_accounts = ["quark"]` 配置见 [Aster 用户指南](../code/manual/USER_GUIDE.md#logged-in-quark-browser-account)。
 
 `bing_cn` 请求 `www.bing.com/search`，并带上 `format=rss`、`setlang=zh-CN` 和 `mkt=zh-CN`。不使用 `cn.bing.com`：该主机会把部分客户端从 `/search` 重定向到首页，随后返回 HTML。
 

@@ -22,6 +22,8 @@ pub mod local_policy;
 pub mod metering;
 pub mod model_discovery;
 pub mod openai;
+#[cfg(feature = "quark-account")]
+pub mod quark_account;
 pub mod structured;
 #[cfg(test)]
 mod structured_repair_soak;
@@ -39,7 +41,7 @@ pub use admission::{
 };
 pub use anthropic::AnthropicClient;
 pub use codex_login::CodexLoginClient;
-pub(crate) use error::non_retryable_llm_error_message;
+pub(crate) use error::{context_overflow_llm_error_message, non_retryable_llm_error_message};
 pub use error::{NonRetryableLlmError, RetryableProviderFailure};
 pub use factory::{create_client_with_config, LlmConfig};
 pub use gemini::{GeminiError, GeminiState};
@@ -48,7 +50,9 @@ pub use http::{
     HttpClientError, HttpMetricsCallback, HttpMetricsRecord, HttpResponse, StreamingHttpResponse,
 };
 pub use openai::OpenAiClient;
-pub(crate) use text_tool_calls::recover_text_tool_calls;
+#[cfg(feature = "quark-account")]
+pub use quark_account::QuarkAccountClient;
+pub(crate) use text_tool_calls::{has_unquoted_tool_call, recover_text_tool_calls};
 pub use text_tool_calls::{recover_leaked_tool_calls, strip_leaked_tool_protocol};
 pub(crate) use token_estimation::{
     estimate_message_tokens, estimate_prompt_tokens, estimate_tool_result_contents_tokens,
@@ -80,6 +84,11 @@ pub struct GatewayDecisionAuth {
 /// LLM client trait
 #[async_trait]
 pub trait LlmClient: Send + Sync {
+    /// Whether this transport supports the compact catalog and its exact-definition follow-up.
+    fn supports_deferred_tool_catalog(&self) -> bool {
+        false
+    }
+
     /// Opaque same-original fact governance. Unknown managed decorators refuse
     /// by default; a boolean or self-described label is not provenance.
     fn bind_fact_model_governance(

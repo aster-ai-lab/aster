@@ -12,6 +12,7 @@
 pub(crate) mod artifact_view;
 mod artifacts;
 pub(crate) mod builtin;
+pub(crate) mod deferred_catalog;
 mod immutable_content;
 mod invocation;
 mod pagination;

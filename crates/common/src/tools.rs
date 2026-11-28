@@ -21,16 +21,40 @@ pub struct ToolResult {
 
 /// Resolve a path relative to workspace, ensuring it's within bounds
 pub fn resolve_path(workspace: &Path, path: &str) -> Result<PathBuf, String> {
+    resolve_read_path(workspace, path).map_err(|error| error.to_string())
+}
+
+/// A read path could not be resolved or resolved outside the workspace.
+#[derive(Debug, thiserror::Error)]
+pub enum ResolveReadPathError {
+    #[error("Failed to resolve path: {0}")]
+    Canonicalize(#[source] std::io::Error),
+    #[error("Path escapes workspace: {0}")]
+    OutsideWorkspace(String),
+}
+
+impl ResolveReadPathError {
+    /// Whether the OS found no file at the requested address.
+    pub fn is_not_found(&self) -> bool {
+        matches!(self, Self::Canonicalize(error) if error.kind() == std::io::ErrorKind::NotFound)
+    }
+}
+
+/// Resolve an existing workspace path without erasing the I/O error kind.
+///
+/// The workspace root must already be canonical. A path resolving outside it
+/// is rejected, regardless of how the caller spelled the path.
+pub fn resolve_read_path(workspace: &Path, path: &str) -> Result<PathBuf, ResolveReadPathError> {
     let resolved = workspace.join(path);
 
     // Canonicalize to resolve .. and symlinks
     let canonical = resolved
         .canonicalize()
-        .map_err(|e| format!("Failed to resolve path: {}", e))?;
+        .map_err(ResolveReadPathError::Canonicalize)?;
 
     // Ensure the path is within workspace
     if !canonical.starts_with(workspace) {
-        return Err(format!("Path escapes workspace: {}", path));
+        return Err(ResolveReadPathError::OutsideWorkspace(path.to_owned()));
     }
 
     Ok(canonical)

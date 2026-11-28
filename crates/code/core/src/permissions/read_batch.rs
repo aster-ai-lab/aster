@@ -33,6 +33,10 @@ pub(super) fn paths<'a>(
     Ok(Some(paths))
 }
 
+pub(crate) fn is_malformed(tool_name: &str, args: &Value) -> bool {
+    paths(tool_name, args).is_err()
+}
+
 pub(super) fn check(
     tool_name: &str,
     args: &Value,

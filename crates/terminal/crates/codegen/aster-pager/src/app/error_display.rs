@@ -22,6 +22,7 @@ pub(crate) enum WireErrorType {
     MaxTokensTruncation,
     ToolEffectUnresolved,
     ToolProgressBlocked,
+    PriorVerificationPending,
     Other,
 }
 
@@ -35,6 +36,7 @@ impl WireErrorType {
         match s {
             "tool_effect_unresolved" => Self::ToolEffectUnresolved,
             "run.tool_refusal_cycle" | "run.tool_state_cycle" => Self::ToolProgressBlocked,
+            "prior_verification_pending" => Self::PriorVerificationPending,
             "auth_transient" => Self::AuthTransient,
             "legacy_auth" => Self::LegacyAuth,
             s if s == aster_shell::extensions::notification::CONTEXT_LENGTH_ERROR_TYPE => {

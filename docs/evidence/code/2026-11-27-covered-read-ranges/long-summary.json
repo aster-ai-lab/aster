@@ -1,0 +1,155 @@
+{
+  "runs": {
+    "candidate": [
+      {
+        "run": "long-a",
+        "tool_calls": {
+          "read": 6,
+          "write": 6
+        },
+        "strict_pass": true,
+        "api_requests": 24,
+        "native_batch_reads": 6,
+        "memory_calls": 6,
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 6,
+        "prompt_tokens": 141995,
+        "completion_tokens": 3697,
+        "total_tokens": 145692,
+        "prompt_cache_hit_tokens": 127232,
+        "prompt_cache_miss_tokens": 14763
+      },
+      {
+        "run": "long-b",
+        "tool_calls": {
+          "read": 26,
+          "ls": 1,
+          "write": 6
+        },
+        "strict_pass": false,
+        "api_requests": 28,
+        "native_batch_reads": 0,
+        "memory_calls": 6,
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 6,
+        "prompt_tokens": 176884,
+        "completion_tokens": 4860,
+        "total_tokens": 181744,
+        "prompt_cache_hit_tokens": 163198,
+        "prompt_cache_miss_tokens": 13686
+      }
+    ],
+    "release": [
+      {
+        "run": "long-a",
+        "tool_calls": {
+          "read": 26,
+          "ls": 1,
+          "write": 5,
+          "edit": 1
+        },
+        "strict_pass": false,
+        "api_requests": 28,
+        "native_batch_reads": 0,
+        "memory_calls": 6,
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 6,
+        "prompt_tokens": 174601,
+        "completion_tokens": 4982,
+        "total_tokens": 179583,
+        "prompt_cache_hit_tokens": 161022,
+        "prompt_cache_miss_tokens": 13579
+      },
+      {
+        "run": "long-b",
+        "tool_calls": {
+          "read": 25,
+          "ls": 1,
+          "write": 6
+        },
+        "strict_pass": false,
+        "api_requests": 27,
+        "native_batch_reads": 0,
+        "memory_calls": 6,
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 6,
+        "prompt_tokens": 167909,
+        "completion_tokens": 4435,
+        "total_tokens": 172344,
+        "prompt_cache_hit_tokens": 151294,
+        "prompt_cache_miss_tokens": 16615
+      }
+    ],
+    "dsh": [
+      {
+        "run": "long-a",
+        "tool_calls": {
+          "read": 31,
+          "write": 6
+        },
+        "strict_pass": true,
+        "api_requests": 25,
+        "native_batch_reads": 0,
+        "memory_calls": 0,
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 0,
+        "prompt_tokens": 254169,
+        "completion_tokens": 3683,
+        "total_tokens": 257852,
+        "prompt_cache_hit_tokens": 246272,
+        "prompt_cache_miss_tokens": 7897
+      },
+      {
+        "run": "long-b",
+        "tool_calls": {
+          "read": 30,
+          "write": 6
+        },
+        "strict_pass": true,
+        "api_requests": 24,
+        "native_batch_reads": 0,
+        "memory_calls": 0,
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 0,
+        "prompt_tokens": 241785,
+        "completion_tokens": 3353,
+        "total_tokens": 245138,
+        "prompt_cache_hit_tokens": 233856,
+        "prompt_cache_miss_tokens": 7929
+      }
+    ]
+  },
+  "medians": {
+    "candidate": {
+      "total_tokens": 163718.0,
+      "prompt_tokens": 159439.5,
+      "completion_tokens": 4278.5,
+      "prompt_cache_hit_tokens": 145215.0,
+      "prompt_cache_miss_tokens": 14224.5
+    },
+    "release": {
+      "total_tokens": 175963.5,
+      "prompt_tokens": 171255.0,
+      "completion_tokens": 4708.5,
+      "prompt_cache_hit_tokens": 156158.0,
+      "prompt_cache_miss_tokens": 15097.0
+    },
+    "dsh": {
+      "total_tokens": 251495.0,
+      "prompt_tokens": 247977.0,
+      "completion_tokens": 3518.0,
+      "prompt_cache_hit_tokens": 240064.0,
+      "prompt_cache_miss_tokens": 7913.0
+    }
+  },
+  "change_percent": {
+    "relative_to_DSH": -34.90208552853934,
+    "relative_to_reference": -6.959113679825646
+  }
+}

@@ -544,13 +544,11 @@ impl NativeOfficeCollaborationStore {
                     apply: None,
                 })
             }
-            Message::Sync(SyncMessage::SyncStep2(update)) => {
-                self.handle_sync_update(
-                    update,
-                    mutation,
-                    NativeOfficeCollaborationSyncMessageKind::SyncStep2,
-                )
-            }
+            Message::Sync(SyncMessage::SyncStep2(update)) => self.handle_sync_update(
+                update,
+                mutation,
+                NativeOfficeCollaborationSyncMessageKind::SyncStep2,
+            ),
             Message::Sync(SyncMessage::Update(update)) => self.handle_sync_update(
                 update,
                 mutation,

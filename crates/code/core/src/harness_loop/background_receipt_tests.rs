@@ -9,7 +9,10 @@ fn observed(bytes: &[u8], mode: u32) -> ToolEffectObservationV1 {
         before: None,
         after: ToolFileIdentityV1 {
             kind: ToolFileKind::File,
-            content_digest: Some(format!("sha256:{}", sha256::digest(bytes))),
+            content_digest: Some(format!(
+                "sha256:{}",
+                crate::content_digest::sha256_hex(bytes)
+            )),
             mode: Some(mode),
         },
     }])
@@ -30,7 +33,10 @@ fn background_fact_projection_binds_real_bytes_mode_and_exact_fact_key_once() {
     assert_eq!(ledger.records.len(), 1);
     assert_eq!(ledger.applied_background_receipts.len(), 2);
     assert!(ledger.applied_tool_receipts.is_empty());
-    assert!(ledger.content_digest_matches("background.txt", &sha256::digest(b"child wrote bytes")));
+    assert!(ledger.content_digest_matches(
+        "background.txt",
+        &crate::content_digest::sha256_hex(b"child wrote bytes")
+    ));
     ledger.observe_background_receipt(
         "background:chmod:exited",
         &observed(b"child wrote bytes", 0o755),
@@ -98,8 +104,10 @@ fn background_log_can_reproject_after_conservative_checkpoint_restore() {
         "background:child:exited",
         &observed(b"actual committed bytes", 0o644),
     );
-    assert!(restored
-        .content_digest_matches("background.txt", &sha256::digest(b"actual committed bytes")));
+    assert!(restored.content_digest_matches(
+        "background.txt",
+        &crate::content_digest::sha256_hex(b"actual committed bytes")
+    ));
     assert_eq!(restored.records.len(), 1);
 }
 
@@ -132,7 +140,9 @@ fn full_log_replay_preserves_later_foreground_after_an_unprojected_background() 
         ledger.observe_background_receipt("background:older:exited", &background);
         ledger.observe_tool_receipt("write", &foreground);
         assert_eq!(ledger.digest(), expected);
-        assert!(ledger
-            .content_digest_matches("background.txt", &sha256::digest(b"newer foreground bytes")));
+        assert!(ledger.content_digest_matches(
+            "background.txt",
+            &crate::content_digest::sha256_hex(b"newer foreground bytes")
+        ));
     }
 }

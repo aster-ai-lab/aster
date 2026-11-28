@@ -32,6 +32,7 @@ const SIMPLE_MODE_DEFAULT: bool = true;
 /// This matches the previous on-disk default.
 const VIM_MODE_DEFAULT: bool = false;
 const SHOW_THINKING_BLOCKS_DEFAULT: bool = true;
+const MAX_THOUGHTS_WIDTH_DEFAULT: u16 = 120;
 const GROUP_TOOL_VERBS_DEFAULT: bool = true;
 /// Rollout flag; while it is off, edit blocks render as the legacy expanded diffs.
 const COLLAPSED_EDIT_BLOCKS_DEFAULT: bool = false;
@@ -306,6 +307,21 @@ pub fn load_show_thinking_blocks() -> bool {
 pub fn set_show_thinking_blocks(enabled: bool) {
     SHOW_THINKING_BLOCKS_CURRENT.with(|c| c.set(enabled));
     SHOW_THINKING_BLOCKS_LOADED.with(|l| l.set(true));
+}
+
+// -- Maximum thinking width ---------------------------------------------------
+
+thread_local! {
+    static MAX_THOUGHTS_WIDTH_CURRENT: Cell<u16> = const { Cell::new(MAX_THOUGHTS_WIDTH_DEFAULT) };
+}
+
+/// Render-path mirror of `UiConfig::max_thoughts_width`, primed at startup.
+pub fn load_max_thoughts_width() -> u16 {
+    MAX_THOUGHTS_WIDTH_CURRENT.with(Cell::get)
+}
+
+pub fn set_max_thoughts_width(width: u16) {
+    MAX_THOUGHTS_WIDTH_CURRENT.with(|current| current.set(width));
 }
 
 // -- Group tool verbs ---------------------------------------------------------
@@ -636,6 +652,7 @@ pub fn prime(ui: &UiConfig) {
             .unwrap_or(FOLLOW_UP_BEHAVIOR_DEFAULT),
     );
     set_simple_mode(ui.simple_mode.unwrap_or(SIMPLE_MODE_DEFAULT));
+    set_max_thoughts_width(ui.max_thoughts_width);
     set_keep_text_selection(text_selection_from_ui(ui));
     // These keys live in the layered config, not the `UiConfig` arg; seed them so the first frame skips disk
     // `load_*` is a no-op when already set (e.g. by the startup resolve).
@@ -752,6 +769,7 @@ mod tests {
             ui.show_thinking_blocks
                 .unwrap_or(SHOW_THINKING_BLOCKS_DEFAULT)
         );
+        assert_eq!(MAX_THOUGHTS_WIDTH_DEFAULT, ui.max_thoughts_width);
         assert_eq!(
             GROUP_TOOL_VERBS_DEFAULT,
             ui.group_tool_verbs.unwrap_or(GROUP_TOOL_VERBS_DEFAULT)
@@ -1096,6 +1114,7 @@ mod tests {
         std::thread::spawn(|| {
             let ui = UiConfig {
                 compact_mode: true,
+                max_thoughts_width: 50,
                 show_timestamps: Some(false),
                 simple_mode: Some(false),
                 keep_text_selection: Some("hold".into()),
@@ -1105,6 +1124,7 @@ mod tests {
             assert!(load());
             assert!(!load_timestamps());
             assert!(!load_simple_mode());
+            assert_eq!(load_max_thoughts_width(), 50);
             assert_eq!(load_keep_text_selection(), TextSelection::Hold);
         })
         .join()

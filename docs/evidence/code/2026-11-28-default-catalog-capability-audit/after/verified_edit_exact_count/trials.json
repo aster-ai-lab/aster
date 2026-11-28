@@ -1,0 +1,462 @@
+[
+  {
+    "label": "1-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 7349,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1,
+          "edit:completed": 1,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          },
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5396,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 980,
+    "fixtures_unchanged": false,
+    "task_pass": false,
+    "aster_receipts": 4,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 8,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 46293,
+      "completion_tokens": 539,
+      "total_tokens": 46832,
+      "prompt_cache_hit_tokens": 38528,
+      "prompt_cache_miss_tokens": 7765
+    },
+    "tool_calls": {
+      "read": 2,
+      "edit": 1,
+      "bash": 1
+    },
+    "primary_requests": 6,
+    "tool_catalog_sizes": [
+      26,
+      26,
+      26,
+      26,
+      26,
+      26
+    ],
+    "compact_requests": 0,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 29761,
+        "outputTokens": 241,
+        "totalTokens": 30002,
+        "cachedReadTokens": 22912,
+        "cacheCreationTokens": 0,
+        "modelCalls": 4,
+        "costIsPartial": true,
+        "numTurns": 4,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 15414,
+        "outputTokens": 69,
+        "totalTokens": 15483,
+        "cachedReadTokens": 14976,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [
+      [
+        "read",
+        "succeeded"
+      ],
+      [
+        "edit",
+        "succeeded"
+      ],
+      [
+        "bash",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ]
+    ],
+    "required_tool_succeeded": true,
+    "verified_mutations": [
+      "046e67e0a546825245cf6193a26d9c5b7789a1d49b7cf75b079c7299c5737b67"
+    ],
+    "edit_bytes_match": true,
+    "qualified_pass": true
+  },
+  {
+    "label": "1-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 6390,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1,
+          "edit:completed": 1,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          },
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5129,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 224,
+    "fixtures_unchanged": false,
+    "task_pass": false,
+    "aster_receipts": 4,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 8,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 37897,
+      "completion_tokens": 542,
+      "total_tokens": 38439,
+      "prompt_cache_hit_tokens": 32000,
+      "prompt_cache_miss_tokens": 5897
+    },
+    "tool_calls": {
+      "read": 2,
+      "edit": 1,
+      "bash": 1
+    },
+    "primary_requests": 6,
+    "tool_catalog_sizes": [
+      27,
+      27,
+      27,
+      27,
+      27,
+      27
+    ],
+    "compact_requests": 6,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 24161,
+        "outputTokens": 241,
+        "totalTokens": 24402,
+        "cachedReadTokens": 19200,
+        "cacheCreationTokens": 0,
+        "modelCalls": 4,
+        "costIsPartial": true,
+        "numTurns": 4,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 12614,
+        "outputTokens": 69,
+        "totalTokens": 12683,
+        "cachedReadTokens": 12160,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [
+      [
+        "read",
+        "succeeded"
+      ],
+      [
+        "edit",
+        "succeeded"
+      ],
+      [
+        "bash",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ]
+    ],
+    "required_tool_succeeded": true,
+    "verified_mutations": [
+      "046e67e0a546825245cf6193a26d9c5b7789a1d49b7cf75b079c7299c5737b67"
+    ],
+    "edit_bytes_match": true,
+    "qualified_pass": true
+  },
+  {
+    "label": "2-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 6498,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1,
+          "edit:completed": 1,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          },
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5160,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 254,
+    "fixtures_unchanged": false,
+    "task_pass": false,
+    "aster_receipts": 4,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 8,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 37903,
+      "completion_tokens": 542,
+      "total_tokens": 38445,
+      "prompt_cache_hit_tokens": 36224,
+      "prompt_cache_miss_tokens": 1679
+    },
+    "tool_calls": {
+      "read": 2,
+      "edit": 1,
+      "bash": 1
+    },
+    "primary_requests": 6,
+    "tool_catalog_sizes": [
+      27,
+      27,
+      27,
+      27,
+      27,
+      27
+    ],
+    "compact_requests": 6,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 24161,
+        "outputTokens": 241,
+        "totalTokens": 24402,
+        "cachedReadTokens": 23424,
+        "cacheCreationTokens": 0,
+        "modelCalls": 4,
+        "costIsPartial": true,
+        "numTurns": 4,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 12614,
+        "outputTokens": 69,
+        "totalTokens": 12683,
+        "cachedReadTokens": 12160,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [
+      [
+        "read",
+        "succeeded"
+      ],
+      [
+        "edit",
+        "succeeded"
+      ],
+      [
+        "bash",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ]
+    ],
+    "required_tool_succeeded": true,
+    "verified_mutations": [
+      "046e67e0a546825245cf6193a26d9c5b7789a1d49b7cf75b079c7299c5737b67"
+    ],
+    "edit_bytes_match": true,
+    "qualified_pass": true
+  },
+  {
+    "label": "2-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3171,
+        "stop": "end_turn",
+        "missing_markers": [
+          "workers=12"
+        ],
+        "tools": {
+          "read:completed": 1,
+          "execute:failed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": false
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 4721,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 239,
+    "fixtures_unchanged": true,
+    "task_pass": false,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 30355,
+      "completion_tokens": 686,
+      "total_tokens": 31041,
+      "prompt_cache_hit_tokens": 29312,
+      "prompt_cache_miss_tokens": 1043
+    },
+    "tool_calls": {
+      "read": 2,
+      "bash": 1
+    },
+    "primary_requests": 4,
+    "tool_catalog_sizes": [
+      26,
+      26,
+      26,
+      26
+    ],
+    "compact_requests": 0,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 14524,
+        "outputTokens": 80,
+        "totalTokens": 14604,
+        "cachedReadTokens": 14208,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 14790,
+        "outputTokens": 203,
+        "totalTokens": 14993,
+        "cachedReadTokens": 14464,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [
+      [
+        "read",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ]
+    ],
+    "required_tool_succeeded": false,
+    "verified_mutations": [],
+    "edit_bytes_match": false,
+    "qualified_pass": false
+  }
+]

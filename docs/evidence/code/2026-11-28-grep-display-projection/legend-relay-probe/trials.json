@@ -1,0 +1,221 @@
+[
+  {
+    "label": "paged-routes-reference",
+    "case": "paged-routes",
+    "arm": "reference",
+    "passed": false,
+    "stop": "end_turn",
+    "answer": null,
+    "expected": {
+      "east": {
+        "path": "config/regions/east configuration/production/service-routing-table.ini",
+        "line": 26,
+        "target": "target-107",
+        "owner": "east-27",
+        "mode": "region-7"
+      },
+      "west": {
+        "path": "config/regions/west configuration/production/service-routing-table.ini",
+        "line": 22,
+        "target": "target-906",
+        "owner": "west-26",
+        "mode": "region-6"
+      },
+      "cursor": "25"
+    },
+    "tool_args": {
+      "mode": "grep",
+      "query": "^route\\.",
+      "context": 1,
+      "limit": 25
+    },
+    "files_preserved": true,
+    "wire_equivalent": false,
+    "first_wire_equivalent": true,
+    "first_tokens": {
+      "prompt_tokens": 9403,
+      "completion_tokens": 103,
+      "total_tokens": 9506,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 8251
+    },
+    "exact_json_evidence": true,
+    "file_headers": 0,
+    "tool_bytes": 7510,
+    "raw_sha256": [
+      "c3871c1be2e89df519491f1c36ffc7a81cc129ca2a1982b1c59985146887df9e",
+      "8b93de2f9114487f567b5c86a1c0f20f06e923b23567c20f93ce545096767632"
+    ],
+    "api_requests": 3,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 19844,
+      "completion_tokens": 454,
+      "total_tokens": 20298,
+      "prompt_cache_hit_tokens": 10752,
+      "prompt_cache_miss_tokens": 9092
+    },
+    "tool_calls": {
+      "search": 1
+    },
+    "primary_requests": 2
+  },
+  {
+    "label": "paged-routes-candidate",
+    "case": "paged-routes",
+    "arm": "candidate",
+    "passed": false,
+    "stop": "end_turn",
+    "answer": null,
+    "expected": {
+      "east": {
+        "path": "config/regions/east configuration/production/service-routing-table.ini",
+        "line": 26,
+        "target": "target-107",
+        "owner": "east-27",
+        "mode": "region-7"
+      },
+      "west": {
+        "path": "config/regions/west configuration/production/service-routing-table.ini",
+        "line": 22,
+        "target": "target-906",
+        "owner": "west-26",
+        "mode": "region-6"
+      },
+      "cursor": "25"
+    },
+    "tool_args": {
+      "mode": "grep",
+      "query": "^route\\.",
+      "context": 1,
+      "limit": 25
+    },
+    "files_preserved": true,
+    "wire_equivalent": false,
+    "first_wire_equivalent": true,
+    "first_tokens": {
+      "prompt_tokens": 8311,
+      "completion_tokens": 95,
+      "total_tokens": 8406,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 7159
+    },
+    "exact_json_evidence": true,
+    "file_headers": 2,
+    "tool_bytes": 2343,
+    "raw_sha256": [
+      "c3871c1be2e89df519491f1c36ffc7a81cc129ca2a1982b1c59985146887df9e",
+      "241b1491cde4c2e2544d5ab5f6b38ebdb178e52b0c7f8632642c71bbfb6b069e"
+    ],
+    "api_requests": 3,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 17521,
+      "completion_tokens": 483,
+      "total_tokens": 18004,
+      "prompt_cache_hit_tokens": 9600,
+      "prompt_cache_miss_tokens": 7921
+    },
+    "tool_calls": {
+      "search": 1,
+      "ls": 1
+    },
+    "primary_requests": 2
+  },
+  {
+    "label": "unicode-audit-candidate",
+    "case": "unicode-audit",
+    "arm": "candidate",
+    "passed": true,
+    "stop": "end_turn",
+    "answer": {
+      "path": "manual/技术 排障/发布记录 with spaces and long descriptions/rolling-audit.txt",
+      "line": 31,
+      "checksum": "GRT-531"
+    },
+    "expected": {
+      "path": "manual/技术 排障/发布记录 with spaces and long descriptions/rolling-audit.txt",
+      "line": 31,
+      "checksum": "GRT-531"
+    },
+    "tool_args": {
+      "mode": "grep",
+      "query": "^audit event"
+    },
+    "files_preserved": true,
+    "wire_equivalent": true,
+    "first_wire_equivalent": true,
+    "first_tokens": {
+      "prompt_tokens": 7918,
+      "completion_tokens": 41,
+      "total_tokens": 7959,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 6766
+    },
+    "exact_json_evidence": true,
+    "file_headers": 1,
+    "tool_bytes": 1757,
+    "raw_sha256": [
+      "5162736a3621db5da8474c77c9a270c6d899ae40b2e232286252105d89af5a50"
+    ],
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 7918,
+      "completion_tokens": 41,
+      "total_tokens": 7959,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 6766
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "unicode-audit-reference",
+    "case": "unicode-audit",
+    "arm": "reference",
+    "passed": true,
+    "stop": "end_turn",
+    "answer": {
+      "path": "manual/技术 排障/发布记录 with spaces and long descriptions/rolling-audit.txt",
+      "line": 31,
+      "checksum": "GRT-531"
+    },
+    "expected": {
+      "path": "manual/技术 排障/发布记录 with spaces and long descriptions/rolling-audit.txt",
+      "line": 31,
+      "checksum": "GRT-531"
+    },
+    "tool_args": {
+      "mode": "grep",
+      "query": "^audit event"
+    },
+    "files_preserved": true,
+    "wire_equivalent": true,
+    "first_wire_equivalent": true,
+    "first_tokens": {
+      "prompt_tokens": 8797,
+      "completion_tokens": 41,
+      "total_tokens": 8838,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 7645
+    },
+    "exact_json_evidence": true,
+    "file_headers": 0,
+    "tool_bytes": 5447,
+    "raw_sha256": [
+      "5162736a3621db5da8474c77c9a270c6d899ae40b2e232286252105d89af5a50"
+    ],
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 8797,
+      "completion_tokens": 41,
+      "total_tokens": 8838,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 7645
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  }
+]

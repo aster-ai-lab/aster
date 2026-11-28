@@ -1915,8 +1915,7 @@ impl AppView {
         self.sharing_enabled = false;
         // Voice STT / dictation has no aster-acp backing — hide `/voice` and settings rows.
         self.apply_voice_mode_enabled(false);
-        // Plan is not an Aster entry surface: clear launch `--plan` and the nudge flag.
-        self.plan_mode = false;
+        // `/plan` is unavailable, but an explicit launch `--plan` uses ACP permissions.
         self.contextual_hints.plan_mode = false;
         self.sync_permission_mode_slash_gate();
         // Rebuild open settings so coding-data / Grok-only rows drop.

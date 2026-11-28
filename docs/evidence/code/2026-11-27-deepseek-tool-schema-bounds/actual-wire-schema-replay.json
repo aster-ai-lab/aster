@@ -1,0 +1,30 @@
+[
+  {
+    "variant": "previous_schema",
+    "request_body_model": "deepseek-flash",
+    "usage": {
+      "prompt_tokens": 7579,
+      "completion_tokens": 1,
+      "total_tokens": 7580,
+      "prompt_tokens_details": {
+        "cached_tokens": 4352
+      },
+      "prompt_cache_hit_tokens": 4352,
+      "prompt_cache_miss_tokens": 3227
+    }
+  },
+  {
+    "variant": "compact_schema",
+    "request_body_model": "deepseek-flash",
+    "usage": {
+      "prompt_tokens": 7258,
+      "completion_tokens": 1,
+      "total_tokens": 7259,
+      "prompt_tokens_details": {
+        "cached_tokens": 7040
+      },
+      "prompt_cache_hit_tokens": 7040,
+      "prompt_cache_miss_tokens": 218
+    }
+  }
+]

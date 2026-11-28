@@ -6,6 +6,7 @@ use super::*;
 fn modes_parse_exactly_and_profiles_keep_the_versioned_identity() {
     for mode in [
         ToolPresentationModeV1::Adaptive,
+        ToolPresentationModeV1::Deferred,
         ToolPresentationModeV1::Direct,
         ToolPresentationModeV1::Code,
         ToolPresentationModeV1::Disabled,
@@ -21,6 +22,6 @@ fn modes_parse_exactly_and_profiles_keep_the_versioned_identity() {
         assert!(matches!(error, ToolPresentationError::UnknownMode { .. }));
         assert!(error
             .to_string()
-            .contains("[adaptive, direct, code, disabled]"));
+            .contains("[adaptive, deferred, direct, code, disabled]"));
     }
 }

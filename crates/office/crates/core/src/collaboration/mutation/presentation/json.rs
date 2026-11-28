@@ -176,26 +176,26 @@ pub(super) fn assert_compatible_element(
             (Some(before), None, Some(current)) if !json_equal(before, current) => {
                 return Err(presentation_match_conflict(format!(
                     "The {field_label} changed before it could be removed."
-                )))
+                )));
             }
             (_, None, _) => {}
             (None, Some(after), Some(current)) if !json_equal(after, current) => {
                 return Err(presentation_match_conflict(format!(
                     "The {field_label} was added concurrently with a different value."
-                )))
+                )));
             }
             (None, Some(_), _) => {}
             (Some(_), Some(_), None) => {
                 return Err(presentation_match_conflict(format!(
                     "The {field_label} was removed before this change could be applied."
-                )))
+                )));
             }
             (Some(before), Some(after), Some(current))
                 if !json_equal(before, current) && !json_equal(after, current) =>
             {
                 return Err(presentation_match_conflict(format!(
                     "The {field_label} changed concurrently."
-                )))
+                )));
             }
             _ => {}
         }

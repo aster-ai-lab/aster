@@ -167,6 +167,7 @@ not met the structural requirement.
 | HTTP/RSS | `brave` | Brave Search | No-headless build only |
 | Browser | `g` | Google | Explicit |
 | Browser | `baidu` | Baidu | Explicit |
+| Browser | `quark` | Logged-in local Quark over loopback CDP | Preferred after a successful login probe with no engine selection, or explicit |
 | HTTP/RSS | `sogou` | Sogou | Explicit |
 | HTTP/RSS | `360` | 360 Search | Explicit |
 | HTTP/RSS | `bing_cn` | Bing China RSS | Explicit |
@@ -177,6 +178,8 @@ not met the structural requirement.
 | Native API | `firecrawl` | Firecrawl Search | Explicit, billed |
 | Native API | `doubao` | Volcengine Doubao Search | Explicit, billed |
 | Native API | `deepseek` | DeepSeek Search | Explicit, billed |
+
+Select the local account browser with `--engines quark --browser quark`; its default CDP origin is `127.0.0.1:9222`. Search reads resources in the background through an existing Quark page's CDP session: it never starts the application, creates a window or tab, navigates or closes that page. With no request or ACL engine selection, a successful no-UI login probe puts Quark first; an unavailable session preserves the ordinary cascade. Explicit engines and a non-Quark browser backend are never overridden. See the [Aster user guide](../code/manual/USER_GUIDE.md#logged-in-quark-browser-account) for the launch flags and the separate `import_accounts = ["quark"]` model opt-in.
 
 `bing_cn` requests `www.bing.com/search` with `format=rss`, `setlang=zh-CN`,
 and `mkt=zh-CN`. It does not use `cn.bing.com`: that host redirects some

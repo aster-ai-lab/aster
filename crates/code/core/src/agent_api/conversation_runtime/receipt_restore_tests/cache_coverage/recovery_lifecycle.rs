@@ -24,7 +24,7 @@ fn negative_facts(fixture: &CacheCoverageFixture) -> Vec<aster_effect::Fact> {
 fn assert_actual_cached_bytes(fixture: &CacheCoverageFixture) {
     let bytes = std::fs::read(fixture.workspace.path().join("cached.txt")).unwrap();
     assert_eq!(bytes, b"actual cached bytes");
-    let digest = format!("sha256:{}", sha256::digest(&bytes));
+    let digest = format!("sha256:{}", crate::content_digest::sha256_hex(&bytes));
     assert_eq!(
         fixture.written.effects.changes[0]
             .after

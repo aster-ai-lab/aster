@@ -1,0 +1,28 @@
+[
+  {
+    "arm": "release",
+    "usage": {
+      "prompt_tokens": 558,
+      "completion_tokens": 1,
+      "total_tokens": 559,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 174
+    }
+  },
+  {
+    "arm": "candidate",
+    "usage": {
+      "prompt_tokens": 535,
+      "completion_tokens": 1,
+      "total_tokens": 536,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 151
+    }
+  }
+]

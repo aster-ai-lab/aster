@@ -320,7 +320,7 @@ fn read_slide_deck(
             _ => {
                 return Err(invalid_shared_presentation(
                     "The shared Presentation slide order contains a non-string identity.",
-                ))
+                ));
             }
         };
         validate_presentation_identifier(&id, "slide", true)?;
@@ -356,13 +356,13 @@ fn read_container(
             return Err(invalid_shared_presentation(format!(
                 "The shared Presentation {} '{container_id}' is not a typed map.",
                 container_kind.as_str()
-            )))
+            )));
         }
         None => {
             return Err(presentation_match_conflict(format!(
                 "Presentation {} ID '{container_id}' does not exist.",
                 container_kind.as_str()
-            )))
+            )));
         }
     };
     match container.get(&transaction, "id") {
@@ -371,7 +371,7 @@ fn read_container(
             return Err(invalid_shared_presentation(format!(
                 "The shared Presentation {} identity does not match its collection key.",
                 container_kind.as_str()
-            )))
+            )));
         }
     }
     let background = match container.get(&transaction, "background") {
@@ -380,7 +380,7 @@ fn read_container(
         Some(_) => {
             return Err(invalid_shared_presentation(
                 "The shared Presentation background is not a string.",
-            ))
+            ));
         }
     };
     Ok((container, background))

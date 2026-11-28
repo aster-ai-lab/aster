@@ -1,0 +1,2 @@
+- Preview ambiguous `edit` with `dry_run`. Use replacement-count guards and re-read on conflict. For UTF-8 append (`write`), pass `expected_offset`. Use unified diffs for `patch`.
+- Start `git` with `status` and `diff`. Treat checkout with `force`, `stash`, and branch/worktree writes as high-impact.

@@ -22,7 +22,10 @@ fn exercise_patch(mut tui: LiveTui, command_verification: bool) {
     std::fs::write(&b, &original_b).unwrap();
     let first = format!("FIRST-{seed}\n");
     let single_followup = if command_verification {
-        format!("After a successful patch, read alpha.txt, then use bash exactly once to independently verify with this exact command: {}. Do not use write or edit.", verification_command(&[("alpha.txt", first.trim_end())]))
+        format!(
+            "After a successful patch, read alpha.txt, then use bash exactly once to independently verify with this exact command: {}. Do not use write or edit.",
+            verification_command(&[("alpha.txt", first.trim_end())])
+        )
     } else {
         "After a successful patch, use read on alpha.txt to independently verify its exact contents. Do not use write, edit or bash.".into()
     };
@@ -43,7 +46,13 @@ fn exercise_patch(mut tui: LiveTui, command_verification: bool) {
     let final_a = format!("FINAL-A-{seed}\n");
     let final_b = format!("FINAL-B-{seed}\n");
     let multi_followup = if command_verification {
-        format!("After a successful patch, read alpha.txt and beta.txt, then use bash exactly once to independently verify both files with this exact command: {}. Do not use write or edit.", verification_command(&[("alpha.txt", final_a.trim_end()), ("beta.txt", final_b.trim_end())]))
+        format!(
+            "After a successful patch, read alpha.txt and beta.txt, then use bash exactly once to independently verify both files with this exact command: {}. Do not use write or edit.",
+            verification_command(&[
+                ("alpha.txt", final_a.trim_end()),
+                ("beta.txt", final_b.trim_end())
+            ])
+        )
     } else {
         "After a successful patch, use read on alpha.txt and beta.txt to independently verify both exact results. Do not use write, edit or bash.".into()
     };
@@ -65,10 +74,16 @@ fn exercise_patch(mut tui: LiveTui, command_verification: bool) {
         "one patches call changes both files to their exact expected contents",
     );
 
-    let facts = request(&mut tui, "conflict", "patch", json!({"patches":[
-        {"file_path":"alpha.txt","diff":format!("@@ -1 +1 @@\n-FINAL-A-{seed}\n+SHOULD-NOT-COMMIT\n")},
-        {"file_path":"beta.txt","diff":"@@ -1 +1 @@\n-NONEXISTENT-CONTEXT\n+SHOULD-NOT-COMMIT\n"}
-    ]}), "If the patch fails, report the actual failure and read both files once to verify the failure scope. Do not retry, repair or call other tools.");
+    let facts = request(
+        &mut tui,
+        "conflict",
+        "patch",
+        json!({"patches":[
+            {"file_path":"alpha.txt","diff":format!("@@ -1 +1 @@\n-FINAL-A-{seed}\n+SHOULD-NOT-COMMIT\n")},
+            {"file_path":"beta.txt","diff":"@@ -1 +1 @@\n-NONEXISTENT-CONTEXT\n+SHOULD-NOT-COMMIT\n"}
+        ]}),
+        "If the patch fails, report the actual failure and read both files once to verify the failure scope. Do not retry, repair or call other tools.",
+    );
     assert_eq!(one(&facts, "patch")["is_error"], true);
     assert_eq!(std::fs::read(&a).unwrap(), final_a.as_bytes());
     assert_eq!(std::fs::read(&b).unwrap(), final_b.as_bytes());
@@ -150,7 +165,13 @@ fn exercise_git(case: &str, check_status: impl FnOnce(&Value)) {
     assert!(text.contains("-ORIGINAL") && text.contains(changed.trim()));
     tui.record("fixture-git-read", "the actual git tool reports the tracked modification and exact diff in a repo under this workspace's .tmp");
     let branch = format!("acceptance-{}", uuid::Uuid::new_v4());
-    let facts = request(&mut tui, "git-branch", "git", json!({"command":"branch","name":branch}), "After success, independently verify by calling git with command=branch and no name. Do not checkout, commit or call other tools.");
+    let facts = request(
+        &mut tui,
+        "git-branch",
+        "git",
+        json!({"command":"branch","name":branch}),
+        "After success, independently verify by calling git with command=branch and no name. Do not checkout, commit or call other tools.",
+    );
     let results = outputs(&facts, "git");
     assert_eq!(results.len(), 2);
     assert!(results.iter().all(|r| r["exit_code"] == 0));
@@ -185,11 +206,17 @@ fn kimi_batch_partial_failure_retains_order_identity_and_successful_items() {
     let b = format!("BATCH-B-中文-{}", uuid::Uuid::new_v4());
     std::fs::write(tui.workspace.join("batch-a.txt"), &a).unwrap();
     std::fs::write(tui.workspace.join("batch-b.txt"), &b).unwrap();
-    let facts = request(&mut tui, "batch-mixed", "batch", json!({"invocations":[
+    let facts = request(
+        &mut tui,
+        "batch-mixed",
+        "batch",
+        json!({"invocations":[
         {"id":"first","tool":"read","args":{"file_path":"batch-a.txt"}},
         {"id":"missing","tool":"read","args":{"file_path":"missing-batch.txt"}},
         {"id":"last","tool":"read","args":{"file_path":"batch-b.txt"}}
-    ],"max_concurrency":3}), "Report all three actual outcomes in input order. Do not retry or repeat any item, and do not call other tools.");
+    ],"max_concurrency":3}),
+        "Report all three actual outcomes in input order. Do not retry or repeat any item, and do not call other tools.",
+    );
     let output = one(&facts, "batch");
     let metadata = &output["metadata"];
     assert_eq!(metadata["status"], "partial_failure");
@@ -310,11 +337,17 @@ fn kimi_update_plan_replaces_the_real_checklist_and_status_projection() {
 }
 
 fn exercise_checklist(mut tui: LiveTui, restore_composer: bool, leave_overlay: bool) {
-    let facts = request(&mut tui, "checklist-first", "update_plan", json!({"plan":[
-        {"id":"row-a","step":"CHECKLIST-FIRST","status":"in_progress"},
-        {"id":"row-b","step":"CHECKLIST-SECOND","status":"pending"},
-        {"id":"row-old","step":"CHECKLIST-REMOVED","status":"pending"}
-    ]}), "This is a UI checklist fixture. Report the returned checklist result without performing the listed work or calling other tools.");
+    let facts = request(
+        &mut tui,
+        "checklist-first",
+        "update_plan",
+        json!({"plan":[
+            {"id":"row-a","step":"CHECKLIST-FIRST","status":"in_progress"},
+            {"id":"row-b","step":"CHECKLIST-SECOND","status":"pending"},
+            {"id":"row-old","step":"CHECKLIST-REMOVED","status":"pending"}
+        ]}),
+        "This is a UI checklist fixture. Report the returned checklist result without performing the listed work or calling other tools.",
+    );
     let output = one(&facts, "update_plan");
     assert_eq!(output["exit_code"], 0);
     assert!(output["text"].as_str().unwrap().contains("0/3 done"));
@@ -331,10 +364,16 @@ fn exercise_checklist(mut tui: LiveTui, restore_composer: bool, leave_overlay: b
         tui.bytes(b"\x14");
         tui.pump(150);
     }
-    let facts = request(&mut tui, "checklist-replace", "update_plan", json!({"plan":[
-        {"id":"row-b","step":"CHECKLIST-SECOND","status":"completed"},
-        {"id":"row-a","step":"CHECKLIST-FIRST","status":"cancelled"}
-    ]}), "This replaces the UI checklist fixture. Report the returned result without performing the listed work or calling other tools.");
+    let facts = request(
+        &mut tui,
+        "checklist-replace",
+        "update_plan",
+        json!({"plan":[
+            {"id":"row-b","step":"CHECKLIST-SECOND","status":"completed"},
+            {"id":"row-a","step":"CHECKLIST-FIRST","status":"cancelled"}
+        ]}),
+        "This replaces the UI checklist fixture. Report the returned result without performing the listed work or calling other tools.",
+    );
     let output = one(&facts, "update_plan");
     assert_eq!(output["exit_code"], 0);
     assert!(output["text"].as_str().unwrap().contains("1/2 done"));
@@ -388,7 +427,9 @@ fn kimi_background_start_tail_stop_terminates_the_owned_process_without_late_wri
     let mut tui = start("tool-wave-background", &[]);
     let token = format!("BG-PROOF-{}", uuid::Uuid::new_v4());
     let command = if cfg!(windows) {
-        format!("Write-Output '{token}'; Start-Sleep -Seconds 60; [IO.File]::WriteAllText('late-background.txt', 'SHOULD-NOT-EXIST')")
+        format!(
+            "Write-Output '{token}'; Start-Sleep -Seconds 60; [IO.File]::WriteAllText('late-background.txt', 'SHOULD-NOT-EXIST')"
+        )
     } else {
         format!("printf '%s\\n' '{token}'; sleep 60; printf SHOULD-NOT-EXIST > late-background.txt")
     };
@@ -397,7 +438,9 @@ fn kimi_background_start_tail_stop_terminates_the_owned_process_without_late_wri
     } else {
         "test ! -e late-background.txt && printf CANCEL-CONFIRMED"
     };
-    let prompt = format!("Call background with action='start', name='owned-job', and this exact command: {command}. Then call background with action='tail', name='owned-job', wait_for='{token}', timeout_ms=10000. Once you see that output, immediately call background action='stop' name='owned-job', then background action='tail' name='owned-job' timeout_ms=1000. Finally use bash once to independently verify cancellation with this exact command: {verification}. Report the real task identity, captured output and final state. Do not start another task, retry tools or create other files.");
+    let prompt = format!(
+        "Call background with action='start', name='owned-job', and this exact command: {command}. Then call background with action='tail', name='owned-job', wait_for='{token}', timeout_ms=10000. Once you see that output, immediately call background action='stop' name='owned-job', then background action='tail' name='owned-job' timeout_ms=1000. Finally use bash once to independently verify cancellation with this exact command: {verification}. Report the real task identity, captured output and final state. Do not start another task, retry tools or create other files."
+    );
     let facts = tui.turn(&prompt, Some(b"\r"));
     let results = outputs(&facts, "background");
     assert_eq!(results.len(), 4);
@@ -442,10 +485,16 @@ fn exercise_children(mut tui: LiveTui) {
     let b = format!("CHILD-B-中文-{}", uuid::Uuid::new_v4());
     std::fs::write(tui.workspace.join("child-a.txt"), &a).unwrap();
     std::fs::write(tui.workspace.join("child-b.txt"), &b).unwrap();
-    let facts = request(&mut tui, "task-pair", "task", json!({"tasks":[
+    let facts = request(
+        &mut tui,
+        "task-pair",
+        "task",
+        json!({"tasks":[
         {"agent":"explore","description":"ACCEPTANCE-CHILD-A","prompt":"Use read exactly once to read child-a.txt and reply with its exact contents. Do not call other tools, modify files, or read child-b.txt.","max_steps":4},
         {"agent":"explore","description":"ACCEPTANCE-CHILD-B","prompt":"Use read exactly once to read child-b.txt and reply with its exact contents. Do not call other tools, modify files, or read child-a.txt.","max_steps":4}
-    ],"allow_partial_failure":false,"timeout_ms":120000}), "Wait for both real children. Report their actual returned outputs in input order. The parent must not directly read either child file, repeat the task or call other tools.");
+    ],"allow_partial_failure":false,"timeout_ms":120000}),
+        "Wait for both real children. Report their actual returned outputs in input order. The parent must not directly read either child file, repeat the task or call other tools.",
+    );
     let output = one(&facts, "task");
     assert_eq!(output["exit_code"], 0);
     let children = output["metadata"]["results"].as_array().unwrap();
@@ -636,7 +685,9 @@ pub(super) fn request(
         serde_json::to_vec(&args).unwrap(),
     )
     .unwrap();
-    let prompt = format!("Read {file} once. Call {tool} exactly once with its exact JSON object as arguments. {followup}");
+    let prompt = format!(
+        "Read {file} once. Call {tool} exactly once with its exact JSON object as arguments. {followup}"
+    );
     let facts = tui.turn(&prompt, Some(b"\r"));
     let calls = facts
         .iter()

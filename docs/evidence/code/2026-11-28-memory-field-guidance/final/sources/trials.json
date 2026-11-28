@@ -1,0 +1,102 @@
+[
+  {
+    "case": "preference",
+    "arm": "reference",
+    "passed": true,
+    "records": [
+      {
+        "content": "在 Cedar 项目中，用户长期偏好所有示例日志的开头使用 MOSS-PRINT-13 作为标记。",
+        "memory_type": "semantic",
+        "source": "preference",
+        "evolution_kind": "preference"
+      }
+    ],
+    "proposal": "{\"items\":[{\"memory_type\":\"semantic\",\"content\":\"在 Cedar 项目中，用户长期偏好所有示例日志的开头使用 MOSS-PRINT-13 作为标记。\",\"importance\":0.95,\"confidence\":0.98,\"tags\":[\"cedar\",\"日志格式\",\"用户偏好\"],\"source\":\"preference\",\"scope\":\"user\",\"reason\":\"这是用户明确要求长期记住的个人偏好，今后生成 Cedar 示例日志时需遵循。\",\"evolution\":{\"kind\":\"preference\",\"pattern_key\":\"cedar.example_log.marker\",\"title\":\"Cedar 示例日志标记\",\"summary\":\"Cedar 项目的示例日志开头统一使用 MOSS-PRINT-13 标记。\",\"instructions\":[\"在 Cedar 项目中生成任何示例日志时，将 MOSS-PRINT-13 放在日志开头作为标记。\",\"该标记格式是用户的长期偏好，除非用户明确更改，否则持续沿用。\"]}}]}",
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 449,
+      "completion_tokens": 191,
+      "total_tokens": 640,
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 193
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "preference",
+    "arm": "candidate",
+    "passed": true,
+    "records": [
+      {
+        "content": "在 Cedar 项目中，用户长期偏好所有示例日志的开头使用 MOSS-PRINT-13 作为标记。",
+        "memory_type": "semantic",
+        "source": "preference",
+        "evolution_kind": "preference"
+      }
+    ],
+    "proposal": "{\"items\":[{\"content\":\"在 Cedar 项目中，用户长期偏好所有示例日志的开头使用 MOSS-PRINT-13 作为标记。\",\"memory_type\":\"semantic\",\"source\":\"preference\",\"importance\":0.95,\"confidence\":0.98,\"tags\":[\"cedar\",\"日志格式\",\"示例日志\",\"MOSS-PRINT-13\"],\"scope\":\"workspace\",\"reason\":\"用户明确要求长期记住该示例日志格式偏好，未来生成 Cedar 相关示例日志时需遵循。\",\"evolution\":{\"kind\":\"preference\",\"pattern_key\":\"cedar_example_log_prefix\",\"title\":\"Cedar 示例日志标记偏好\",\"summary\":\"Cedar 项目的示例日志开头统一使用 MOSS-PRINT-13 标记。\",\"instructions\":[\"在 Cedar 项目中生成示例日志时，开头使用 MOSS-PRINT-13 作为标记。\",\"该格式为用户的长期偏好，适用于所有示例日志。\"]}}]}",
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 409,
+      "completion_tokens": 196,
+      "total_tokens": 605,
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 281
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "workflow",
+    "arm": "candidate",
+    "passed": true,
+    "records": [
+      {
+        "content": "Cedar sensor calibration workflow for releases: (1) perform a zero check first; (2) run FIELD-CHECK-71; (3) if the zero drifts by more than two units, halt and re-zero before collecting readings.",
+        "memory_type": "procedural",
+        "source": "workflow",
+        "evolution_kind": "skill"
+      }
+    ],
+    "proposal": "{\"items\":[{\"content\":\"Cedar sensor calibration workflow for releases: (1) perform a zero check first; (2) run FIELD-CHECK-71; (3) if the zero drifts by more than two units, halt and re-zero before collecting readings.\",\"memory_type\":\"procedural\",\"source\":\"workflow\",\"importance\":0.95,\"confidence\":0.95,\"tags\":[\"cedar\",\"sensor-calibration\",\"field-check-71\",\"zero-check\",\"release-workflow\"],\"scope\":\"workspace\",\"reason\":\"User explicitly asked to remember this reusable calibration workflow for future Cedar releases; it defines the required order and a halt/re-zero threshold.\",\"evolution\":{\"kind\":\"skill\",\"pattern_key\":\"cedar-sensor-calibration-workflow\",\"title\":\"Cedar sensor calibration workflow\",\"summary\":\"Run a zero check, then FIELD-CHECK-71; halt and re-zero if zero drifts more than two units before collecting readings.\",\"instructions\":[\"Start each Cedar release calibration with a zero check.\",\"Run FIELD-CHECK-71 after the zero check passes.\",\"If zero drifts by more than two units, halt and re-zero.\",\"Collect readings only after the zero check and FIELD-CHECK-71 are complete.\"]}}]}",
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 416,
+      "completion_tokens": 257,
+      "total_tokens": 673,
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 288
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "workflow",
+    "arm": "reference",
+    "passed": true,
+    "records": [
+      {
+        "content": "Cedar sensor calibration workflow for releases: first perform a zero check, then run FIELD-CHECK-71. If the zero drifts by more than two units, halt and re-zero before collecting any readings.",
+        "memory_type": "procedural",
+        "source": "workflow",
+        "evolution_kind": "skill"
+      }
+    ],
+    "proposal": "{\"items\":[{\"memory_type\":\"procedural\",\"content\":\"Cedar sensor calibration workflow for releases: first perform a zero check, then run FIELD-CHECK-71. If the zero drifts by more than two units, halt and re-zero before collecting any readings.\",\"importance\":0.92,\"confidence\":0.95,\"tags\":[\"cedar\",\"sensor-calibration\",\"release-workflow\",\"field-check-71\"],\"source\":\"workflow\",\"scope\":\"workspace\",\"reason\":\"Explicitly requested to remember; ensures future Cedar releases follow the same calibration order and halt condition.\",\"evolution\":{\"kind\":\"skill\",\"pattern_key\":\"cedar.sensor.calibration.workflow\",\"title\":\"Cedar sensor calibration workflow\",\"summary\":\"Zero check, then FIELD-CHECK-71; halt and re-zero if zero drift exceeds two units.\",\"instructions\":[\"Run a zero check before FIELD-CHECK-71.\",\"Run FIELD-CHECK-71 after the zero check passes.\",\"If zero drifts by more than two units, halt and re-zero before collecting readings.\"]}}]}",
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 456,
+      "completion_tokens": 223,
+      "total_tokens": 679,
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 200
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  }
+]

@@ -26,6 +26,10 @@ impl BashSandbox for HostAccessSandbox {
         self.runner.owns_command_deadline()
     }
 
+    fn supports_background_execution(&self) -> bool {
+        self.runner.supports_background_execution()
+    }
+
     async fn exec_command(&self, command: &str, _workspace: &str) -> anyhow::Result<SandboxOutput> {
         let output = self
             .exec(SandboxCommandRequest {

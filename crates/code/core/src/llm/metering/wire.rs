@@ -247,7 +247,7 @@ impl WireMeter {
                                     .and_then(Value::as_str)
                                     .is_some_and(|text| !text.is_empty())
                             })
-                        }))
+                        }));
                     }
                     Some("content_block_start") => {
                         return Ok(value.get("content_block").is_some_and(|block| {
@@ -256,7 +256,7 @@ impl WireMeter {
                                     .get("text")
                                     .and_then(Value::as_str)
                                     .is_some_and(|text| !text.is_empty())
-                        }))
+                        }));
                     }
                     _ => {}
                 }

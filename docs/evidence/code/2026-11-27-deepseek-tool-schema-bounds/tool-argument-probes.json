@@ -1,0 +1,312 @@
+[
+  {
+    "case": "read-page",
+    "arm": "release",
+    "prompt": "Read the largest supported single page from records.txt, starting at line offset 7. Use the largest valid explicit limit the read tool documents.",
+    "tool": "read",
+    "expected": {
+      "file_path": "records.txt",
+      "offset": 7,
+      "limit": 2000
+    },
+    "actual": {
+      "file_path": "records.txt",
+      "offset": 7,
+      "limit": 2000
+    },
+    "pass": true,
+    "usage": {
+      "prompt_tokens": 565,
+      "completion_tokens": 66,
+      "total_tokens": 631,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 565
+    }
+  },
+  {
+    "case": "read-page",
+    "arm": "candidate",
+    "prompt": "Read the largest supported single page from records.txt, starting at line offset 7. Use the largest valid explicit limit the read tool documents.",
+    "tool": "read",
+    "expected": {
+      "file_path": "records.txt",
+      "offset": 7,
+      "limit": 2000
+    },
+    "actual": {
+      "file_path": "records.txt",
+      "offset": 7,
+      "limit": 2000
+    },
+    "pass": true,
+    "usage": {
+      "prompt_tokens": 537,
+      "completion_tokens": 66,
+      "total_tokens": 603,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 537
+    }
+  },
+  {
+    "case": "read-batch",
+    "arm": "release",
+    "prompt": "Read a.txt and b.txt together using the files parameter. Start at line offsets 3 and 11 respectively, with the largest supported explicit limit for each file and the largest allowed explicit aggregate byte budget.",
+    "tool": "read",
+    "expected": {
+      "files": [
+        {
+          "path": "a.txt",
+          "offset": 3,
+          "limit": 2000
+        },
+        {
+          "path": "b.txt",
+          "offset": 11,
+          "limit": 2000
+        }
+      ],
+      "max_output_bytes": 98304
+    },
+    "actual": {
+      "files": [
+        {
+          "path": "a.txt",
+          "offset": 3,
+          "limit": 2000
+        },
+        {
+          "path": "b.txt",
+          "offset": 11,
+          "limit": 2000
+        }
+      ],
+      "max_output_bytes": 98304
+    },
+    "pass": true,
+    "usage": {
+      "prompt_tokens": 578,
+      "completion_tokens": 90,
+      "total_tokens": 668,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 194
+    }
+  },
+  {
+    "case": "read-batch",
+    "arm": "candidate",
+    "prompt": "Read a.txt and b.txt together using the files parameter. Start at line offsets 3 and 11 respectively, with the largest supported explicit limit for each file and the largest allowed explicit aggregate byte budget.",
+    "tool": "read",
+    "expected": {
+      "files": [
+        {
+          "path": "a.txt",
+          "offset": 3,
+          "limit": 2000
+        },
+        {
+          "path": "b.txt",
+          "offset": 11,
+          "limit": 2000
+        }
+      ],
+      "max_output_bytes": 98304
+    },
+    "actual": {
+      "files": [
+        {
+          "path": "a.txt",
+          "offset": 3,
+          "limit": 2000
+        },
+        {
+          "path": "b.txt",
+          "offset": 11,
+          "limit": 2000
+        }
+      ],
+      "max_output_bytes": 98304
+    },
+    "pass": true,
+    "usage": {
+      "prompt_tokens": 550,
+      "completion_tokens": 90,
+      "total_tokens": 640,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 294
+    }
+  },
+  {
+    "case": "download-bounds",
+    "arm": "release",
+    "prompt": "For this simulated tool call, download https://example.com/sample.txt to sample.txt. Set the connection count and the timeout explicitly to their respective maximum allowed values.",
+    "tool": "download",
+    "expected": {
+      "url": "https://example.com/sample.txt",
+      "file_path": "sample.txt",
+      "connections": 4,
+      "timeout": 3600
+    },
+    "actual": {
+      "url": "https://example.com/sample.txt",
+      "file_path": "sample.txt",
+      "connections": 4,
+      "timeout": 3600
+    },
+    "pass": true,
+    "usage": {
+      "prompt_tokens": 496,
+      "completion_tokens": 89,
+      "total_tokens": 585,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 496
+    }
+  },
+  {
+    "case": "download-bounds",
+    "arm": "candidate",
+    "prompt": "For this simulated tool call, download https://example.com/sample.txt to sample.txt. Set the connection count and the timeout explicitly to their respective maximum allowed values.",
+    "tool": "download",
+    "expected": {
+      "url": "https://example.com/sample.txt",
+      "file_path": "sample.txt",
+      "connections": 4,
+      "timeout": 3600
+    },
+    "actual": {
+      "url": "https://example.com/sample.txt",
+      "file_path": "sample.txt",
+      "connections": 4,
+      "timeout": 3600
+    },
+    "pass": true,
+    "usage": {
+      "prompt_tokens": 474,
+      "completion_tokens": 89,
+      "total_tokens": 563,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 474
+    }
+  },
+  {
+    "case": "search-mode",
+    "arm": "release",
+    "prompt": "请用 bm25 模式搜索 project index。显式填写该模式支持的最大 limit。",
+    "tool": "search",
+    "expected": {
+      "mode": "bm25",
+      "query": "project index",
+      "limit": 25
+    },
+    "actual": {
+      "mode": "bm25",
+      "query": "project index",
+      "limit": 25
+    },
+    "pass": true,
+    "usage": {
+      "prompt_tokens": 561,
+      "completion_tokens": 65,
+      "total_tokens": 626,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 561
+    }
+  },
+  {
+    "case": "search-mode",
+    "arm": "candidate",
+    "prompt": "请用 bm25 模式搜索 project index。显式填写该模式支持的最大 limit。",
+    "tool": "search",
+    "expected": {
+      "mode": "bm25",
+      "query": "project index",
+      "limit": 25
+    },
+    "actual": {
+      "mode": "bm25",
+      "query": "project index",
+      "limit": 25
+    },
+    "pass": true,
+    "usage": {
+      "prompt_tokens": 546,
+      "completion_tokens": 65,
+      "total_tokens": 611,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 546
+    }
+  },
+  {
+    "case": "directory-page",
+    "arm": "release",
+    "prompt": "List the largest allowed number of directory entries from fixture in a single page. Set the limit explicitly.",
+    "tool": "ls",
+    "expected": {
+      "path": "fixture",
+      "limit": 1000
+    },
+    "actual": {
+      "path": "fixture",
+      "limit": 1000
+    },
+    "pass": true,
+    "usage": {
+      "prompt_tokens": 337,
+      "completion_tokens": 49,
+      "total_tokens": 386,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 337
+    }
+  },
+  {
+    "case": "directory-page",
+    "arm": "candidate",
+    "prompt": "List the largest allowed number of directory entries from fixture in a single page. Set the limit explicitly.",
+    "tool": "ls",
+    "expected": {
+      "path": "fixture",
+      "limit": 1000
+    },
+    "actual": {
+      "path": "fixture",
+      "limit": 1000
+    },
+    "pass": true,
+    "usage": {
+      "prompt_tokens": 327,
+      "completion_tokens": 49,
+      "total_tokens": 376,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 327
+    }
+  }
+]

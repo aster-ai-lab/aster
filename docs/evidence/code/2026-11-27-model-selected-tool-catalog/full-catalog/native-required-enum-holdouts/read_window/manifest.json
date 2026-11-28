@@ -1,0 +1,44 @@
+{
+  "prompts": [
+    "Use read with pagination to read only lines 43 through 45 of addresses.txt. Give their three record identifiers exactly.",
+    "Read only lines 70 through 71. Quote both current record identifiers and the one from line 44 above."
+  ],
+  "expected_markers": [
+    [
+      "RECORD-0340517",
+      "RECORD-0348436",
+      "RECORD-0356355"
+    ],
+    [
+      "RECORD-0554330",
+      "RECORD-0562249",
+      "RECORD-0348436"
+    ]
+  ],
+  "fixtures_sha256": {
+    "addresses.txt": "3004077a2eb5b549e50bbe12c4ed86fd2cda1b94f47213235a88b1cb22b1bd24"
+  },
+  "required_tool": "read",
+  "scenario": "read_window",
+  "model": "deepseek-flash",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "approved_program": false,
+  "annotated_signatures": true,
+  "native_required": "enum",
+  "cost_gate": false,
+  "expected_mutation_sha256": null,
+  "orders": [
+    [
+      "release",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "release"
+    ]
+  ]
+}

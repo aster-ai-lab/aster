@@ -103,10 +103,16 @@ fn kimi_program_repo_map_registered_template_runs_all_seven_steps() {
 fn kimi_program_template_rejects_numeric_search_query_with_owned_error() {
     let case = "coverage-program-typed-error";
     let mut tui = start(case, &[]);
-    let facts = request(&mut tui, "template-typed", "program", json!({
-        "type":"template","name":"program_code_search","inputs":{"query":1},
-        "allowed_tools":["search"],"limits":{"timeoutMs":10000,"maxToolCalls":2,"maxOutputBytes":8192}
-    }), "Report the exact parameter error without retrying, correcting arguments or calling other tools.");
+    let facts = request(
+        &mut tui,
+        "template-typed",
+        "program",
+        json!({
+            "type":"template","name":"program_code_search","inputs":{"query":1},
+            "allowed_tools":["search"],"limits":{"timeoutMs":10000,"maxToolCalls":2,"maxOutputBytes":8192}
+        }),
+        "Report the exact parameter error without retrying, correcting arguments or calling other tools.",
+    );
     let output = one(&facts, "program");
     assert_eq!(output["is_error"], true);
     let calls = program_calls(&output);
@@ -210,10 +216,16 @@ fn kimi_batch_staged_reference_uses_real_first_result() {
     let case = "coverage-batch-staged";
     let mut tui = start(case, &[]);
     batch_fixture(&tui);
-    let facts = request(&mut tui, "staged", "batch", json!({"max_concurrency":2,"invocations":[
-        {"id":"first","step":1,"tool":"ls","args":{"path":"entries","limit":1}},
-        {"id":"second","step":2,"tool":"ls","args":{"path":"entries","limit":{"$ref":"first.metadata.page.returned_items"}}}
-    ]}), "Report the actual staged results without retrying, modifying files or calling other tools.");
+    let facts = request(
+        &mut tui,
+        "staged",
+        "batch",
+        json!({"max_concurrency":2,"invocations":[
+            {"id":"first","step":1,"tool":"ls","args":{"path":"entries","limit":1}},
+            {"id":"second","step":2,"tool":"ls","args":{"path":"entries","limit":{"$ref":"first.metadata.page.returned_items"}}}
+        ]}),
+        "Report the actual staged results without retrying, modifying files or calling other tools.",
+    );
     let output = one(&facts, "batch");
     let meta = &output["metadata"];
     assert_eq!(meta["status"], "complete");
@@ -239,10 +251,16 @@ fn kimi_batch_missing_reference_fails_only_dependent_item() {
     let case = "coverage-batch-missing-reference";
     let mut tui = start(case, &[]);
     batch_fixture(&tui);
-    let facts = request(&mut tui, "missing-ref", "batch", json!({"max_concurrency":2,"invocations":[
-        {"id":"first","step":1,"tool":"ls","args":{"path":"entries","limit":1}},
-        {"id":"second","step":2,"tool":"read","args":{"file_path":{"$ref":"first.missing_path"}}}
-    ]}), "Report the actual reference error without retrying, correcting arguments or calling other tools.");
+    let facts = request(
+        &mut tui,
+        "missing-ref",
+        "batch",
+        json!({"max_concurrency":2,"invocations":[
+            {"id":"first","step":1,"tool":"ls","args":{"path":"entries","limit":1}},
+            {"id":"second","step":2,"tool":"read","args":{"file_path":{"$ref":"first.missing_path"}}}
+        ]}),
+        "Report the actual reference error without retrying, correcting arguments or calling other tools.",
+    );
     let output = one(&facts, "batch");
     let meta = &output["metadata"];
     assert_eq!(meta["status"], "partial_failure");
@@ -380,7 +398,9 @@ fn kimi_markdown_viewer_raw_toggle_keeps_canonical_export_bytes() {
     let mut tui = start(case, &[]);
     let token = format!("RAW-{}", uuid::Uuid::new_v4());
     let markdown = format!("# Viewer heading\n\n**{token}**\n\n- alpha\n- beta");
-    let prompt = format!("Reply with exactly the following Markdown without a code fence or commentary. Do not call tools.\n{markdown}");
+    let prompt = format!(
+        "Reply with exactly the following Markdown without a code fence or commentary. Do not call tools.\n{markdown}"
+    );
     let facts = tui.turn(&prompt, None);
     assert_eq!(tui.assistant_text(&facts).trim(), markdown);
     let expected = tui.assistant_text(&facts);
@@ -453,9 +473,15 @@ fn kimi_read_block_viewer_reaches_full_tail_and_returns_to_same_selection() {
 fn kimi_web_search_explicit_wiki_returns_structured_real_sources() {
     let case = "coverage-web-search-wiki";
     let mut tui = start(case, &[]);
-    let facts = request(&mut tui, "wiki-search", "web_search", json!({
-        "query":"Rust programming language","engines":["wiki"],"limit":2,"timeout":15,"format":"json"
-    }), "Report the actual returned titles and source URLs. Do not retry, switch engines, invent results or call other tools.");
+    let facts = request(
+        &mut tui,
+        "wiki-search",
+        "web_search",
+        json!({
+            "query":"Rust programming language","engines":["wiki"],"limit":2,"timeout":15,"format":"json"
+        }),
+        "Report the actual returned titles and source URLs. Do not retry, switch engines, invent results or call other tools.",
+    );
     let output = one(&facts, "web_search");
     assert_eq!(
         output["exit_code"], 0,

@@ -1,4 +1,4 @@
-//! Bounded, in-process artifact creation. Sources and existing destinations stay read-only.
+//! Bounded, in-process artifact creation and optimistic whole-file replacement.
 
 use std::io::{Read, Write};
 use std::path::{Component, Path, PathBuf};
@@ -146,15 +146,21 @@ fn office_file_properties(include_block_all_of: bool) -> Value {
         );
     }
     json!({
-        "file_path": {"type": "string", "description": "New workspace path matching kind; parent dirs must exist."},
+        "file_path": {"type": "string", "description": "Workspace path matching kind; parent dirs must exist. An unchanged regular file is replaced atomically."},
         "kind": {"type": "string", "enum": ["docx", "xlsx", "pptx", "png"]},
         "blocks": {"type": "array", "minItems": 1, "maxItems": 1000, "description": "docx only (<=10000 cells total): {type:\"paragraph\",text} or {type:\"table\",rows}.", "items": block_item},
         "sheets": {"type": "array", "minItems": 1, "maxItems": 32, "description": "xlsx only (<=10000 cells total).", "items": {
             "type": "object", "additionalProperties": false,
             "properties": {"name": {"type": "string"}, "rows": {"type": "array", "maxItems": 1000, "items": {"type": "array", "maxItems": 100, "items": {"oneOf": [
-                {"type": ["string", "number", "boolean", "null"]},
+                {"type": "string"},
+                {"type": "number"},
+                {"type": "boolean"},
+                {"type": "null"},
                 {"type": "object", "additionalProperties": false, "properties": {"formula": {"type": "string"}, "number_format": {"type": "string"}}, "required": ["formula"]},
-                {"type": "object", "additionalProperties": false, "properties": {"value": {"type": ["string", "number", "boolean", "null"]}, "number_format": {"type": "string"}}, "required": ["value", "number_format"]}
+                {"type": "object", "additionalProperties": false, "properties": {"value": {"type": "string"}, "number_format": {"type": "string"}}, "required": ["value", "number_format"]},
+                {"type": "object", "additionalProperties": false, "properties": {"value": {"type": "number"}, "number_format": {"type": "string"}}, "required": ["value", "number_format"]},
+                {"type": "object", "additionalProperties": false, "properties": {"value": {"type": "boolean"}, "number_format": {"type": "string"}}, "required": ["value", "number_format"]},
+                {"type": "object", "additionalProperties": false, "properties": {"value": {"type": "null"}, "number_format": {"type": "string"}}, "required": ["value", "number_format"]}
             ]}}}},
             "required": ["name", "rows"]
         }},
@@ -174,7 +180,7 @@ impl Tool for OfficeFileTool {
     }
 
     fn description(&self) -> &str {
-        "Create and validate .docx/.xlsx/.pptx/.png in workspace without Bash/external tools (never overwrites). \
+        "Create or atomically replace .docx/.xlsx/.pptx/.png in workspace without Bash/external tools. \
          DOCX: blocks. XLSX: sheets of scalars ('=...' stays literal), {formula,number_format?}, or {value,number_format} \
          (recalculated in process; formula errors rejected; dates use numeric serial+format). \
          PPTX: slides with title+<=3 short bodies, or SVG chart+alt_text with empty body. \
@@ -316,12 +322,7 @@ async fn create(
     );
     ctx.workspace_services.refuse_direct_write(&path)?;
     let (parent, name) = parent_dir(root, path.as_str())?;
-    ensure!(
-        parent
-            .symlink_metadata(&name)
-            .is_err_and(|e| e.kind() == std::io::ErrorKind::NotFound),
-        "destination already exists or is inaccessible"
-    );
+    let previous = read_destination(&parent, &name)?;
     ensure!(
         ctx.session_id
             .as_deref()
@@ -369,7 +370,14 @@ async fn create(
         path.as_str(),
     )
     .map_err(anyhow::Error::msg)?;
-    if let Err(error) = publish(&parent, &name, &bytes, ctx, validate_access) {
+    if let Err(error) = publish(
+        &parent,
+        &name,
+        &bytes,
+        previous.as_deref(),
+        ctx,
+        validate_access,
+    ) {
         if acquired {
             aster_core::external_observation::release_write_claim(
                 session,
@@ -750,10 +758,32 @@ pub(crate) fn parent_dir(root: &Path, relative: &str) -> Result<(Dir, std::ffi::
     ))
 }
 
+fn read_destination(parent: &Dir, name: &std::ffi::OsStr) -> Result<Option<Vec<u8>>> {
+    let mut options = OpenOptions::new();
+    options.read(true).follow(FollowSymlinks::No).nonblock(true);
+    let file = match parent.open_with(name, &options) {
+        Ok(file) => file,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        Err(error) => return Err(error.into()),
+    };
+    ensure!(
+        file.metadata()?.is_file(),
+        "destination is not a regular file"
+    );
+    let mut bytes = Vec::new();
+    file.take(MAX_FILE_BYTES + 1).read_to_end(&mut bytes)?;
+    ensure!(
+        bytes.len() as u64 <= MAX_FILE_BYTES,
+        "existing artifact exceeds 20 MiB"
+    );
+    Ok(Some(bytes))
+}
+
 fn publish(
     parent: &Dir,
     name: &std::ffi::OsStr,
     bytes: &[u8],
+    previous: Option<&[u8]>,
     ctx: &ToolContext,
     validate_access: impl Fn() -> Result<()>,
 ) -> Result<()> {
@@ -766,7 +796,17 @@ fn publish(
         file.sync_all()?;
         ensure!(!ctx.is_cancelled(), "office_file cancelled");
         validate_access()?;
-        parent.hard_link(&temporary, parent, name)?;
+        if let Some(expected) = previous {
+            let current = read_destination(parent, name)?
+                .ok_or_else(|| anyhow::anyhow!("destination disappeared during publication"))?;
+            ensure!(
+                current == expected,
+                "destination changed during generation; refusing to overwrite it"
+            );
+            parent.rename(&temporary, parent, name)?;
+        } else {
+            parent.hard_link(&temporary, parent, name)?;
+        }
         let mut options = OpenOptions::new();
         options.read(true).follow(FollowSymlinks::No).nonblock(true);
         let saved = parent.open_with(name, &options)?;

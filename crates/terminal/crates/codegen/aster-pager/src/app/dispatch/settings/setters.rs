@@ -2010,7 +2010,15 @@ fn clamp_max_thoughts_width(value: i64) -> i64 {
 /// State-only mutation for `max_thoughts_width`.
 /// Updates the `app.current_ui.max_thoughts_width` field; the renderer picks up the new value on the next frame.
 pub(super) fn set_max_thoughts_width_inner(app: &mut AppView, value: i64) {
-    app.current_ui.max_thoughts_width = clamp_max_thoughts_width(value) as u16;
+    let width = clamp_max_thoughts_width(value) as u16;
+    app.current_ui.max_thoughts_width = width;
+    crate::appearance::cache::set_max_thoughts_width(width);
+    for agent in app.agents.values_mut() {
+        agent.scrollback.invalidate_heights();
+        for child in agent.subagent_views.values_mut() {
+            child.scrollback.invalidate_heights();
+        }
+    }
 }
 
 /// Outer dispatcher for `Action::SetMaxThoughtsWidth`: state, refresh, persist, and toast.

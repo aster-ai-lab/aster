@@ -1,0 +1,14 @@
+[
+  {
+    "trial": "localization-1-combined",
+    "console_reason": "run.tool_refusal_cycle: recovery after a refusal from 'bash' stalled without fresh original progress; change the approach or obtain the required host input"
+  },
+  {
+    "trial": "localization-2-separate",
+    "console_reason": "run.tool_refusal_cycle: recovery after a refusal from 'bash' stalled without fresh original progress; change the approach or obtain the required host input"
+  },
+  {
+    "trial": "localization-3-combined",
+    "console_reason": "run.tool_refusal_cycle: recovery after a refusal from 'bash' stalled without fresh original progress; change the approach or obtain the required host input"
+  }
+]

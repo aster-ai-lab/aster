@@ -156,7 +156,7 @@ pub(crate) async fn create_stage(root: &Path, label: &str) -> UseResult<PathBuf>
                 return Err(browser_error(format!(
                     "Failed to create Browser staging directory '{}': {error}",
                     path.display()
-                )))
+                )));
             }
         }
     }

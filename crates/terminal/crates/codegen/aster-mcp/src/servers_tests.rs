@@ -34,6 +34,28 @@ async fn resilient_transport_skips_undecodable_line_and_keeps_stream_alive() {
     );
 }
 
+#[tokio::test]
+async fn legacy_sse_is_refused_before_streamable_http_transport() {
+    let events = aster_session_events::EventWriter::noop();
+    let ctx = McpSpawnCtx::standalone(&events);
+    let result = start_mcp_server(
+        acp::McpServer::Sse(acp::McpServerSse::new(
+            "legacy",
+            "http://127.0.0.1:9/events?exact=1",
+        )),
+        None,
+        None,
+        None,
+        &ctx,
+    )
+    .await;
+    let Err(McpError::ClientError(message)) = result else {
+        panic!("legacy SSE must be refused explicitly");
+    };
+    assert!(message.contains("legacy HTTP+SSE"), "{message}");
+    assert!(message.contains("Streamable HTTP"), "{message}");
+}
+
 fn make_stdio_server(name: &str, command: &str) -> acp::McpServer {
     acp::McpServer::Stdio(acp::McpServerStdio::new(name, PathBuf::from(command)))
 }

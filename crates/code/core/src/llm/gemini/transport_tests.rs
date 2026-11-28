@@ -158,7 +158,10 @@ async fn factory_native_json_replays_persisted_parts_and_links_parallel_tool_res
         .contains('?'));
     let sent = fixture.calls.lock().unwrap();
     assert_eq!(sent.len(), 2);
-    assert_eq!(sent[0].0,"https://fixture.invalid/proxy/v1beta/models/stored%2Fmodel:generateContent?tenant=a+b&tenant=c");
+    assert_eq!(
+        sent[0].0,
+        "https://fixture.invalid/proxy/v1beta/models/stored%2Fmodel:generateContent?tenant=a+b&tenant=c"
+    );
     assert_eq!(
         sent[0]
             .1

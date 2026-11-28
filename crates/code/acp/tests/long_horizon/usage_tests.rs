@@ -68,7 +68,10 @@ fn malformed_or_contradictory_usage_never_becomes_a_known_zero() {
 
 #[test]
 fn sse_usage_survives_every_byte_split_multiline_data_and_crlf() {
-    let payload = format!(": comment\r\ndata: {{\"choices\":[{{\"delta\":{{\"content\":\"中文\",\"reasoning_content\":\"private-thought\"}}}}]}}\r\n\r\ndata: {{\"usage\":\r\ndata: {}}}\r\n\r\ndata: [DONE]\r\n\r\n", valid());
+    let payload = format!(
+        ": comment\r\ndata: {{\"choices\":[{{\"delta\":{{\"content\":\"中文\",\"reasoning_content\":\"private-thought\"}}}}]}}\r\n\r\ndata: {{\"usage\":\r\ndata: {}}}\r\n\r\ndata: [DONE]\r\n\r\n",
+        valid()
+    );
     for split in 0..=payload.len() {
         let mut sse = Sse::default();
         sse.feed(&payload.as_bytes()[..split]);
@@ -105,8 +108,16 @@ fn incomplete_oversized_duplicate_and_conflicting_streams_keep_honest_usage() {
         107,
         "identical snapshots do not add"
     );
-    for payload in [format!("{frame}data: {{\"usage\":{{\"prompt_tokens\":2,\"completion_tokens\":1,\"total_tokens\":3}}}}\n\ndata: [DONE]\n\n"), format!("data: [DONE]\n\n{frame}"), "data: {broken}\n\ndata: [DONE]\n\n".into(), format!("data: {}\n\ndata: [DONE]\n\n", "x".repeat(EVENT_LIMIT+1))] {
-        let mut sse = Sse::default(); sse.feed(payload.as_bytes());
+    for payload in [
+        format!(
+            "{frame}data: {{\"usage\":{{\"prompt_tokens\":2,\"completion_tokens\":1,\"total_tokens\":3}}}}\n\ndata: [DONE]\n\n"
+        ),
+        format!("data: [DONE]\n\n{frame}"),
+        "data: {broken}\n\ndata: [DONE]\n\n".into(),
+        format!("data: {}\n\ndata: [DONE]\n\n", "x".repeat(EVENT_LIMIT + 1)),
+    ] {
+        let mut sse = Sse::default();
+        sse.feed(payload.as_bytes());
         assert!(sse.line.len() <= EVENT_LIMIT && sse.event.len() <= EVENT_LIMIT);
         let observed = sse.finish(200);
         assert_eq!(observed.state, State::Invalid);

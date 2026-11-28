@@ -247,6 +247,43 @@ where
         })
     }
 
+    /// Retry expected failures with exponential backoff capped at `max_delay`.
+    /// Interruption and defects are not retried; sleep stops on cancel.
+    pub fn retry_exponential(
+        &self,
+        remaining: u32,
+        base_delay: Duration,
+        max_delay: Duration,
+    ) -> Self
+    where
+        E: Clone,
+    {
+        let run = Arc::clone(&self.run);
+        let max_delay = max_delay.max(base_delay);
+        Self::new(move |ctx| {
+            let run = Arc::clone(&run);
+            let mut left = remaining;
+            let mut delay = base_delay;
+            Box::pin(async move {
+                loop {
+                    match run(ctx.clone()).await {
+                        Ok(value) => return Ok(value),
+                        Err(Exit::Fail(_error)) if left > 0 => {
+                            left -= 1;
+                            ctx.record("retry", "fail");
+                            tokio::select! {
+                                _ = ctx.cancel.cancelled() => return Err(Exit::Interrupt),
+                                _ = tokio::time::sleep(delay) => {}
+                            }
+                            delay = delay.saturating_mul(2).min(max_delay);
+                        }
+                        Err(error) => return Err(error),
+                    }
+                }
+            })
+        })
+    }
+
     pub fn timeout(&self, duration: Duration) -> Self {
         let run = Arc::clone(&self.run);
         Self::new(move |ctx| {

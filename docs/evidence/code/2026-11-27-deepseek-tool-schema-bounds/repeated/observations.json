@@ -1,0 +1,110 @@
+[
+  {
+    "trial": "1-release",
+    "stored_receipts": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ],
+    "provider_result_messages": 2,
+    "complete_output_copies": 1,
+    "latest_result_has_complete_output": false
+  },
+  {
+    "trial": "1-candidate",
+    "stored_receipts": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ],
+    "provider_result_messages": 2,
+    "complete_output_copies": 1,
+    "latest_result_has_complete_output": true
+  },
+  {
+    "trial": "2-candidate",
+    "stored_receipts": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ],
+    "provider_result_messages": 2,
+    "complete_output_copies": 1,
+    "latest_result_has_complete_output": true
+  },
+  {
+    "trial": "2-release",
+    "stored_receipts": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ],
+    "provider_result_messages": 2,
+    "complete_output_copies": 1,
+    "latest_result_has_complete_output": false
+  },
+  {
+    "trial": "3-release",
+    "stored_receipts": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ],
+    "provider_result_messages": 2,
+    "complete_output_copies": 1,
+    "latest_result_has_complete_output": false
+  },
+  {
+    "trial": "3-candidate",
+    "stored_receipts": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ],
+    "provider_result_messages": 2,
+    "complete_output_copies": 1,
+    "latest_result_has_complete_output": true
+  }
+]

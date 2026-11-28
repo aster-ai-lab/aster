@@ -327,6 +327,14 @@ fn representative_events() -> Vec<EventCase> {
             json!("failed"),
         ),
         case(
+            "prior_verification_pending",
+            AgentEvent::PriorVerificationPending {
+                message: "previous work awaits verification".into(),
+            },
+            "message",
+            json!("previous work awaits verification"),
+        ),
+        case(
             "tool_effect_unresolved",
             AgentEvent::ToolEffectUnresolved {
                 error: aster_core::harness_loop::ToolEffectUnresolved {
@@ -779,6 +787,19 @@ fn every_agent_event_variant_has_a_versioned_wire_case_with_representative_paylo
             serde_json::from_value(encoded).expect("envelope should round-trip");
         assert_eq!(decoded, envelope);
     }
+}
+
+#[test]
+fn pending_verification_projects_a_status_with_the_original_diagnostic() {
+    let event = AgentEvent::PriorVerificationPending {
+        message: "Earlier workspace changes await verification".into(),
+    };
+    let envelope = EventEnvelopeV1::try_from(&event).unwrap();
+    assert_eq!(envelope.event_type, "prior_verification_pending");
+    assert_eq!(
+        AgentEventProjectionV1::from(envelope).error.as_deref(),
+        Some("Earlier workspace changes await verification")
+    );
 }
 
 #[test]

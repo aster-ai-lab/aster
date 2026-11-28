@@ -258,7 +258,7 @@ async fn materialize_artifact(
     bytes: &[u8],
     context: &ToolContext,
 ) -> Result<MaterializedArtifact> {
-    let digest = sha256::digest(bytes);
+    let digest = crate::content_digest::sha256_hex(bytes);
     let session = context.session_id.as_deref().unwrap_or("anonymous");
     let root = artifact_root(context)
         .join(sanitize_segment(session))
@@ -365,7 +365,7 @@ async fn verify_existing_artifact(path: &Path, bytes: &[u8], digest: &str) -> Re
     let existing = crate::bounded_io::read_file_bounded_async(path, bytes.len())
         .await
         .with_context(|| format!("failed to verify MCP artifact '{}'", path.display()))?;
-    if existing.len() != bytes.len() || sha256::digest(&existing) != digest {
+    if existing.len() != bytes.len() || crate::content_digest::sha256_hex(&existing) != digest {
         return Err(anyhow!(
             "existing MCP artifact '{}' does not match its content digest",
             path.display()
@@ -550,7 +550,7 @@ mod tests {
         let temp = tempfile::tempdir().unwrap();
         let context = ToolContext::new(temp.path().to_path_buf());
         let png = b"\x89PNG\r\n\x1a\nexpected";
-        let digest = sha256::digest(png);
+        let digest = crate::content_digest::sha256_hex(png);
         let root = artifact_root(&context)
             .join("anonymous")
             .join("mcp__test__image");

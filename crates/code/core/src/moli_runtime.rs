@@ -1000,7 +1000,7 @@ mod tests {
         {
             let cursor = std::io::Cursor::new(Vec::new());
             let mut archive = zip::ZipWriter::new(cursor);
-            let options = zip::write::FileOptions::default();
+            let options = zip::write::SimpleFileOptions::default();
             archive
                 .start_file("moli-v-test-target/moli.exe", options)
                 .unwrap();

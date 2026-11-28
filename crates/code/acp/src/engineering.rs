@@ -8,9 +8,16 @@ use std::collections::BTreeSet;
 use std::path::{Component, Path};
 
 const INSTRUCTIONS: &str = include_str!("../prompts/engineering.md");
+const COMPACT_INSTRUCTIONS: &str = include_str!("../prompts/engineering_compact.md");
+const V3_INSTRUCTIONS: &str = include_str!("../prompts/engineering_v3.md");
+const CURRENT_INSTRUCTIONS: &str = include_str!("../prompts/engineering_v4.md");
+pub(crate) const DEFAULT_INTERACTIVE_POLICY: &str = EngineeringPolicy::V4.as_str();
 
 enum EngineeringPolicy {
     V1,
+    V2,
+    V3,
+    V4,
     Disabled,
 }
 
@@ -18,16 +25,22 @@ impl EngineeringPolicy {
     fn parse(value: &str) -> Result<Self, String> {
         match value {
             "engineering-v1" => Ok(Self::V1),
+            "engineering-v2" => Ok(Self::V2),
+            "engineering-v3" => Ok(Self::V3),
+            "engineering-v4" => Ok(Self::V4),
             "none" => Ok(Self::Disabled),
             _ => Err(format!(
-                "unknown EngineeringPolicy {value:?}; expected engineering-v1 or none"
+                "unknown EngineeringPolicy {value:?}; expected engineering-v1, engineering-v2, engineering-v3, engineering-v4 or none"
             )),
         }
     }
 
-    fn as_str(&self) -> &'static str {
+    const fn as_str(&self) -> &'static str {
         match self {
             Self::V1 => "engineering-v1",
+            Self::V2 => "engineering-v2",
+            Self::V3 => "engineering-v3",
+            Self::V4 => "engineering-v4",
             Self::Disabled => "none",
         }
     }
@@ -59,10 +72,16 @@ pub(crate) fn policy_from_meta(
 /// The engineering policy a host selects by name (`_meta` or a launch flag).
 pub(crate) fn named_policy(name: &str) -> Result<WorkPolicyV1, String> {
     let selected = EngineeringPolicy::parse(name)?;
-    if matches!(selected, EngineeringPolicy::Disabled) {
-        return Err("EngineeringPolicy none has no instruction body".into());
-    }
-    WorkPolicyV1::new(selected.as_str(), 2, INSTRUCTIONS).map_err(|error| error.to_string())
+    let (revision, instructions) = match selected {
+        EngineeringPolicy::V1 => (2, INSTRUCTIONS),
+        EngineeringPolicy::V2 => (1, COMPACT_INSTRUCTIONS),
+        EngineeringPolicy::V3 => (1, V3_INSTRUCTIONS),
+        EngineeringPolicy::V4 => (1, CURRENT_INSTRUCTIONS),
+        EngineeringPolicy::Disabled => {
+            return Err("EngineeringPolicy none has no instruction body".into());
+        }
+    };
+    WorkPolicyV1::new(selected.as_str(), revision, instructions).map_err(|error| error.to_string())
 }
 
 /// Subject kind every admitted engineering draft names; its uri is the target digest.

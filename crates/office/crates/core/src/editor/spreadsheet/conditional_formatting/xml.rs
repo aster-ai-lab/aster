@@ -375,7 +375,7 @@ fn text_rule_formula(range: &str, text: &str, rule_type: &str) -> UseResult<Stri
             return Err(editor_error(
                 "use.office.spreadsheet_conditional_format_type_invalid",
                 format!("Unsupported text conditional-format type '{rule_type}'."),
-            ))
+            ));
         }
     })
 }
@@ -391,7 +391,7 @@ fn predicate_rule_formula(range: &str, rule_type: &str) -> UseResult<String> {
             return Err(editor_error(
                 "use.office.spreadsheet_conditional_format_type_invalid",
                 format!("Unsupported predicate conditional-format type '{rule_type}'."),
-            ))
+            ));
         }
     })
 }

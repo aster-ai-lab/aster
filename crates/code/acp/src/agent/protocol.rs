@@ -122,13 +122,14 @@ impl acp::Agent for AsterCodeAgent {
         let posture = PermissionPosture::from_meta(args.meta.as_ref())?;
         let mut host = crate::host_context::studio_host_from_meta(args.meta.as_ref())
             .map_err(|error| acp::Error::invalid_params().data(error))?;
-        if !args
-            .meta
-            .as_ref()
-            .is_some_and(|meta| meta.contains_key("asterEngineering"))
+        if self.unattended.is_none()
+            && !args
+                .meta
+                .as_ref()
+                .is_some_and(|meta| meta.contains_key("asterEngineering"))
         {
             host.work_policy = Some(
-                crate::engineering::named_policy("engineering-v1")
+                crate::engineering::named_policy(crate::engineering::DEFAULT_INTERACTIVE_POLICY)
                     .map_err(|error| acp::Error::internal_error().data(error))?,
             );
         }
@@ -396,6 +397,18 @@ impl acp::Agent for AsterCodeAgent {
         };
         drop(mcp_reservation);
         loading.ready();
+        let interrupted_state = transcript
+            .interrupted_turn_state()
+            .unwrap_or(aster_core::fact_control::InterruptedTurnState::Idle);
+        let active_goal_resumable = match transcript.goal_definition() {
+            Ok(Some(goal)) => {
+                goal.state == aster_core::goal_control::GoalState::Active
+                    && goal.plan_accepted
+                    && !goal.ready_steps().is_empty()
+            }
+            Ok(None) => goal.as_ref().is_some_and(|legacy| !legacy.paused),
+            Err(_) => false,
+        };
         if let Some(goal) = goal {
             self.goals.lock().await.insert(session_id.clone(), goal);
         } else {
@@ -414,10 +427,28 @@ impl acp::Agent for AsterCodeAgent {
         self.announce_commands(&session_id, available_commands);
         self.announce_tooling(&session_id, session_tooling_projection(&transcript).await);
         self.announce_session_usage(&session_id, &transcript);
+        let mut meta = acp::Meta::new();
+        meta.insert(
+            "interruptedTurnResumable".into(),
+            serde_json::json!(
+                interrupted_state == aster_core::fact_control::InterruptedTurnState::Resumable
+            ),
+        );
+        meta.insert(
+            "interruptedTurnUnresolvedTool".into(),
+            serde_json::json!(
+                interrupted_state == aster_core::fact_control::InterruptedTurnState::UnresolvedTool
+            ),
+        );
+        meta.insert(
+            "activeGoalResumable".into(),
+            serde_json::json!(active_goal_resumable),
+        );
         Ok(acp::LoadSessionResponse::new()
             .modes(modes)
             .models(models)
-            .config_options(config_options))
+            .config_options(config_options)
+            .meta(Some(meta)))
     }
 
     /// ACP session modes: the Aster permission/mode surface. `plan` enables
@@ -567,6 +598,18 @@ impl acp::Agent for AsterCodeAgent {
             }
             None => false,
         };
+        let resume_interrupted = match args
+            .meta
+            .as_ref()
+            .and_then(|meta| meta.get("aster/resumeInterruptedTurn"))
+        {
+            Some(serde_json::Value::Bool(value)) => *value,
+            Some(_) => {
+                return Err(acp::Error::invalid_params()
+                    .data("aster/resumeInterruptedTurn must be a boolean"));
+            }
+            None => false,
+        };
         let session_key = args.session_id.0.to_string();
         let turn_started = std::time::Instant::now();
         let turn_started_ms = super::emit::unix_now_ms() as i64;
@@ -607,8 +650,12 @@ impl acp::Agent for AsterCodeAgent {
             return Err(acp::Error::invalid_params()
                 .data("image attachments are supported for ordinary model turns"));
         }
-        if prompt.trim().is_empty() && attachments.is_empty() {
+        if prompt.trim().is_empty() && attachments.is_empty() && !resume_interrupted {
             return Ok(acp::PromptResponse::new(acp::StopReason::EndTurn));
+        }
+        if resume_interrupted && (!attachments.is_empty() || self.unattended.is_some()) {
+            return Err(acp::Error::invalid_params()
+                .data("aster/resumeInterruptedTurn only supports interactive text turns"));
         }
         let output_schema = match args.meta.as_ref().and_then(|meta| meta.get("outputSchema")) {
             Some(schema) if schema.is_object() => {
@@ -751,8 +798,33 @@ impl acp::Agent for AsterCodeAgent {
         }
         let turn = crate::host_context::turn_context_from_meta(args.meta.as_ref());
         let observation = crate::run_observation::Binding::from_meta(args.meta.as_ref());
-        let (mut response, held_permit) = if let Some(op) = crate::goal::parse_goal_command(&prompt)
-        {
+        let (mut response, held_permit) = if resume_interrupted {
+            if output_schema.is_some() {
+                drop(turn_permit);
+                return Err(acp::Error::invalid_params()
+                    .data("aster/resumeInterruptedTurn does not accept outputSchema"));
+            }
+            let (retry_observer, retry_forwarder) = self.provider_retry_forwarder(&args.session_id);
+            let (response, returned_permit) = aster_core::llm::with_retry_observer(
+                retry_observer,
+                self.stream_turn(
+                    &args.session_id,
+                    &session,
+                    "",
+                    &[],
+                    generation,
+                    turn_permit,
+                    observation.as_ref(),
+                    None,
+                    requested_posture,
+                    None,
+                    true,
+                ),
+            )
+            .await;
+            let _ = retry_forwarder.await;
+            (response, returned_permit)
+        } else if let Some(op) = crate::goal::parse_goal_command(&prompt) {
             tracing::info!(target: "perf_probe", "goal_command_branch");
             (
                 self.handle_goal(
@@ -829,6 +901,7 @@ impl acp::Agent for AsterCodeAgent {
                             gate,
                             requested_posture,
                             output_schema.as_ref(),
+                            false,
                         ),
                     )
                     .await;

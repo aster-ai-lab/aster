@@ -616,6 +616,7 @@ fn render_search(config: &CodeConfig, document: &Document) -> Option<Block> {
                         string(match headless.backend {
                             super::BrowserBackend::Moli => "moli",
                             super::BrowserBackend::Chrome => "chrome",
+                            super::BrowserBackend::Quark => "quark",
                             super::BrowserBackend::Lightpanda => "lightpanda",
                         }),
                     ),
@@ -642,6 +643,12 @@ fn render_search(config: &CodeConfig, document: &Document) -> Option<Block> {
                 &["proxy_url"],
                 "proxy_url",
                 headless.proxy_url.as_deref().map(string),
+            );
+            set_attr(
+                &mut headless_block,
+                &["cdp_url", "cdpUrl"],
+                "cdp_url",
+                headless.cdp_url.as_deref().map(string),
             );
             set_attr(
                 &mut headless_block,

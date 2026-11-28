@@ -34,7 +34,7 @@ fn code_symbols_properties() -> Value {
             "type": "integer",
             "minimum": 1,
             "maximum": MAX_SEARCH_LIMIT,
-            "description": "Max symbols for search (default 100, max 500)."
+            "description": "Symbol cap for search (default 100)."
         }
     })
 }

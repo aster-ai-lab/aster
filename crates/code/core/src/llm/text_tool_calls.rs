@@ -103,6 +103,32 @@ pub fn recover_leaked_tool_calls(text: &str) -> Vec<(String, String, Value)> {
         .collect()
 }
 
+/// Distinguish a leaked invocation from a literal Markdown example.
+pub(crate) fn has_unquoted_tool_call(text: &str) -> bool {
+    use pulldown_cmark::{Event, Parser, Tag};
+
+    if !contains_leaked_invocation(text) {
+        return false;
+    }
+    let mut start = 0;
+    for (event, range) in Parser::new(text).into_offset_iter() {
+        if matches!(event, Event::Code(_) | Event::Start(Tag::CodeBlock(_))) {
+            if range.start > start && contains_leaked_invocation(&text[start..range.start]) {
+                return true;
+            }
+            start = start.max(range.end);
+        }
+    }
+    contains_leaked_invocation(&text[start..])
+}
+
+fn contains_leaked_invocation(text: &str) -> bool {
+    if !text.contains('<') {
+        return false;
+    }
+    !split_leaked_tool_calls(text).1.is_empty()
+}
+
 struct ParsedCall {
     id: Option<String>,
     name: String,

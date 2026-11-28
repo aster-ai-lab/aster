@@ -266,6 +266,7 @@ impl AsterCodeAgent {
                     None,
                     None,
                     None,
+                    false,
                 )
                 .await
                 .0;

@@ -282,7 +282,7 @@ async fn uninstall_managed_browsers_at(root: &std::path::Path) -> UseResult<bool
                 return Err(browser_error(format!(
                     "Failed to remove managed Browser runtime '{}': {error}",
                     directory.display()
-                )))
+                )));
             }
         }
     }
@@ -308,9 +308,11 @@ mod tests {
 
         assert!(uninstall_managed_browsers_at(temp.path()).await.unwrap());
         assert!(!uninstall_managed_browsers_at(temp.path()).await.unwrap());
-        assert!(tokio::fs::try_exists(temp.path().join("keep"))
-            .await
-            .unwrap());
+        assert!(
+            tokio::fs::try_exists(temp.path().join("keep"))
+                .await
+                .unwrap()
+        );
     }
 
     #[cfg(not(feature = "lightpanda"))]

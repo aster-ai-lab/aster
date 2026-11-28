@@ -1129,3 +1129,66 @@ async fn parallel_background_tasks_publish_lifecycle_and_stop_independently() {
     assert!(terminal.contains(&(quick.task_id.clone(), false)));
     owned.close().await;
 }
+
+#[cfg(unix)]
+#[tokio::test]
+async fn host_access_sandbox_runs_and_settles_background_tasks_and_tail_waits_for_new_output() {
+    let workspace = tempfile::tempdir().unwrap();
+    let root = workspace.path().to_path_buf();
+    let host_sandbox: Arc<dyn BashSandbox> =
+        Arc::new(crate::sandbox::host_access::HostAccessSandbox {
+            runner: Arc::new(crate::workspace::LocalWorkspaceBackend::new(root.clone())),
+        });
+    assert!(host_sandbox.supports_background_execution());
+
+    let owned = TestRun::in_workspace(workspace, Some(host_sandbox));
+    let tool = BackgroundTool::default();
+
+    let started = start(
+        &tool,
+        &owned.ctx,
+        "host-bg",
+        "sleep 0.15; printf 'host-bg-ready\\n'",
+    )
+    .await;
+    assert!(started.success, "{}", started.content);
+
+    // tail without wait_for must wait up to explicit timeout_ms for new output/exit.
+    let tail = tool
+        .execute(
+            &serde_json::json!({
+                "action": "tail",
+                "name": "host-bg",
+                "timeout_ms": 3000
+            }),
+            &owned.ctx,
+        )
+        .await
+        .unwrap();
+    assert!(tail.success, "{}", tail.content);
+    assert!(
+        tail.content.contains("host-bg-ready"),
+        "tail with timeout_ms must wait for new output without wait_for: {}",
+        tail.content
+    );
+    let bg_task = task(&tool, &owned.ctx, "host-bg");
+    wait_settled(&bg_task).await;
+    assert!(bg_task.failure().is_none(), "{:?}", bg_task.failure());
+
+    let sleeper = start(&tool, &owned.ctx, "host-sleeper", "sleep 30").await;
+    assert!(sleeper.success, "{}", sleeper.content);
+    let sleeper_task = task(&tool, &owned.ctx, "host-sleeper");
+    let stopped = tool.stop("host-sleeper", &owned.ctx).await.unwrap();
+    assert!(stopped.success, "{}", stopped.content);
+    wait_settled(&sleeper_task).await;
+    assert!(
+        sleeper_task.failure().is_none(),
+        "{:?}",
+        sleeper_task.failure()
+    );
+    assert_eq!(
+        sleeper_task.status().as_deref(),
+        Some("terminated by request")
+    );
+    owned.close().await;
+}

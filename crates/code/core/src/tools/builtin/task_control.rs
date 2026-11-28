@@ -43,8 +43,12 @@ impl Tool for TaskControlTool {
 
     fn description(&self) -> &str {
         match self {
-            Self::Output(_) => "Query child task by task_id; timeout_ms (<=300000) waits, 0 polls. Never relaunch to wait.",
-            Self::Stop(_) => "Request cancellation of child task by task_id.",
+            Self::Output(_) => {
+                "Query child task by task_id; timeout_ms (<=300000) waits, 0 polls. Never relaunch to wait."
+            }
+            Self::Stop(_) => {
+                "Request cancellation of child task by task_id. The cancelled status can precede cleanup. Only the task's original process group is guaranteed to be signalled; on macOS, descendants that create independent process groups with setsid/setpgid can remain running and must be inspected separately."
+            }
         }
     }
 

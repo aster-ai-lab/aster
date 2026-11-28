@@ -2,6 +2,7 @@
 
 use super::receipts::{runner_interrupted_value, runner_result_value};
 use super::*;
+use crate::completion_attestor::ModelVerificationPreview;
 
 #[test]
 fn folded_command_results_label_only_digest_bound_retained_streams() {
@@ -108,6 +109,609 @@ fn folded_tool_messages_preserve_typed_exit_codes_without_changing_original_rece
     );
 }
 
+#[test]
+fn repeated_command_projection_keeps_each_exit_code() {
+    let stdout = "Repeated command observation.\n".repeat(32);
+    let command = |id: &str| {
+        history_seed::assistant_tool_call(&RecordedCall {
+            response_seq: None,
+            id: id.into(),
+            name: "bash".into(),
+            args: serde_json::json!({"command": "printf example"}),
+            text: String::new(),
+            reasoning: None,
+        })
+    };
+    let mut messages = [
+        command("first"),
+        tool_results::message_from_tool_observation("first", &stdout, false, &[], Some(0)),
+        command("repeated"),
+        tool_results::message_from_tool_observation("repeated", &stdout, false, &[], Some(0)),
+    ];
+    project_repeated_tool_results(&mut messages, &std::collections::HashMap::new());
+    assert!(
+        matches!(&messages[1].content[0], crate::llm::ContentBlock::ToolResult { content, .. }
+        if content.as_text() == format!("Tool exit code: 0\n{stdout}"))
+    );
+    assert!(
+        matches!(&messages[3].content[0], crate::llm::ContentBlock::ToolResult { content, .. }
+        if content.as_text().starts_with("Tool exit code: 0\n[aster host: Fresh result is byte-identical"))
+    );
+}
+
+#[tokio::test]
+async fn grep_history_keeps_match_locations_and_retains_original_paginated_observation() {
+    use crate::llm::ContentBlock;
+    use crate::tools::builtin::register_builtins;
+    use crate::tools::{ToolContext, ToolRegistry};
+    use std::collections::HashSet;
+
+    let workspace = tempfile::tempdir().unwrap();
+    let dir = workspace.path().join("资料 folder");
+    std::fs::create_dir(&dir).unwrap();
+    for file in ["alpha observations.txt", "zulu observations.txt"] {
+        std::fs::write(
+            dir.join(file),
+            "before first\nneedle-1\n  after first\nseparator\nbefore second\nneedle-2\nafter second\n",
+        )
+        .unwrap();
+    }
+    let root = workspace.path().to_path_buf();
+    let ctx = ToolContext::new(root.clone());
+    let registry = ToolRegistry::new(root);
+    register_builtins(&registry, &ctx.workspace_services);
+    let args = serde_json::json!({"mode":"grep", "query":"needle-[12]", "context":1, "limit":3});
+    let observation = registry
+        .get("search")
+        .unwrap()
+        .execute(&args, &ctx)
+        .await
+        .unwrap();
+    assert!(observation.success, "{}", observation.content);
+    assert_eq!(
+        observation.metadata.as_ref().unwrap()["page"]["next_cursor"],
+        "3"
+    );
+
+    let render = |text: &str, metadata: Option<&serde_json::Value>, outcome: bool| {
+        let receipt = runner_result_value(text, outcome, &[], 0, metadata, None, None);
+        let call = RecordedCall {
+            response_seq: None,
+            id: "grep-page".into(),
+            name: "search".into(),
+            args: args.clone(),
+            text: String::new(),
+            reasoning: None,
+        };
+        let mut messages = Vec::new();
+        recorded_tool_messages(
+            &mut vec![call].into_iter(),
+            &mut messages,
+            &mut None,
+            receipt.as_str().unwrap(),
+            outcome,
+            None,
+            &HashSet::new(),
+        )
+        .unwrap();
+        let raw = decode_fact_tool_result(receipt.as_str().unwrap()).unwrap();
+        assert_eq!(raw.text, text);
+        let ContentBlock::ToolResult { content, .. } = &messages[1].content[0] else {
+            panic!("expected the recorded grep result");
+        };
+        content.as_text()
+    };
+    let text = &observation.content;
+    let metadata = observation.metadata.as_ref();
+    let projected = render(text, metadata, false);
+    assert!(projected.starts_with("Tool exit code: 0\nContext lines use the file path"));
+    for path in [
+        "资料 folder/alpha observations.txt",
+        "资料 folder/zulu observations.txt",
+    ] {
+        assert!(text.contains(&format!(">{path}:2: needle-1\n")), "{text}");
+        assert!(
+            projected.contains(&format!(
+                " 1: before first\n>{path}:2: needle-1\n 3:   after first\n--\n"
+            )),
+            "{projected}"
+        );
+    }
+    assert_eq!(projected.matches("资料 folder/").count(), 3);
+    assert_eq!(projected.matches(":6: needle-2\n").count(), 1);
+    let footer = text.split_once("\n\n").unwrap().1;
+    assert!(footer.contains("cursor=3"), "{footer}");
+    assert!(projected.ends_with(&format!("\n\n{footer}")), "{projected}");
+
+    let changed = text.replacen("needle-1", "needle-9", 1);
+    assert!(render(&changed, metadata, false).ends_with(&changed));
+    assert!(render(text, metadata, true).ends_with(text));
+
+    let mut plain_args = args.clone();
+    plain_args["context"] = 0.into();
+    let plain = registry
+        .get("search")
+        .unwrap()
+        .execute(&plain_args, &ctx)
+        .await
+        .unwrap();
+    assert!(plain.success);
+    assert_eq!(
+        render(&plain.content, plain.metadata.as_ref(), false),
+        format!("Tool exit code: 0\n{}", plain.content),
+    );
+}
+
+#[tokio::test]
+async fn batch_read_projection_reuses_only_visible_complete_sections() {
+    use crate::llm::ContentBlock;
+    use crate::tools::builtin::read::ReadTool;
+    use crate::tools::{Tool, ToolContext};
+    use std::collections::{HashMap, HashSet};
+
+    let workspace = tempfile::tempdir().unwrap();
+    let ctx = ToolContext::new(workspace.path().to_path_buf());
+    let file = "青石 archive.txt";
+    let original = "Same archive observation.\n=== literal heading ===\n".repeat(30);
+    std::fs::write(workspace.path().join(file), &original).unwrap();
+    let args = serde_json::json!({"files": [{"path":file},{"path":"current.txt"}]});
+    let mut messages = Vec::new();
+    let mut layouts = HashMap::new();
+    let mut receipts = Vec::new();
+    for (index, value) in [
+        None,
+        Some("first"),
+        Some("first"),
+        Some("next"),
+        Some("next"),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        if let Some(value) = value {
+            std::fs::write(workspace.path().join("current.txt"), value).unwrap();
+        }
+        if index == 3 {
+            std::fs::write(workspace.path().join(file), original.replace("Same", "New")).unwrap();
+        }
+        let read = ReadTool.execute(&args, &ctx).await.unwrap();
+        assert!(read.success);
+        let content = if index == 4 {
+            format!("{}\nModified result", read.content)
+        } else {
+            read.content
+        };
+        let receipt =
+            runner_result_value(&content, false, &[], 0, read.metadata.as_ref(), None, None);
+        let call = RecordedCall {
+            response_seq: None,
+            id: format!("read-{index}"),
+            name: "read".into(),
+            args: args.clone(),
+            text: String::new(),
+            reasoning: None,
+        };
+        if let Some((message, layout)) = recorded_tool_messages(
+            &mut vec![call].into_iter(),
+            &mut messages,
+            &mut None,
+            receipt.as_str().unwrap(),
+            false,
+            None,
+            &HashSet::new(),
+        )
+        .unwrap()
+        {
+            layouts.insert(message, layout);
+        }
+        receipts.push(receipt);
+    }
+    let full = messages.clone();
+    let mut after_compaction = messages[2..4].to_vec();
+    let compacted_layouts = HashMap::from([(1, layouts.remove(&3).unwrap())]);
+    project_repeated_tool_results(&mut after_compaction, &compacted_layouts);
+    let native_lines = original
+        .lines()
+        .enumerate()
+        .map(|(i, line)| format!("{}\t{line}", i + 1))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let ContentBlock::ToolResult { content, .. } = &after_compaction[1].content[0] else {
+        panic!("expected retained batch read");
+    };
+    assert!(content.as_text().contains(&native_lines));
+    assert!(!content.as_text().contains("preceding full batch section"));
+    layouts.insert(3, compacted_layouts.into_values().next().unwrap());
+
+    project_repeated_tool_results(&mut messages, &layouts);
+    let projected = |index: usize| {
+        let ContentBlock::ToolResult { content, .. } = &messages[index].content[0] else {
+            panic!("expected batch result at {index}");
+        };
+        content.as_text()
+    };
+    assert!(projected(1).contains("Failed to read file current.txt"));
+    assert!(projected(1).contains(&native_lines));
+    for index in [3, 5] {
+        let text = projected(index);
+        assert!(text.contains("preceding full batch section"), "{text}");
+        assert!(text.contains("=== 青石 archive.txt ==="));
+        assert!(text.contains("\tfirst"));
+        assert!(text.contains("(Complete: all 2 file(s) processed.)"));
+        assert!(!text.contains("literal heading"));
+    }
+    assert!(projected(7).contains("New archive observation."));
+    assert!(projected(9).contains("New archive observation."));
+    assert!(projected(9).ends_with("Modified result"));
+    assert_eq!(
+        serde_json::to_value(&messages[9]).unwrap(),
+        serde_json::to_value(&full[9]).unwrap()
+    );
+    assert!(receipts[1]
+        .as_str()
+        .unwrap()
+        .contains("Same archive observation."));
+}
+
+#[tokio::test]
+async fn partial_batch_read_projects_labels_and_keeps_the_exact_cursor() {
+    use crate::llm::ContentBlock;
+    use crate::tools::builtin::read::ReadTool;
+    use crate::tools::{Tool, ToolContext};
+    use std::collections::{HashMap, HashSet};
+
+    let workspace = tempfile::tempdir().unwrap();
+    let long = "  item: 青石\n".repeat(300);
+    std::fs::write(workspace.path().join("青石 list.txt"), long).unwrap();
+    std::fs::write(workspace.path().join("next.txt"), "next").unwrap();
+    let args = serde_json::json!({"files":[{"path":"青石 list.txt"},{"path":"next.txt"}]});
+    let result = ReadTool
+        .execute(
+            &args,
+            &ToolContext::new(workspace.path().to_path_buf()).with_result_budget_bytes(1024),
+        )
+        .await
+        .unwrap();
+    assert!(result.success);
+    let (_, exact_cursor) = result.content.rsplit_once("\n\n").unwrap();
+    assert!(exact_cursor.starts_with("(Partial:"));
+    let receipt = runner_result_value(
+        &result.content,
+        false,
+        &[],
+        0,
+        result.metadata.as_ref(),
+        None,
+        None,
+    );
+    let call = RecordedCall {
+        response_seq: None,
+        id: "partial-read".into(),
+        name: "read".into(),
+        args,
+        text: String::new(),
+        reasoning: None,
+    };
+    let mut messages = Vec::new();
+    let (index, layout) = recorded_tool_messages(
+        &mut vec![call].into_iter(),
+        &mut messages,
+        &mut None,
+        receipt.as_str().unwrap(),
+        false,
+        None,
+        &HashSet::new(),
+    )
+    .unwrap()
+    .expect("partial numbered data has a layout proof");
+    let history_seed::ReadLayout::Batch(proof) = &layout else {
+        panic!("expected batch proof");
+    };
+    let sections = proof.sections_for(&result.content).unwrap();
+    assert_eq!(sections.len(), 1);
+    assert!(sections[0].identity.is_none());
+    project_repeated_tool_results(&mut messages, &HashMap::from([(index, layout)]));
+    let ContentBlock::ToolResult { content, .. } = &messages[index].content[0] else {
+        panic!("expected read result");
+    };
+    assert!(content.as_text().contains("\n1\t  item: 青石\n"));
+    assert!(content.as_text().ends_with(exact_cursor));
+    assert!(!content.as_text().contains("     1\t"));
+}
+
+#[tokio::test]
+async fn read_projection_elides_line_number_alignment_only() {
+    use crate::llm::ContentBlock;
+    use crate::tools::builtin::read::ReadTool;
+    use crate::tools::{Tool, ToolContext};
+    use std::collections::{HashMap, HashSet};
+
+    let workspace = tempfile::tempdir().unwrap();
+    let path = "青石 source.txt";
+    std::fs::write(
+        workspace.path().join(path),
+        "  section:\n\tentry: 青石\n\nend\n",
+    )
+    .unwrap();
+    let args = serde_json::json!({"file_path":path,"limit":3});
+    let result = ReadTool
+        .execute(&args, &ToolContext::new(workspace.path().to_path_buf()))
+        .await
+        .unwrap();
+    let raw_lines = "     1\t  section:\n     2\t\tentry: 青石\n     3\t\n";
+    let footer = result
+        .content
+        .strip_prefix(raw_lines)
+        .expect("original display layout");
+    assert!(footer.contains("continue with offset=3"));
+    let receipt = runner_result_value(
+        &result.content,
+        false,
+        &[],
+        0,
+        result.metadata.as_ref(),
+        None,
+        None,
+    );
+    let call = RecordedCall {
+        response_seq: None,
+        id: "display-read".into(),
+        name: "read".into(),
+        args,
+        text: String::new(),
+        reasoning: None,
+    };
+    let mut messages = Vec::new();
+    let (index, layout) = recorded_tool_messages(
+        &mut vec![call].into_iter(),
+        &mut messages,
+        &mut None,
+        receipt.as_str().unwrap(),
+        false,
+        None,
+        &HashSet::new(),
+    )
+    .unwrap()
+    .unwrap();
+
+    project_repeated_tool_results(&mut messages, &HashMap::from([(index, layout)]));
+    let ContentBlock::ToolResult { content, .. } = &messages[index].content[0] else {
+        panic!("expected native read result");
+    };
+    assert_eq!(
+        content.as_text(),
+        format!("Tool exit code: 0\n1\t  section:\n2\t\tentry: 青石\n3\t\n{footer}")
+    );
+    assert_eq!(
+        decode_fact_tool_result(receipt.as_str().unwrap())
+            .unwrap()
+            .text,
+        result.content
+    );
+}
+
+#[tokio::test]
+async fn read_projection_recognizes_covered_ranges_and_preserves_fresh_text() {
+    use crate::llm::ContentBlock;
+    use crate::tools::builtin::read::ReadTool;
+    use crate::tools::{Tool, ToolContext};
+    use std::collections::{HashMap, HashSet};
+
+    let workspace = tempfile::tempdir().unwrap();
+    let ctx = ToolContext::new(workspace.path().to_path_buf());
+    let path = "青石 notes.txt";
+    let original = format!("青石{}\nsecond intact line", "observed text ".repeat(52));
+    std::fs::write(workspace.path().join(path), &original).unwrap();
+    std::fs::write(workspace.path().join("other.txt"), &original).unwrap();
+    std::fs::write(workspace.path().join("long.txt"), "界".repeat(900)).unwrap();
+    let requests = [
+        serde_json::json!({"file_path":path}),
+        serde_json::json!({"file_path":path,"byte_offset":6}),
+        serde_json::json!({"file_path":path,"offset":1,"limit":1}),
+        serde_json::json!({"file_path":"other.txt","byte_offset":6}),
+        serde_json::json!({"file_path":path,"byte_offset":6}),
+        serde_json::json!({"file_path":path,"byte_offset":12}),
+        serde_json::json!({"file_path":"long.txt"}),
+        serde_json::json!({"file_path":"long.txt","byte_offset":1998}),
+    ];
+    let mut messages = Vec::new();
+    let mut layouts = HashMap::new();
+    for (index, args) in requests.into_iter().enumerate() {
+        if index == 4 {
+            let changed = original.replace("observed", "updated");
+            std::fs::write(workspace.path().join(path), changed).unwrap();
+        }
+        let read = ReadTool.execute(&args, &ctx).await.unwrap();
+        assert!(read.success, "{}", read.content);
+        let text = if index == 5 {
+            format!("{}\npost-read transform", read.content)
+        } else {
+            read.content
+        };
+        let receipt = runner_result_value(&text, false, &[], 0, read.metadata.as_ref(), None, None);
+        let call = RecordedCall {
+            response_seq: None,
+            id: format!("read-{index}"),
+            name: "read".into(),
+            args,
+            text: String::new(),
+            reasoning: None,
+        };
+        if let Some((message, layout)) = recorded_tool_messages(
+            &mut vec![call].into_iter(),
+            &mut messages,
+            &mut None,
+            receipt.as_str().unwrap(),
+            false,
+            None,
+            &HashSet::new(),
+        )
+        .unwrap()
+        {
+            layouts.insert(message, layout);
+        }
+    }
+    let unchanged = messages.clone();
+    project_repeated_tool_results(&mut messages, &layouts);
+    let body = |index: usize| match &messages[index * 2 + 1].content[0] {
+        ContentBlock::ToolResult { content, .. } => content.as_text(),
+        _ => panic!("expected text read"),
+    };
+    assert!(
+        body(1).contains("This range adds no new text"),
+        "{}",
+        body(1)
+    );
+    assert!(!body(1).contains("observed text"));
+    assert!(body(1).contains("End of file"));
+    assert!(body(2).contains("This range adds no new text"));
+    assert!(body(2).contains("second intact line"));
+    assert!(!body(1).contains("Two consecutive tool rounds"));
+    assert!(body(2).contains("Two consecutive tool rounds"));
+    let raw_body = |index: usize| match &unchanged[index * 2 + 1].content[0] {
+        ContentBlock::ToolResult { content, .. } => content.as_text(),
+        _ => panic!("expected original text read"),
+    };
+    for index in [0, 3, 4] {
+        assert_eq!(
+            body(index),
+            raw_body(index)
+                .replacen("\n     1\t", "\n1\t", 1)
+                .replacen("\n     2\t", "\n2\t", 1),
+            "read {index} keeps all new lines and its footer"
+        );
+    }
+    for index in [5, 6] {
+        assert_eq!(
+            serde_json::to_value(&messages[index * 2 + 1]).unwrap(),
+            serde_json::to_value(&unchanged[index * 2 + 1]).unwrap(),
+            "read {index} keeps its original bytes"
+        );
+    }
+    assert_eq!(body(7), raw_body(7).replacen("\n     1\t", "\n1\t", 1));
+    let mut compacted = unchanged[2..4].to_vec();
+    let compacted_layout = HashMap::from([(1, layouts.remove(&3).unwrap())]);
+    project_repeated_tool_results(&mut compacted, &compacted_layout);
+    let ContentBlock::ToolResult { content, .. } = &compacted[1].content[0] else {
+        panic!("expected retained text read");
+    };
+    assert_eq!(
+        content.as_text(),
+        raw_body(1)
+            .replacen("\n     1\t", "\n1\t", 1)
+            .replacen("\n     2\t", "\n2\t", 1)
+    );
+}
+
+#[tokio::test]
+async fn covered_read_recovery_counts_complete_rounds_and_resets_for_new_information() {
+    use crate::llm::ContentBlock;
+    use crate::tools::builtin::read::ReadTool;
+    use crate::tools::{Tool, ToolContext};
+    use std::collections::{HashMap, HashSet};
+
+    let workspace = tempfile::tempdir().unwrap();
+    let context = ToolContext::new(workspace.path().to_path_buf());
+    std::fs::write(
+        workspace.path().join("notes.txt"),
+        "content already read\nsecond line",
+    )
+    .unwrap();
+    std::fs::write(
+        workspace.path().join("elsewhere.txt"),
+        "Previously unseen details",
+    )
+    .unwrap();
+    let requests = [
+        (1, serde_json::json!({"file_path":"notes.txt"})),
+        (
+            2,
+            serde_json::json!({"file_path":"notes.txt","byte_offset":1}),
+        ),
+        (
+            2,
+            serde_json::json!({"file_path":"notes.txt","byte_offset":2}),
+        ),
+        (3, serde_json::json!({"file_path":"elsewhere.txt"})),
+        (3, serde_json::json!({"file_path":"notes.txt","offset":1})),
+        (4, serde_json::json!({"file_path":"notes.txt","limit":1})),
+        (
+            5,
+            serde_json::json!({"file_path":"notes.txt","byte_offset":1}),
+        ),
+        (
+            6,
+            serde_json::json!({"file_path":"notes.txt","byte_offset":2}),
+        ),
+        (7, serde_json::json!({"file_path":"notes.txt","offset":1})),
+        (8, serde_json::json!({"file_path":"notes.txt","offset":1})),
+    ];
+    let mut messages = vec![Message::user(
+        "Use the available evidence to answer the question.",
+    )];
+    let mut layouts = HashMap::new();
+    let mut result_indexes = Vec::new();
+    let mut previous = None;
+    for (index, (round, args)) in requests.into_iter().enumerate() {
+        if round == 8 {
+            messages.push(Message::user("Please recheck the last line from disk."));
+            previous = None;
+        }
+        let result = ReadTool.execute(&args, &context).await.unwrap();
+        assert!(result.success, "{}", result.content);
+        let receipt = runner_result_value(
+            &result.content,
+            false,
+            &[],
+            0,
+            result.metadata.as_ref(),
+            None,
+            None,
+        );
+        let call = RecordedCall {
+            response_seq: Some(round),
+            id: format!("read-{index}"),
+            name: "read".into(),
+            args,
+            text: String::new(),
+            reasoning: None,
+        };
+        let (message, layout) = recorded_tool_messages(
+            &mut vec![call].into_iter(),
+            &mut messages,
+            &mut previous,
+            receipt.as_str().unwrap(),
+            false,
+            None,
+            &HashSet::new(),
+        )
+        .unwrap()
+        .unwrap();
+        layouts.insert(message, layout);
+        result_indexes.push(message);
+    }
+    project_repeated_tool_results(&mut messages, &layouts);
+    let results: Vec<_> = result_indexes
+        .into_iter()
+        .map(|index| match &messages[index].content[0] {
+            ContentBlock::ToolResult { content, .. } => content.as_text(),
+            _ => panic!("expected a native read result"),
+        })
+        .collect();
+    assert!(results[5].contains("continue with offset=1"));
+    assert!(results[9].contains("second line"));
+    assert_eq!(
+        results
+            .iter()
+            .enumerate()
+            .filter_map(|(index, body)| body
+                .contains("Two consecutive tool rounds")
+                .then_some(index))
+            .collect::<Vec<_>>(),
+        [7]
+    );
+}
+
 // Mount the original workspace log without initializing any command sandbox.
 pub(super) fn surface(workspace: &Path, client: Arc<dyn LlmClient>) -> SessionSurface {
     surface_with_budget(workspace, client, None)
@@ -203,6 +807,125 @@ pub(super) fn result(log: &FileLog, key: &str, id: &str, output: &str) {
         "tool.result",
         serde_json::json!({"toolCallId":id,"ok":true,"output":output}),
     );
+}
+
+#[tokio::test]
+async fn repeated_results_preserve_the_original_context_prefix() {
+    let workspace = tempfile::tempdir().unwrap();
+    let log = FileLog::open(log_dir(workspace.path())).unwrap();
+    let original =
+        serde_json::json!({"items": (0..64).map(|i| format!("条目-{i:04}")).collect::<Vec<_>>()})
+            .to_string();
+    let changed = original.replace("条目-0031", "changed-0031");
+    let args = serde_json::json!({"file_path":"src/记录.json"});
+    let mut lines = vec!["user\nInspect a structured observation.".into()];
+    let mut retained = Vec::new();
+    let mut prefix = None;
+    for (id, output, input, error) in [
+        ("first", &original, args.clone(), false),
+        ("repeat", &original, args.clone(), false),
+        ("repeat-again", &original, args.clone(), false),
+        (
+            "different-input",
+            &original,
+            serde_json::json!({"file_path":"other.json"}),
+            false,
+        ),
+        ("different-status", &original, args.clone(), true),
+        ("changed", &changed, args.clone(), false),
+        ("re-read", &changed, args, false),
+    ] {
+        if id == "repeat" {
+            lines.push("user\nCheck it again.".into());
+        }
+        let mut decision = call(id);
+        decision["call"]["args"] = input.clone();
+        append(&log, &format!("model-{id}"), "model.turn", decision);
+        if error {
+            error_result(&log, &format!("result-{id}"), id, output);
+        } else {
+            result(&log, &format!("result-{id}"), id, output);
+        }
+        let pair = [
+            format!("assistant\ntool read\n{input}"),
+            format!("{}\n{output}", if error { "tool-error" } else { "tool" }),
+        ];
+        if id == "re-read" {
+            retained.extend(pair.clone());
+        }
+        lines.extend(pair);
+        if id == "first" {
+            let client = Arc::new(ObservedClient::default());
+            prefix = Some(
+                provider_request(workspace.path(), &client, "", lines.clone())
+                    .await
+                    .unwrap(),
+            );
+        }
+    }
+    let outputs = |messages: &[Message]| {
+        messages
+            .iter()
+            .flat_map(|message| &message.content)
+            .filter_map(|block| match block {
+                crate::llm::ContentBlock::ToolResult {
+                    tool_use_id,
+                    content,
+                    ..
+                } => Some((tool_use_id.clone(), content.as_text())),
+                _ => None,
+            })
+            .collect::<std::collections::BTreeMap<_, _>>()
+    };
+    let client = Arc::new(ObservedClient::default());
+    let projected = provider_request(workspace.path(), &client, "", lines)
+        .await
+        .unwrap();
+    let prefix = prefix.unwrap();
+    assert_eq!(
+        serde_json::to_value(&projected[..prefix.len()]).unwrap(),
+        serde_json::to_value(&prefix).unwrap()
+    );
+    let model_output = outputs(&projected);
+    for repeat in ["repeat", "repeat-again", "re-read"] {
+        assert!(model_output[repeat]
+            .contains("identical to the preceding full `read` result for these arguments"));
+        assert!(model_output[repeat].len() < original.len() / 4);
+    }
+    assert_eq!(model_output["first"], original);
+    assert_eq!(model_output["different-input"], original);
+    assert_eq!(model_output["different-status"], original);
+    assert_eq!(model_output["changed"], changed);
+    let facts = log.read(THREAD).unwrap();
+    let raw: Vec<_> = facts
+        .iter()
+        .filter(|fact| fact.kind == "tool.result")
+        .map(|fact| fact.payload["output"].as_str().unwrap())
+        .collect();
+    assert_eq!(
+        raw,
+        [&original, &original, &original, &original, &original, &changed, &changed]
+    );
+
+    append(
+        &log,
+        "compaction",
+        "compaction.done",
+        serde_json::json!({"summary":"Earlier observations compacted.", "kept":retained}),
+    );
+    let reopened = Arc::new(ObservedClient::default());
+    let model_output = outputs(
+        &provider_request(
+            workspace.path(),
+            &reopened,
+            "Earlier observations compacted.",
+            retained,
+        )
+        .await
+        .unwrap(),
+    );
+    assert_eq!(model_output.len(), 1);
+    assert_eq!(model_output["re-read"], changed);
 }
 
 #[test]
@@ -752,7 +1475,6 @@ async fn automatic_summary_sees_public_checkpoint_before_the_retained_tool_resul
         budget: crate::compaction::CompactionBudget::for_auto_compaction(4_096, 0.8, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(0)),
         prompt_tokens: Arc::new(AtomicU64::new(4_000)),
-        repeats: Arc::default(),
     };
     let kept = vec![
         format!("assistant\ntool read\n{}", next["call"]["args"]),
@@ -1130,10 +1852,15 @@ fn verification_projection_preserves_images_errors_and_uses_system_for_new_user_
         0,
         Some(&serde_json::json!({"file_path":"source.rs","after":"changed"})),
     );
-    let gate = crate::harness_loop::decide_completion(&ledger, &[], &[], false);
+    let preview = || {
+        ModelVerificationPreview::Unverified(
+            crate::harness_loop::evaluate_with_contracts(&ledger, &[], &[], false, &[], &[])
+                .unwrap_err(),
+        )
+    };
     let mut messages = vec![original.clone()];
     let mut system = Some("stable policy".to_string());
-    tool_results::apply_verification_context(&mut messages, &mut system, gate.clone());
+    tool_results::apply_verification_context(&mut messages, &mut system, preview(), false);
     assert_eq!(system.as_deref(), Some("stable policy"));
     let crate::llm::ContentBlock::ToolResult {
         tool_use_id,
@@ -1169,7 +1896,7 @@ fn verification_projection_preserves_images_errors_and_uses_system_for_new_user_
         let mut messages = vec![original.clone(), last];
         let before = serde_json::to_value(&messages).unwrap();
         let mut system = None;
-        tool_results::apply_verification_context(&mut messages, &mut system, gate.clone());
+        tool_results::apply_verification_context(&mut messages, &mut system, preview(), false);
         assert_eq!(serde_json::to_value(messages).unwrap(), before);
         assert!(system
             .as_deref()
@@ -1180,20 +1907,17 @@ fn verification_projection_preserves_images_errors_and_uses_system_for_new_user_
 
 #[test]
 fn verified_previous_changes_do_not_mark_a_new_user_request_complete() {
-    let mut messages = vec![Message::user("new task")];
-    let before = serde_json::to_value(&messages).unwrap();
-    let mut system = Some("stable policy".to_string());
-    tool_results::apply_verification_context(
-        &mut messages,
-        &mut system,
-        crate::harness_loop::CompletionGate::Allow(
-            crate::harness_loop::CompletionTerminal::Verified {
-                effect_digest: "previous verified effect".into(),
-            },
-        ),
-    );
-    assert_eq!(serde_json::to_value(&messages).unwrap(), before);
-    assert_eq!(system.as_deref(), Some("stable policy"));
+    for preview in [
+        ModelVerificationPreview::Verified,
+        ModelVerificationPreview::DiskContentVerified,
+    ] {
+        let mut messages = vec![Message::user("new task")];
+        let before = serde_json::to_value(&messages).unwrap();
+        let mut system = Some("stable policy".to_string());
+        tool_results::apply_verification_context(&mut messages, &mut system, preview, false);
+        assert_eq!(serde_json::to_value(&messages).unwrap(), before);
+        assert_eq!(system.as_deref(), Some("stable policy"));
+    }
 }
 
 #[test]

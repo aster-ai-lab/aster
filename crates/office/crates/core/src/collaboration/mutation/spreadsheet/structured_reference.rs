@@ -372,7 +372,7 @@ fn child_maps<T: ReadTxn>(map: &yrs::MapRef, transaction: &T) -> UseResult<Vec<y
             _ => {
                 return Err(invalid_shared_spreadsheet(
                     "A shared Spreadsheet chart is not a typed map.",
-                ))
+                ));
             }
         }
     }

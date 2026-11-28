@@ -846,12 +846,12 @@ impl ToolRegistry {
                 "compacted": compacted,
                 "before": before.as_deref().map(|content| serde_json::json!({
                     "bytes": content.len(),
-                    "sha256": sha256::digest(content.as_bytes()),
+                    "sha256": crate::content_digest::sha256_hex(content.as_bytes()),
                     "artifact": before_artifact,
                 })),
                 "after": after.as_deref().map(|content| serde_json::json!({
                     "bytes": content.len(),
-                    "sha256": sha256::digest(content.as_bytes()),
+                    "sha256": crate::content_digest::sha256_hex(content.as_bytes()),
                     "artifact": after_artifact,
                 })),
                 "unified_diff": unified_diff,

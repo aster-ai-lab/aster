@@ -230,6 +230,97 @@ fn load_deepseek_config() -> CodeConfig {
     config
 }
 
+#[tokio::test]
+#[ignore = "requires the DeepSeek planning token relay and the frozen case/arm environment"]
+async fn explicit_goal_plan_token_comparison() {
+    let (prompt, artifacts) = match std::env::var("ASTER_GOAL_PLAN_CASE").as_deref() {
+        Ok("reconciliation") => (
+            "Plan only. Reconcile catalog.csv against stock.csv and deliver exceptions.json. Keep both input files untouched. Define measurable success criteria and at least two independently verifiable steps. The final answer should briefly describe the planned checks.",
+            ["catalog.csv", "stock.csv", "exceptions.json"],
+        ),
+        Ok("localization") => (
+            "只做计划。对照 labels-en.json 检查 labels-ja.json，将漏译与占位符不一致项写入 translation-review.md。不得修改两份输入文件。列出可核验的验收条件以及至少两个独立步骤，最后简述核验安排。",
+            ["labels-en.json", "labels-ja.json", "translation-review.md"],
+        ),
+        _ => panic!("unknown planning fixture"),
+    };
+    let mut config = load_deepseek_config();
+    config.memory = Some(aster_core::memory::MemoryConfig {
+        llm_extraction: false,
+        prune_policy: None,
+        ..Default::default()
+    });
+    let mut options = SessionOptions::new()
+        .with_planning_mode(aster_core::PlanningMode::Enabled)
+        .with_goal_tracking(true)
+        .with_continuation(false)
+        .with_verifier(false)
+        .with_read_only_session(true);
+    if std::env::var_os("ASTER_GOAL_PLAN_ISOLATE_TOOLS").is_some() {
+        options = options.with_tool_presentation_profile(
+            aster_core::tools::ToolPresentationProfileV1::disabled(),
+        );
+    }
+    match std::env::var("ASTER_GOAL_PLAN_ARM").as_deref() {
+        Ok("separate") => {
+            options = options.with_budget_guard(Arc::new(aster_core::budget::NoopBudgetGuard));
+        }
+        Ok("combined") => {}
+        _ => panic!("unknown planning arm"),
+    }
+    let workspace = tempfile::tempdir().unwrap();
+    let agent = Agent::from_config(config).await.unwrap();
+    let session = agent
+        .session_async(workspace.path().display().to_string(), Some(options))
+        .await
+        .unwrap();
+    let (mut events, task) = session.stream(prompt, None).await.unwrap();
+    let mut goal = None;
+    let mut plan = None;
+    let mut finished = false;
+    let mut terminal_error = None;
+    while let Some(event) = events.recv().await {
+        match event {
+            AgentEvent::GoalExtracted { goal: value } => goal = Some(value),
+            AgentEvent::PlanningEnd { plan: value, .. } => plan = Some(value),
+            AgentEvent::End { .. } => {
+                finished = true;
+                break;
+            }
+            AgentEvent::Error { message } => {
+                terminal_error = Some(message);
+                break;
+            }
+            _ => {}
+        }
+    }
+    task.await.unwrap();
+    let goal = goal.expect("goal produced by the session");
+    let plan = plan.expect("plan produced by the session");
+    assert!(!goal.success_criteria.is_empty());
+    assert!(plan.steps.len() >= 2);
+    let steps = plan
+        .steps
+        .iter()
+        .map(|step| step.content.as_str())
+        .collect::<Vec<_>>()
+        .join("\n");
+    for artifact in artifacts {
+        assert!(
+            steps.contains(artifact),
+            "{artifact} absent from execution steps"
+        );
+    }
+    assert!(!workspace.path().join(artifacts[2]).exists());
+    session.close().await;
+    println!(
+        "PLAN_COMPARISON criteria={} steps={}",
+        goal.success_criteria.len(),
+        plan.steps.len()
+    );
+    assert!(finished, "main run did not complete: {terminal_error:?}");
+}
+
 fn with_goal_bounds(mut config: CodeConfig, max_slices: u64, max_no_progress: u64) -> CodeConfig {
     let deadline = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)

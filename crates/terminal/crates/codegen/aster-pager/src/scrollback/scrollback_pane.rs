@@ -611,15 +611,11 @@ impl ScrollbackPane {
 
         // When timestamps are shown on message blocks, reserve right margin in the block's content width
         // Wrapped text then doesn't collide with the overlaid timestamp (matches EntryRenderer for normal content)
-        let ts_reserved = if appearance.show_timestamps
-            && matches!(
-                &entry.block,
-                RenderBlock::UserPrompt(_) | RenderBlock::AgentMessage(_) | RenderBlock::Btw(_)
-            ) {
-            10
-        } else {
-            0
-        };
+        let ts_reserved = crate::scrollback::render::timestamp_reserved_for_block(
+            &entry.block,
+            appearance,
+            layout.content_width(),
+        );
         let content_width_for_block = layout.content_width().saturating_sub(ts_reserved);
 
         let ctx = entry.context_with_mode_and_budget(
@@ -828,12 +824,12 @@ impl ScrollbackPane {
         // Overlay timestamp on the first content line for message blocks in sticky headers (pinned/pushed user prompts, agent messages, etc.)
         // Mirrors the overlay in EntryRenderer but adapted for the header render path and the clip (scratch buffer) case
         // Hover expansion works for pinned (absolute coords); pushed headers always get the short format
-        if ctx.appearance.show_timestamps
-            && !output.lines.is_empty()
-            && matches!(
+        if !output.lines.is_empty()
+            && crate::scrollback::render::timestamp_reserved_for_block(
                 &entry.block,
-                RenderBlock::UserPrompt(_) | RenderBlock::AgentMessage(_) | RenderBlock::Btw(_)
-            )
+                &ctx.appearance,
+                content_area.width,
+            ) > 0
             && let Some(ts) = entry.created_at
         {
             let first_content_y = content_area.y + if use_vpad { 1 } else { 0 };

@@ -41,7 +41,7 @@ pub(super) fn set(
             return Err(editor_error(
                 "use.office.hyperlink_owner_unsupported",
                 "Native Word hyperlinks require a paragraph or hyperlink path.",
-            ))
+            ));
         }
     };
     if let NativeOfficeHyperlinkTarget::Internal { location } = &hyperlink.target {
@@ -223,7 +223,7 @@ fn locate_part_path<'a>(
             return Err(editor_error(
                 "use.office.word_xml_invalid",
                 "Word hyperlink owner part must have a document, header, or footer root.",
-            ))
+            ));
         }
     };
     let segments = parse_segments(path)?;
@@ -242,7 +242,7 @@ fn locate_part_path<'a>(
                 return Err(editor_error(
                     "use.office.mutation_path_unsupported",
                     format!("Word hyperlink path element '{name}' is not supported."),
-                ))
+                ));
             }
         };
         current = current

@@ -157,7 +157,7 @@ pub(super) fn apply_pdf_annotation_mutation(
         _ => {
             return Err(invalid_annotation_mutation(
                 "The supplied mutation is not a PDF annotation mutation.",
-            ))
+            ));
         }
     }
     read_pdf_annotation_state(doc, manifest)?;
@@ -515,7 +515,7 @@ fn shared_annotation_identity<'a>(
         Some(_) => {
             return Err(invalid_shared_pdf(
                 "The shared PDF annotation deletion tombstone is invalid.",
-            ))
+            ));
         }
     };
     Ok(SharedAnnotationIdentity {
@@ -605,20 +605,20 @@ fn assert_compatible_value(
                 (Some(before), None, Some(current)) if !json_equal(before, current)? => {
                     return Err(annotation_match_conflict(format!(
                         "The {field_label} changed before it could be removed."
-                    )))
+                    )));
                 }
                 (_, None, _) => {}
                 (None, Some(after), Some(current)) if !json_equal(after, current)? => {
                     return Err(annotation_match_conflict(format!(
                         "The {field_label} was added concurrently with a different value."
-                    )))
+                    )));
                 }
                 (None, Some(_), _) => {}
                 (Some(before), Some(after), _) if json_equal(before, after)? => {}
                 (Some(_), Some(_), None) => {
                     return Err(annotation_match_conflict(format!(
                         "The {field_label} was removed before this change could be applied."
-                    )))
+                    )));
                 }
                 (Some(before), Some(after), Some(current)) => {
                     assert_compatible_value(before, after, current, &field_label)?;
@@ -662,7 +662,7 @@ fn validate_input_json(value: &JsonValue, label: &str, depth: usize) -> UseResul
         JsonValue::Number(value) if value.as_f64().is_none_or(|value| !value.is_finite()) => {
             return Err(invalid_annotation_mutation(format!(
                 "A PDF {label} contains a non-finite number."
-            )))
+            )));
         }
         _ => {}
     }

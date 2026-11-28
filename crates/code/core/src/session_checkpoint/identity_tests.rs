@@ -31,7 +31,10 @@ fn source_content_identity_is_the_portable_v1_canonical_identity() {
     assert_eq!(digest, evidence.content_digest);
     let canonical = codec::canonical_json_bytes(&checkpoint).unwrap();
     assert_eq!(size, canonical.len() as u64);
-    assert_eq!(digest, format!("sha256:{}", sha256::digest(canonical)));
+    assert_eq!(
+        digest,
+        format!("sha256:{}", crate::content_digest::sha256_hex(canonical))
+    );
 }
 
 #[test]

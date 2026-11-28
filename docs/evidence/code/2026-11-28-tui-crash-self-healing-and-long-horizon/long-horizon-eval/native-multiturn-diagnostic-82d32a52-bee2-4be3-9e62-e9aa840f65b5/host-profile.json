@@ -1,0 +1,6 @@
+{
+  "completionAttestation": "disk_content",
+  "scope": "byte digest binding only; independent parent oracle proves arithmetic",
+  "requirements_revision": 2,
+  "previous_default_profile_failures_retained": true
+}

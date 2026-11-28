@@ -70,7 +70,10 @@ fn result(prepared: &ToolPreparedV1, outcome: ToolExecutionOutcome) -> ToolExecu
             before: None,
             after: ToolFileIdentityV1 {
                 kind: ToolFileKind::File,
-                content_digest: Some(format!("sha256:{}", sha256::digest("actual bytes"))),
+                content_digest: Some(format!(
+                    "sha256:{}",
+                    crate::content_digest::sha256_hex("actual bytes")
+                )),
                 mode: Some(0o644),
             },
         }]),
@@ -83,6 +86,59 @@ fn result_fact(result: &ToolExecutionResultV1) -> Fact {
         "result",
         json!({"receipt":result,"toolCallId":result.identity.tool_call_id,"ok":false,"output":"failed after writing"}),
     )
+}
+
+#[test]
+fn workspace_change_proof_requires_owned_complete_before_and_after_evidence() {
+    let owner = ToolAdmissionIdentityV1 {
+        run_id: "current-run".into(),
+        thread_id: "current-thread".into(),
+        capability_binding_digest: format!(
+            "sha256:{}",
+            crate::content_digest::sha256_hex("binding")
+        ),
+    };
+    let mut prepared = preparation("observed-operation");
+    prepared.identity.admission = Some(owner.clone());
+    let mut observed = result(&prepared, ToolExecutionOutcome::Succeeded);
+    let known_absence = ToolFileIdentityV1 {
+        kind: ToolFileKind::Missing,
+        content_digest: None,
+        mode: None,
+    };
+    let proves = |receipt: &ToolExecutionResultV1, owner: &ToolAdmissionIdentityV1| {
+        fold_debt(&[prepared_fact(&prepared), result_fact(receipt)])
+            .proves_workspace_change_in(owner)
+    };
+
+    assert!(!proves(&observed, &owner));
+    observed.effects.changes[0].before = Some(known_absence);
+    assert!(proves(&observed, &owner));
+    let mut foreign = owner.clone();
+    foreign.run_id = "earlier-run".into();
+    assert!(!proves(&observed, &foreign));
+    foreign = owner.clone();
+    foreign.capability_binding_digest = format!(
+        "sha256:{}",
+        crate::content_digest::sha256_hex("another binding")
+    );
+    assert!(!proves(&observed, &foreign));
+
+    let mut incomplete = observed.clone();
+    incomplete.effects.completeness = ToolObservationCompleteness::Incomplete;
+    incomplete.effects.reason = Some("Bounded observation did not finish".into());
+    assert!(!proves(&incomplete, &owner));
+    let mut no_change = observed.clone();
+    no_change.effects.changes[0].before = Some(no_change.effects.changes[0].after.clone());
+    assert!(!proves(&no_change, &owner));
+    let mut bookkeeping = observed.clone();
+    bookkeeping.effects.changes[0].path = ".aster/memory/log.json".into();
+    assert!(!proves(&bookkeeping, &owner));
+    observed.prepared_digest = format!(
+        "sha256:{}",
+        crate::content_digest::sha256_hex("wrong preparation")
+    );
+    assert!(!proves(&observed, &owner));
 }
 
 #[test]
@@ -102,7 +158,10 @@ fn failed_and_cancelled_writes_restore_actual_byte_identity_once() {
         let digest = ledger.digest().to_string();
         ledger.observe_tool_receipt("bash", &result);
         assert_eq!(ledger.digest(), digest);
-        assert!(ledger.content_digest_matches("changed.txt", &sha256::digest("actual bytes")));
+        assert!(ledger.content_digest_matches(
+            "changed.txt",
+            &crate::content_digest::sha256_hex("actual bytes")
+        ));
     }
 }
 
@@ -294,7 +353,10 @@ fn background_debt_fixture(cancelled: bool) -> Vec<Fact> {
         before: None,
         after: ToolFileIdentityV1 {
             kind: ToolFileKind::File,
-            content_digest: Some(format!("sha256:{}", sha256::digest(b"background bytes"))),
+            content_digest: Some(format!(
+                "sha256:{}",
+                crate::content_digest::sha256_hex(b"background bytes")
+            )),
             mode: Some(0o644),
         },
     }]);
@@ -404,7 +466,10 @@ fn mixed_background_and_foreground_receipts_project_in_fact_order() {
             }
         }
     }
-    assert!(ledger.content_digest_matches("background.txt", &sha256::digest("actual bytes")));
+    assert!(ledger.content_digest_matches(
+        "background.txt",
+        &crate::content_digest::sha256_hex("actual bytes")
+    ));
 }
 
 #[test]
@@ -660,7 +725,6 @@ fn executor_tools_with(
             reports: None,
             targeted_paths: None,
             pre_tool_hook_resolved: false,
-            repeats: Arc::default(),
             effect_dir: PathBuf::new(),
         }),
         count,
@@ -731,7 +795,10 @@ async fn prepared_batch_observes_each_actual_execution_boundary_and_failed_bytes
         .iter()
         .any(|change| change.path == "changed.txt"
             && change.after.content_digest
-                == Some(format!("sha256:{}", sha256::digest("exact bytes")))));
+                == Some(format!(
+                    "sha256:{}",
+                    crate::content_digest::sha256_hex("exact bytes")
+                ))));
     let digest = tools
         .ledger
         .as_ref()

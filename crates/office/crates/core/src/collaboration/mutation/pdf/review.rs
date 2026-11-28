@@ -177,7 +177,7 @@ pub(super) fn apply_pdf_review_mutation(
             return Err(collaboration_error(
                 "office.collaboration.mutation_invalid",
                 "The supplied mutation is not a PDF review mutation.",
-            ))
+            ));
         }
     }
     read_pdf_review_state(doc, manifest)?;
@@ -550,7 +550,7 @@ fn validate_page_operation_record(
         _ => {
             return Err(invalid_shared_pdf(
                 "The shared PDF page operation kind is unsupported.",
-            ))
+            ));
         }
     }
     Ok(())

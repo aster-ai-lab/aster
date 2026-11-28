@@ -153,12 +153,47 @@ fn extraction_prompt_redacts_sensitive_turn_fields() {
 
 #[test]
 fn extraction_prompt_requires_plain_user_facing_learning_text() {
-    let prompt = build_extraction_prompt("p", "r", "t", "None", 3);
+    let prompt = MEMORY_EXTRACTION_SYSTEM.as_str();
 
-    assert!(prompt.contains("plain user-facing language"));
+    assert!(prompt
+        .to_ascii_lowercase()
+        .contains("plain user-facing language"));
     assert!(prompt.contains("at most 64 characters"));
     assert!(prompt.contains("agent or subagent orchestration"));
     assert!(prompt.contains("A task-specific direction is not a stable preference or skill"));
+}
+
+#[test]
+fn transcript_references_only_exact_current_boundary_text_in_the_model_projection() {
+    let prompt = "Keep the repository-specific convention for future Swift command examples.";
+    let response = "Swift command examples should load dependencies through the project wrapper.";
+    let prior_turn = "Earlier advice applied only to the old wrapper.";
+    let snapshot = MemoryExtractionSnapshot {
+        messages: vec![
+            Message::user(prompt),
+            Message::assistant(prior_turn),
+            Message::user(prompt),
+            Message::assistant(response),
+        ],
+    };
+    let transcript = turn_transcript_for_extraction(&snapshot, prompt, response, 1024);
+    assert_eq!(
+        transcript.evidence,
+        format!(
+            "user: {prompt}\n\nassistant: {prior_turn}\n\nuser: {prompt}\n\nassistant: {response}"
+        )
+    );
+    assert_eq!(
+        transcript.model,
+        format!(
+            "user: {prompt}\n\nassistant: {prior_turn}\n\nuser: [User request above]\n\nassistant: [Assistant final response above]"
+        )
+    );
+
+    let truncated = turn_transcript_for_extraction(&snapshot, prompt, response, 50);
+    assert_eq!(truncated.model, truncated.evidence);
+    let changed_prompt = turn_transcript_for_extraction(&snapshot, prior_turn, response, 1024);
+    assert_eq!(changed_prompt.model.matches(prompt).count(), 2);
 }
 
 #[test]
@@ -467,14 +502,35 @@ fn related_memories_are_formatted_as_json_lines() {
         .with_tag("Memory!")
         .with_metadata("source", "workflow");
 
-    let formatted = format_related_memories_for_extraction(vec![item.clone()]);
+    let formatted = format_related_memories_for_extraction(std::slice::from_ref(&item), &[]);
 
-    assert!(formatted.prompt.contains(&format!(r#""id":"{}""#, item.id)));
+    assert!(formatted.prompt.contains(r#""id":"@1""#));
+    assert!(!formatted.prompt.contains(&item.id));
     assert!(formatted.prompt.contains(r#""type":"procedural""#));
     assert!(formatted.prompt.contains(r#""source":"workflow""#));
     assert!(formatted.prompt.contains(r#""tags":["memory"]"#));
     assert!(formatted.prompt.contains("FileMemoryStore changes"));
     assert!(formatted.allowed_supersedes.contains(&item.id));
+}
+
+#[test]
+fn related_memory_scores_round_trip_without_widened_decimal_digits() {
+    let items = [
+        MemoryItem::new("Use the documented installation procedure.").with_importance(0.92),
+        MemoryItem::new("Build the workspace before running verification.")
+            .with_importance(f32::from_bits(0.92_f32.to_bits() + 1)),
+    ];
+    let formatted = format_related_memories_for_extraction(&items, &[]);
+    let rows = formatted.prompt.lines().collect::<Vec<_>>();
+    assert_eq!(rows.len(), items.len());
+    assert!(rows[0].contains(r#""importance":0.92,"#));
+    for (row, original) in rows.into_iter().zip(&items) {
+        let parsed: serde_json::Value = serde_json::from_str(row).unwrap();
+        let score = parsed["importance"].as_f64().unwrap() as f32;
+        assert_eq!(score.to_bits(), original.importance.to_bits());
+        assert_eq!(parsed["content"], original.content);
+        assert!(formatted.allowed_supersedes.contains(&original.id));
+    }
 }
 
 #[test]
@@ -485,7 +541,7 @@ fn related_memories_include_existing_relation_metadata() {
             .with_metadata("supersedes", "old-preference, bad id with spaces")
             .with_metadata("conflicts_with", "legacy-default,<script>");
 
-    let formatted = format_related_memories_for_extraction(vec![item]);
+    let formatted = format_related_memories_for_extraction(&[item], &[]);
 
     assert!(formatted
         .prompt
@@ -504,7 +560,7 @@ fn related_memories_skip_sensitive_items() {
     let safe = MemoryItem::new("Prefer environment variables for provider credentials.")
         .with_type(MemoryType::Procedural);
 
-    let formatted = format_related_memories_for_extraction(vec![secret, safe]);
+    let formatted = format_related_memories_for_extraction(&[secret, safe], &[]);
 
     assert!(!formatted.prompt.contains("sk-1234567890abcdef"));
     assert!(formatted.prompt.contains("environment variables"));
@@ -531,6 +587,7 @@ async fn related_memories_are_loaded_for_extraction_prompt() {
         &memory,
         "remember FileMemoryStore testing workflow",
         "Use focused memory tests.",
+        "",
     )
     .await;
     let prompt = build_extraction_prompt("p", "r", "t", &related.prompt, 2);
@@ -538,7 +595,110 @@ async fn related_memories_are_loaded_for_extraction_prompt() {
     assert!(prompt.contains("Related existing memories"));
     assert!(prompt.contains("FileMemoryStore behavior"));
     assert!(prompt.contains("avoid duplicates"));
+    assert!(prompt.contains("\"supersedes\":[\"id\"]"));
+    assert!(prompt.contains("\"conflicts_with\":[\"id\"]"));
     assert_eq!(related.allowed_supersedes.len(), 1);
+}
+
+#[test]
+fn short_memory_references_preserve_history_and_only_admit_visible_targets() {
+    let archived = MemoryItem::new("Use the old build configuration only for historic releases.");
+    let first = MemoryItem::new("This workspace uses focused tests for changes to the build.")
+        .with_metadata("supersedes", &archived.id);
+    let second = MemoryItem::new("Use full tests for automated release certification.")
+        .with_metadata("conflicts_with", &first.id);
+    let mut custom = MemoryItem::new("Preserve the explicit host-assigned memory identifier.");
+    custom.id = "@1".into();
+    let cited = format!("Earlier release details are documented in {}.", second.id);
+    let related =
+        format_related_memories_for_extraction(&[first.clone(), second.clone(), custom], &[&cited]);
+
+    let rows: Vec<serde_json::Value> = related
+        .prompt
+        .lines()
+        .map(|line| serde_json::from_str(line).unwrap())
+        .collect();
+    assert_eq!(rows[0]["id"], "@2");
+    assert_eq!(rows[0]["supersedes"], serde_json::json!(["@3"]));
+    assert_eq!(rows[1]["id"], second.id);
+    assert_eq!(rows[1]["conflicts_with"], serde_json::json!(["@2"]));
+    assert_eq!(rows[2]["id"], "@1");
+    assert!(!related.prompt.contains(&archived.id));
+
+    let mut extracted = reusable_skill_memory(None);
+    extracted.supersedes = vec![" @2 ".into(), "@3".into(), "@5".into(), first.id.clone()];
+    extracted.conflicts_with = vec!["@1".into(), second.id.clone(), "@3".into()];
+    related.resolve_aliases(&mut extracted);
+    let (_, supersedes, conflicts) = extracted
+        .into_memory_item("/workspace", "session", &related.allowed_supersedes)
+        .unwrap();
+    assert_eq!(supersedes, [first.id]);
+    assert_eq!(conflicts, ["@1".to_owned(), second.id]);
+}
+
+#[test]
+fn bounded_related_memory_rows_stay_parseable_and_admit_only_rendered_items() {
+    let items: Vec<_> = (0..MAX_RELATED_MEMORY_ITEMS)
+        .map(|index| {
+            MemoryItem::new(format!("{index}{}", "路径\n\"结果\" ".repeat(110)))
+                .with_metadata("conflicts_with", format!("{index}/{}", "a".repeat(110)))
+        })
+        .collect();
+    let related = format_related_memories_for_extraction(&items, &[]);
+    assert!(related.prompt.chars().count() <= MAX_RELATED_MEMORY_CHARS);
+    let rows: Vec<serde_json::Value> = related
+        .prompt
+        .lines()
+        .map(|row| serde_json::from_str(row).unwrap())
+        .collect();
+    assert!(rows.len() < items.len());
+    assert!(rows.last().unwrap()["content"]
+        .as_str()
+        .unwrap()
+        .ends_with('…'));
+    assert_eq!(related.allowed_supersedes.len(), rows.len());
+    for (row, item) in rows.iter().zip(&items) {
+        assert_eq!(
+            related.aliases.get(row["id"].as_str().unwrap()),
+            Some(&item.id)
+        );
+        assert!(related.allowed_supersedes.contains(&item.id));
+    }
+    assert!(!related.allowed_supersedes.contains(&items[rows.len()].id));
+}
+
+#[test]
+fn extraction_without_related_ids_keeps_only_the_supplied_evidence_in_user_message() {
+    let prompt = build_extraction_prompt("user evidence", "assistant evidence", "", "", 4);
+
+    assert_eq!(
+        prompt,
+        "At most 4 items.\n\nUser request:\nuser evidence\n\nAssistant final response:\nassistant evidence"
+    );
+}
+
+#[test]
+fn extraction_policy_is_a_stable_system_message_across_limits_and_recall() {
+    let bare = build_extraction_prompt("first request", "first response", "", "None", 2);
+    let related = build_extraction_prompt(
+        "second request",
+        "second response",
+        "tool: external evidence",
+        r#"{"id":"@1","content":"Earlier work"}"#,
+        5,
+    );
+    assert!(MEMORY_EXTRACTION_SYSTEM.contains("JSON shape:"));
+    assert!(MEMORY_EXTRACTION_SYSTEM.contains("in ANY language"));
+    assert!(MEMORY_EXTRACTION_SYSTEM.contains("\"evolution\""));
+    assert!(!MEMORY_EXTRACTION_SYSTEM.contains("At most"));
+    assert!(!MEMORY_EXTRACTION_SYSTEM.contains("supersedes"));
+    assert!(bare.starts_with("At most 2 items.\n\nUser request:\nfirst request"));
+    assert!(related.starts_with("At most 5 items.\n"));
+    assert!(related.contains("\n\nUser request:\nsecond request"));
+    assert!(related.contains("exact related ids"));
+    assert!(related.contains(r#""supersedes":["id"],"conflicts_with":["id"]"#));
+    assert!(related.contains("Earlier work"));
+    assert!(related.ends_with("tool: external evidence"));
 }
 
 #[test]
@@ -591,13 +751,16 @@ fn every_completed_turn_is_sent_to_the_llm_value_judge() {
 fn extraction_prompt_carries_the_language_neutral_retention_rule() {
     // Model guidance remains language-neutral. Former verb-matcher inputs
     // now have actual Session fail-closed coverage in memory_retention_tests.
-    let prompt = super::build_extraction_prompt("p", "r", "t", "", 3);
+    let prompt = MEMORY_EXTRACTION_SYSTEM.as_str();
     assert!(
         prompt.contains("in ANY language"),
         "the language-neutral rule is present"
     );
     assert!(prompt.contains("0.90") && prompt.contains("0.95"));
     assert!(prompt.contains("never current-turn narration"));
+    assert!(prompt.contains("semantic for project_fact or preference"));
+    assert!(prompt.contains("procedural for workflow or failure"));
+    assert!(prompt.contains("either for decision"));
 }
 
 mod canonical;

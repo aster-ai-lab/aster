@@ -1,0 +1,3 @@
+ORACLE test=shipped_native_form_submit_cancel_and_reject name=range result=pass detail=max 5
+ORACLE test=shipped_native_form_submit_cancel_and_reject name=FORM-SUBMITTED result=pass detail=name=Ada amount=4 ready=true
+ORACLE test=shipped_native_form_submit_cancel_and_reject name=FORM-CANCELLED result=pass detail=ctrl-c

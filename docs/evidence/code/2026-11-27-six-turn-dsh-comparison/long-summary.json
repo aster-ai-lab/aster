@@ -1,0 +1,29 @@
+{
+  "candidate": {
+    "semantic_revisions_passed": 12,
+    "strict_trials_passed": 0,
+    "trials": 2,
+    "total_tokens_median": 240388.0,
+    "uncached_input_tokens_median": 16886.5,
+    "main_requests_median": 27.0,
+    "all_requests": 78
+  },
+  "release": {
+    "semantic_revisions_passed": 12,
+    "strict_trials_passed": 0,
+    "trials": 2,
+    "total_tokens_median": 221867.0,
+    "uncached_input_tokens_median": 25769.0,
+    "main_requests_median": 24.5,
+    "all_requests": 73
+  },
+  "dsh": {
+    "semantic_revisions_passed": 12,
+    "strict_trials_passed": 0,
+    "trials": 2,
+    "total_tokens_median": 263788.5,
+    "uncached_input_tokens_median": 7491.0,
+    "main_requests_median": 26.0,
+    "all_requests": 52
+  }
+}

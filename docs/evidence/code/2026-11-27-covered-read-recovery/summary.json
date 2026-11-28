@@ -1,0 +1,1184 @@
+{
+  "prototype-replay-a": [
+    {
+      "label": "candidate",
+      "arm": "candidate",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": 6,
+      "strict_pass": true,
+      "tool_calls": {
+        "read": 21,
+        "write": 1,
+        "edit": 5
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 159441,
+        "completion_tokens": 4380,
+        "total_tokens": 163821,
+        "prompt_cache_hit_tokens": 142846,
+        "prompt_cache_miss_tokens": 16595
+      },
+      "requests": 25,
+      "primary_requests": 18,
+      "http_statuses": {
+        "200": 25
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 19212,
+      "first_live_main_input_tokens": 6022,
+      "scripted_rounds": 3,
+      "first_live_request": {
+        "tool_result_count": 5,
+        "covered_ranges": 2,
+        "recovery_notes": 1
+      },
+      "first_live_tool_calls": [
+        [
+          "read",
+          "report.json",
+          null
+        ],
+        [
+          "write",
+          null,
+          null
+        ]
+      ],
+      "additional_order_reads": 0
+    },
+    {
+      "label": "release",
+      "arm": "release",
+      "attempted_turns": 1,
+      "correct_reports": 0,
+      "protected_inputs_exact": 1,
+      "bound_verification": 0,
+      "strict_pass": false,
+      "tool_calls": {
+        "read": 39
+      },
+      "usage_complete": false,
+      "tokens": {
+        "prompt_tokens": 330334,
+        "completion_tokens": 2152,
+        "total_tokens": 332486,
+        "prompt_cache_hit_tokens": 322174,
+        "prompt_cache_miss_tokens": 8160
+      },
+      "requests": 51,
+      "primary_requests": 50,
+      "http_statuses": {
+        "200": 40,
+        "429": 11
+      },
+      "relay_budget_rejections": 11,
+      "first_turn_tokens": 332486,
+      "first_live_main_input_tokens": 5986,
+      "scripted_rounds": 3,
+      "first_live_request": {
+        "tool_result_count": 5,
+        "covered_ranges": 2,
+        "recovery_notes": 0
+      },
+      "first_live_tool_calls": [
+        [
+          "read",
+          "order.json",
+          100
+        ],
+        [
+          "read",
+          "order.json",
+          120
+        ],
+        [
+          "read",
+          "order.json",
+          130
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          132
+        ],
+        [
+          "read",
+          "order.json",
+          133
+        ],
+        [
+          "read",
+          "order.json",
+          40
+        ],
+        [
+          "read",
+          "order.json",
+          20
+        ],
+        [
+          "read",
+          "order.json",
+          10
+        ],
+        [
+          "read",
+          "order.json",
+          5
+        ],
+        [
+          "read",
+          "order.json",
+          1
+        ],
+        [
+          "read",
+          "order.json",
+          2
+        ],
+        [
+          "read",
+          "order.json",
+          3
+        ],
+        [
+          "read",
+          "order.json",
+          4
+        ],
+        [
+          "read",
+          "order.json",
+          6
+        ],
+        [
+          "read",
+          "order.json",
+          7
+        ],
+        [
+          "read",
+          "order.json",
+          8
+        ],
+        [
+          "read",
+          "order.json",
+          9
+        ],
+        [
+          "read",
+          "order.json",
+          11
+        ],
+        [
+          "read",
+          "order.json",
+          12
+        ],
+        [
+          "read",
+          "order.json",
+          13
+        ],
+        [
+          "read",
+          "order.json",
+          14
+        ],
+        [
+          "read",
+          "order.json",
+          15
+        ],
+        [
+          "read",
+          "order.json",
+          16
+        ],
+        [
+          "read",
+          "order.json",
+          17
+        ],
+        [
+          "read",
+          "order.json",
+          18
+        ],
+        [
+          "read",
+          "order.json",
+          19
+        ],
+        [
+          "read",
+          "order.json",
+          21
+        ],
+        [
+          "read",
+          "order.json",
+          22
+        ],
+        [
+          "read",
+          "order.json",
+          23
+        ],
+        [
+          "read",
+          "order.json",
+          24
+        ],
+        [
+          "read",
+          "order.json",
+          25
+        ],
+        [
+          "read",
+          "order.json",
+          26
+        ],
+        [
+          "read",
+          "order.json",
+          27
+        ],
+        [
+          "read",
+          "order.json",
+          28
+        ],
+        [
+          "read",
+          "order.json",
+          29
+        ],
+        [
+          "read",
+          "order.json",
+          30
+        ],
+        [
+          "read",
+          "order.json",
+          31
+        ],
+        [
+          "read",
+          "order.json",
+          32
+        ]
+      ],
+      "additional_order_reads": 39
+    }
+  ],
+  "prototype-replay-b": [
+    {
+      "label": "release",
+      "arm": "release",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": 6,
+      "strict_pass": true,
+      "tool_calls": {
+        "read": 22,
+        "write": 5,
+        "edit": 1
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 162291,
+        "completion_tokens": 3262,
+        "total_tokens": 165553,
+        "prompt_cache_hit_tokens": 146558,
+        "prompt_cache_miss_tokens": 15733
+      },
+      "requests": 26,
+      "primary_requests": 19,
+      "http_statuses": {
+        "200": 26
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 25521,
+      "first_live_main_input_tokens": 5986,
+      "scripted_rounds": 3,
+      "first_live_request": {
+        "tool_result_count": 5,
+        "covered_ranges": 2,
+        "recovery_notes": 0
+      },
+      "first_live_tool_calls": [
+        [
+          "read",
+          "order.json",
+          100
+        ],
+        [
+          "read",
+          "report.json",
+          null
+        ],
+        [
+          "write",
+          null,
+          null
+        ]
+      ],
+      "additional_order_reads": 1
+    },
+    {
+      "label": "candidate",
+      "arm": "candidate",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": 6,
+      "strict_pass": false,
+      "tool_calls": {
+        "ls": 1,
+        "write": 6,
+        "read": 20
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 158620,
+        "completion_tokens": 4613,
+        "total_tokens": 163233,
+        "prompt_cache_hit_tokens": 145918,
+        "prompt_cache_miss_tokens": 12702
+      },
+      "requests": 25,
+      "primary_requests": 18,
+      "http_statuses": {
+        "200": 25
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 19186,
+      "first_live_main_input_tokens": 6022,
+      "scripted_rounds": 3,
+      "first_live_request": {
+        "tool_result_count": 5,
+        "covered_ranges": 2,
+        "recovery_notes": 1
+      },
+      "first_live_tool_calls": [
+        [
+          "ls",
+          null,
+          null
+        ],
+        [
+          "write",
+          null,
+          null
+        ]
+      ],
+      "additional_order_reads": 0
+    }
+  ],
+  "replay-a": [
+    {
+      "label": "candidate",
+      "arm": "candidate",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": 6,
+      "strict_pass": true,
+      "tool_calls": {
+        "read": 21,
+        "write": 6
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 155021,
+        "completion_tokens": 3799,
+        "total_tokens": 158820,
+        "prompt_cache_hit_tokens": 140286,
+        "prompt_cache_miss_tokens": 14735
+      },
+      "requests": 25,
+      "primary_requests": 18,
+      "http_statuses": {
+        "200": 25
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 19217,
+      "first_live_main_input_tokens": 6028,
+      "scripted_rounds": 3,
+      "first_live_request": {
+        "tool_result_count": 5,
+        "covered_ranges": 2,
+        "recovery_notes": 1
+      },
+      "first_live_tool_calls": [
+        [
+          "read",
+          "report.json",
+          null
+        ],
+        [
+          "write",
+          null,
+          null
+        ]
+      ],
+      "additional_order_reads": 0
+    },
+    {
+      "label": "release",
+      "arm": "release",
+      "attempted_turns": 1,
+      "correct_reports": 0,
+      "protected_inputs_exact": 1,
+      "bound_verification": 0,
+      "strict_pass": false,
+      "tool_calls": {
+        "read": 39
+      },
+      "usage_complete": false,
+      "tokens": {
+        "prompt_tokens": 337609,
+        "completion_tokens": 2904,
+        "total_tokens": 340513,
+        "prompt_cache_hit_tokens": 329342,
+        "prompt_cache_miss_tokens": 8267
+      },
+      "requests": 51,
+      "primary_requests": 50,
+      "http_statuses": {
+        "200": 40,
+        "429": 11
+      },
+      "relay_budget_rejections": 11,
+      "first_turn_tokens": 340513,
+      "first_live_main_input_tokens": 5987,
+      "scripted_rounds": 3,
+      "first_live_request": {
+        "tool_result_count": 5,
+        "covered_ranges": 2,
+        "recovery_notes": 0
+      },
+      "first_live_tool_calls": [
+        [
+          "read",
+          "order.json",
+          100
+        ],
+        [
+          "read",
+          "order.json",
+          130
+        ],
+        [
+          "read",
+          "order.json",
+          140
+        ],
+        [
+          "read",
+          "order.json",
+          120
+        ],
+        [
+          "read",
+          "order.json",
+          110
+        ],
+        [
+          "read",
+          "order.json",
+          95
+        ],
+        [
+          "read",
+          "order.json",
+          85
+        ],
+        [
+          "read",
+          "order.json",
+          75
+        ],
+        [
+          "read",
+          "order.json",
+          65
+        ],
+        [
+          "read",
+          "order.json",
+          55
+        ],
+        [
+          "read",
+          "order.json",
+          45
+        ],
+        [
+          "read",
+          "order.json",
+          35
+        ],
+        [
+          "read",
+          "order.json",
+          25
+        ],
+        [
+          "read",
+          "order.json",
+          15
+        ],
+        [
+          "read",
+          "order.json",
+          5
+        ],
+        [
+          "read",
+          "order.json",
+          1
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ],
+        [
+          "read",
+          "order.json",
+          0
+        ]
+      ],
+      "additional_order_reads": 39
+    }
+  ],
+  "replay-b": [
+    {
+      "label": "release",
+      "arm": "release",
+      "attempted_turns": 1,
+      "correct_reports": 0,
+      "protected_inputs_exact": 1,
+      "bound_verification": 0,
+      "strict_pass": false,
+      "tool_calls": {
+        "read": 39
+      },
+      "usage_complete": false,
+      "tokens": {
+        "prompt_tokens": 341505,
+        "completion_tokens": 3288,
+        "total_tokens": 344793,
+        "prompt_cache_hit_tokens": 328830,
+        "prompt_cache_miss_tokens": 12675
+      },
+      "requests": 51,
+      "primary_requests": 50,
+      "http_statuses": {
+        "200": 40,
+        "429": 11
+      },
+      "relay_budget_rejections": 11,
+      "first_turn_tokens": 344793,
+      "first_live_main_input_tokens": 5987,
+      "scripted_rounds": 3,
+      "first_live_request": {
+        "tool_result_count": 5,
+        "covered_ranges": 2,
+        "recovery_notes": 0
+      },
+      "first_live_tool_calls": [
+        [
+          "read",
+          "order.json",
+          100
+        ],
+        [
+          "read",
+          "order.json",
+          120
+        ],
+        [
+          "read",
+          "order.json",
+          130
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          132
+        ],
+        [
+          "read",
+          "order.json",
+          133
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ],
+        [
+          "read",
+          "order.json",
+          131
+        ]
+      ],
+      "additional_order_reads": 39
+    },
+    {
+      "label": "candidate",
+      "arm": "candidate",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": 6,
+      "strict_pass": true,
+      "tool_calls": {
+        "read": 22,
+        "write": 1,
+        "edit": 5
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 165575,
+        "completion_tokens": 3388,
+        "total_tokens": 168963,
+        "prompt_cache_hit_tokens": 153854,
+        "prompt_cache_miss_tokens": 11721
+      },
+      "requests": 26,
+      "primary_requests": 19,
+      "http_statuses": {
+        "200": 26
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 25767,
+      "first_live_main_input_tokens": 6028,
+      "scripted_rounds": 3,
+      "first_live_request": {
+        "tool_result_count": 5,
+        "covered_ranges": 2,
+        "recovery_notes": 1
+      },
+      "first_live_tool_calls": [
+        [
+          "read",
+          "report.json",
+          null
+        ],
+        [
+          "write",
+          null,
+          null
+        ],
+        [
+          "read",
+          "report.json",
+          null
+        ]
+      ],
+      "additional_order_reads": 0
+    }
+  ],
+  "long-a": [
+    {
+      "label": "1-candidate",
+      "arm": "candidate",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": 6,
+      "strict_pass": false,
+      "tool_calls": {
+        "read": 26,
+        "ls": 1,
+        "write": 6
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 177242,
+        "completion_tokens": 6199,
+        "total_tokens": 183441,
+        "prompt_cache_hit_tokens": 159358,
+        "prompt_cache_miss_tokens": 17884
+      },
+      "requests": 28,
+      "primary_requests": 21,
+      "http_statuses": {
+        "200": 28
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 36815,
+      "first_live_main_input_tokens": 5308
+    },
+    {
+      "label": "2-release",
+      "arm": "release",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": 6,
+      "strict_pass": false,
+      "tool_calls": {
+        "read": 26,
+        "ls": 1,
+        "write": 1,
+        "edit": 5
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 175502,
+        "completion_tokens": 4228,
+        "total_tokens": 179730,
+        "prompt_cache_hit_tokens": 163198,
+        "prompt_cache_miss_tokens": 12304
+      },
+      "requests": 28,
+      "primary_requests": 21,
+      "http_statuses": {
+        "200": 28
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 36802,
+      "first_live_main_input_tokens": 5308
+    },
+    {
+      "label": "3-dsh",
+      "arm": "dsh",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": null,
+      "strict_pass": true,
+      "tool_calls": {
+        "read": 30,
+        "write": 6
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 242403,
+        "completion_tokens": 3278,
+        "total_tokens": 245681,
+        "prompt_cache_hit_tokens": 234368,
+        "prompt_cache_miss_tokens": 8035
+      },
+      "requests": 24,
+      "primary_requests": 24,
+      "http_statuses": {
+        "200": 24
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 26654,
+      "first_live_main_input_tokens": 5880
+    }
+  ],
+  "long-b": [
+    {
+      "label": "1-dsh",
+      "arm": "dsh",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": null,
+      "strict_pass": true,
+      "tool_calls": {
+        "read": 31,
+        "write": 6
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 253170,
+        "completion_tokens": 3403,
+        "total_tokens": 256573,
+        "prompt_cache_hit_tokens": 245120,
+        "prompt_cache_miss_tokens": 8050
+      },
+      "requests": 25,
+      "primary_requests": 25,
+      "http_statuses": {
+        "200": 25
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 33599,
+      "first_live_main_input_tokens": 5880
+    },
+    {
+      "label": "2-release",
+      "arm": "release",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": 6,
+      "strict_pass": false,
+      "tool_calls": {
+        "read": 26,
+        "ls": 1,
+        "write": 1,
+        "edit": 5
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 178304,
+        "completion_tokens": 5533,
+        "total_tokens": 183837,
+        "prompt_cache_hit_tokens": 161150,
+        "prompt_cache_miss_tokens": 17154
+      },
+      "requests": 28,
+      "primary_requests": 21,
+      "http_statuses": {
+        "200": 28
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 36779,
+      "first_live_main_input_tokens": 5308
+    },
+    {
+      "label": "3-candidate",
+      "arm": "candidate",
+      "attempted_turns": 6,
+      "correct_reports": 6,
+      "protected_inputs_exact": 6,
+      "bound_verification": 6,
+      "strict_pass": false,
+      "tool_calls": {
+        "read": 24,
+        "ls": 1,
+        "write": 6
+      },
+      "usage_complete": true,
+      "tokens": {
+        "prompt_tokens": 157882,
+        "completion_tokens": 3365,
+        "total_tokens": 161247,
+        "prompt_cache_hit_tokens": 146430,
+        "prompt_cache_miss_tokens": 11452
+      },
+      "requests": 26,
+      "primary_requests": 19,
+      "http_statuses": {
+        "200": 26
+      },
+      "relay_budget_rejections": 0,
+      "first_turn_tokens": 24060,
+      "first_live_main_input_tokens": 5308
+    }
+  ],
+  "ordinary_aggregate": {
+    "candidate": {
+      "trials": 2,
+      "correct_reports": 12,
+      "protected_inputs_exact": 12,
+      "bound_verification": 12,
+      "strict_passes": 0,
+      "usage_complete_trials": 2,
+      "median_total_tokens": 172344.0,
+      "median_cache_miss_tokens": 14668.0,
+      "median_primary_requests": 20.0
+    },
+    "release": {
+      "trials": 2,
+      "correct_reports": 12,
+      "protected_inputs_exact": 12,
+      "bound_verification": 12,
+      "strict_passes": 0,
+      "usage_complete_trials": 2,
+      "median_total_tokens": 181783.5,
+      "median_cache_miss_tokens": 14729.0,
+      "median_primary_requests": 21.0
+    },
+    "dsh": {
+      "trials": 2,
+      "correct_reports": 12,
+      "protected_inputs_exact": 12,
+      "bound_verification": null,
+      "strict_passes": 2,
+      "usage_complete_trials": 2,
+      "median_total_tokens": 251127.0,
+      "median_cache_miss_tokens": 8042.5,
+      "median_primary_requests": 24.5
+    },
+    "candidate_delta_vs_dsh_percent": -31.371776033640348,
+    "candidate_delta_vs_reference_percent": -5.192715510483625
+  }
+}

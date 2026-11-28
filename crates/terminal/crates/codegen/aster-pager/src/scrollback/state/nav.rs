@@ -415,12 +415,14 @@ impl ScrollbackState {
     /// Page up: scroll viewport, then select the topmost selectable on-screen entry.
     pub fn page_up(&mut self) {
         self.scroll_up(self.page_scroll_rows());
+        self.settle_visible_measurements(self.last_width, layout::SettlementFollowPolicy::Evaluate);
         self.select_viewport_edge(/* prefer_top */ true);
     }
 
     /// Page down: scroll viewport, then select the bottommost selectable on-screen entry.
     pub fn page_down(&mut self) {
         self.scroll_down(self.page_scroll_rows());
+        self.settle_visible_measurements(self.last_width, layout::SettlementFollowPolicy::Evaluate);
         self.select_viewport_edge(/* prefer_top */ false);
     }
 
@@ -2208,7 +2210,9 @@ mod tests {
                         .entries
                         .get_index(idx)
                         .is_some_and(|(_, e)| e.block.is_selectable()),
-                "entry {idx} is below the page-down selection"
+                "entry {idx} is below the page-down selection {sel}; offset={} viewport={:?}",
+                state.scroll_offset(),
+                state.viewport_virtual_bounds()
             );
         }
     }

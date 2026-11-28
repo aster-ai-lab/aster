@@ -155,6 +155,45 @@ async fn an_unchanged_git_worktree_is_a_complete_empty_delta() {
 }
 
 #[tokio::test]
+async fn a_nested_registered_worktree_observation_stays_bounded() {
+    let root = tempfile::tempdir().unwrap();
+    git_repo(root.path());
+    std::fs::write(root.path().join("README.md"), "base\n").unwrap();
+    git_at(root.path(), &["add", "README.md"]);
+    git_at(root.path(), &["commit", "-m", "base"]);
+    let watch = tokio::time::timeout(
+        std::time::Duration::from_secs(15),
+        Watch::start(root.path()),
+    )
+    .await
+    .expect("baseline must stay bounded");
+    let worktree = root.path().join("temporary-aster-worktree");
+    git_at(
+        root.path(),
+        &[
+            "worktree",
+            "add",
+            "-b",
+            "temporary-aster-worktree",
+            worktree.to_str().unwrap(),
+        ],
+    );
+    assert!(worktree.join(".git").is_file());
+    let delta = tokio::time::timeout(
+        std::time::Duration::from_secs(15),
+        watch.finish_observed_with_revision(root.path(), false),
+    )
+    .await
+    .expect("read-only worktree observation must stay bounded");
+    assert_eq!(delta.paths, ["temporary-aster-worktree/"]);
+    assert!(!delta.incomplete, "{delta:?}");
+    git_at(
+        root.path(),
+        &["worktree", "remove", worktree.to_str().unwrap()],
+    );
+}
+
+#[tokio::test]
 async fn an_unstamped_existing_dirty_path_is_an_observation_gap() {
     let root = tempfile::tempdir().unwrap();
     git_repo(root.path());

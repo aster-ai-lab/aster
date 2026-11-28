@@ -181,7 +181,6 @@ impl ProgramTool {
             "properties": {
                 "type": {
                     "type": "string",
-                    "description": "script only.",
                     "enum": [ProgramKind::Script.as_str()]
                 },
                 "inputs": {
@@ -194,7 +193,7 @@ impl ProgramTool {
                 },
                 "source": {
                     "type": "string",
-                    "description": "Inline JS defining async function run(ctx, inputs)."
+                    "description": "Inline JS."
                 },
                 "path": {
                     "type": "string",
@@ -218,9 +217,9 @@ impl ProgramTool {
             "required": ["type"]
         });
         if !self.catalog.list().is_empty() {
-            schema["properties"]["type"] = serde_json::json!({"type":"string","description":"script or template.","enum":[ProgramKind::Script.as_str(),ProgramKind::Template.as_str()]});
+            schema["properties"]["type"] = serde_json::json!({"type":"string","enum":[ProgramKind::Script.as_str(),ProgramKind::Template.as_str()]});
             schema["properties"]["name"] = serde_json::json!({
-                "type":"string", "description":"Template name (required for template).",
+                "type":"string", "description":"Required for template.",
                 "enum":self.catalog.list().iter().map(|template| &template.name).collect::<Vec<_>>()
             });
         }

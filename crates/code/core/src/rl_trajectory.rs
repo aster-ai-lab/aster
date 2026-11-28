@@ -489,7 +489,7 @@ impl RlTrajectoryRecorderInner {
 
     fn capture_text(&self, text: &str) -> CapturedText {
         let byte_len = text.len();
-        let sha256 = sha256::digest(text);
+        let sha256 = crate::content_digest::sha256_hex(text);
         let (captured, truncated) = truncate_utf8(text, self.config.max_text_bytes);
         CapturedText {
             byte_len,

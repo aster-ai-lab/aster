@@ -223,7 +223,7 @@ fn leading_list_item<T: ReadTxn>(
         _ => {
             return Err(structure_conflict(
                 "The anchor paragraph is not inside a Document list item.",
-            ))
+            ));
         }
     };
     let first = item.children(transaction).next();
@@ -356,7 +356,7 @@ fn assert_block_reaches_section<T: ReadTxn>(
         _ => {
             return Err(structure_conflict(
                 "The target Document list is detached from a supported block container.",
-            ))
+            ));
         }
     };
     for _ in 0..MAX_DOCUMENT_ANCESTOR_DEPTH {
@@ -402,7 +402,7 @@ fn assert_block_reaches_section<T: ReadTxn>(
             _ => {
                 return Err(structure_conflict(
                     "The target Document list is not inside a supported section, list item, table cell, or blockquote.",
-                ))
+                ));
             }
         }
     }

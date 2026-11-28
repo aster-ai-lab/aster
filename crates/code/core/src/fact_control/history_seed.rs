@@ -1,6 +1,11 @@
 //! Seeding and reading back conversation history from facts.
 
 use super::*;
+use crate::tools::builtin::read::{
+    BatchReadLayout, TextReadLayout, TextReadPage, BATCH_READ_LAYOUT_KEY,
+    MIN_REUSABLE_BATCH_READ_SECTION_BYTES, TEXT_READ_LAYOUT_KEY,
+};
+use crate::tools::builtin::{project_grep_display, GREP_DISPLAY_LAYOUT_KEY};
 use serde::Deserialize;
 
 #[derive(Clone)]
@@ -776,6 +781,11 @@ pub(super) fn with_original_tool_text(
     Ok(([prefix, kept], continuation_tokens))
 }
 
+pub(super) enum ReadLayout {
+    Batch(BatchReadLayout),
+    Text(TextReadLayout),
+}
+
 pub(super) fn recorded_tool_messages(
     recorded: &mut std::vec::IntoIter<RecordedCall>,
     messages: &mut Vec<Message>,
@@ -784,7 +794,7 @@ pub(super) fn recorded_tool_messages(
     is_error: bool,
     effect_dir: Option<&Path>,
     stub_tool_image_ids: &std::collections::HashSet<String>,
-) -> Result<(), ActorError> {
+) -> Result<Option<(usize, ReadLayout)>, ActorError> {
     let call = recorded.next().ok_or_else(|| {
         ActorError::Schema("folded tool result has no original call metadata".into())
     })?;
@@ -806,15 +816,59 @@ pub(super) fn recorded_tool_messages(
         }
     };
     let load_pixels = !stub_tool_image_ids.contains(&call.id);
-    messages.push(message_from_folded_tool(
-        &call.id,
-        body,
-        is_error,
-        effect_dir,
-        load_pixels,
-    ));
+    let message_index = messages.len();
+    let (message, layout) = match decode_fact_tool_result(body) {
+        Some(mut envelope) => {
+            let complete_observation = !is_error
+                && !envelope.is_error
+                && envelope.outcome == Some(aster_effect::ToolExecutionOutcome::Succeeded)
+                && envelope.exit_code == Some(0)
+                && !envelope.observation_incomplete
+                && envelope.workspace_child.is_none()
+                && envelope.images.is_empty();
+            if complete_observation && matches!(call.name.as_str(), "search" | "grep") {
+                if let Some(projected) = envelope
+                    .metadata
+                    .as_mut()
+                    .and_then(serde_json::Value::as_object_mut)
+                    .and_then(|metadata| metadata.remove(GREP_DISPLAY_LAYOUT_KEY))
+                    .and_then(|layout| project_grep_display(&envelope.text, layout))
+                {
+                    envelope.text = projected;
+                }
+            }
+            let layout = if complete_observation && call.name == "read" {
+                envelope.metadata.as_mut().and_then(|value| {
+                    let metadata = value.as_object_mut()?;
+                    if call.args.get("files").is_some() {
+                        serde_json::from_value(metadata.remove(BATCH_READ_LAYOUT_KEY)?)
+                            .ok()
+                            .map(ReadLayout::Batch)
+                    } else {
+                        serde_json::from_value(metadata.remove(TEXT_READ_LAYOUT_KEY)?)
+                            .ok()
+                            .map(ReadLayout::Text)
+                    }
+                })
+            } else {
+                None
+            };
+            (
+                tool_results::message_from_fact_tool_result(
+                    &call.id,
+                    envelope,
+                    is_error,
+                    effect_dir,
+                    load_pixels,
+                ),
+                layout,
+            )
+        }
+        None => (Message::tool_result(&call.id, body, is_error), None),
+    };
+    messages.push(message);
     *previous = Some((call, assistant_index));
-    Ok(())
+    Ok(layout.map(|layout| (message_index, layout)))
 }
 
 /// Tool-result call ids whose images were already consumed in the current user
@@ -890,228 +944,278 @@ pub(super) fn repeat_note_prefix(name: &str) -> String {
     format!("\n\n[aster host: `{name}` returned byte-identical output for identical arguments")
 }
 
-pub(super) const REPEAT_COMPACTION_MIN_BYTES: usize = 512;
-
-#[derive(Debug, Clone, Default)]
-pub(super) struct RepeatObservation {
-    pub(super) result_digest: String,
-    pub(super) count: u32,
-    pub(super) first_call_id: String,
+#[derive(Default)]
+struct CoveredReadRounds {
+    consecutive: usize,
+    covered: bool,
 }
 
-pub(super) enum RepeatedResultProjection {
-    AppendNote(String),
-    CompactModelOutput {
-        model_output: String,
-        ui_note: String,
-    },
+impl CoveredReadRounds {
+    fn observe(&mut self, same_boundary: bool, round_complete: bool) -> bool {
+        if !same_boundary {
+            *self = Self::default();
+        }
+        if !self.covered || !round_complete {
+            return false;
+        }
+        self.consecutive = self.consecutive.saturating_add(1);
+        // The first redundant round already showed the ordinary reuse note.
+        self.consecutive == 2
+    }
 }
 
-pub(super) fn repeat_call_digest(name: &str, args: &serde_json::Value) -> String {
-    crate::content_digest::digest_bytes(
-        "aster.code.tool-repeat.call.v1",
-        format!("{name}\n{args}").as_bytes(),
-    )
-}
+/// Retain the earliest full observation for an unchanged sequence. A repeat
+/// can refer back within this request without rewriting the cached prefix.
+pub(super) fn project_repeated_tool_results(
+    messages: &mut [Message],
+    read_layouts: &std::collections::HashMap<usize, ReadLayout>,
+) {
+    use crate::llm::{ContentBlock, ToolResultContentField, ToolResultTrustV1};
+    use std::collections::HashMap;
 
-pub(super) fn repeat_result_digest(output: &str) -> String {
-    crate::content_digest::digest_bytes("aster.code.tool-repeat.result.v1", output.as_bytes())
-}
-
-pub(super) fn is_compacted_repeat_stub(name: &str, output: &str) -> bool {
-    output.starts_with(&format!(
-        "[aster host: `{name}` returned byte-identical output ("
-    ))
-}
-
-/// Seed repeat tracking from uncompacted prior-turn `tool.result` facts after the
-/// latest `compaction.done` so Turn 2+ re-reads of unchanged large (>512 B) results
-/// collapse into back-references without mutating earlier KV-cached prefixes.
-pub(super) fn seed_repeats_from_facts(
-    facts: &[aster_effect::Fact],
-) -> std::collections::HashMap<String, RepeatObservation> {
-    struct CompletedEntry {
-        id: String,
-        name: String,
-        args: serde_json::Value,
-        role_line: String,
-        output: String,
+    struct Observation<'a> {
+        id: &'a str,
+        text: &'a str,
+        is_error: bool,
+        count: usize,
+        has_full_result: bool,
     }
 
-    let mut pending: std::collections::VecDeque<(String, String, serde_json::Value)> =
-        std::collections::VecDeque::new();
-    let mut completed: Vec<CompletedEntry> = Vec::new();
-
-    for fact in facts {
-        if fact.kind == "model.turn"
-            && fact.payload.get("kind").and_then(|kind| kind.as_str()) == Some("tool")
-        {
+    let mut pending = HashMap::new();
+    let mut observed = HashMap::new();
+    let mut batch_sections = HashMap::new();
+    let mut text_pages: HashMap<&str, TextReadPage<'_>> = HashMap::new();
+    let mut replacements = Vec::new();
+    let mut read_rounds = CoveredReadRounds::default();
+    for (message_index, message) in messages.iter().enumerate() {
+        if message.role == "assistant" {
+            if !pending.is_empty() {
+                read_rounds = CoveredReadRounds::default();
+            }
             pending.clear();
-            let Ok(ModelDecision::Tool { call, also }) = ModelDecision::deserialize(&fact.payload)
+            for block in &message.content {
+                if let ContentBlock::ToolUse { id, name, input } = block {
+                    pending.insert(id.as_str(), (name.as_str(), input.to_string()));
+                }
+            }
+            if pending.is_empty() {
+                read_rounds = CoveredReadRounds::default();
+            } else {
+                read_rounds.covered = true;
+            }
+            continue;
+        }
+        if !message
+            .content
+            .iter()
+            .all(|block| matches!(block, ContentBlock::ToolResult { .. }))
+        {
+            read_rounds = CoveredReadRounds::default();
+        }
+        for (block_index, block) in message.content.iter().enumerate() {
+            let ContentBlock::ToolResult {
+                tool_use_id,
+                content,
+                is_error,
+                trust,
+                ..
+            } = block
             else {
                 continue;
             };
-            for call in std::iter::once(call).chain(also) {
-                pending.push_back((call.id, call.name, call.args));
-            }
-        } else if fact.kind == "tool.result" {
-            let Some((id, name, args)) = pending.pop_front() else {
+            let Some(key) = pending.remove(tool_use_id.as_str()) else {
+                read_rounds = CoveredReadRounds::default();
                 continue;
             };
-            let output = super::fact_reads::tool_result_fact_output(&fact.payload).to_owned();
-            let ok = fact
-                .payload
-                .get("ok")
-                .and_then(serde_json::Value::as_bool)
-                .unwrap_or(true);
-            let role = if ok { "tool" } else { "tool-error" };
-            completed.push(CompletedEntry {
-                id,
-                name,
-                args,
-                role_line: format!("{role}\n{output}"),
-                output,
-            });
-        } else if fact.kind == "compaction.done" {
-            #[derive(Deserialize)]
-            struct CompactionPayload {
-                #[serde(default)]
-                kept: Vec<String>,
-            }
-            if let Ok(payload) = CompactionPayload::deserialize(&fact.payload) {
-                let retained: Vec<_> = payload
-                    .kept
-                    .iter()
-                    .filter(|line| line.starts_with("tool\n") || line.starts_with("tool-error\n"))
-                    .collect();
-                if let Some(start) = completed.len().checked_sub(retained.len()) {
-                    if completed[start..]
-                        .iter()
-                        .zip(&retained)
-                        .all(|(entry, kept)| entry.role_line == **kept)
-                    {
-                        completed.drain(..start);
-                    } else {
-                        completed.clear();
-                    }
-                } else {
-                    completed.clear();
-                }
-            } else {
-                completed.clear();
-            }
-            pending.clear();
-        }
-    }
-
-    let mut repeats: std::collections::HashMap<String, RepeatObservation> =
-        std::collections::HashMap::new();
-    for entry in completed {
-        if serde_json::from_str::<serde_json::Value>(&entry.output).is_ok() {
-            continue;
-        }
-        let call = repeat_call_digest(&entry.name, &entry.args);
-        if is_compacted_repeat_stub(&entry.name, &entry.output) {
-            if let Some(existing) = repeats.get_mut(&call) {
-                existing.count += 1;
-            }
-            continue;
-        }
-        let result = repeat_result_digest(&entry.output);
-        let obs = repeats.entry(call).or_default();
-        if obs.result_digest == result {
-            obs.count += 1;
-        } else {
-            *obs = RepeatObservation {
-                result_digest: result,
-                count: 1,
-                first_call_id: entry.id,
+            let ToolResultContentField::Text(text) = content else {
+                observed.remove(&key);
+                read_rounds = CoveredReadRounds::default();
+                continue;
             };
+            let name = key.0;
+            let legacy_prefix = format!("[aster host: `{name}` returned byte-identical output (");
+            let body = text
+                .strip_prefix("Tool exit code: ")
+                .and_then(|tail| tail.split_once('\n'))
+                .map_or(text.as_str(), |(_, body)| body);
+            if *trust != ToolResultTrustV1::WorkspaceData || body.starts_with(&legacy_prefix) {
+                observed.remove(&key);
+                read_rounds = CoveredReadRounds::default();
+                continue;
+            }
+            let is_error = is_error.unwrap_or(false);
+            let layout = read_layouts.get(&message_index);
+            let text_page = match layout {
+                Some(ReadLayout::Text(layout)) if !is_error => layout.page(body),
+                _ => None,
+            };
+            if let Some(page) = &text_page {
+                if let Some(prior) = text_pages
+                    .get(page.path())
+                    .filter(|prior| prior.covers(page))
+                {
+                    // A changed EOF or continuation is new information even
+                    // when all numbered text was already visible.
+                    let mut projected = text_read_reference(page, body);
+                    if read_rounds.observe(prior.has_same_boundary(page), pending.is_empty()) {
+                        projected.push_str(
+                            "\n\n[aster host: Two consecutive tool rounds found only already visible read evidence. \
+                             Use it for the next requested step within the user's tool limits. \
+                             Recheck only when requested or for missing or changed data.]",
+                        );
+                    }
+                    let header = &text[..text.len() - body.len()];
+                    replacements
+                        .push(((message_index, block_index), format!("{header}{projected}")));
+                    observed.remove(&key);
+                    continue;
+                }
+            }
+            read_rounds = CoveredReadRounds::default();
+            let prior = observed.entry(key).or_insert(Observation {
+                id: tool_use_id,
+                text: "",
+                is_error,
+                count: 0,
+                has_full_result: false,
+            });
+            if prior.count == 0
+                || prior.text != text
+                || prior.is_error != is_error
+                || prior.id == tool_use_id
+            {
+                *prior = Observation {
+                    id: tool_use_id,
+                    text,
+                    is_error,
+                    count: 1,
+                    has_full_result: true,
+                };
+            } else {
+                prior.count += 1;
+                if !is_error && text.len() > 512 {
+                    let header = &text[..text.len() - body.len()];
+                    let reference = format!(
+                        "{header}[aster host: Fresh result is byte-identical to the preceding full `{name}` result for these arguments.]"
+                    );
+                    if prior.has_full_result && reference.len() < text.len() {
+                        replacements.push(((message_index, block_index), reference));
+                        prior.id = tool_use_id;
+                        continue;
+                    }
+                } else if serde_json::from_str::<serde_json::Value>(body).is_err() {
+                    let note = format!(
+                        "{text}{} {} times in a row; it observed nothing new.]",
+                        repeat_note_prefix(name),
+                        prior.count,
+                    );
+                    replacements.push(((message_index, block_index), note));
+                    continue;
+                }
+            }
+            let projected = match layout {
+                Some(ReadLayout::Batch(layout)) if !is_error => {
+                    let projection = project_batch_read(layout, body, &mut batch_sections);
+                    prior.has_full_result = projection.as_ref().is_none_or(|(_, full)| *full);
+                    projection.map(|(text, _)| text)
+                }
+                _ => {
+                    prior.has_full_result = true;
+                    text_page.and_then(|page| {
+                        let projection = project_numbered_page(&page, body);
+                        text_pages.insert(page.path(), page);
+                        projection
+                    })
+                }
+            };
+            if let Some(projected) = projected {
+                let header = &text[..text.len() - body.len()];
+                replacements.push(((message_index, block_index), format!("{header}{projected}")));
+            }
         }
     }
-    repeats
+    for ((message, block), replacement) in replacements {
+        if let ContentBlock::ToolResult { content, .. } = &mut messages[message].content[block] {
+            *content = ToolResultContentField::Text(replacement);
+        }
+    }
 }
 
-pub(super) fn observe_repeated_result(
-    repeats: &Mutex<std::collections::HashMap<String, RepeatObservation>>,
-    call_id: &str,
-    name: &str,
-    args: &serde_json::Value,
-    output: &str,
-) -> Option<RepeatedResultProjection> {
-    let call = repeat_call_digest(name, args);
-    let result = repeat_result_digest(output);
-    let mut repeats = repeats
-        .lock()
-        .unwrap_or_else(std::sync::PoisonError::into_inner);
-    let entry = repeats.entry(call).or_default();
-    if entry.result_digest == result {
-        entry.count += 1;
+fn text_read_reference(page: &TextReadPage<'_>, body: &str) -> String {
+    let numbered_bytes = page.numbered_bytes();
+    let (first, last, byte_offset) = page.range();
+    let note = format!(
+        "[aster host: This range adds no new text. Reuse lines {first}-{last} of the earlier read of this file, starting at byte {byte_offset} of line {first}.]"
+    );
+    if note.len() + 1 < numbered_bytes {
+        format!("{note}\n{}", &body[numbered_bytes..])
     } else {
-        *entry = RepeatObservation {
-            result_digest: result,
-            count: 1,
-            first_call_id: call_id.to_string(),
-        };
+        let mut projected = project_numbered_page(page, body).unwrap_or_else(|| body.to_owned());
+        projected.push('\n');
+        projected.push_str(&note);
+        projected
     }
-    if entry.count <= 1 || serde_json::from_str::<serde_json::Value>(output).is_ok() {
+}
+
+fn project_numbered_page(page: &TextReadPage<'_>, body: &str) -> Option<String> {
+    let (numbered, footer) = body.split_at(page.numbered_bytes());
+    let mut projected = unpad_read_labels(numbered)?;
+    projected.push_str(footer);
+    Some(projected)
+}
+
+// Only called on a digest-bound read body or its validated batch section.
+// Everything at and after the separator, including source indentation, stays literal.
+fn unpad_read_labels(body: &str) -> Option<String> {
+    if !body.starts_with(' ') {
         return None;
     }
-    let ui_note = format!(
-        "{} {} times in a row this run; it observed nothing new.]",
-        repeat_note_prefix(name),
-        entry.count
-    );
-    if output.len() > REPEAT_COMPACTION_MIN_BYTES {
-        let model_output = format!(
-            "[aster host: `{name}` returned byte-identical output ({} bytes) to earlier call `{}` for identical arguments {} times in a row this run; it observed nothing new. Refer to `{}` above.]",
-            output.len(),
-            entry.first_call_id,
-            entry.count,
-            entry.first_call_id,
-        );
-        Some(RepeatedResultProjection::CompactModelOutput {
-            model_output,
-            ui_note,
-        })
-    } else {
-        Some(RepeatedResultProjection::AppendNote(ui_note))
+    let mut projected = String::with_capacity(body.len());
+    for row in body.split_inclusive('\n') {
+        let unpadded = row.trim_start_matches(' ');
+        let numbered = unpadded.split_once('\t').is_some_and(|(label, _)| {
+            !label.is_empty() && label.bytes().all(|byte| byte.is_ascii_digit())
+        });
+        projected.push_str(if numbered { unpadded } else { row });
     }
+    (projected.len() < body.len()).then_some(projected)
 }
 
-/// Mechanical feedback when a call repeats the name, arguments and output of the
-/// previous call with the same name and arguments in this run. It never blocks.
-/// A JSON result stays parseable for its consumer, so it carries no note.
-#[cfg_attr(not(test), allow(dead_code))]
-pub(super) fn repeated_result_note(
-    repeats: &Mutex<std::collections::HashMap<String, (String, u32)>>,
-    name: &str,
-    args: &serde_json::Value,
-    output: &str,
-) -> Option<String> {
-    let call = crate::content_digest::digest_bytes(
-        "aster.code.tool-repeat.call.v1",
-        format!("{name}\n{args}").as_bytes(),
-    );
-    let result =
-        crate::content_digest::digest_bytes("aster.code.tool-repeat.result.v1", output.as_bytes());
-    let mut repeats = repeats
-        .lock()
-        .unwrap_or_else(std::sync::PoisonError::into_inner);
-    let entry = repeats.entry(call).or_default();
-    if entry.0 == result {
-        entry.1 += 1;
-    } else {
-        *entry = (result, 1);
+fn project_batch_read<'a>(
+    layout: &'a BatchReadLayout,
+    body: &'a str,
+    observed: &mut std::collections::HashMap<&'a str, &'a str>,
+) -> Option<(String, bool)> {
+    const REFERENCE: &str = "[aster host: Fresh read returned the same bytes as the preceding full batch section for this file and range.]";
+    let mut projected = String::new();
+    let mut copied = 0;
+    let mut has_full_result = true;
+    for section in layout.sections_for(body)? {
+        let text = &body[section.bytes.clone()];
+        let section_body_bytes = section.bytes.end - section.body_start;
+        let prior = section
+            .identity
+            .as_deref()
+            .and_then(|identity| observed.insert(identity, text));
+        let replacement =
+            if prior == Some(text) && section_body_bytes > MIN_REUSABLE_BATCH_READ_SECTION_BYTES {
+                has_full_result = false;
+                Some(REFERENCE.to_owned())
+            } else {
+                unpad_read_labels(&body[section.body_start..section.bytes.end])
+            };
+        let Some(replacement) = replacement else {
+            continue;
+        };
+        projected.push_str(&body[copied..section.body_start]);
+        projected.push_str(&replacement);
+        copied = section.bytes.end;
     }
-    let structured = serde_json::from_str::<serde_json::Value>(output).is_ok();
-    (entry.1 > 1 && !structured).then(|| {
-        format!(
-            "{} {} times in a row this run; it observed nothing new.]",
-            repeat_note_prefix(name),
-            entry.1
-        )
-    })
+    if copied == 0 {
+        return None;
+    }
+    projected.push_str(&body[copied..]);
+    Some((projected, has_full_result))
 }
 
 pub(super) fn visible_tool_output(

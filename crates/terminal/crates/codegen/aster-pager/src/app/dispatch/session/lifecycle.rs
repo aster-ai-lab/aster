@@ -1423,8 +1423,10 @@ pub(in crate::app::dispatch) fn handle_session_created(
     let identity_rebind = super::super::dashboard::WorkspaceIdentityRebind::capture(app);
     crate::app::workspace_sync::allow_loaded_session(app, session_id.0.as_ref());
     let agent_count = app.agents.len();
-    let switch_hint =
-        crate::views::dashboard::session_switch_hint_command(app.screen_mode.is_minimal());
+    let switch_hint = crate::views::dashboard::session_switch_hint_command(
+        app.screen_mode.is_minimal(),
+        app.is_aster,
+    );
     let has_switch_target =
         agent_count > 1 || (app.screen_mode.is_minimal() && app.next_agent_id > 1);
     if let Some(agent) = app.agents.get_mut(&agent_id) {

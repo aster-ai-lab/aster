@@ -10,8 +10,7 @@ use aster_use_core::UseResult;
 
 use crate::pool::browser_error;
 
-const CHROME_VERSIONS_URL: &str =
-    "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json";
+const CHROME_VERSIONS_URL: &str = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json";
 const MAX_CHROME_ARCHIVE_BYTES: u64 = 768 * 1024 * 1024;
 const MAX_CHROME_EXTRACTED_BYTES: u64 = 2 * 1024 * 1024 * 1024;
 const MAX_CHROME_ARCHIVE_ENTRIES: usize = 50_000;

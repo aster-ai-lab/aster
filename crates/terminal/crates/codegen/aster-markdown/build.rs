@@ -1,7 +1,7 @@
 use std::env;
 use std::path::Path;
 
-use syntect::dumps::dump_to_uncompressed_file;
+use syntect::dumps::dump_to_file;
 use syntect::parsing::SyntaxDefinition;
 
 fn main() {
@@ -13,7 +13,7 @@ fn main() {
     let mut builder = two_face::syntax::extra_newlines().into_builder();
     builder.add(swift);
     let set = builder.build();
-    dump_to_uncompressed_file(
+    dump_to_file(
         &set,
         Path::new(&env::var("OUT_DIR").unwrap()).join("syntaxes.bin"),
     )

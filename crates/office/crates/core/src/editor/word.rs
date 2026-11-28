@@ -666,7 +666,7 @@ pub(super) fn remove(package: &mut NativeOfficePackage, path: &str) -> UseResult
             return Err(editor_error(
                 "use.office.mutation_type_unsupported",
                 format!("Word element '{name}' does not support native remove."),
-            ))
+            ));
         }
     }
     patches.push(XmlPatch::new(target.full_range.clone(), Vec::new()));

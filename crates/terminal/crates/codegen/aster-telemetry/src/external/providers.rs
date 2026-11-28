@@ -8,40 +8,51 @@
 //! No `AuthCredentialProvider` is ever read.
 
 use std::sync::Arc;
+#[cfg(feature = "otlp-grpc")]
 use std::time::Duration;
 
+#[cfg(feature = "otlp-grpc")]
 use http::{HeaderMap, HeaderName, HeaderValue};
 // PEM inspection helpers are single-homed in the foundation crate.
+#[cfg(any(feature = "otlp-grpc", test))]
 use aster_otel::otlp::{pem_contains_certificate, pem_contains_private_key};
+use opentelemetry_otlp::{Protocol, WithExportConfig, WithHttpConfig};
+#[cfg(feature = "otlp-grpc")]
 use opentelemetry_otlp::{
-    Protocol, WithExportConfig, WithHttpConfig, WithTonicConfig,
+    WithTonicConfig,
     tonic_types::metadata::MetadataMap,
     tonic_types::transport::{Certificate, ClientTlsConfig, Identity},
 };
+#[cfg(feature = "otlp-grpc")]
+use opentelemetry_sdk::logs::log_processor_with_async_runtime::BatchLogProcessor as RuntimeBatchLogProcessor;
 use opentelemetry_sdk::logs::{
     BatchConfig, BatchConfigBuilder, BatchLogProcessor as ThreadBatchLogProcessor,
     LoggerProviderBuilder, SdkLoggerProvider,
-    log_processor_with_async_runtime::BatchLogProcessor as RuntimeBatchLogProcessor,
 };
+#[cfg(feature = "otlp-grpc")]
+use opentelemetry_sdk::metrics::periodic_reader_with_async_runtime::PeriodicReader as RuntimePeriodicReader;
 use opentelemetry_sdk::metrics::{
     MeterProviderBuilder, PeriodicReader as ThreadPeriodicReader, SdkMeterProvider, Temporality,
-    periodic_reader_with_async_runtime::PeriodicReader as RuntimePeriodicReader,
 };
 type BuildResult<T> = Result<T, opentelemetry_otlp::ExporterBuildError>;
 
+#[cfg(feature = "otlp-grpc")]
 type RuntimeCommand = std::pin::Pin<Box<dyn std::future::Future<Output = ()> + Send>>;
 
+#[cfg(feature = "otlp-grpc")]
 #[derive(Clone)]
 struct DedicatedRuntime {
     tx: tokio::sync::mpsc::UnboundedSender<RuntimeCommand>,
 }
 
+#[cfg(feature = "otlp-grpc")]
 impl std::fmt::Debug for DedicatedRuntime {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("DedicatedRuntime")
     }
 }
 
+#[cfg(feature = "otlp-grpc")]
 impl DedicatedRuntime {
     fn new() -> Option<Self> {
         let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel::<RuntimeCommand>();
@@ -96,6 +107,7 @@ impl DedicatedRuntime {
     }
 }
 
+#[cfg(feature = "otlp-grpc")]
 impl opentelemetry_sdk::runtime::Runtime for DedicatedRuntime {
     fn spawn<F>(&self, future: F)
     where
@@ -109,6 +121,7 @@ impl opentelemetry_sdk::runtime::Runtime for DedicatedRuntime {
     }
 }
 
+#[cfg(feature = "otlp-grpc")]
 impl opentelemetry_sdk::runtime::RuntimeChannel for DedicatedRuntime {
     type Receiver<T: std::fmt::Debug + Send> = tokio_stream::wrappers::ReceiverStream<T>;
     type Sender<T: std::fmt::Debug + Send> = tokio::sync::mpsc::Sender<T>;
@@ -233,6 +246,7 @@ fn customer_headers(headers: &[(String, String)]) -> std::collections::HashMap<S
 /// Customer headers as gRPC metadata.
 /// Invalid metadata keys/values are skipped, so one malformed entry cannot disable telemetry entirely.
 /// This mirrors the HTTP builder's "only customer-supplied headers" invariant.
+#[cfg(feature = "otlp-grpc")]
 fn customer_metadata(input: &[(String, String)]) -> MetadataMap {
     let mut headers = HeaderMap::new();
     for (key, value) in input {
@@ -256,6 +270,7 @@ pub(crate) struct BuiltProviders {
 
 /// Re-encode validated DER roots as one multi-block PEM string (tonic's `Certificate::from_pem` parses every block in a single certificate).
 /// `None` when `ders` is empty.
+#[cfg(any(feature = "otlp-grpc", test))]
 fn ders_to_pem_bundle(ders: &[Vec<u8>]) -> Option<String> {
     use base64::Engine as _;
     if ders.is_empty() {
@@ -273,6 +288,7 @@ fn ders_to_pem_bundle(ders: &[Vec<u8>]) -> Option<String> {
 /// `opentelemetry-otlp` 0.32 must be handed an explicit `ClientTlsConfig` for `https://` endpoints. Its own fallback is
 /// `ClientTlsConfig::new()`, whose root store is empty in tonic 0.14 (`Endpoint::from_shared` never auto-enables roots).
 /// This keeps parity with the HTTP transport's embedded-roots reqwest client.
+#[cfg(feature = "otlp-grpc")]
 fn grpc_tls_candidates(
     endpoint: &str,
     ca_certificate_path: Option<&str>,
@@ -359,6 +375,7 @@ fn grpc_tls_candidates(
 }
 
 /// Run `build` with each TLS candidate in order, returning the first success.
+#[cfg(feature = "otlp-grpc")]
 fn build_with_tls_fallback<T>(
     candidates: Vec<Option<ClientTlsConfig>>,
     mut build: impl FnMut(Option<ClientTlsConfig>) -> BuildResult<T>,
@@ -379,6 +396,7 @@ fn build_with_tls_fallback<T>(
 
 enum OtlpExportTransport<'a> {
     HttpProtobuf(&'a crate::otlp::BlockingOtlpClient),
+    #[cfg(feature = "otlp-grpc")]
     Grpc(&'a DedicatedRuntime),
 }
 
@@ -411,6 +429,7 @@ impl OtlpExportFactory for OtlpLogExporterBuilder<'_> {
                     .with_headers(customer_headers(&self.cfg.logs_headers))
                     .build()
             }
+            #[cfg(feature = "otlp-grpc")]
             OtlpExportTransport::Grpc(runtime) => {
                 let endpoint = self.cfg.logs_endpoint.clone();
                 let timeout = self.cfg.timeout;
@@ -460,6 +479,7 @@ impl OtlpExportFactory for OtlpMetricExporterBuilder<'_> {
                     .with_temporality(self.temporality)
                     .build()
             }
+            #[cfg(feature = "otlp-grpc")]
             OtlpExportTransport::Grpc(runtime) => {
                 let endpoint = self.cfg.metrics_endpoint.clone();
                 let timeout = self.cfg.timeout;
@@ -513,18 +533,29 @@ fn build_log_otlp_provider(
             )
         }
         OtlpTransport::Grpc => {
-            let Some(runtime) = DedicatedRuntime::new() else {
-                return Err(opentelemetry_otlp::ExporterBuildError::ThreadSpawnFailed);
-            };
-            let exporter = exporter_builder.export(OtlpExportTransport::Grpc(&runtime))?;
-            builder.with_log_processor(
-                RuntimeBatchLogProcessor::builder(
-                    RedactingLogExporter::new(exporter, gates, health),
-                    runtime,
+            #[cfg(feature = "otlp-grpc")]
+            {
+                let Some(runtime) = DedicatedRuntime::new() else {
+                    return Err(opentelemetry_otlp::ExporterBuildError::ThreadSpawnFailed);
+                };
+                let exporter = exporter_builder.export(OtlpExportTransport::Grpc(&runtime))?;
+                builder.with_log_processor(
+                    RuntimeBatchLogProcessor::builder(
+                        RedactingLogExporter::new(exporter, gates, health),
+                        runtime,
+                    )
+                    .with_batch_config(batch_config)
+                    .build(),
                 )
-                .with_batch_config(batch_config)
-                .build(),
-            )
+            }
+            #[cfg(not(feature = "otlp-grpc"))]
+            {
+                let _ = (exporter_builder, batch_config, gates, health);
+                return Err(opentelemetry_otlp::ExporterBuildError::InternalFailure(
+                    "OTLP gRPC transport requires the `otlp-grpc` feature; use http/protobuf"
+                        .to_string(),
+                ));
+            }
         }
     })
 }
@@ -551,18 +582,29 @@ fn build_metric_otlp_provider(
             )
         }
         OtlpTransport::Grpc => {
-            let Some(runtime) = DedicatedRuntime::new() else {
-                return Err(opentelemetry_otlp::ExporterBuildError::ThreadSpawnFailed);
-            };
-            let exporter = exporter_builder.export(OtlpExportTransport::Grpc(&runtime))?;
-            builder.with_reader(
-                RuntimePeriodicReader::builder(
-                    ValidatingMetricExporter::new(exporter, health),
-                    runtime,
+            #[cfg(feature = "otlp-grpc")]
+            {
+                let Some(runtime) = DedicatedRuntime::new() else {
+                    return Err(opentelemetry_otlp::ExporterBuildError::ThreadSpawnFailed);
+                };
+                let exporter = exporter_builder.export(OtlpExportTransport::Grpc(&runtime))?;
+                builder.with_reader(
+                    RuntimePeriodicReader::builder(
+                        ValidatingMetricExporter::new(exporter, health),
+                        runtime,
+                    )
+                    .with_interval(cfg.metric_export_interval)
+                    .build(),
                 )
-                .with_interval(cfg.metric_export_interval)
-                .build(),
-            )
+            }
+            #[cfg(not(feature = "otlp-grpc"))]
+            {
+                let _ = (exporter_builder, health);
+                return Err(opentelemetry_otlp::ExporterBuildError::InternalFailure(
+                    "OTLP gRPC transport requires the `otlp-grpc` feature; use http/protobuf"
+                        .to_string(),
+                ));
+            }
         }
     })
 }
@@ -776,6 +818,7 @@ mod tests {
     /// Regression: with the opentelemetry-otlp 0.32 bump, the `tls-roots` feature stopped implying a TLS provider feature.
     /// Every `https://` gRPC endpoint was then rejected at exporter build time ("uses HTTPS but no TLS feature is enabled").
     /// That silently disabled the external stream; the exporters must build for https endpoints.
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn grpc_exporters_build_for_https_endpoints() {
         let cfg = ExternalOtelConfig::resolve_with(
@@ -798,6 +841,7 @@ mod tests {
         assert!(built.meter_provider.is_some());
     }
 
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn grpc_tls_candidates_plain_http_has_no_tls() {
         let candidates = grpc_tls_candidates("http://localhost:4317", None, None, None)
@@ -806,6 +850,7 @@ mod tests {
         assert!(candidates.first().is_some_and(|c| c.is_none()));
     }
 
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn grpc_tls_candidates_https_tries_native_then_embedded_roots() {
         let candidates =
@@ -821,6 +866,7 @@ mod tests {
 
     /// Endpoints without a scheme must not get a TLS config: they agree with opentelemetry-otlp's own https detection (parsed scheme).
     /// The exporter rejects them at connect time ("scheme is missing") rather than handshaking with an empty root store.
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn grpc_tls_candidates_schemeless_endpoint_gets_no_tls() {
         let candidates = grpc_tls_candidates("collector.corp.example:4317", None, None, None)
@@ -830,6 +876,7 @@ mod tests {
     }
 
     /// Scheme detection is on the parsed URI, so case differences cannot diverge from the exporter's own https check.
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn grpc_tls_candidates_uppercase_https_scheme_detected() {
         let candidates =
@@ -865,6 +912,7 @@ mod tests {
     }
 
     /// A readable but certificate-less CA bundle must fail closed, not build exporters that verify without the configured trust anchor.
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn grpc_tls_candidates_fail_closed_on_empty_ca_file() {
         let file = tempfile::NamedTempFile::new().expect("temp CA file");
@@ -915,6 +963,7 @@ mod tests {
         ));
     }
 
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn grpc_tls_candidates_fail_closed_on_empty_client_key() {
         use rcgen::{BasicConstraints, CertificateParams, IsCa, KeyPair};
@@ -961,6 +1010,7 @@ mod tests {
         assert!(pem_contains_certificate(pem.as_bytes()));
     }
 
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn grpc_tls_candidates_fail_closed_on_missing_ca_file() {
         let err = grpc_tls_candidates(
@@ -976,6 +1026,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn grpc_tls_candidates_fail_closed_on_missing_client_identity() {
         let err = grpc_tls_candidates(
@@ -992,6 +1043,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn grpc_tls_candidates_accepts_client_identity_files() {
         use rcgen::{BasicConstraints, CertificateParams, IsCa, KeyPair};
@@ -1024,6 +1076,7 @@ mod tests {
         assert!(candidates.iter().all(Option::is_some));
     }
 
+    #[cfg(feature = "otlp-grpc")]
     #[test]
     fn exporter_metadata_is_customer_headers_only() {
         let cfg = cfg_with_headers(vec![

@@ -40,6 +40,26 @@ fn demote_dispatch_keeps_turn_session_and_execute_guards() {
     assert!(dispatch(Action::DemoteToBackground, &mut app).is_empty());
 }
 
+#[test]
+fn demote_code_backend_refuses_the_missing_migration_with_an_actionable_message() {
+    let mut app = test_app_with_agent();
+    let id = AgentId(0);
+    app.is_aster = true;
+    crate::app::agent_view::test_fixtures::add_running_execute(app.agents.get_mut(&id).unwrap());
+
+    let effects = dispatch(Action::DemoteToBackground, &mut app);
+
+    assert!(effects.is_empty());
+    assert_eq!(
+        app.agents
+            .get(&id)
+            .and_then(|agent| agent.toast.as_ref().map(|(message, _)| message.as_str())),
+        Some(
+            "Background execution is unavailable with the Code backend. Let the command finish or press Ctrl+C to cancel it."
+        )
+    );
+}
+
 /// Regression (leader mode): a queued prompt's parked `session/prompt` RPC can resolve as an *error*.
 /// That surfaces as `Internal error: "session failed to respond"`.
 /// An `acp::Error` carries no `promptId`, so before the Err-arm gate this error was misattributed to the running turn.

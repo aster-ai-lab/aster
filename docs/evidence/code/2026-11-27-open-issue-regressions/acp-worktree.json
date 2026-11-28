@@ -1,0 +1,17 @@
+{
+  "initializeProtocol": 1,
+  "list": {
+    "error": null,
+    "count": 0
+  },
+  "gc": {
+    "error": null,
+    "dryRun": true,
+    "maxAge": "7d",
+    "responseReceived": true
+  },
+  "dbPath": {
+    "error": null,
+    "matchesIsolatedHome": true
+  }
+}

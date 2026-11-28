@@ -427,7 +427,7 @@ pub(crate) fn note_event(progress: &mut RunProgress, facts: &mut AttemptFacts, e
             facts.failed = true;
             facts.last_error = Some(error.to_string());
         }
-        AgentEvent::Error { message } => {
+        AgentEvent::Error { message } | AgentEvent::PriorVerificationPending { message } => {
             progress.error_count += 1;
             progress.remember_error(message);
             facts.failed = true;

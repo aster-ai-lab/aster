@@ -457,6 +457,8 @@ impl AgentView {
             follow_up_pending: HashMap::new(),
             follow_up_pending_order: VecDeque::new(),
             pending_adoption_updates: Vec::new(),
+            crash_interrupted_turn: false,
+            crash_auto_resume_count: 0,
         };
         let mode = if crate::appearance::cache::load_simple_mode() {
             InputMode::Simple

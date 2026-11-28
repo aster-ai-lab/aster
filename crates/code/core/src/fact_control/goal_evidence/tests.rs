@@ -71,7 +71,10 @@ fn observation() -> ToolEffectObservationV1 {
         }),
         after: ToolFileIdentityV1 {
             kind: ToolFileKind::File,
-            content_digest: Some(format!("sha256:{}", sha256::digest("new bytes"))),
+            content_digest: Some(format!(
+                "sha256:{}",
+                crate::content_digest::sha256_hex("new bytes")
+            )),
             mode: Some(0o644),
         },
     }])

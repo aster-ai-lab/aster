@@ -1,0 +1,44 @@
+{
+  "prompts": [
+    "Use edit to change workers from 3 to 12 in service.cfg, preserving all other bytes. Then run this exact bash verification command and report its output: `test -f service.cfg && grep -Fx 'workers=12' service.cfg`.",
+    "Read service.cfg again and report its exact ticket and worker settings."
+  ],
+  "expected_markers": [
+    [
+      "workers=12"
+    ],
+    [
+      "REED-17",
+      "workers=12"
+    ]
+  ],
+  "fixtures_sha256": {
+    "service.cfg": "7e90844258659d648c6cc7685cb5cc8cd705dc0938b14fbcc20538830d54f10a"
+  },
+  "required_tool": "edit",
+  "scenario": "verified_edit_exact_count",
+  "model": "deepseek-flash",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "approved_program": false,
+  "annotated_signatures": false,
+  "native_required": null,
+  "native_catalog": true,
+  "reference_catalog": "deferred",
+  "cost_gate": true,
+  "expected_mutation_sha256": "ba246efda686bce3e6ddaa7cda70ba720d04347ebc4b2815bc4f87fd4826e046",
+  "exact_count_allowed": true,
+  "orders": [
+    [
+      "release",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "release"
+    ]
+  ]
+}

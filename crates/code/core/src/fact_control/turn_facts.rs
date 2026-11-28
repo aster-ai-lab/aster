@@ -39,10 +39,63 @@ pub(crate) fn append_turn_complete_fact(
     terminal: &crate::harness_loop::CompletionTerminal,
     forced_stop: Option<crate::harness_loop::ForcedStop>,
 ) -> Result<(), ActorError> {
+    retain_turn_completion(surface, terminal, forced_stop, false)
+}
+
+/// The original child can close its effect ledger after a controlled error
+/// when completed observations show no effects. Its task result remains failed.
+pub(crate) fn retain_failed_child_effect_closure(
+    surface: &SessionSurface,
+) -> Result<(), ActorError> {
+    let ledger = surface
+        .ledger
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    if !matches!(
+        surface.agent.evaluate_fact_completion_gate(&ledger, &[]),
+        Ok(crate::harness_loop::CompletionGate::Allow(
+            crate::harness_loop::CompletionTerminal::Narrative
+        ))
+    ) {
+        return Ok(());
+    }
+    drop(ledger);
+    retain_turn_completion(
+        surface,
+        &crate::harness_loop::CompletionTerminal::Narrative,
+        None,
+        true,
+    )
+}
+
+fn retain_turn_completion(
+    surface: &SessionSurface,
+    terminal: &crate::harness_loop::CompletionTerminal,
+    forced_stop: Option<crate::harness_loop::ForcedStop>,
+    failed_child: bool,
+) -> Result<(), ActorError> {
     let log = surface_fact_log(surface)?;
     let thread = thread_for_session(&surface.session_id);
     let (facts, freeze) = log.read_freeze(&thread)?;
     let debt = receipts::fold_debt(&facts);
+    if failed_child
+        && (!facts.iter().any(|fact| fact.kind == "user.message")
+            || debt.integrity_invalid
+            || !debt.paths.is_empty()
+            || !debt.unresolved.is_empty()
+            || debt
+                .results
+                .iter()
+                .map(|(_, result)| &result.effects)
+                .chain(debt.background_results.iter().map(|(_, effects)| effects))
+                .any(|effects| {
+                    effects.completeness != aster_effect::ToolObservationCompleteness::Complete
+                        || !effects.changes.is_empty()
+                        || !effects.unresolved_external_operations.is_empty()
+                }))
+    {
+        return Ok(());
+    }
     if !debt.unresolved.is_empty() {
         return Err(ActorError::Schema(
             "tool_effect_unresolved: settlement cannot cover unknown invocations".into(),
@@ -65,7 +118,7 @@ pub(crate) fn append_turn_complete_fact(
         // closed with every step bound, so the bookkeeping is settled.
         crate::harness_loop::CompletionTerminal::Distinct => ("distinct", None),
     };
-    let payload = serde_json::json!({
+    let mut payload = serde_json::json!({
         "terminal": label,
         "effect_digest": digest,
         "forced_stop": forced_stop.map(crate::harness_loop::ForcedStop::as_str),
@@ -76,6 +129,9 @@ pub(crate) fn append_turn_complete_fact(
         "log_cut": { "seq": freeze.cut.seq, "digest": freeze.cut.digest },
         "log_byte_len": freeze.byte_len,
     });
+    if failed_child {
+        payload["child_execution_failed"] = true.into();
+    }
     log.append(
         &thread,
         &[NewFact {
@@ -370,6 +426,7 @@ pub(super) fn replay_unsettled_mutations_from_facts(
 ) {
     let workspace = surface.agent.tool_context_handle().workspace.clone();
     let debt = receipts::fold_debt(facts);
+    resolve_read_only_synthesis_from_receipts(surface, &debt);
     let receipt_paths = debt
         .results
         .iter()
@@ -412,6 +469,41 @@ pub(super) fn replay_unsettled_mutations_from_facts(
     let mut settled = debt.settled_workspace_children;
     settled.extend(debt.settled_observation_gaps.into_keys());
     ledger.restore_unresolved_tool_effects(debt.unresolved, &settled);
+}
+
+fn resolve_read_only_synthesis_from_receipts(
+    surface: &SessionSurface,
+    debt: &receipts::ReceiptDebt,
+) {
+    if !surface
+        .agent
+        .fact_needs_lazy_read_only_synthesis_classification()
+    {
+        return;
+    }
+    let (Some(run_id), Some(binding)) = (
+        surface.run_id.as_ref(),
+        surface.agent.checkpoint_capability_binding(),
+    ) else {
+        return;
+    };
+    let Ok(capability_binding_digest) =
+        crate::content_digest::digest_json("aster.code.tool-admission-binding.v1", binding)
+    else {
+        return;
+    };
+    let owner = aster_effect::ToolAdmissionIdentityV1 {
+        run_id: run_id.clone(),
+        thread_id: thread_for_session(&surface.session_id),
+        capability_binding_digest,
+    };
+    // This only removes the lazy read-only routing decision. The mutating
+    // turn still needs its ordinary model response and completion evidence.
+    if debt.proves_workspace_change_in(&owner) {
+        surface
+            .agent
+            .fact_resolve_deferred_read_only_synthesis(None);
+    }
 }
 
 /// Record the `(provider, digest)` identity of every context section this

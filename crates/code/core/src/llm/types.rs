@@ -102,7 +102,28 @@ pub struct ToolDefinition {
 /// `minLength: 1` / `minItems: 1`, and high anti-DoS/overflow ceilings),
 /// while keeping `Tool::parameters()` intact for strict local validation.
 pub(crate) fn wire_tool_parameters(parameters: &serde_json::Value) -> serde_json::Value {
-    wire_tool_parameters_with_closed_object(parameters, true)
+    ToolSchemaProjection::Standard.schema(parameters)
+}
+
+/// Project DeepSeek Chat Completions tool hints while retaining the original
+/// schema at the host. Structured output keeps its machine-readable bounds.
+pub(crate) fn wire_tool_parameters_deepseek(
+    parameters: &serde_json::Value,
+    compact: bool,
+) -> serde_json::Value {
+    let mut projected = ToolSchemaProjection::DeepSeek { compact }.schema(parameters);
+    if let Some(fields) = projected.as_object_mut().filter(|fields| {
+        compact
+            && fields.get("type").and_then(serde_json::Value::as_str) == Some("object")
+            && fields
+                .get("properties")
+                .and_then(serde_json::Value::as_object)
+                .is_some_and(|properties| !properties.is_empty())
+    }) {
+        // A native function's named arguments already describe an object.
+        fields.retain(|name, _| name != "type");
+    }
+    projected
 }
 
 /// Variant for providers whose native `parametersJsonSchema` enforces closed
@@ -110,44 +131,121 @@ pub(crate) fn wire_tool_parameters(parameters: &serde_json::Value) -> serde_json
 pub(crate) fn wire_tool_parameters_preserving_closed_objects(
     parameters: &serde_json::Value,
 ) -> serde_json::Value {
-    wire_tool_parameters_with_closed_object(parameters, false)
+    ToolSchemaProjection::ClosedObjects.schema(parameters)
 }
 
-fn wire_tool_parameters_with_closed_object(
-    parameters: &serde_json::Value,
-    strip_closed_object: bool,
-) -> serde_json::Value {
-    match parameters {
-        serde_json::Value::Object(map) => {
-            let mut stripped = serde_json::Map::with_capacity(map.len());
-            for (key, value) in map {
-                if key == "examples"
-                    || (key == "required" && value.as_array().is_some_and(Vec::is_empty))
-                    || (strip_closed_object
-                        && key == "additionalProperties"
-                        && value.as_bool() == Some(false))
-                    || (key == "minLength" && value.as_u64() == Some(1))
-                    || (key == "minItems" && value.as_u64() == Some(1))
-                    || (key == "maxLength" && value.as_u64().is_some_and(|n| n >= 128))
-                    || (key == "maximum" && value.as_u64().is_some_and(|n| n >= 1_000_000))
-                {
-                    continue;
+#[derive(Clone, Copy)]
+enum ToolSchemaProjection {
+    Standard,
+    DeepSeek { compact: bool },
+    ClosedObjects,
+}
+
+impl ToolSchemaProjection {
+    fn schema(self, schema: &serde_json::Value) -> serde_json::Value {
+        use serde_json::Value;
+
+        let Value::Object(fields) = schema else {
+            return schema.clone();
+        };
+        let implied_string_type = matches!(self, Self::DeepSeek { .. })
+            && fields.get("type").and_then(Value::as_str) == Some("string")
+            && (fields.get("const").is_some_and(Value::is_string)
+                || fields
+                    .get("enum")
+                    .and_then(Value::as_array)
+                    .is_some_and(|values| {
+                        !values.is_empty() && values.iter().all(Value::is_string)
+                    }));
+        let mut projected = serde_json::Map::with_capacity(fields.len());
+        for (keyword, value) in fields {
+            if match keyword.as_str() {
+                "examples" => true,
+                "required" => value.as_array().is_some_and(Vec::is_empty),
+                "additionalProperties" => {
+                    !matches!(self, Self::ClosedObjects) && value.as_bool() == Some(false)
                 }
-                stripped.insert(
-                    key.clone(),
-                    wire_tool_parameters_with_closed_object(value, strip_closed_object),
-                );
+                "minLength" | "minItems" => value.as_u64() == Some(1),
+                "maxLength" => value.as_u64().is_some_and(|n| n >= 128),
+                "maximum" => value.as_u64().is_some_and(|n| n >= 1_000_000),
+                "type" => implied_string_type,
+                _ => false,
+            } {
+                continue;
             }
-            serde_json::Value::Object(stripped)
+            // The keys of schema maps are application names. Instance values
+            // (enum, const, default) and extension keywords are opaque data.
+            let value = match (keyword.as_str(), value) {
+                (
+                    "properties" | "patternProperties" | "$defs" | "definitions"
+                    | "dependentSchemas" | "dependencies",
+                    Value::Object(children),
+                ) => Value::Object(
+                    children
+                        .iter()
+                        .map(|(name, child)| (name.clone(), self.schema(child)))
+                        .collect(),
+                ),
+                ("allOf" | "anyOf" | "oneOf" | "prefixItems" | "items", Value::Array(children)) => {
+                    Value::Array(children.iter().map(|child| self.schema(child)).collect())
+                }
+                (
+                    "items"
+                    | "additionalItems"
+                    | "additionalProperties"
+                    | "unevaluatedProperties"
+                    | "unevaluatedItems"
+                    | "contains"
+                    | "propertyNames"
+                    | "not"
+                    | "if"
+                    | "then"
+                    | "else"
+                    | "contentSchema",
+                    _,
+                ) => self.schema(value),
+                _ => value.clone(),
+            };
+            projected.insert(keyword.clone(), value);
         }
-        serde_json::Value::Array(items) => serde_json::Value::Array(
-            items
-                .iter()
-                .map(|item| wire_tool_parameters_with_closed_object(item, strip_closed_object))
-                .collect(),
-        ),
-        other => other.clone(),
+        if matches!(self, Self::DeepSeek { compact: true }) {
+            compact_deepseek_bounds(&mut projected);
+        }
+        Value::Object(projected)
     }
+}
+
+fn compact_deepseek_bounds(fields: &mut serde_json::Map<String, serde_json::Value>) {
+    use serde_json::Value;
+
+    let (lower, upper, unit) = match fields.get("type").and_then(Value::as_str) {
+        Some("integer" | "number") => ("minimum", "maximum", ""),
+        Some("array") => ("minItems", "maxItems", " items"),
+        Some("string") => ("minLength", "maxLength", " chars"),
+        _ => return,
+    };
+    let min = fields.get(lower);
+    let max = fields.get(upper);
+    if min
+        .into_iter()
+        .chain(max)
+        .any(|bound| !bound.is_u64() && !(unit.is_empty() && bound.is_i64()))
+    {
+        return;
+    }
+    let range = match (min, max) {
+        (Some(min), Some(max)) => format!("{min}–{max}{unit}"),
+        (Some(min), None) => format!("≥{min}{unit}"),
+        (None, Some(max)) => format!("≤{max}{unit}"),
+        (None, None) => return,
+    };
+    let description = match fields.get("description") {
+        Some(Value::String(text)) if !text.is_empty() => format!("{text} ({range})"),
+        Some(Value::String(_)) | None => range,
+        Some(_) => return,
+    };
+    fields.retain(|name, _| name != lower && name != upper);
+    fields.insert("description".into(), Value::String(description));
 }
 
 /// Image attachment for multi-modal messages.

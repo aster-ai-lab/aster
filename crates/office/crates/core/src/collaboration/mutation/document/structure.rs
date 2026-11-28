@@ -46,7 +46,7 @@ pub(super) fn structural_paragraph<T: ReadTxn>(
             return Err(collaboration_error(
                 "office.collaboration.mutation_target_missing",
                 format!("Document paragraph '{paragraph_id}' does not exist."),
-            ))
+            ));
         }
         1 => matches.pop().ok_or_else(|| {
             collaboration_error(
@@ -60,7 +60,7 @@ pub(super) fn structural_paragraph<T: ReadTxn>(
                 format!(
                     "Document paragraph ID '{paragraph_id}' is assigned to {count} live nodes."
                 ),
-            ))
+            ));
         }
     };
     if !is_identity_paragraph_tag(paragraph.tag()) {
@@ -136,9 +136,10 @@ fn validate_container_ancestry<T: ReadTxn>(
     for _ in 0..MAX_DOCUMENT_CONTAINER_DEPTH {
         match current.tag().as_ref() {
             "documentSection" => {
-                if fragment.children(transaction).any(
-                    |node| matches!(node, XmlOut::Element(candidate) if candidate == current),
-                ) {
+                if fragment
+                    .children(transaction)
+                    .any(|node| matches!(node, XmlOut::Element(candidate) if candidate == current))
+                {
                     return Ok(());
                 }
                 return Err(structure_conflict(
@@ -161,16 +162,15 @@ fn validate_container_ancestry<T: ReadTxn>(
                 )?;
             }
             "tableCell" | "tableHeader" => {
-                let row = parent_element(
-                    &current,
-                    "A Document table cell is detached from its row.",
-                )?;
+                let row =
+                    parent_element(&current, "A Document table cell is detached from its row.")?;
                 if row.tag().as_ref() != "tableRow" {
                     return Err(structure_conflict(
                         "A Document table cell must be a direct child of a table row.",
                     ));
                 }
-                let table = parent_element(&row, "A Document table row is detached from its table.")?;
+                let table =
+                    parent_element(&row, "A Document table row is detached from its table.")?;
                 if table.tag().as_ref() != "table" {
                     return Err(structure_conflict(
                         "A Document table row must be a direct child of a table.",
@@ -190,7 +190,7 @@ fn validate_container_ancestry<T: ReadTxn>(
             _ => {
                 return Err(structure_conflict(
                     "The target paragraph is not inside a supported Document section, list item, table cell, or blockquote container.",
-                ))
+                ));
             }
         }
     }

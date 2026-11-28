@@ -1,0 +1,290 @@
+[
+  {
+    "wire": 2,
+    "arm": "reference",
+    "status": 200,
+    "request_sha256": "6c3995c13c7f727e7238967daad16c57fd8eedff601d61bcf79e4d02a8e1b695",
+    "request_bytes": 23206,
+    "usage": {
+      "prompt_tokens": 6029,
+      "completion_tokens": 89,
+      "total_tokens": 6118,
+      "prompt_tokens_details": {
+        "cached_tokens": 5888
+      },
+      "prompt_cache_hit_tokens": 5888,
+      "prompt_cache_miss_tokens": 141
+    },
+    "passed": true
+  },
+  {
+    "wire": 2,
+    "arm": "ids",
+    "status": 200,
+    "request_sha256": "f0257e09c27ce7f0fe6241252307b9345d136b1c6e005eeee8ab36078830a46b",
+    "request_bytes": 23082,
+    "usage": {
+      "prompt_tokens": 6029,
+      "completion_tokens": 85,
+      "total_tokens": 6114,
+      "prompt_tokens_details": {
+        "cached_tokens": 5888
+      },
+      "prompt_cache_hit_tokens": 5888,
+      "prompt_cache_miss_tokens": 141
+    },
+    "passed": true
+  },
+  {
+    "wire": 2,
+    "arm": "framing",
+    "status": 200,
+    "request_sha256": "b4d6923a8604b73100a90d8da13c9a01ee7edc6cffa84e0cbaed739a213311d2",
+    "request_bytes": 23130,
+    "usage": {
+      "prompt_tokens": 6012,
+      "completion_tokens": 91,
+      "total_tokens": 6103,
+      "prompt_tokens_details": {
+        "cached_tokens": 5760
+      },
+      "prompt_cache_hit_tokens": 5760,
+      "prompt_cache_miss_tokens": 252
+    },
+    "passed": true
+  },
+  {
+    "wire": 2,
+    "arm": "combined",
+    "status": 200,
+    "request_sha256": "765d0c56bbf20102ff113bbcb719e4d89f0fc049c1759ebd61ee9756b6f92cec",
+    "request_bytes": 23006,
+    "usage": {
+      "prompt_tokens": 6012,
+      "completion_tokens": 88,
+      "total_tokens": 6100,
+      "prompt_tokens_details": {
+        "cached_tokens": 5760
+      },
+      "prompt_cache_hit_tokens": 5760,
+      "prompt_cache_miss_tokens": 252
+    },
+    "passed": true
+  },
+  {
+    "wire": 5,
+    "arm": "reference",
+    "status": 200,
+    "request_sha256": "7de6554f3c87684707df7cf10593a437a36d5b6496b339acb4dd57458a790481",
+    "request_bytes": 24017,
+    "usage": {
+      "prompt_tokens": 6224,
+      "completion_tokens": 44,
+      "total_tokens": 6268,
+      "prompt_tokens_details": {
+        "cached_tokens": 6016
+      },
+      "prompt_cache_hit_tokens": 6016,
+      "prompt_cache_miss_tokens": 208
+    },
+    "passed": true
+  },
+  {
+    "wire": 5,
+    "arm": "ids",
+    "status": 200,
+    "request_sha256": "068178e34b366461e6208c8ffa97cd1768afe947d744dc227e7494aa3f7754b1",
+    "request_bytes": 23831,
+    "usage": {
+      "prompt_tokens": 6224,
+      "completion_tokens": 44,
+      "total_tokens": 6268,
+      "prompt_tokens_details": {
+        "cached_tokens": 6016
+      },
+      "prompt_cache_hit_tokens": 6016,
+      "prompt_cache_miss_tokens": 208
+    },
+    "passed": true
+  },
+  {
+    "wire": 5,
+    "arm": "framing",
+    "status": 200,
+    "request_sha256": "d54e1b718977289d81d93225aa032a556bac2f9619f946cf97e07e741dddaa85",
+    "request_bytes": 23912,
+    "usage": {
+      "prompt_tokens": 6200,
+      "completion_tokens": 32,
+      "total_tokens": 6232,
+      "prompt_tokens_details": {
+        "cached_tokens": 6016
+      },
+      "prompt_cache_hit_tokens": 6016,
+      "prompt_cache_miss_tokens": 184
+    },
+    "passed": true
+  },
+  {
+    "wire": 5,
+    "arm": "combined",
+    "status": 200,
+    "request_sha256": "ebe3410feac55ab04b9f4523bcc13c54f46c24c2b3a5a6b11729a6709003364a",
+    "request_bytes": 23726,
+    "usage": {
+      "prompt_tokens": 6200,
+      "completion_tokens": 32,
+      "total_tokens": 6232,
+      "prompt_tokens_details": {
+        "cached_tokens": 6016
+      },
+      "prompt_cache_hit_tokens": 6016,
+      "prompt_cache_miss_tokens": 184
+    },
+    "passed": true
+  },
+  {
+    "wire": 8,
+    "arm": "reference",
+    "status": 200,
+    "request_sha256": "65caaa6f4701758c37d3d099af7eec20c48d8716d315f7e4d4123f27017206d5",
+    "request_bytes": 27645,
+    "usage": {
+      "prompt_tokens": 7439,
+      "completion_tokens": 93,
+      "total_tokens": 7532,
+      "prompt_tokens_details": {
+        "cached_tokens": 7296
+      },
+      "prompt_cache_hit_tokens": 7296,
+      "prompt_cache_miss_tokens": 143
+    },
+    "passed": true
+  },
+  {
+    "wire": 8,
+    "arm": "ids",
+    "status": 200,
+    "request_sha256": "5ab4b93ce05e83cb2292d0b5e91e9729833590b449d35154c53a861c3ba19a9c",
+    "request_bytes": 27459,
+    "usage": {
+      "prompt_tokens": 7439,
+      "completion_tokens": 90,
+      "total_tokens": 7529,
+      "prompt_tokens_details": {
+        "cached_tokens": 7296
+      },
+      "prompt_cache_hit_tokens": 7296,
+      "prompt_cache_miss_tokens": 143
+    },
+    "passed": true
+  },
+  {
+    "wire": 8,
+    "arm": "framing",
+    "status": 200,
+    "request_sha256": "fd18e4764197a7a69ca28dfececb0054ebbe71a891ffc27b807c0fe4842efd79",
+    "request_bytes": 27563,
+    "usage": {
+      "prompt_tokens": 7420,
+      "completion_tokens": 57,
+      "total_tokens": 7477,
+      "prompt_tokens_details": {
+        "cached_tokens": 7168
+      },
+      "prompt_cache_hit_tokens": 7168,
+      "prompt_cache_miss_tokens": 252
+    },
+    "passed": true
+  },
+  {
+    "wire": 8,
+    "arm": "combined",
+    "status": 200,
+    "request_sha256": "77e5f9981de60c808ec73e827a3a3b594cc69311495482e1959437206b33a521",
+    "request_bytes": 27377,
+    "usage": {
+      "prompt_tokens": 7420,
+      "completion_tokens": 90,
+      "total_tokens": 7510,
+      "prompt_tokens_details": {
+        "cached_tokens": 7168
+      },
+      "prompt_cache_hit_tokens": 7168,
+      "prompt_cache_miss_tokens": 252
+    },
+    "passed": true
+  },
+  {
+    "wire": 11,
+    "arm": "reference",
+    "status": 200,
+    "request_sha256": "9376dedc5d5c5e617cb3c0b929be0f91881ac19b88522d8781b293e1c0678c82",
+    "request_bytes": 28443,
+    "usage": {
+      "prompt_tokens": 7624,
+      "completion_tokens": 34,
+      "total_tokens": 7658,
+      "prompt_tokens_details": {
+        "cached_tokens": 7424
+      },
+      "prompt_cache_hit_tokens": 7424,
+      "prompt_cache_miss_tokens": 200
+    },
+    "passed": true
+  },
+  {
+    "wire": 11,
+    "arm": "ids",
+    "status": 200,
+    "request_sha256": "b4ba9a08de448752bf8715cd32bc2a37eceefe4e3759108b45d415cc7d46ad67",
+    "request_bytes": 28195,
+    "usage": {
+      "prompt_tokens": 7624,
+      "completion_tokens": 34,
+      "total_tokens": 7658,
+      "prompt_tokens_details": {
+        "cached_tokens": 7424
+      },
+      "prompt_cache_hit_tokens": 7424,
+      "prompt_cache_miss_tokens": 200
+    },
+    "passed": true
+  },
+  {
+    "wire": 11,
+    "arm": "framing",
+    "status": 200,
+    "request_sha256": "160d5406696b0f97782bfa1b50a09592746f7576b8e028891b050621dd34f354",
+    "request_bytes": 28332,
+    "usage": {
+      "prompt_tokens": 7598,
+      "completion_tokens": 36,
+      "total_tokens": 7634,
+      "prompt_tokens_details": {
+        "cached_tokens": 7296
+      },
+      "prompt_cache_hit_tokens": 7296,
+      "prompt_cache_miss_tokens": 302
+    },
+    "passed": true
+  },
+  {
+    "wire": 11,
+    "arm": "combined",
+    "status": 200,
+    "request_sha256": "21f4e3adbafd53549bd3274a0cb43b6b2e344ce324b1b2febe2c277af095493d",
+    "request_bytes": 28084,
+    "usage": {
+      "prompt_tokens": 7598,
+      "completion_tokens": 37,
+      "total_tokens": 7635,
+      "prompt_tokens_details": {
+        "cached_tokens": 7424
+      },
+      "prompt_cache_hit_tokens": 7424,
+      "prompt_cache_miss_tokens": 174
+    },
+    "passed": true
+  }
+]

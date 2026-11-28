@@ -65,6 +65,19 @@ pub(crate) struct CursorAccountClient {
     reasoning_effort: Option<String>,
 }
 
+/// Shared text transport for account-backed models that do not expose native tools.
+pub(super) fn account_text_prompt(
+    messages: &[Message],
+    system: Option<&str>,
+    tools: &[ToolDefinition],
+) -> Result<String> {
+    tool_protocol::prompt(messages, system, tools)
+}
+
+pub(super) fn account_text_response(text: &str, tools: &[ToolDefinition]) -> Result<Message> {
+    tool_protocol::response(text, tools)
+}
+
 impl CursorAccountClient {
     pub(crate) fn new(api_key: String, model: String) -> Self {
         Self {
@@ -642,7 +655,9 @@ async fn read_run_response(
                         continue;
                     }
                     if value.get("interactionQuery").is_some() {
-                        return Err(anyhow!(super::NonRetryableLlmError::new("Cursor requested a native interaction instead of a presented Aster tool")));
+                        return Err(anyhow!(super::NonRetryableLlmError::new(
+                            "Cursor requested a native interaction instead of a presented Aster tool"
+                        )));
                     }
                     if let Some(update) = value.get("interactionUpdate") {
                         if update.get("stepStarted").is_some() {

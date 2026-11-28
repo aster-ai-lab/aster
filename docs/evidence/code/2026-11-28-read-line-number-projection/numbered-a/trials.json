@@ -1,0 +1,310 @@
+[
+  {
+    "label": "range-reference",
+    "case": "range",
+    "arm": "reference",
+    "passed": true,
+    "answer": {
+      "line": 1197,
+      "slot": 147,
+      "fallback": 19
+    },
+    "expected": {
+      "line": 1197,
+      "slot": 147,
+      "fallback": 19
+    },
+    "capture": [
+      {
+        "bytes": 15571,
+        "sha256": "09bd280a70f8a5b2c7d25b7f370e9d4cef885ef23ec0619dfb97e9df77b6f509",
+        "unpadded_sha256": "48784d72ddf89e7ca3ca57e3a8c9e457cfac953e3cdee19d4a1f06f3841aef40",
+        "numbered_lines": 320,
+        "padded_labels": 320
+      }
+    ],
+    "read_args": {
+      "file_path": "青石 ledger.rs",
+      "offset": 1000,
+      "limit": 320
+    },
+    "files_preserved": true,
+    "wire_equivalent": true,
+    "raw_read_digests": [
+      "245e59f474f1f0b2ba45e8b761d0b337fb52e493fb363bd040957e9397b6570c"
+    ],
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 13829,
+      "completion_tokens": 20,
+      "total_tokens": 13849,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 12677
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "range-candidate",
+    "case": "range",
+    "arm": "candidate",
+    "passed": true,
+    "answer": {
+      "line": 1197,
+      "slot": 147,
+      "fallback": 19
+    },
+    "expected": {
+      "line": 1197,
+      "slot": 147,
+      "fallback": 19
+    },
+    "capture": [
+      {
+        "bytes": 14931,
+        "sha256": "48784d72ddf89e7ca3ca57e3a8c9e457cfac953e3cdee19d4a1f06f3841aef40",
+        "unpadded_sha256": "48784d72ddf89e7ca3ca57e3a8c9e457cfac953e3cdee19d4a1f06f3841aef40",
+        "numbered_lines": 320,
+        "padded_labels": 0
+      }
+    ],
+    "read_args": {
+      "file_path": "青石 ledger.rs",
+      "offset": 1000,
+      "limit": 320
+    },
+    "files_preserved": true,
+    "wire_equivalent": true,
+    "raw_read_digests": [
+      "245e59f474f1f0b2ba45e8b761d0b337fb52e493fb363bd040957e9397b6570c"
+    ],
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 13509,
+      "completion_tokens": 20,
+      "total_tokens": 13529,
+      "prompt_cache_hit_tokens": 7168,
+      "prompt_cache_miss_tokens": 6341
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "files-candidate",
+    "case": "files",
+    "arm": "candidate",
+    "passed": true,
+    "answer": {
+      "config_line": 439,
+      "code_line": 1197,
+      "seed": "青石-73"
+    },
+    "expected": {
+      "config_line": 439,
+      "code_line": 1197,
+      "seed": "青石-73"
+    },
+    "capture": [
+      {
+        "bytes": 11876,
+        "sha256": "e4165ce34255b19f5acb4e83a3ccecff329f6a087c9ec2d572d79939dfb4f566",
+        "unpadded_sha256": "e4165ce34255b19f5acb4e83a3ccecff329f6a087c9ec2d572d79939dfb4f566",
+        "numbered_lines": 300,
+        "padded_labels": 0
+      }
+    ],
+    "read_args": {
+      "files": [
+        {
+          "path": "划分 state.yaml",
+          "offset": 300,
+          "limit": 150
+        },
+        {
+          "path": "青石 ledger.rs",
+          "offset": 1120,
+          "limit": 150
+        }
+      ]
+    },
+    "files_preserved": true,
+    "wire_equivalent": true,
+    "raw_read_digests": [
+      "78242caa537c210705abf7d4d3a85a1f40d33c3e856d833bce034f1b39128d71"
+    ],
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 11954,
+      "completion_tokens": 24,
+      "total_tokens": 11978,
+      "prompt_cache_hit_tokens": 7040,
+      "prompt_cache_miss_tokens": 4914
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "files-reference",
+    "case": "files",
+    "arm": "reference",
+    "passed": true,
+    "answer": {
+      "config_line": 439,
+      "code_line": 1197,
+      "seed": "青石-73"
+    },
+    "expected": {
+      "config_line": 439,
+      "code_line": 1197,
+      "seed": "青石-73"
+    },
+    "capture": [
+      {
+        "bytes": 12626,
+        "sha256": "679d9d4cd17ec9997af495a14fd65e0269d68aa7f777bfe14e51fc213b640f43",
+        "unpadded_sha256": "e4165ce34255b19f5acb4e83a3ccecff329f6a087c9ec2d572d79939dfb4f566",
+        "numbered_lines": 300,
+        "padded_labels": 300
+      }
+    ],
+    "read_args": {
+      "files": [
+        {
+          "path": "划分 state.yaml",
+          "offset": 300,
+          "limit": 150
+        },
+        {
+          "path": "青石 ledger.rs",
+          "offset": 1120,
+          "limit": 150
+        }
+      ]
+    },
+    "files_preserved": true,
+    "wire_equivalent": true,
+    "raw_read_digests": [
+      "78242caa537c210705abf7d4d3a85a1f40d33c3e856d833bce034f1b39128d71"
+    ],
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 12254,
+      "completion_tokens": 24,
+      "total_tokens": 12278,
+      "prompt_cache_hit_tokens": 7296,
+      "prompt_cache_miss_tokens": 4958
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "files-page-candidate",
+    "case": "files-page",
+    "arm": "candidate",
+    "passed": false,
+    "answer": {
+      "config_line": "     value_seed: \"青石-73\"",
+      "seed": "青石-73",
+      "next_offset": 468
+    },
+    "expected": {
+      "config_line": 439,
+      "seed": "青石-73",
+      "next_offset": 468
+    },
+    "capture": [
+      {
+        "bytes": 14884,
+        "sha256": "9d9c65f6f49151b5c42e19231fced4ef7afb62317510a50539adb0004f7a7011",
+        "unpadded_sha256": "9d9c65f6f49151b5c42e19231fced4ef7afb62317510a50539adb0004f7a7011",
+        "numbered_lines": 468,
+        "padded_labels": 0
+      }
+    ],
+    "read_args": {
+      "files": [
+        {
+          "path": "划分 state.yaml"
+        },
+        {
+          "path": "青石 ledger.rs",
+          "offset": 900,
+          "limit": 510
+        }
+      ]
+    },
+    "files_preserved": true,
+    "wire_equivalent": true,
+    "raw_read_digests": [
+      "38c68d32df5ae2a12f26a9d184976dd0b892f6c105f6b22fea4e24f4ced9e0df"
+    ],
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 12629,
+      "completion_tokens": 33,
+      "total_tokens": 12662,
+      "prompt_cache_hit_tokens": 7040,
+      "prompt_cache_miss_tokens": 5589
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  },
+  {
+    "label": "files-page-reference",
+    "case": "files-page",
+    "arm": "reference",
+    "passed": false,
+    "answer": {
+      "config_line": "     value_seed: \"青石-73\"",
+      "seed": "青石-73",
+      "next_offset": 468
+    },
+    "expected": {
+      "config_line": 439,
+      "seed": "青石-73",
+      "next_offset": 468
+    },
+    "capture": [
+      {
+        "bytes": 16396,
+        "sha256": "e2dbf88b46eb77d74ba56a53caa90a6490277b032759cfa5c5218a2227ac7908",
+        "unpadded_sha256": "9d9c65f6f49151b5c42e19231fced4ef7afb62317510a50539adb0004f7a7011",
+        "numbered_lines": 468,
+        "padded_labels": 468
+      }
+    ],
+    "read_args": {
+      "files": [
+        {
+          "path": "划分 state.yaml"
+        },
+        {
+          "path": "青石 ledger.rs",
+          "offset": 900,
+          "limit": 510
+        }
+      ]
+    },
+    "files_preserved": true,
+    "wire_equivalent": true,
+    "raw_read_digests": [
+      "38c68d32df5ae2a12f26a9d184976dd0b892f6c105f6b22fea4e24f4ced9e0df"
+    ],
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 13097,
+      "completion_tokens": 33,
+      "total_tokens": 13130,
+      "prompt_cache_hit_tokens": 7168,
+      "prompt_cache_miss_tokens": 5929
+    },
+    "tool_calls": {},
+    "primary_requests": 1
+  }
+]

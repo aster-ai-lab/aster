@@ -1,0 +1,92 @@
+[
+  {
+    "trial": "1-release",
+    "results": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ]
+  },
+  {
+    "trial": "1-candidate",
+    "results": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ]
+  },
+  {
+    "trial": "2-candidate",
+    "results": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ]
+  },
+  {
+    "trial": "2-release",
+    "results": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ]
+  },
+  {
+    "trial": "3-release",
+    "results": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ]
+  },
+  {
+    "trial": "3-candidate",
+    "results": [
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      },
+      {
+        "bytes": 3938,
+        "sha256": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f",
+        "exit_code": 0
+      }
+    ]
+  }
+]

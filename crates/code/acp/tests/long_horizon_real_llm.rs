@@ -191,6 +191,26 @@ async fn glm_staged_goal_repairs_rust_and_survives_new_acp_process() {
 async fn real_native_file_workflow_multiple_user_turns() {
     tokio::task::LocalSet::new().run_until(async {
         let mut campaign = live::Campaign::prepare("native-multiturn-diagnostic").await;
+        if let Ok(value) = std::env::var("ASTER_LH_NATIVE_TOOL_PRESENTATION") {
+            use aster_core::config::{rewrite_acl_sections, CodeConfig, ConfigSection, ReasoningEffort};
+            use aster_core::tools::{ToolPresentationModeV1, ToolPresentationProfileV1};
+
+            let mode = ToolPresentationModeV1::parse(&value).expect("native tool presentation mode");
+            let mut config = CodeConfig::from_acl(&campaign.acl).expect("isolated campaign ACL");
+            config.reasoning_effort = Some(ReasoningEffort::None);
+            config.tool_presentation_profile = Some(ToolPresentationProfileV1::for_mode(mode));
+            campaign.acl = rewrite_acl_sections(
+                &campaign.acl,
+                &config,
+                &[ConfigSection::ReasoningEffort, ConfigSection::Execution],
+            )
+            .expect("isolated presentation ACL");
+            std::fs::write(
+                campaign.output.join("model-profile.json"),
+                json!({"tool_presentation": mode.as_str(), "reasoning_effort": "none"}).to_string(),
+            )
+            .expect("native model profile evidence");
+        }
         let task = native_fixture::NativeFixture::create(campaign.root.path()).unwrap();
         let baseline = task.prepare(1).unwrap();
         assert!(!task.check(&baseline), "missing artifact must fail the independent oracle");
@@ -205,7 +225,7 @@ async fn real_native_file_workflow_multiple_user_turns() {
                 let source_order = task.read("order.json").map_err(|_| "fixture_order")?;
                 let source_policy = task.read("policy.json").map_err(|_| "fixture_policy")?;
                 let event_start = driver.capture.lock().unwrap().events.len();
-                let answer = driver.prompt(&session,&format!("Revision {revision}: Read README.md, current order.json and policy.json. Update report.json to satisfy the stated contract. Preserve all source files and unrelated user work. Use native read/edit tools only; do not run commands or code. Finish with a concise account of the current result.")).await?;
+                let answer = driver.prompt(&session, &native_fixture::revision_prompt(revision)).await?;
                 let outcome = driver.capture.lock().unwrap().events.iter().skip(event_start).find(|event| event["method"] == "aster/turn/outcome" && event["params"]["sessionId"] == session.0.as_ref()).map(|event| event["params"]["outcome"].clone());
                 let attested = outcome.as_ref().is_some_and(|outcome| outcome["terminal"] == "verified" && outcome["status"] == "passed");
                 let correct = task.check(&expected);
@@ -215,6 +235,15 @@ async fn real_native_file_workflow_multiple_user_turns() {
             }
             Ok(())
         }).await.unwrap_or(Err("workflow_deadline"));
+        if work.is_ok() {
+            // ACP publishes the terminal prompt response before a memory tail settles.
+            let usage_drained = campaign.relay.as_ref().unwrap().settle_usage().await;
+            std::fs::write(
+                campaign.output.join("usage-drain.json"),
+                json!({"settled": usage_drained}).to_string(),
+            )
+            .expect("metered shutdown evidence");
+        }
         let (events, tools_terminal, tools, permissions, overflow, rpc_errors) = {
             let capture = driver.capture.lock().unwrap();
             (capture.events.clone(),capture.tools.values().all(|status| matches!(status,acp::ToolCallStatus::Completed|acp::ToolCallStatus::Failed)),capture.tools.len(),capture.permissions,capture.overflow,capture.rpc_errors.clone())

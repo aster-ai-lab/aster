@@ -182,7 +182,10 @@ async fn original_log_wins_for_later_known_bytes_and_preserves_all_unknowns_past
             before: None,
             after: ToolFileIdentityV1 {
                 kind: ToolFileKind::File,
-                content_digest: Some(format!("sha256:{}", sha256::digest(b"later known bytes"))),
+                content_digest: Some(format!(
+                    "sha256:{}",
+                    crate::content_digest::sha256_hex(b"later known bytes")
+                )),
                 mode: Some(0o644),
             },
         }]),
@@ -235,7 +238,10 @@ async fn original_log_wins_for_later_known_bytes_and_preserves_all_unknowns_past
     {
         let surface = pinned.parts.surface.as_ref().unwrap();
         let ledger = surface.ledger.lock().unwrap();
-        assert!(ledger.content_digest_matches("changed.txt", &sha256::digest(b"later known bytes")));
+        assert!(ledger.content_digest_matches(
+            "changed.txt",
+            &crate::content_digest::sha256_hex(b"later known bytes")
+        ));
     }
     assert_eq!(
         pinned.parts.open().unwrap().read_facts().unwrap(),
@@ -268,7 +274,10 @@ async fn retained_end_and_external_end_share_the_actual_byte_check_summary() {
             before: None,
             after: ToolFileIdentityV1 {
                 kind: ToolFileKind::File,
-                content_digest: Some(format!("sha256:{}", sha256::digest(&read_back))),
+                content_digest: Some(format!(
+                    "sha256:{}",
+                    crate::content_digest::sha256_hex(&read_back)
+                )),
                 mode: Some(0o644),
             },
         }]),

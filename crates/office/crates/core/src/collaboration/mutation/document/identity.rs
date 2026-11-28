@@ -58,7 +58,7 @@ pub(super) fn paragraph_text_id_rotations<T: ReadTxn>(
                 return Err(collaboration_error(
                     "office.collaboration.content_invalid",
                     "The edited Document paragraph has an incomplete Word paragraph identity.",
-                ))
+                ));
             }
         }
     }
@@ -106,7 +106,7 @@ pub(super) fn table_row_text_id_rotations<T: ReadTxn>(
                 return Err(collaboration_error(
                     "office.collaboration.content_invalid",
                     "The edited Document table row has an incomplete Word row identity.",
-                ))
+                ));
             }
         }
     }

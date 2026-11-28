@@ -282,6 +282,11 @@ fn original_request(
 }
 
 impl crate::agent::TurnEngine {
+    pub(crate) fn uses_deferred_tool_catalog(&self) -> bool {
+        self.config.tool_presentation_profile.mode()
+            == crate::tools::ToolPresentationModeV1::Deferred
+    }
+
     pub(crate) fn present_fact_turn_tools(
         &self,
         tools: &[ToolDefinition],
@@ -303,10 +308,11 @@ impl crate::agent::TurnEngine {
         messages: Vec<Message>,
         system: Option<String>,
         tools: Vec<ToolDefinition>,
+        application: ModelPresentationApplicationV1,
     ) -> anyhow::Result<PreparedFactModelCall> {
         let mut prepared =
             self.prepare_fact_model_call(expected_session_id, submitted, messages, system, tools)?;
-        prepared.application = ModelPresentationApplicationV1::Profiled;
+        prepared.application = application;
         Ok(prepared)
     }
 

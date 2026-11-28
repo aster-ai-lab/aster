@@ -159,6 +159,31 @@ impl Relay {
         self.stats.lock().unwrap().upstream_calls
     }
 
+    pub async fn settle_usage(&self) -> bool {
+        let drained = async {
+            let mut quiet = None;
+            loop {
+                let (calls, complete) = {
+                    let stats = self.stats.lock().unwrap();
+                    (stats.upstream_calls, stats.verified_token_total().is_some())
+                };
+                let now = tokio::time::Instant::now();
+                match quiet {
+                    Some((since, previous)) if complete && calls == previous => {
+                        if now.duration_since(since) >= Duration::from_secs(1) {
+                            return;
+                        }
+                    }
+                    _ => quiet = complete.then_some((now, calls)),
+                }
+                tokio::time::sleep(Duration::from_millis(50)).await;
+            }
+        };
+        tokio::time::timeout(Duration::from_secs(20), drained)
+            .await
+            .is_ok()
+    }
+
     pub async fn close(mut self) -> Result<Stats, String> {
         let _timing = timing::span(Phase::RelayClose);
         self.cancel.cancel();

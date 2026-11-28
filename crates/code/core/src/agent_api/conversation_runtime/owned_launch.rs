@@ -24,6 +24,7 @@ pub(super) enum OwnedConversationRequest {
     OrdinaryResume {
         source: String,
     },
+    ResumeInterruptedTurn,
 }
 
 pub(super) struct OwnedConversationCapture {

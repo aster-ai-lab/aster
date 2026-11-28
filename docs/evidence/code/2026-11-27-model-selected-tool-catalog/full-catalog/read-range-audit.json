@@ -1,0 +1,284 @@
+[
+  {
+    "presentation": "bare",
+    "trial": "1-release",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "bare",
+    "trial": "1-candidate",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 43,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "bare",
+    "trial": "2-candidate",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 43,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "limit": 3,
+        "offset": 42
+      },
+      {
+        "file_path": "addresses.txt",
+        "limit": 2,
+        "offset": 69
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "bare",
+    "trial": "2-release",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "annotated",
+    "trial": "1-release",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "annotated",
+    "trial": "1-candidate",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "annotated",
+    "trial": "2-candidate",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "annotated",
+    "trial": "2-release",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "limit": 2,
+        "offset": 69
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "native-required-tree",
+    "trial": "1-release",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "limit": 2,
+        "offset": 69
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "native-required-tree",
+    "trial": "1-candidate",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "native-required-tree",
+    "trial": "2-candidate",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "native-required-tree",
+    "trial": "2-release",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "limit": 2,
+        "offset": 69
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "native-required-root",
+    "trial": "1-release",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "native-required-root",
+    "trial": "1-candidate",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "native-required-root",
+    "trial": "2-candidate",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  },
+  {
+    "presentation": "native-required-root",
+    "trial": "2-release",
+    "read_arguments": [
+      {
+        "file_path": "addresses.txt",
+        "offset": 42,
+        "limit": 3
+      },
+      {
+        "file_path": "addresses.txt",
+        "offset": 69,
+        "limit": 2
+      }
+    ],
+    "answers_passed": true
+  }
+]

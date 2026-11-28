@@ -1,0 +1,640 @@
+{
+  "short-default": {
+    "candidate": {
+      "trials": [
+        {
+          "trial": "1-candidate",
+          "pass": true,
+          "total": 31221,
+          "input": 30888,
+          "uncached": 7336,
+          "memory_inputs": 963,
+          "memory_total": 973,
+          "memory_uncached": 707,
+          "memory_requests": 2,
+          "primary_input": 29925,
+          "requests": 6,
+          "tool_calls": {
+            "read": 3,
+            "bash": 1
+          }
+        },
+        {
+          "trial": "2-candidate",
+          "pass": true,
+          "total": 31139,
+          "input": 30825,
+          "uncached": 1001,
+          "memory_inputs": 960,
+          "memory_total": 970,
+          "memory_uncached": 320,
+          "memory_requests": 2,
+          "primary_input": 29865,
+          "requests": 6,
+          "tool_calls": {
+            "read": 2,
+            "bash": 1
+          }
+        }
+      ],
+      "median": {
+        "total": 31180.0,
+        "input": 30856.5,
+        "uncached": 4168.5,
+        "memory_inputs": 961.5,
+        "memory_total": 971.5,
+        "memory_uncached": 513.5,
+        "primary_input": 29895.0
+      },
+      "passed": 2,
+      "requests": 12
+    },
+    "release": {
+      "trials": [
+        {
+          "trial": "1-release",
+          "pass": true,
+          "total": 31243,
+          "input": 30912,
+          "uncached": 1088,
+          "memory_inputs": 1057,
+          "memory_total": 1067,
+          "memory_uncached": 417,
+          "memory_requests": 2,
+          "primary_input": 29855,
+          "requests": 6,
+          "tool_calls": {
+            "read": 2,
+            "bash": 1
+          }
+        },
+        {
+          "trial": "2-release",
+          "pass": true,
+          "total": 31219,
+          "input": 30905,
+          "uncached": 1081,
+          "memory_inputs": 1040,
+          "memory_total": 1050,
+          "memory_uncached": 400,
+          "memory_requests": 2,
+          "primary_input": 29865,
+          "requests": 6,
+          "tool_calls": {
+            "read": 2,
+            "bash": 1
+          }
+        }
+      ],
+      "median": {
+        "total": 31231.0,
+        "input": 30908.5,
+        "uncached": 1084.5,
+        "memory_inputs": 1048.5,
+        "memory_total": 1058.5,
+        "memory_uncached": 408.5,
+        "primary_input": 29860.0
+      },
+      "passed": 2,
+      "requests": 12
+    },
+    "dsh": {
+      "trials": [
+        {
+          "trial": "1-dsh",
+          "pass": true,
+          "total": 25217,
+          "input": 24923,
+          "uncached": 1115,
+          "memory_inputs": 0,
+          "memory_total": 0,
+          "memory_uncached": 0,
+          "memory_requests": 0,
+          "primary_input": 24923,
+          "requests": 4,
+          "tool_calls": {
+            "read": 3,
+            "bash": 1
+          }
+        },
+        {
+          "trial": "2-dsh",
+          "pass": true,
+          "total": 25193,
+          "input": 24905,
+          "uncached": 969,
+          "memory_inputs": 0,
+          "memory_total": 0,
+          "memory_uncached": 0,
+          "memory_requests": 0,
+          "primary_input": 24905,
+          "requests": 4,
+          "tool_calls": {
+            "read": 3,
+            "bash": 1
+          }
+        }
+      ],
+      "median": {
+        "total": 25205.0,
+        "input": 24914.0,
+        "uncached": 1042.0,
+        "memory_inputs": 0.0,
+        "memory_total": 0.0,
+        "memory_uncached": 0.0,
+        "primary_input": 24914.0
+      },
+      "passed": 2,
+      "requests": 8
+    }
+  },
+  "short-deferred": {
+    "candidate": {
+      "trials": [
+        {
+          "trial": "1-candidate",
+          "pass": true,
+          "total": 25401,
+          "input": 25130,
+          "uncached": 6058,
+          "memory_inputs": 917,
+          "memory_total": 927,
+          "memory_uncached": 789,
+          "memory_requests": 2,
+          "primary_input": 24213,
+          "requests": 6,
+          "tool_calls": {
+            "read": 2,
+            "bash": 1
+          }
+        },
+        {
+          "trial": "2-candidate",
+          "pass": true,
+          "total": 25357,
+          "input": 25097,
+          "uncached": 1161,
+          "memory_inputs": 906,
+          "memory_total": 916,
+          "memory_uncached": 394,
+          "memory_requests": 2,
+          "primary_input": 24191,
+          "requests": 6,
+          "tool_calls": {
+            "read": 2,
+            "bash": 1
+          }
+        }
+      ],
+      "median": {
+        "total": 25379.0,
+        "input": 25113.5,
+        "uncached": 3609.5,
+        "memory_inputs": 911.5,
+        "memory_total": 921.5,
+        "memory_uncached": 591.5,
+        "primary_input": 24202.0
+      },
+      "passed": 2,
+      "requests": 12
+    },
+    "release": {
+      "trials": [
+        {
+          "trial": "1-release",
+          "pass": true,
+          "total": 25453,
+          "input": 25192,
+          "uncached": 1128,
+          "memory_inputs": 987,
+          "memory_total": 997,
+          "memory_uncached": 347,
+          "memory_requests": 2,
+          "primary_input": 24205,
+          "requests": 6,
+          "tool_calls": {
+            "read": 2,
+            "bash": 1
+          }
+        },
+        {
+          "trial": "2-release",
+          "pass": true,
+          "total": 25477,
+          "input": 25207,
+          "uncached": 1143,
+          "memory_inputs": 996,
+          "memory_total": 1006,
+          "memory_uncached": 356,
+          "memory_requests": 2,
+          "primary_input": 24211,
+          "requests": 6,
+          "tool_calls": {
+            "read": 2,
+            "bash": 1
+          }
+        }
+      ],
+      "median": {
+        "total": 25465.0,
+        "input": 25199.5,
+        "uncached": 1135.5,
+        "memory_inputs": 991.5,
+        "memory_total": 1001.5,
+        "memory_uncached": 351.5,
+        "primary_input": 24208.0
+      },
+      "passed": 2,
+      "requests": 12
+    },
+    "dsh": {
+      "trials": [
+        {
+          "trial": "1-dsh",
+          "pass": true,
+          "total": 25202,
+          "input": 24918,
+          "uncached": 1110,
+          "memory_inputs": 0,
+          "memory_total": 0,
+          "memory_uncached": 0,
+          "memory_requests": 0,
+          "primary_input": 24918,
+          "requests": 4,
+          "tool_calls": {
+            "read": 3,
+            "bash": 1
+          }
+        },
+        {
+          "trial": "2-dsh",
+          "pass": true,
+          "total": 25149,
+          "input": 24880,
+          "uncached": 944,
+          "memory_inputs": 0,
+          "memory_total": 0,
+          "memory_uncached": 0,
+          "memory_requests": 0,
+          "primary_input": 24880,
+          "requests": 4,
+          "tool_calls": {
+            "read": 3,
+            "bash": 1
+          }
+        }
+      ],
+      "median": {
+        "total": 25175.5,
+        "input": 24899.0,
+        "uncached": 1027.0,
+        "memory_inputs": 0.0,
+        "memory_total": 0.0,
+        "memory_uncached": 0.0,
+        "primary_input": 24899.0
+      },
+      "passed": 2,
+      "requests": 8
+    }
+  },
+  "long": {
+    "candidate": {
+      "trials": [
+        {
+          "trial": "1-candidate",
+          "pass": false,
+          "total": 184130,
+          "input": 179239,
+          "uncached": 16809,
+          "memory_inputs": 5009,
+          "memory_total": 7180,
+          "memory_uncached": 3601,
+          "memory_requests": 6,
+          "primary_input": 173970,
+          "requests": 28,
+          "tool_calls": {
+            "read": 8,
+            "ls": 1,
+            "write": 1,
+            "edit": 5
+          },
+          "native_workflow": false,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "settled_tools": 6
+        },
+        {
+          "trial": "3-candidate",
+          "pass": false,
+          "total": 199411,
+          "input": 194945,
+          "uncached": 14083,
+          "memory_inputs": 5555,
+          "memory_total": 7074,
+          "memory_uncached": 4019,
+          "memory_requests": 6,
+          "primary_input": 189130,
+          "requests": 29,
+          "tool_calls": {
+            "read": 25,
+            "ls": 2,
+            "search": 1,
+            "write": 6
+          },
+          "native_workflow": false,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "settled_tools": 6
+        }
+      ],
+      "median": {
+        "total": 191770.5,
+        "input": 187092.0,
+        "uncached": 15446.0,
+        "memory_inputs": 5282.0,
+        "memory_total": 7127.0,
+        "memory_uncached": 3810.0,
+        "primary_input": 181550.0
+      },
+      "passed": 0,
+      "requests": 57
+    },
+    "release": {
+      "trials": [
+        {
+          "trial": "2-release",
+          "pass": false,
+          "total": 175669,
+          "input": 172390,
+          "uncached": 12008,
+          "memory_inputs": 5860,
+          "memory_total": 6669,
+          "memory_uncached": 3556,
+          "memory_requests": 6,
+          "primary_input": 166270,
+          "requests": 27,
+          "tool_calls": {
+            "read": 7,
+            "ls": 1,
+            "write": 1,
+            "edit": 5
+          },
+          "native_workflow": false,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "settled_tools": 6
+        },
+        {
+          "trial": "2-release",
+          "pass": false,
+          "total": 200185,
+          "input": 195725,
+          "uncached": 19343,
+          "memory_inputs": 6387,
+          "memory_total": 7122,
+          "memory_uncached": 4083,
+          "memory_requests": 6,
+          "primary_input": 189078,
+          "requests": 28,
+          "tool_calls": {
+            "read": 26,
+            "ls": 1,
+            "write": 1,
+            "edit": 5
+          },
+          "native_workflow": false,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "settled_tools": 6
+        }
+      ],
+      "median": {
+        "total": 187927.0,
+        "input": 184057.5,
+        "uncached": 15675.5,
+        "memory_inputs": 6123.5,
+        "memory_total": 6895.5,
+        "memory_uncached": 3819.5,
+        "primary_input": 177674.0
+      },
+      "passed": 0,
+      "requests": 55
+    },
+    "dsh": {
+      "trials": [
+        {
+          "trial": "3-dsh",
+          "pass": false,
+          "total": 270159,
+          "input": 266948,
+          "uncached": 8260,
+          "memory_inputs": 0,
+          "memory_total": 0,
+          "memory_uncached": 0,
+          "memory_requests": 0,
+          "primary_input": 266948,
+          "requests": 27,
+          "tool_calls": {
+            "read": 31,
+            "glob": 1,
+            "write": 6
+          },
+          "native_workflow": false,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 0,
+          "settled_tools": 6
+        },
+        {
+          "trial": "1-dsh",
+          "pass": true,
+          "total": 255024,
+          "input": 251841,
+          "uncached": 8257,
+          "memory_inputs": 0,
+          "memory_total": 0,
+          "memory_uncached": 0,
+          "memory_requests": 0,
+          "primary_input": 251841,
+          "requests": 25,
+          "tool_calls": {
+            "read": 31,
+            "write": 6
+          },
+          "native_workflow": true,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 0,
+          "settled_tools": 6
+        }
+      ],
+      "median": {
+        "total": 262591.5,
+        "input": 259394.5,
+        "uncached": 8258.5,
+        "memory_inputs": 0.0,
+        "memory_total": 0.0,
+        "memory_uncached": 0.0,
+        "primary_input": 259394.5
+      },
+      "passed": 1,
+      "requests": 52
+    }
+  },
+  "extraction": {
+    "relations": {
+      "replacement": {
+        "reference": {
+          "passed": true,
+          "prompt_tokens": 730,
+          "completion_tokens": 233,
+          "total_tokens": 963,
+          "prompt_cache_hit_tokens": 384,
+          "prompt_cache_miss_tokens": 346
+        },
+        "candidate": {
+          "passed": true,
+          "prompt_tokens": 690,
+          "completion_tokens": 232,
+          "total_tokens": 922,
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 562
+        }
+      },
+      "conflict": {
+        "candidate": {
+          "passed": true,
+          "prompt_tokens": 690,
+          "completion_tokens": 265,
+          "total_tokens": 955,
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 434
+        },
+        "reference": {
+          "passed": true,
+          "prompt_tokens": 730,
+          "completion_tokens": 151,
+          "total_tokens": 881,
+          "prompt_cache_hit_tokens": 384,
+          "prompt_cache_miss_tokens": 346
+        }
+      }
+    },
+    "sources": {
+      "preference": {
+        "reference": {
+          "passed": true,
+          "prompt_tokens": 449,
+          "completion_tokens": 191,
+          "total_tokens": 640,
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 193
+        },
+        "candidate": {
+          "passed": true,
+          "prompt_tokens": 409,
+          "completion_tokens": 196,
+          "total_tokens": 605,
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 281
+        }
+      },
+      "workflow": {
+        "candidate": {
+          "passed": true,
+          "prompt_tokens": 416,
+          "completion_tokens": 257,
+          "total_tokens": 673,
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 288
+        },
+        "reference": {
+          "passed": true,
+          "prompt_tokens": 456,
+          "completion_tokens": 223,
+          "total_tokens": 679,
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 200
+        }
+      }
+    },
+    "holdout": {
+      "project_fact": {
+        "reference": {
+          "passed": true,
+          "prompt_tokens": 471,
+          "completion_tokens": 262,
+          "total_tokens": 733,
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 215
+        },
+        "candidate": {
+          "passed": true,
+          "prompt_tokens": 431,
+          "completion_tokens": 142,
+          "total_tokens": 573,
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 303
+        }
+      },
+      "failure": {
+        "candidate": {
+          "passed": true,
+          "prompt_tokens": 435,
+          "completion_tokens": 249,
+          "total_tokens": 684,
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 307
+        },
+        "reference": {
+          "passed": true,
+          "prompt_tokens": 475,
+          "completion_tokens": 274,
+          "total_tokens": 749,
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 219
+        }
+      },
+      "ephemeral": {
+        "reference": {
+          "passed": true,
+          "prompt_tokens": 448,
+          "completion_tokens": 5,
+          "total_tokens": 453,
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 192
+        },
+        "candidate": {
+          "passed": true,
+          "prompt_tokens": 408,
+          "completion_tokens": 5,
+          "total_tokens": 413,
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 280
+        }
+      },
+      "secret": {
+        "candidate": {
+          "passed": true,
+          "prompt_tokens": 400,
+          "completion_tokens": 5,
+          "total_tokens": 405,
+          "prompt_cache_hit_tokens": 128,
+          "prompt_cache_miss_tokens": 272
+        },
+        "reference": {
+          "passed": true,
+          "prompt_tokens": 440,
+          "completion_tokens": 5,
+          "total_tokens": 445,
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 184
+        }
+      }
+    }
+  }
+}

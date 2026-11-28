@@ -176,12 +176,11 @@ async fn exercise(
         else {
             panic!("native artifacts must bind a Verified terminal");
         };
-        assert!(result
-            .messages
-            .iter()
-            .any(|message| message.content.iter().any(
-                |part| matches!(part, ContentBlock::Text { text } if text == "Charts created.")
-            )));
+        assert!(result.messages.iter().any(|message| {
+            message.content.iter().any(
+                |part| matches!(part, ContentBlock::Text { text } if text == "Charts created."),
+            )
+        }));
         let facts =
             aster_core::fact_control::read_workspace_facts(root.path(), session.id()).unwrap();
         let reports: Vec<_> = facts
@@ -239,7 +238,11 @@ async fn native_png_proofs_survive_program_batch_and_parallel_nested_calls() {
         {"tool":"office_file","args":png("trend.png")},
         {"tool":"office_file","args":png("regions.png")}
     ]});
-    let source = format!("await ctx.tools.batch({batch}); await Promise.all([ctx.tools.office_file({}),ctx.tools.office_file({})]);", png("parallel-a.png"), png("parallel-b.png"));
+    let source = format!(
+        "await ctx.tools.batch({batch}); await Promise.all([ctx.tools.office_file({}),ctx.tools.office_file({})]);",
+        png("parallel-a.png"),
+        png("parallel-b.png")
+    );
     exercise(
         vec![
             ("office_file", png("_font_probe.png")),

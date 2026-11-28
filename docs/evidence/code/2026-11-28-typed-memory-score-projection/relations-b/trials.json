@@ -1,0 +1,579 @@
+[
+  {
+    "case": "replacement",
+    "arm": "reference",
+    "request_capture": [
+      {
+        "user_prompt_bytes": 1399,
+        "related_rows": [
+          {
+            "id": "@1",
+            "type": "procedural",
+            "importance": 0.92,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC."
+          },
+          {
+            "id": "@2",
+            "type": "procedural",
+            "importance": 0.92,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team."
+          },
+          {
+            "id": "@3",
+            "type": "procedural",
+            "importance": 0.92,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow stores final review checklists in the regional audit diary."
+          },
+          {
+            "id": "@4",
+            "type": "procedural",
+            "importance": 0.92,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6."
+          }
+        ],
+        "proposal": "{\"items\":[{\"memory_type\":\"procedural\",\"content\":\"Cedar 项目的发布流程中，容器重建安排在星期三 09:30 UTC（替代此前星期五 18:00 UTC 的安排）；签名、清单和通知流程继续照常使用。\",\"importance\":0.95,\"confidence\":0.97,\"tags\":[\"cedar\",\"release-workflow\",\"container-rebuild\",\"schedule\"],\"source\":\"decision\",\"scope\":\"workspace\",\"reason\":\"这是用户明确要求长期记住的正式流程变更，未来执行 Cedar 发布时必须使用新时间。\",\"evolution\":{\"kind\":\"skill\",\"pattern_key\":\"cedar.release.container_rebuild_schedule\",\"title\":\"Cedar 容器重建时间\",\"summary\":\"Cedar 发布流程的容器重建改为星期三 09:30 UTC，其余签名、清单和通知流程不变。\",\"instructions\":[\"在星期三 09:30 UTC 执行 Cedar 容器重建。\",\"不要再用星期五 18:00 UTC 的旧安排。\",\"签名、清单和通知流程继续照常执行。\"]},\"supersedes\":[\"@1\"]}]}"
+      }
+    ],
+    "persistent_records": [
+      {
+        "id": "0f884f40-0b65-42df-a3b3-607acb48ae59",
+        "content": "Cedar 项目的发布流程中，容器重建安排在星期三 09:30 UTC（替代此前星期五 18:00 UTC 的安排）；签名、清单和通知流程继续照常使用。",
+        "metadata": {
+          "confidence": "0.97",
+          "evolution_instructions": "[\"在星期三 09:30 UTC 执行 Cedar 容器重建。\",\"不要再用星期五 18:00 UTC 的旧安排。\",\"签名、清单和通知流程继续照常执行。\"]",
+          "evolution_kind": "skill",
+          "evolution_pattern": "cedar.release.container.rebuild.schedule",
+          "evolution_schema": "aster.evolution.signal.v1",
+          "evolution_summary": "Cedar 发布流程的容器重建改为星期三 09:30 UTC，其余签名、清单和通知流程不变。",
+          "evolution_title": "Cedar 容器重建时间",
+          "reason": "这是用户明确要求长期记住的正式流程变更，未来执行 Cedar 发布时必须使用新时间。",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "01aa1fb9-e022-4620-9684-8de9dc711d61",
+          "source": "decision",
+          "supersedes": "7e73d7df-a8b1-4e45-9ab3-bb728785c152",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-recall-f32-live-dokzkvko/relations-b/replacement-reference/workspace"
+        }
+      },
+      {
+        "id": "17846fe7-1613-4f10-972a-40025b313498",
+        "content": "The Cedar release workflow stores final review checklists in the regional audit diary.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "7e73d7df-a8b1-4e45-9ab3-bb728785c152",
+        "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC.",
+        "metadata": {
+          "aster.memory.status": "superseded",
+          "confidence": "0.97",
+          "protected": "true",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "superseded_by": "0f884f40-0b65-42df-a3b3-607acb48ae59",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "b55401df-58fd-4877-9b08-79b6659061ad",
+        "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "f2640643-a98a-47fa-9e0c-c8450264c49f",
+        "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      }
+    ],
+    "passed": true,
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 730,
+      "completion_tokens": 229,
+      "total_tokens": 959,
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 346
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "replacement",
+    "arm": "candidate",
+    "request_capture": [
+      {
+        "user_prompt_bytes": 1455,
+        "related_rows": [
+          {
+            "id": "@1",
+            "type": "procedural",
+            "importance": 0.9200000166893005,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC."
+          },
+          {
+            "id": "@2",
+            "type": "procedural",
+            "importance": 0.9200000166893005,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team."
+          },
+          {
+            "id": "@3",
+            "type": "procedural",
+            "importance": 0.9200000166893005,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow stores final review checklists in the regional audit diary."
+          },
+          {
+            "id": "@4",
+            "type": "procedural",
+            "importance": 0.9200000166893005,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6."
+          }
+        ],
+        "proposal": "{\"items\":[{\"memory_type\":\"procedural\",\"content\":\"Cedar 项目的发布流程中，容器重建安排在星期三 09:30 UTC（替代此前星期五 18:00 UTC 的安排）；签名、清单和通知流程继续照常使用。\",\"importance\":0.95,\"confidence\":0.97,\"tags\":[\"cedar\",\"release-workflow\",\"container-rebuild\",\"schedule\"],\"source\":\"decision\",\"scope\":\"workspace\",\"reason\":\"这是用户明确要求长期记住的正式流程变更，未来执行 Cedar 发布时必须使用新时间。\",\"evolution\":{\"kind\":\"skill\",\"pattern_key\":\"cedar.release.container_rebuild_schedule\",\"title\":\"Cedar 容器重建时间\",\"summary\":\"Cedar 发布流程的容器重建改为星期三 09:30 UTC，其余签名、清单和通知流程不变。\",\"instructions\":[\"在 Cedar 发布流程中，将容器重建安排在星期三 09:30 UTC。\",\"不要再用星期五 18:00 UTC 作为容器重建时间。\",\"签名、清单和通知流程继续按原有方式执行。\"]},\"supersedes\":[\"@1\"]}]}"
+      }
+    ],
+    "persistent_records": [
+      {
+        "id": "17846fe7-1613-4f10-972a-40025b313498",
+        "content": "The Cedar release workflow stores final review checklists in the regional audit diary.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "4c788622-6d01-4b66-9c9c-7af5469f8ae3",
+        "content": "Cedar 项目的发布流程中，容器重建安排在星期三 09:30 UTC（替代此前星期五 18:00 UTC 的安排）；签名、清单和通知流程继续照常使用。",
+        "metadata": {
+          "confidence": "0.97",
+          "evolution_instructions": "[\"在 Cedar 发布流程中，将容器重建安排在星期三 09:30 UTC。\",\"不要再用星期五 18:00 UTC 作为容器重建时间。\",\"签名、清单和通知流程继续按原有方式执行。\"]",
+          "evolution_kind": "skill",
+          "evolution_pattern": "cedar.release.container.rebuild.schedule",
+          "evolution_schema": "aster.evolution.signal.v1",
+          "evolution_summary": "Cedar 发布流程的容器重建改为星期三 09:30 UTC，其余签名、清单和通知流程不变。",
+          "evolution_title": "Cedar 容器重建时间",
+          "reason": "这是用户明确要求长期记住的正式流程变更，未来执行 Cedar 发布时必须使用新时间。",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "a5ba2400-7a14-4618-aa51-9fce1a8d434c",
+          "source": "decision",
+          "supersedes": "7e73d7df-a8b1-4e45-9ab3-bb728785c152",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-recall-f32-live-dokzkvko/relations-b/replacement-candidate/workspace"
+        }
+      },
+      {
+        "id": "7e73d7df-a8b1-4e45-9ab3-bb728785c152",
+        "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC.",
+        "metadata": {
+          "aster.memory.status": "superseded",
+          "confidence": "0.97",
+          "protected": "true",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "superseded_by": "4c788622-6d01-4b66-9c9c-7af5469f8ae3",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "b55401df-58fd-4877-9b08-79b6659061ad",
+        "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "f2640643-a98a-47fa-9e0c-c8450264c49f",
+        "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      }
+    ],
+    "passed": true,
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 750,
+      "completion_tokens": 235,
+      "total_tokens": 985,
+      "prompt_cache_hit_tokens": 512,
+      "prompt_cache_miss_tokens": 238
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "conflict",
+    "arm": "candidate",
+    "request_capture": [
+      {
+        "user_prompt_bytes": 1505,
+        "related_rows": [
+          {
+            "id": "@1",
+            "type": "procedural",
+            "importance": 0.9200000166893005,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC."
+          },
+          {
+            "id": "@2",
+            "type": "procedural",
+            "importance": 0.9200000166893005,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team."
+          },
+          {
+            "id": "@3",
+            "type": "procedural",
+            "importance": 0.9200000166893005,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6."
+          },
+          {
+            "id": "@4",
+            "type": "procedural",
+            "importance": 0.9200000166893005,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow stores final review checklists in the regional audit diary."
+          }
+        ],
+        "proposal": "{\"items\":[{\"memory_type\":\"semantic\",\"content\":\"Cedar release schedule: the approved container rebuild time remains Friday at 18:00 UTC. The operations handbook's claim of 21:45 UTC is an unapproved change and conflicts with the stored schedule; the contradiction is unresolved, so keep the current rule until approval.\",\"importance\":0.9,\"confidence\":0.95,\"tags\":[\"cedar\",\"release\",\"schedule\",\"contradiction\",\"unapproved-change\"],\"source\":\"decision\",\"scope\":\"workspace\",\"reason\":\"Future release runs must use the approved 18:00 UTC time and know the handbook's 21:45 UTC claim is an unresolved, unapproved discrepancy.\",\"evolution\":null}]}"
+      }
+    ],
+    "persistent_records": [
+      {
+        "id": "17846fe7-1613-4f10-972a-40025b313498",
+        "content": "The Cedar release workflow stores final review checklists in the regional audit diary.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "7e73d7df-a8b1-4e45-9ab3-bb728785c152",
+        "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "b55401df-58fd-4877-9b08-79b6659061ad",
+        "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "df5d0db3-7d54-4cbb-b44f-6c48fc32031e",
+        "content": "Cedar release schedule: the approved container rebuild time remains Friday at 18:00 UTC. The operations handbook's claim of 21:45 UTC is an unapproved change and conflicts with the stored schedule; the contradiction is unresolved, so keep the current rule until approval.",
+        "metadata": {
+          "confidence": "0.95",
+          "reason": "Future release runs must use the approved 18:00 UTC time and know the handbook's 21:45 UTC claim is an unresolved, unapproved discrepancy.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7259240b-ed2e-4b64-bdd7-0179c3ce2820",
+          "source": "decision",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-recall-f32-live-dokzkvko/relations-b/conflict-candidate/workspace"
+        }
+      },
+      {
+        "id": "f2640643-a98a-47fa-9e0c-c8450264c49f",
+        "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      }
+    ],
+    "passed": false,
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 750,
+      "completion_tokens": 149,
+      "total_tokens": 899,
+      "prompt_cache_hit_tokens": 512,
+      "prompt_cache_miss_tokens": 238
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "conflict",
+    "arm": "reference",
+    "request_capture": [
+      {
+        "user_prompt_bytes": 1449,
+        "related_rows": [
+          {
+            "id": "@1",
+            "type": "procedural",
+            "importance": 0.92,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC."
+          },
+          {
+            "id": "@2",
+            "type": "procedural",
+            "importance": 0.92,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team."
+          },
+          {
+            "id": "@3",
+            "type": "procedural",
+            "importance": 0.92,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6."
+          },
+          {
+            "id": "@4",
+            "type": "procedural",
+            "importance": 0.92,
+            "source": "workflow",
+            "tags": [
+              "llm",
+              "extracted",
+              "workflow"
+            ],
+            "content": "The Cedar release workflow stores final review checklists in the regional audit diary."
+          }
+        ],
+        "proposal": "{\"items\":[{\"memory_type\":\"procedural\",\"content\":\"Cedar release rebuild schedule: the approved rule remains Friday at 18:00 UTC. The operations handbook's claim of 21:45 UTC is an unapproved change and conflicts with the stored schedule; retain the 18:00 UTC rule until the discrepancy is formally resolved.\",\"importance\":0.9,\"confidence\":0.95,\"tags\":[\"cedar\",\"release\",\"schedule\",\"discrepancy\",\"unapproved-change\"],\"source\":\"decision\",\"scope\":\"workspace\",\"reason\":\"Prevents an unapproved handbook value from silently replacing the approved Cedar rebuild schedule; records the unresolved contradiction for future sessions.\",\"evolution\":null,\"conflicts_with\":[\"@1\"]}]}"
+      }
+    ],
+    "persistent_records": [
+      {
+        "id": "17846fe7-1613-4f10-972a-40025b313498",
+        "content": "The Cedar release workflow stores final review checklists in the regional audit diary.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "7e73d7df-a8b1-4e45-9ab3-bb728785c152",
+        "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "b55401df-58fd-4877-9b08-79b6659061ad",
+        "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "f2640643-a98a-47fa-9e0c-c8450264c49f",
+        "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team.",
+        "metadata": {
+          "confidence": "0.97",
+          "reason": "Retain this durable release procedure.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "7fc0470a-ec6a-4235-8195-6760ad23224e",
+          "source": "workflow",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-memory-reference-relations-5uxj0rbk/relations/seed/workspace"
+        }
+      },
+      {
+        "id": "fd362c1e-7141-4493-892f-3d190194566f",
+        "content": "Cedar release rebuild schedule: the approved rule remains Friday at 18:00 UTC. The operations handbook's claim of 21:45 UTC is an unapproved change and conflicts with the stored schedule; retain the 18:00 UTC rule until the discrepancy is formally resolved.",
+        "metadata": {
+          "confidence": "0.95",
+          "conflicts_with": "7e73d7df-a8b1-4e45-9ab3-bb728785c152",
+          "reason": "Prevents an unapproved handbook value from silently replacing the approved Cedar rebuild schedule; records the unresolved contradiction for future sessions.",
+          "schema": "aster.memory.durable.v1",
+          "scope": "workspace",
+          "session_id": "9dfd47c3-a922-48f2-97c7-305117387699",
+          "source": "decision",
+          "workspace": "/private/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/aster-recall-f32-live-dokzkvko/relations-b/conflict-reference/workspace"
+        }
+      }
+    ],
+    "passed": true,
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 730,
+      "completion_tokens": 152,
+      "total_tokens": 882,
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 346
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  }
+]

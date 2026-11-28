@@ -2925,8 +2925,9 @@ fn prefix_session_cwd_quotes_shell_metacharacters_in_the_cwd() {
 }
 
 #[tokio::test]
-async fn sandbox_shaped_failure_proposes_one_escalated_retry() {
+async fn process_error_text_does_not_propose_escalation() {
     let tool = BashTool;
+    let stderr = "main.py: error: unrecognized arguments: bug\nxcrun_db: Operation not permitted\n";
     let sandbox = Arc::new(RecordingExtendedSandbox {
         timeout_limit_ms: None,
         deadline_owned: false,
@@ -2934,42 +2935,39 @@ async fn sandbox_shaped_failure_proposes_one_escalated_retry() {
         request: Arc::new(std::sync::Mutex::new(None)),
         output: SandboxExecutionOutput {
             stdout: String::new(),
-            stderr: "sh: ping: Operation not permitted\n".to_string(),
-            exit_code: 126,
+            stderr: stderr.to_string(),
+            exit_code: 2,
             timed_out: false,
         },
         summary: CommandOutputSummary {
-            total_bytes: 34,
-            captured_bytes: 34,
+            total_bytes: stderr.len(),
+            captured_bytes: stderr.len(),
             truncated: false,
             timed_out: false,
         },
     });
     let temp = tempfile::tempdir().unwrap();
     let ctx = ToolContext::new(temp.path().to_path_buf())
-        .with_session_id("bash-hint-shaped")
+        .with_session_id("bash-hint-argument-error")
         .with_sandbox(sandbox);
     let result = tool
         .execute(
-            &serde_json::json!({"command": "ping -c1 example.com", "sandbox_permissions": "use_default"}),
+            &serde_json::json!({"command": "python3 main.py add 修复线上 bug --priority high", "sandbox_permissions": "use_default"}),
             &ctx,
         )
         .await
         .unwrap();
     assert!(!result.success);
+    assert!(result.content.contains("unrecognized arguments: bug"));
     assert!(
-        result.content.contains("sandbox-induced"),
-        "hint present: {}",
-        result.content
-    );
-    assert!(
-        result.content.contains("require_escalated"),
-        "the hint names the approval-gated retry: {}",
+        !result.content.contains("sandbox-induced")
+            && !result.content.contains("require_escalated"),
+        "ordinary command output is not evidence of a sandbox refusal: {}",
         result.content
     );
     let metadata = result.metadata.expect("metadata");
-    assert_eq!(metadata["sandbox_failure_hint"], "a syscall was blocked");
-    crate::external_observation::release_session("bash-hint-shaped");
+    assert!(metadata.get("sandbox_failure_hint").is_none());
+    crate::external_observation::release_session("bash-hint-argument-error");
 }
 
 #[tokio::test]

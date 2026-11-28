@@ -1,0 +1,302 @@
+[
+  {
+    "run": "final-long-a",
+    "trial": "1-candidate",
+    "revisions": [
+      {
+        "revision": 1,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 1
+      },
+      {
+        "revision": 2,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 3,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 4,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 5,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 6,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      }
+    ]
+  },
+  {
+    "run": "final-long-a",
+    "trial": "2-release",
+    "revisions": [
+      {
+        "revision": 1,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 1
+      },
+      {
+        "revision": 2,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 3,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 4,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 5,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 6,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      }
+    ]
+  },
+  {
+    "run": "final-long-b",
+    "trial": "1-release",
+    "revisions": [
+      {
+        "revision": 1,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 1
+      },
+      {
+        "revision": 2,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 1
+      },
+      {
+        "revision": 3,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 1
+      },
+      {
+        "revision": 4,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 1
+      },
+      {
+        "revision": 5,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 1
+      },
+      {
+        "revision": 6,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 1
+      }
+    ]
+  },
+  {
+    "run": "final-long-b",
+    "trial": "2-candidate",
+    "revisions": [
+      {
+        "revision": 1,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 2,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 3,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 4,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 5,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 6,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      }
+    ]
+  },
+  {
+    "run": "final-adaptive",
+    "trial": "1-release",
+    "revisions": [
+      {
+        "revision": 1,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 2,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 3,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 4,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 5,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      },
+      {
+        "revision": 6,
+        "fresh_input_bytes_observed": {
+          "README.md": true,
+          "order.json": true,
+          "policy.json": true
+        },
+        "reads_after_mutation": 0
+      }
+    ]
+  }
+]

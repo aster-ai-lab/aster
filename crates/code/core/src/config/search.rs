@@ -62,6 +62,8 @@ pub enum BrowserBackend {
     /// Chrome/Chromium headless browser for explicit compatibility use.
     #[serde(alias = "chromium")]
     Chrome,
+    /// Existing logged-in Quark browser over local CDP.
+    Quark,
     /// Legacy value retained for config compatibility; Aster rejects its use.
     Lightpanda,
 }
@@ -93,6 +95,11 @@ pub struct HeadlessConfig {
         skip_serializing_if = "Option::is_none"
     )]
     pub browser_path: Option<String>,
+
+    /// Local CDP origin for `backend = "quark"`. Defaults to 127.0.0.1:9222.
+    /// Non-loopback addresses, credentials and paths are rejected at runtime.
+    #[serde(default, alias = "cdpUrl", skip_serializing_if = "Option::is_none")]
+    pub cdp_url: Option<String>,
 
     /// Download Moli automatically when the selected backend is Moli and no
     /// usable executable is already available.
@@ -134,6 +141,10 @@ impl std::fmt::Debug for HeadlessConfig {
             .field("backend", &self.backend)
             .field("max_tabs", &self.max_tabs)
             .field("browser_path", &self.browser_path)
+            .field(
+                "cdp_url",
+                &self.cdp_url.as_deref().map(super::redact_url_for_debug),
+            )
             .field("auto_download_moli", &self.auto_download_moli)
             .field("moli_version", &self.moli_version)
             .field("moli_sha256", &self.moli_sha256)
@@ -167,6 +178,7 @@ impl Default for HeadlessConfig {
             backend: BrowserBackend::Moli,
             max_tabs: 4,
             browser_path: None,
+            cdp_url: None,
             auto_download_moli: true,
             moli_version: None,
             moli_sha256: None,

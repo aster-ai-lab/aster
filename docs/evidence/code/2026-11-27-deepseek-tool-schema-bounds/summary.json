@@ -1,0 +1,68 @@
+{
+  "frozen": {
+    "trials": 9,
+    "provider_usage_rows": 48,
+    "medians": {
+      "release": {
+        "prompt_tokens": 32170,
+        "completion_tokens": 290,
+        "total_tokens": 32460,
+        "prompt_cache_hit_tokens": 30976,
+        "prompt_cache_miss_tokens": 1200,
+        "first_prompt_tokens": 7533,
+        "main_requests": 4,
+        "all_requests": 6
+      },
+      "candidate": {
+        "prompt_tokens": 31204,
+        "completion_tokens": 342,
+        "total_tokens": 31546,
+        "prompt_cache_hit_tokens": 29952,
+        "prompt_cache_miss_tokens": 1199,
+        "first_prompt_tokens": 7258,
+        "main_requests": 4,
+        "all_requests": 6
+      },
+      "dsh": {
+        "prompt_tokens": 24701,
+        "completion_tokens": 396,
+        "total_tokens": 25097,
+        "prompt_cache_hit_tokens": 23936,
+        "prompt_cache_miss_tokens": 765,
+        "first_prompt_tokens": 5808,
+        "main_requests": 4,
+        "all_requests": 4
+      }
+    }
+  },
+  "repeated": {
+    "trials": 6,
+    "provider_usage_rows": 36,
+    "medians": {
+      "release": {
+        "prompt_tokens": 36973,
+        "completion_tokens": 171,
+        "total_tokens": 37144,
+        "prompt_cache_hit_tokens": 35712,
+        "prompt_cache_miss_tokens": 1261,
+        "first_prompt_tokens": 7515,
+        "main_requests": 4,
+        "all_requests": 6
+      },
+      "candidate": {
+        "prompt_tokens": 36327,
+        "completion_tokens": 448,
+        "total_tokens": 36775,
+        "prompt_cache_hit_tokens": 32640,
+        "prompt_cache_miss_tokens": 3687,
+        "first_prompt_tokens": 7240,
+        "main_requests": 4,
+        "all_requests": 6
+      }
+    }
+  },
+  "model_argument_probes": {
+    "trials": 10,
+    "passed": 10
+  }
+}

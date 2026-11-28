@@ -1,0 +1,110 @@
+[
+  {
+    "case": "localization-1-combined-wire.jsonl",
+    "kind": "baseline",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 1227,
+      "completion_tokens": 67,
+      "total_tokens": 1294,
+      "prompt_tokens_details": {
+        "cached_tokens": 1024
+      },
+      "prompt_cache_hit_tokens": 1024,
+      "prompt_cache_miss_tokens": 203
+    },
+    "emitted_tool_protocol": true,
+    "answer_chars": 231,
+    "finish": "stop"
+  },
+  {
+    "case": "localization-1-combined-wire.jsonl",
+    "kind": "statement",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 1268,
+      "completion_tokens": 1021,
+      "total_tokens": 2289,
+      "prompt_tokens_details": {
+        "cached_tokens": 1024
+      },
+      "prompt_cache_hit_tokens": 1024,
+      "prompt_cache_miss_tokens": 244
+    },
+    "emitted_tool_protocol": false,
+    "answer_chars": 1709,
+    "finish": "stop"
+  },
+  {
+    "case": "localization-1-combined-wire.jsonl",
+    "kind": "retry",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 1299,
+      "completion_tokens": 1024,
+      "total_tokens": 2323,
+      "prompt_tokens_details": {
+        "cached_tokens": 1152
+      },
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 147
+    },
+    "emitted_tool_protocol": false,
+    "answer_chars": 1668,
+    "finish": "length"
+  },
+  {
+    "case": "reconciliation-1-combined-wire.jsonl",
+    "kind": "baseline",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 1216,
+      "completion_tokens": 99,
+      "total_tokens": 1315,
+      "prompt_tokens_details": {
+        "cached_tokens": 1024
+      },
+      "prompt_cache_hit_tokens": 1024,
+      "prompt_cache_miss_tokens": 192
+    },
+    "emitted_tool_protocol": true,
+    "answer_chars": 348,
+    "finish": "stop"
+  },
+  {
+    "case": "reconciliation-1-combined-wire.jsonl",
+    "kind": "statement",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 1257,
+      "completion_tokens": 841,
+      "total_tokens": 2098,
+      "prompt_tokens_details": {
+        "cached_tokens": 1024
+      },
+      "prompt_cache_hit_tokens": 1024,
+      "prompt_cache_miss_tokens": 233
+    },
+    "emitted_tool_protocol": false,
+    "answer_chars": 3609,
+    "finish": "stop"
+  },
+  {
+    "case": "reconciliation-1-combined-wire.jsonl",
+    "kind": "retry",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 1288,
+      "completion_tokens": 826,
+      "total_tokens": 2114,
+      "prompt_tokens_details": {
+        "cached_tokens": 1152
+      },
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 136
+    },
+    "emitted_tool_protocol": false,
+    "answer_chars": 3297,
+    "finish": "stop"
+  }
+]

@@ -30,6 +30,14 @@ fn explicit_policy_is_validated_and_omission_keeps_defaults() {
             .digest()
             .unwrap()
     );
+
+    let compact =
+        policy_from_meta(json!({"asterEngineering":{"policy":"engineering-v2"}}).as_object())
+            .unwrap()
+            .unwrap();
+    assert_eq!(compact.id(), "engineering-v2");
+    assert_ne!(compact.digest().unwrap(), policy.digest().unwrap());
+    assert!(compact.instructions().len() < 2_200);
 }
 
 #[test]

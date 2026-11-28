@@ -249,7 +249,7 @@ fn resolve_unit<'a>(
                 _ => {
                     return Err(invalid_inventory(
                         "Worksheet resolution produced a non-worksheet identity.",
-                    ))
+                    ));
                 }
             };
             if actual_index != index || actual_name != name {

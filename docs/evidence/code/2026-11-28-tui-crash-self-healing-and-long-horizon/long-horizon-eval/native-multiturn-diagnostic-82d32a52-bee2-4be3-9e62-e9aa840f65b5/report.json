@@ -1,0 +1,9 @@
+{
+  "revision": 6,
+  "currency": "EUR",
+  "units": 8,
+  "subtotal_cents": 952,
+  "discount_cents": 48,
+  "tax_cents": 68,
+  "total_cents": 972
+}

@@ -1,6 +1,7 @@
 //! Tool results as facts, tool admission, and the model decision for one response.
 
 use super::*;
+use crate::completion_attestor::ModelVerificationPreview;
 use serde::Deserialize;
 
 pub(super) const FACT_TOOL_RESULT_KIND: &str = "aster.fact_tool_result";
@@ -191,6 +192,16 @@ pub(super) fn message_from_folded_tool(
     let Some(envelope) = decode_fact_tool_result(body) else {
         return Message::tool_result(id, body, folded_error);
     };
+    message_from_fact_tool_result(id, envelope, folded_error, effect_dir, load_pixels)
+}
+
+pub(super) fn message_from_fact_tool_result(
+    id: &str,
+    envelope: FactToolResultEnvelope,
+    folded_error: bool,
+    effect_dir: Option<&Path>,
+    load_pixels: bool,
+) -> Message {
     let is_error = folded_error || envelope.is_error;
     let (images, stubs) =
         attachments_from_fact_tool_images(&envelope.images, effect_dir, load_pixels);
@@ -218,7 +229,8 @@ pub(super) fn message_from_folded_tool(
 pub(super) fn apply_verification_context(
     messages: &mut [Message],
     system: &mut Option<String>,
-    gate: crate::harness_loop::CompletionGate,
+    preview: ModelVerificationPreview,
+    bash_refused: bool,
 ) {
     let result = messages
         .last_mut()
@@ -226,13 +238,14 @@ pub(super) fn apply_verification_context(
             Some(crate::llm::ContentBlock::ToolResult { content, .. }) => Some(content),
             _ => None,
         });
-    let context = match gate {
-        crate::harness_loop::CompletionGate::Allow(crate::harness_loop::CompletionTerminal::Verified { .. }) if result.is_some() =>
-            "[host verification state]\nThe current workspace changes are verified; further edits invalidate this. Finish when satisfied.".to_string(),
-        gate => match crate::harness_loop::model_verification_context(gate) {
-            Some(context) => context,
-            None => return,
-        },
+    let context = match preview {
+        ModelVerificationPreview::DiskContentVerified if result.is_some() =>
+            "[host verification state]\nThe current workspace changes are verified. The host already read back the changed files and matched the on-disk state to the recorded effects. Reuse this evidence for persistence. Perform separately requested checks as specified. Run exact commands unchanged without adding other operations. Read again for requested or missing content or after later changes. Deliver the requested answer when ready.".to_string(),
+        ModelVerificationPreview::DiskContentVerified => return,
+        ModelVerificationPreview::Verified if result.is_some() =>
+            "[host verification state]\nThe current workspace changes are verified. If the existing evidence satisfies the request, report the requested result now. Use tools for remaining requested work. Further edits invalidate this verification.".to_string(),
+        ModelVerificationPreview::Verified => return,
+        ModelVerificationPreview::Unverified(error) => error.model_context(bash_refused),
     };
     if let Some(content) = result {
         match content {
@@ -635,6 +648,18 @@ pub(super) fn leaked_model_calls(
     calls
 }
 
+pub(super) fn tool_attempt_in_text_only_response(response: &LlmResponse) -> bool {
+    let text = response.text();
+    !response.tool_calls().is_empty()
+        || crate::llm::has_unquoted_tool_call(&text)
+        || (text.trim().is_empty()
+            && response
+                .message
+                .reasoning_content
+                .as_deref()
+                .is_some_and(crate::llm::has_unquoted_tool_call))
+}
+
 pub(super) async fn decision_from_response(
     response: &LlmResponse,
     policy: &PermissionPolicy,
@@ -707,6 +732,13 @@ pub(super) async fn decision_from_response(
         let also = tools.into_iter().skip(1).collect();
         return ModelDecision::Tool { call, also };
     }
+    model_text_decision(response, surface)
+}
+
+pub(super) fn model_text_decision(
+    response: &LlmResponse,
+    surface: Option<&SessionSurface>,
+) -> ModelDecision {
     // A length-limited final response is a truncated answer, not a finished
     // one: flag it so the settled End names the cut. Exact members of the
     // closed wire set only ("length", "max_tokens") — no substring tuning.

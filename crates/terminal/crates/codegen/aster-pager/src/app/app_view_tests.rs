@@ -2118,6 +2118,8 @@ fn external_auth_provider_keeps_billing_off_after_auth_meta() {
 #[test]
 fn apply_aster_slash_gate_hides_unsupported_builtins() {
     let mut app = test_app();
+    app.plan_mode = true;
+    app.contextual_hints.plan_mode = true;
     let configured_auto_gate = app.auto_mode_gate;
     advertise_media_tools(&mut app);
     // Ensure plan/view-plan are visible before the gate.
@@ -2139,6 +2141,11 @@ fn apply_aster_slash_gate_hides_unsupported_builtins() {
     app.apply_aster_slash_gate();
 
     assert!(app.is_aster);
+    assert!(
+        app.plan_mode,
+        "ACP initialization must preserve launch --plan"
+    );
+    assert!(!app.contextual_hints.plan_mode);
     assert!(!app.usage_visible);
     assert!(!app.welcome_prompt.slash_controller.usage_command_visible());
     let reg = app.welcome_prompt.slash_controller.registry();

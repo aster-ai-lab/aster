@@ -83,9 +83,10 @@ impl AsterCodeAgent {
                     state.turn_retry_attempt = state.turn_retry_attempt.saturating_add(1);
                     state.delta_text.truncate(state.turn_delta_start);
                     state.saw_text = state.turn_saw_text_start;
+                    const DEFAULT_STREAM_RETRY_ATTEMPTS: u32 = 5;
                     let update = super::emit::provider_retry_update(aster_core::llm::RetryNotice {
                         attempt: state.turn_retry_attempt,
-                        max_attempts: state.turn_retry_attempt.max(1),
+                        max_attempts: state.turn_retry_attempt.max(DEFAULT_STREAM_RETRY_ATTEMPTS),
                         reason: "Response stream ended early; retrying".into(),
                     });
                     self.emit_xai_session_update(session_id, update).await;
@@ -340,6 +341,10 @@ impl AsterCodeAgent {
             AgentEvent::Error { message } => {
                 state.turn_failure = Some(message);
             }
+            AgentEvent::PriorVerificationPending { message } => {
+                state.turn_failure = Some(message);
+                state.prior_verification_pending = true;
+            }
             AgentEvent::ToolEffectUnresolved { error } => {
                 state.turn_failure = Some(error.to_string());
                 state.reconciliation = Some(error);
@@ -508,6 +513,7 @@ impl AsterCodeAgent {
         mut research_gate: Option<ResearchGate>,
         requested_posture: Option<PermissionPosture>,
         output_schema: Option<&serde_json::Value>,
+        resume_interrupted: bool,
     ) -> (
         acp::Result<acp::PromptResponse>,
         Option<OwnedMutexGuard<()>>,
@@ -534,7 +540,9 @@ impl AsterCodeAgent {
                 )
             },
         );
-        let admitted = if attachments.is_empty() {
+        let admitted = if resume_interrupted {
+            session.stream_resume_interrupted_turn().await
+        } else if attachments.is_empty() {
             session.stream_with_run(&prompt, None).await
         } else {
             session
@@ -687,6 +695,13 @@ impl AsterCodeAgent {
         if let Some(message) = state.turn_failure {
             let error = if let Some(error) = state.reconciliation {
                 reconciliation_error(&error)
+            } else if state.prior_verification_pending {
+                acp::Error::new(-32041, "Previous workspace changes await verification").data(
+                    serde_json::json!({
+                        "error_kind": "prior_verification_pending",
+                        "message": message,
+                    }),
+                )
             } else {
                 agent_failure_error(&message)
             };
@@ -1033,8 +1048,13 @@ pub(super) fn reconciliation_error(
         "code": "tool_effect_unresolved",
         "message": error.to_string(),
         "retryable": false,
-        "recovery": { "action": "reconcile_tool_effects", "sameSession": true,
-            "obligationIds": error.obligation_ids },
+        "recovery": {
+            "action": "manual_review",
+            "sameSession": true,
+            "automaticRecovery": false,
+            "obligationIds": error.obligation_ids,
+            "instructions": "There is no reconcile_tool_effects RPC. In this session, use the read tool on paths affected by the original call and compare their bytes with its arguments. Reading alone does not clear an obligation when completion evidence is missing; after review, start a new session instead of retrying an unchanged prompt."
+        },
     }))
 }
 

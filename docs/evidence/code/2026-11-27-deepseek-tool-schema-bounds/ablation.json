@@ -1,0 +1,138 @@
+{
+  "results": [
+    {
+      "variant": "baseline",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 7533,
+        "completion_tokens": 1,
+        "total_tokens": 7534,
+        "prompt_tokens_details": {
+          "cached_tokens": 7296
+        },
+        "prompt_cache_hit_tokens": 7296,
+        "prompt_cache_miss_tokens": 237
+      },
+      "bytes": 27235
+    },
+    {
+      "variant": "bounds",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 7051,
+        "completion_tokens": 1,
+        "total_tokens": 7052,
+        "prompt_tokens_details": {
+          "cached_tokens": 1664
+        },
+        "prompt_cache_hit_tokens": 1664,
+        "prompt_cache_miss_tokens": 5387
+      },
+      "bytes": 26221
+    },
+    {
+      "variant": "defaults",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 7382,
+        "completion_tokens": 1,
+        "total_tokens": 7383,
+        "prompt_tokens_details": {
+          "cached_tokens": 2304
+        },
+        "prompt_cache_hit_tokens": 2304,
+        "prompt_cache_miss_tokens": 5078
+      },
+      "bytes": 26802
+    },
+    {
+      "variant": "property_notes",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 6165,
+        "completion_tokens": 1,
+        "total_tokens": 6166,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 4629
+      },
+      "bytes": 22237
+    },
+    {
+      "variant": "root_type",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 7377,
+        "completion_tokens": 1,
+        "total_tokens": 7378,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 5841
+      },
+      "bytes": 26819
+    },
+    {
+      "variant": "tool_descriptions",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 6654,
+        "completion_tokens": 1,
+        "total_tokens": 6655,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 5118
+      },
+      "bytes": 23302
+    },
+    {
+      "variant": "equal_ref",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 7533,
+        "completion_tokens": 1,
+        "total_tokens": 7534,
+        "prompt_tokens_details": {
+          "cached_tokens": 7296
+        },
+        "prompt_cache_hit_tokens": 7296,
+        "prompt_cache_miss_tokens": 237
+      },
+      "bytes": 27235
+    },
+    {
+      "variant": "messages",
+      "status": 200,
+      "usage": {
+        "input_tokens": 237,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 7296,
+        "output_tokens": 1,
+        "service_tier": "standard"
+      },
+      "bytes": 26462
+    },
+    {
+      "variant": "responses",
+      "status": 200,
+      "usage": {
+        "input_tokens": 7533,
+        "input_tokens_details": {
+          "cached_tokens": 7296
+        },
+        "output_tokens": 16,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 7549
+      },
+      "bytes": 26901
+    }
+  ],
+  "referenced_definitions": {}
+}

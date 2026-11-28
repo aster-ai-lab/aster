@@ -1,0 +1,49 @@
+{
+  "prompts": [
+    "In one native batch call, read ledger.ini and do a grep search for state=delivered in this workspace. Give the exact account and matching process values.",
+    "Read checkpoint.txt and give the archive value alongside the previous process value."
+  ],
+  "expected_markers": [
+    [
+      "VELVET-49SX",
+      "VX-62"
+    ],
+    [
+      "MARBLE-24WM",
+      "VX-62"
+    ]
+  ],
+  "fixtures_sha256": {
+    "ledger.ini": "7c154346119c2ee5afc4114cf61912df60e31f39f764e10e6cc90021473ca2e7",
+    "export.log": "075414de8c0a8612ea6e97003133da36746381fe63d29033b7ad2a8cf2ee2103",
+    "checkpoint.txt": "dc5d811e2b2754b720e400db4628b5f96aae13154a238c6eebaed3f60b173671"
+  },
+  "required_tool": "batch",
+  "scenario": "batch_mixed",
+  "model": "deepseek-flash",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "approved_program": false,
+  "annotated_signatures": false,
+  "native_required": false,
+  "native_catalog": false,
+  "default_catalog": false,
+  "disk_content_attestation": false,
+  "reference_catalog": "full",
+  "cost_gate": false,
+  "expected_mutation_sha256": null,
+  "exact_count_allowed": false,
+  "orders": [
+    [
+      "release",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "release"
+    ]
+  ]
+}

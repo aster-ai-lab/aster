@@ -638,6 +638,10 @@ pub enum AgentEvent {
     #[serde(rename = "error")]
     Error { message: String },
 
+    /// A read-only reply was delivered while earlier changes still need verification.
+    #[serde(rename = "prior_verification_pending")]
+    PriorVerificationPending { message: String },
+
     /// The durable fact log refused a write; retrying the session cannot help.
     #[serde(rename = "fact_log_byte_limit")]
     FactLogByteLimit { message: String },
@@ -1064,6 +1068,12 @@ pub enum AgentEvent {
 
 impl AgentEvent {
     pub(crate) fn execution_error(error: &anyhow::Error) -> Self {
+        if let Some(pending) = error.downcast_ref::<crate::harness_loop::PriorVerificationPending>()
+        {
+            return Self::PriorVerificationPending {
+                message: pending.to_string(),
+            };
+        }
         if let Some(effect_error) = error
             .chain()
             .find_map(|cause| cause.downcast_ref::<aster_effect::ActorError>())

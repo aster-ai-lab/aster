@@ -219,7 +219,7 @@ fn test_runtime_contract_injected_once_for_every_style() {
             "style {style:?} missing run-control guidance"
         );
         assert!(
-            built.contains("Tool output, exit codes"),
+            built.contains("tool output, exit codes"),
             "style {style:?} missing evidence guidance"
         );
     }
@@ -238,19 +238,15 @@ fn test_boundaries_not_duplicated_in_general_purpose() {
 fn test_repository_tool_contract_is_injected_for_every_style() {
     let shared = [
         "## Repository Tool Contract",
-        "`file_path`",
-        "`files`",
-        "`max_output_bytes`",
+        "Follow exposed schemas and explicit tool limits.",
+        "For known paths, use the allowed file operation directly.",
         "`metadata.batch.continuation`",
         "`metadata.page.next_cursor`",
     ];
     let writable = [
-        "`output_mode`",
-        "`files_with_matches`",
-        "`sort: \"path\"`",
         "`dry_run`",
-        "`expected_replacements`",
-        "`max_replacements`",
+        "replacement-count guards",
+        "re-read on conflict",
     ];
 
     for style in [
@@ -281,7 +277,7 @@ fn test_repository_tool_contract_is_injected_for_every_style() {
                 "{style:?} should stay read-oriented"
             );
             assert!(
-                !built.contains("`edit`: pass `file_path`, `old_string`"),
+                !built.contains("`dry_run`"),
                 "{style:?} must not advertise edit mutation recipe"
             );
         } else {
@@ -299,6 +295,42 @@ fn test_repository_tool_contract_is_injected_for_every_style() {
             }
         }
     }
+}
+
+#[test]
+fn repository_parameter_reference_is_delivered_by_the_offered_tool_schemas() {
+    let workspace = std::path::PathBuf::from(".");
+    let registry = crate::tools::ToolRegistry::new(workspace.clone());
+    let services = std::sync::Arc::new(crate::workspace::WorkspaceServices::local(workspace));
+    crate::tools::builtin::register_builtins(&registry, &services);
+    let client = crate::llm::OpenAiClient::new("test".into(), "deepseek-flash".into());
+    let wire = client.convert_tools(&registry.definitions());
+    for (name, fields) in [
+        ("read", &["file_path", "files", "max_output_bytes"][..]),
+        ("search", &["output_mode", "sort"][..]),
+        (
+            "edit",
+            &["dry_run", "expected_replacements", "max_replacements"][..],
+        ),
+    ] {
+        let tool = wire
+            .iter()
+            .find(|value| value["function"]["name"] == name)
+            .unwrap();
+        let properties = &tool["function"]["parameters"]["properties"];
+        for field in fields {
+            assert!(properties.get(*field).is_some(), "{name}.{field}");
+        }
+        if name == "search" {
+            assert!(properties["output_mode"]["enum"]
+                .as_array()
+                .unwrap()
+                .contains(&serde_json::json!("files_with_matches")));
+        }
+    }
+    let standing = SystemPromptSlots::default().build();
+    assert!(standing.contains("`sort: \"path\"`"));
+    assert!(!standing.contains("`max_output_bytes`"));
 }
 
 #[test]
@@ -362,9 +394,7 @@ fn test_slots_custom_response_style_replaces_default() {
     };
     let built = slots.build();
     assert!(built.contains("Be concise. Use bullet points."));
-    // Default response format content should be gone
-    assert!(!built.contains("keep progress notes brief and useful"));
-    // But core is still there
+    assert_eq!(built.matches("## Response Format").count(), 1);
     assert!(built.contains("Core Behaviour"));
 }
 
@@ -825,7 +855,7 @@ fn generic_prompt_keeps_host_domains_out_and_has_a_stop_rule() {
     }
     assert!(built.contains("Do not reopen settled decisions without new evidence"));
     assert!(built.contains("required checks pass"));
-    assert!(built.contains("change files only if implementation is requested"));
+    assert!(built.contains("Change files only on an implementation request."));
 }
 
 #[test]

@@ -1,0 +1,6041 @@
+[
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "available_commands_update",
+      "availableCommands": [
+        {
+          "name": "clear",
+          "description": "Clear conversation history",
+          "input": null
+        },
+        {
+          "name": "compact",
+          "description": "Manually trigger context compaction",
+          "input": null
+        },
+        {
+          "name": "cost",
+          "description": "Show token usage and estimated cost",
+          "input": null
+        },
+        {
+          "name": "dream",
+          "description": "Consolidate memory now (merge observations into topics)",
+          "input": null
+        },
+        {
+          "name": "flush",
+          "description": "Save this session's memory to disk now",
+          "input": null
+        },
+        {
+          "name": "goal",
+          "description": "Set, pause, resume, or clear a durable goal",
+          "input": {
+            "hint": "<objective> | status | pause | resume | clear"
+          }
+        },
+        {
+          "name": "help",
+          "description": "List available commands",
+          "input": null
+        },
+        {
+          "name": "history",
+          "description": "Show conversation stats",
+          "input": null
+        },
+        {
+          "name": "mcp",
+          "description": "List connected MCP servers and their tools",
+          "input": null
+        },
+        {
+          "name": "memory",
+          "description": "Inspect and manage stored memories",
+          "input": {
+            "hint": "list [query] | next <cursor> [query] | read <id> | delete <id> <revision>"
+          }
+        },
+        {
+          "name": "model",
+          "description": "Show or switch the current model",
+          "input": {
+            "hint": "/model [provider/model]"
+          }
+        },
+        {
+          "name": "tasks",
+          "description": "Inspect background tasks or stop a task",
+          "input": {
+            "hint": "[stop <task-id>]"
+          }
+        },
+        {
+          "name": "tools",
+          "description": "List registered tools",
+          "input": null
+        }
+      ]
+    }
+  },
+  {
+    "method": "aster/session/tooling/update",
+    "paramsOmitted": true
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 0
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 5
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 13
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 10
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 13
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 7
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 67
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 66
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 65
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 47
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 76
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 42
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 62
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 50
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 50
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 58
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 62
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 61
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 58
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 50
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 77
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 73
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 51
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 70
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 75
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 51
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 48
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 47
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 42
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 49
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 58
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 18
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "I’ll inspect the contract and c"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848388922,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "urrent inputs, then make only the required `report.json` edit."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848388922,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 6141,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 6531,
+        "completionTokens": 390,
+        "totalTokens": 6531,
+        "cacheReadTokens": 5376,
+        "cacheWriteTokens": null,
+        "callSequence": 1,
+        "estimatedPromptTokens": 6411,
+        "estimatedUserTokens": 72,
+        "estimatedOtherContextTokens": 6339
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848388923,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_e28dec0c4dca44fdb88cc2906019f6ae",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "files": [
+          {
+            "path": "README.md"
+          },
+          {
+            "path": "order.json"
+          },
+          {
+            "path": "policy.json"
+          },
+          {
+            "path": "report.json"
+          },
+          {
+            "path": "AGENTS.md"
+          }
+        ]
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848388942,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_e28dec0c4dca44fdb88cc2906019f6ae",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "=== README.md ===\n     1\tMaintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n[End of file: final line ending is LF.]\n\n=== order.json ===\n     1\t{\"revision\":1,\"currency\":\"USD\",\"items\":[{\"sku\":\"cedar\",\"quantity\":2,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":99}]}\n[End of file: no final newline.]\n\n=== policy.json ===\n     1\t{\"tax_bps\":750,\"discount_bps\":0}\n[End of file: no final newline.]\n\n=== report.json ===\nFailed to read file report.json: no file found at this exact workspace path.\n\n=== AGENTS.md ===\nFailed to read file AGENTS.md: no file found at this exact workspace path.\n\n(Complete: all 5 file(s) processed.)"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848388943,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 4
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 19
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 4
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 13
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 10
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 28
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 5
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 69
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 42
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 51
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 47
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 53
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 65
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 53
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 61
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 52
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 59
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 58
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 57
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 71
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 49
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 52
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 27
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 27
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 54
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 22
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 36
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 25
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 38
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 60
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 52
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 46
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 48
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 66
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 58
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 56
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 86
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 38
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 62
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 78
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 52
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 39
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 62
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 55
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 46
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 48
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 63
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 51
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 52
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 56
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 55
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 51
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 50
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 46
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 53
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 65
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 73
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 61
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 71
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 67
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 49
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 45
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 45
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 50
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 79
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 53
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 53
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 56
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 39
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 21
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 25
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 35
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 32
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 26
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 36
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 23
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 25
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 47
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 43
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 54
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 58
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 53
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 68
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 82
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 53
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 59
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 56
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 49
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 68
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 47
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 42
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 40
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "The current ord"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848435441,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "er has 5 units and a subtotal of 547 "
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848435441,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "cents. With no discount, 7.5% tax ro"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848435441,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "unds to 41 cents, giving a total of 588 cents."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848435441,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 6891,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 14525,
+        "completionTokens": 1103,
+        "totalTokens": 7994,
+        "cacheReadTokens": 6144,
+        "cacheWriteTokens": null,
+        "callSequence": 2,
+        "estimatedPromptTokens": 7214,
+        "estimatedUserTokens": 930,
+        "estimatedOtherContextTokens": 6284
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848435442,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_8ea7d8926fcd460eb94a25d8e542462f",
+      "title": "write",
+      "kind": "edit",
+      "status": "in_progress",
+      "rawInput": {
+        "content": "{\n  \"revision\": 1,\n  \"currency\": \"USD\",\n  \"units\": 5,\n  \"subtotal_cents\": 547,\n  \"discount_cents\": 0,\n  \"tax_cents\": 41,\n  \"total_cents\": 588\n}\n",
+        "file_path": "report.json",
+        "variant": "Write"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848435473,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_8ea7d8926fcd460eb94a25d8e542462f",
+      "kind": "edit",
+      "status": "in_progress",
+      "title": "write",
+      "rawInput": {
+        "content": "{\n  \"revision\": 1,\n  \"currency\": \"USD\",\n  \"units\": 5,\n  \"subtotal_cents\": 547,\n  \"discount_cents\": 0,\n  \"tax_cents\": 41,\n  \"total_cents\": 588\n}\n",
+        "file_path": "report.json",
+        "variant": "Write"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848435537,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_8ea7d8926fcd460eb94a25d8e542462f",
+      "status": "completed",
+      "content": [
+        {
+          "type": "diff",
+          "path": "report.json",
+          "oldText": null,
+          "newText": "{\n  \"revision\": 1,\n  \"currency\": \"USD\",\n  \"units\": 5,\n  \"subtotal_cents\": 547,\n  \"discount_cents\": 0,\n  \"tax_cents\": 41,\n  \"total_cents\": 588\n}\n"
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848435537,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 6
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 19
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 7
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 13
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 5
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 22
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 62
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 44
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 16
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 8167,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 22804,
+        "completionTokens": 112,
+        "totalTokens": 8279,
+        "cacheReadTokens": 6891,
+        "cacheWriteTokens": null,
+        "callSequence": 3,
+        "estimatedPromptTokens": 8587,
+        "estimatedUserTokens": 1437,
+        "estimatedOtherContextTokens": 7150
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848440065,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_34faad7501d94538bc60520eae9fa697",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "files": [
+          {
+            "path": "report.json"
+          },
+          {
+            "path": "order.json"
+          },
+          {
+            "path": "policy.json"
+          },
+          {
+            "path": "README.md"
+          }
+        ]
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848440085,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_34faad7501d94538bc60520eae9fa697",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "=== report.json ===\n     1\t{\n     2\t  \"revision\": 1,\n     3\t  \"currency\": \"USD\",\n     4\t  \"units\": 5,\n     5\t  \"subtotal_cents\": 547,\n     6\t  \"discount_cents\": 0,\n     7\t  \"tax_cents\": 41,\n     8\t  \"total_cents\": 588\n     9\t}\n[End of file: final line ending is LF.]\n\n=== order.json ===\n     1\t{\"revision\":1,\"currency\":\"USD\",\"items\":[{\"sku\":\"cedar\",\"quantity\":2,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":99}]}\n[End of file: no final newline.]\n\n=== policy.json ===\n     1\t{\"tax_bps\":750,\"discount_bps\":0}\n[End of file: no final newline.]\n\n=== README.md ===\n     1\tMaintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n[End of file: final line ending is LF.]\n\n(Complete: all 4 file(s) processed.)"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848440088,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 3
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 4
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 6
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 24
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 20
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 9
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 16
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 12
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 44
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 38
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 61
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 59
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 50
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 59
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 62
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 45
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 51
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 53
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 43
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 64
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 38
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "Created and ve"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848448277,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "rified `report.json` for revision 1:\n\n-"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848448277,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": " Currency: `USD`\n- Unit"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848448277,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "s: `5`\n- Subtotal: `547` cents\n- D"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848448277,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "iscount: `0` cents\n- Tax: `"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848448277,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "41` cents\n- Total: `588` cents\n\nAll source files and unrelated work remain unchanged."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848448277,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 8530,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 31579,
+        "completionTokens": 245,
+        "totalTokens": 8775,
+        "cacheReadTokens": 7936,
+        "cacheWriteTokens": null,
+        "callSequence": 4,
+        "estimatedPromptTokens": 8860,
+        "estimatedUserTokens": 2336,
+        "estimatedOtherContextTokens": 6524
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848448291,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848374028,
+      "streamStartMs": 1795848374028,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "method": "aster/turn/outcome",
+    "params": {
+      "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+      "promptId": null,
+      "outcome": {
+        "sessionUpdate": "turn_outcome",
+        "terminal": "verified",
+        "status": "passed",
+        "requiredChecks": 1,
+        "failedChecks": 0
+      }
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 0
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 9
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 9
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 20
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 21
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 4
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 15
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 63
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 42
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 55
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 52
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "I"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848460902,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "’ll re-read the current contract and source data, then update only `report.json`."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848461234,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 7337,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 39876,
+        "completionTokens": 147,
+        "totalTokens": 7484,
+        "cacheReadTokens": 6144,
+        "cacheWriteTokens": null,
+        "callSequence": 1,
+        "estimatedPromptTokens": 8884,
+        "estimatedUserTokens": 2408,
+        "estimatedOtherContextTokens": 6476
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848461934,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_f43fb4032ac64cc1be830d31a4e99a96",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "files": [
+          {
+            "path": "README.md"
+          },
+          {
+            "path": "order.json"
+          },
+          {
+            "path": "policy.json"
+          },
+          {
+            "path": "report.json"
+          }
+        ]
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848461960,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_f43fb4032ac64cc1be830d31a4e99a96",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "=== README.md ===\n     1\tMaintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n[End of file: final line ending is LF.]\n\n=== order.json ===\n     1\t{\"revision\":2,\"currency\":\"USD\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":99}]}\n[End of file: no final newline.]\n\n=== policy.json ===\n     1\t{\"tax_bps\":750,\"discount_bps\":0}\n[End of file: no final newline.]\n\n=== report.json ===\n     1\t{\n     2\t  \"revision\": 1,\n     3\t  \"currency\": \"USD\",\n     4\t  \"units\": 5,\n     5\t  \"subtotal_cents\": 547,\n     6\t  \"discount_cents\": 0,\n     7\t  \"tax_cents\": 41,\n     8\t  \"total_cents\": 588\n     9\t}\n[End of file: final line ending is LF.]\n\n(Complete: all 4 file(s) processed.)"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848461963,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 6
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 7
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 10
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 13
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 9
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 35
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 27
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 48
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 56
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 45
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 61
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 48
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 27
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 33
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 56
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 54
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 68
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 33
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 7736,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 47974,
+        "completionTokens": 362,
+        "totalTokens": 8098,
+        "cacheReadTokens": 7337,
+        "cacheWriteTokens": null,
+        "callSequence": 2,
+        "estimatedPromptTokens": 9198,
+        "estimatedUserTokens": 3308,
+        "estimatedOtherContextTokens": 5890
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848472782,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_cf77d94157dd4617ae4e4cdbecaa19a7",
+      "title": "edit",
+      "kind": "edit",
+      "status": "in_progress",
+      "rawInput": {
+        "edits": [
+          {
+            "new_string": "  \"revision\": 2,",
+            "old_string": "  \"revision\": 1,"
+          },
+          {
+            "new_string": "  \"units\": 8,",
+            "old_string": "  \"units\": 5,"
+          },
+          {
+            "new_string": "  \"subtotal_cents\": 922,",
+            "old_string": "  \"subtotal_cents\": 547,"
+          },
+          {
+            "new_string": "  \"tax_cents\": 69,",
+            "old_string": "  \"tax_cents\": 41,"
+          },
+          {
+            "new_string": "  \"total_cents\": 991",
+            "old_string": "  \"total_cents\": 588"
+          }
+        ],
+        "expected_replacements": 5,
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848472829,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_cf77d94157dd4617ae4e4cdbecaa19a7",
+      "kind": "edit",
+      "status": "in_progress",
+      "title": "edit",
+      "rawInput": {
+        "edits": [
+          {
+            "new_string": "  \"revision\": 2,",
+            "old_string": "  \"revision\": 1,"
+          },
+          {
+            "new_string": "  \"units\": 8,",
+            "old_string": "  \"units\": 5,"
+          },
+          {
+            "new_string": "  \"subtotal_cents\": 922,",
+            "old_string": "  \"subtotal_cents\": 547,"
+          },
+          {
+            "new_string": "  \"tax_cents\": 69,",
+            "old_string": "  \"tax_cents\": 41,"
+          },
+          {
+            "new_string": "  \"total_cents\": 991",
+            "old_string": "  \"total_cents\": 588"
+          }
+        ],
+        "expected_replacements": 5,
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848472886,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_cf77d94157dd4617ae4e4cdbecaa19a7",
+      "status": "completed",
+      "content": [
+        {
+          "type": "diff",
+          "path": "report.json",
+          "oldText": "  \"revision\": 1,\n  \"units\": 5,\n  \"subtotal_cents\": 547,\n  \"tax_cents\": 41,\n  \"total_cents\": 588",
+          "newText": "  \"revision\": 2,\n  \"units\": 8,\n  \"subtotal_cents\": 922,\n  \"tax_cents\": 69,\n  \"total_cents\": 991"
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848472887,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 6
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 12
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 8273,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 56320,
+        "completionTokens": 73,
+        "totalTokens": 8346,
+        "cacheReadTokens": 7736,
+        "cacheWriteTokens": null,
+        "callSequence": 3,
+        "estimatedPromptTokens": 9651,
+        "estimatedUserTokens": 3910,
+        "estimatedOtherContextTokens": 5741
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848476283,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_8f16c6ea071644108b142c83d6cece2d",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "files": [
+          {
+            "path": "report.json"
+          },
+          {
+            "path": "order.json"
+          },
+          {
+            "path": "policy.json"
+          },
+          {
+            "path": "README.md"
+          }
+        ]
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848476308,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_8f16c6ea071644108b142c83d6cece2d",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "=== report.json ===\n     1\t{\n     2\t  \"revision\": 2,\n     3\t  \"currency\": \"USD\",\n     4\t  \"units\": 8,\n     5\t  \"subtotal_cents\": 922,\n     6\t  \"discount_cents\": 0,\n     7\t  \"tax_cents\": 69,\n     8\t  \"total_cents\": 991\n     9\t}\n[End of file: final line ending is LF.]\n\n=== order.json ===\n     1\t{\"revision\":2,\"currency\":\"USD\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":99}]}\n[End of file: no final newline.]\n\n=== policy.json ===\n     1\t{\"tax_bps\":750,\"discount_bps\":0}\n[End of file: no final newline.]\n\n=== README.md ===\n     1\tMaintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n[End of file: final line ending is LF.]\n\n(Complete: all 4 file(s) processed.)"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848476310,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 7
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 11
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 34
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 9
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 14
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 2
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 11
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 34
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 36
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 32
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 62
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 59
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 59
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "Updated a"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848481711,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "nd verified `report.json` for revisio"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848481867,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "n 2:\n\n- Currency: `USD`\n- Uni"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848482051,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ts: `8`\n- Subtotal: `922` cents"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848482561,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "\n- Discount: `0` cents\n- Tax: "
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848482561,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "`69` cents\n- Total: `991` cents\n\nAll source files and unrelated work remain unchanged."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848482561,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 8597,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 65080,
+        "completionTokens": 163,
+        "totalTokens": 8760,
+        "cacheReadTokens": 7936,
+        "cacheWriteTokens": null,
+        "callSequence": 4,
+        "estimatedPromptTokens": 9877,
+        "estimatedUserTokens": 4808,
+        "estimatedOtherContextTokens": 5069
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848482581,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848448350,
+      "streamStartMs": 1795848448350,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "method": "aster/turn/outcome",
+    "params": {
+      "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+      "promptId": null,
+      "outcome": {
+        "sessionUpdate": "turn_outcome",
+        "terminal": "verified",
+        "status": "passed",
+        "requiredChecks": 1,
+        "failedChecks": 0
+      }
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 0
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "I’ll re-r"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848493204,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ead the current contrac"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848493268,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "t and source data before upda"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848493487,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ting only `report.json`."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848493595,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 8462,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 74321,
+        "completionTokens": 86,
+        "totalTokens": 8548,
+        "cacheReadTokens": 7168,
+        "cacheWriteTokens": null,
+        "callSequence": 1,
+        "estimatedPromptTokens": 9900,
+        "estimatedUserTokens": 4880,
+        "estimatedOtherContextTokens": 5020
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848494147,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_9cfb3412a6c848f0a369a37f7b8c6f92",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "files": [
+          {
+            "path": "README.md"
+          },
+          {
+            "path": "order.json"
+          },
+          {
+            "path": "policy.json"
+          },
+          {
+            "path": "report.json"
+          }
+        ]
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848494179,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_9cfb3412a6c848f0a369a37f7b8c6f92",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "=== README.md ===\n     1\tMaintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n[End of file: final line ending is LF.]\n\n=== order.json ===\n     1\t{\"revision\":3,\"currency\":\"USD\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":109}]}\n[End of file: no final newline.]\n\n=== policy.json ===\n     1\t{\"tax_bps\":0,\"discount_bps\":0}\n[End of file: no final newline.]\n\n=== report.json ===\n     1\t{\n     2\t  \"revision\": 2,\n     3\t  \"currency\": \"USD\",\n     4\t  \"units\": 8,\n     5\t  \"subtotal_cents\": 922,\n     6\t  \"discount_cents\": 0,\n     7\t  \"tax_cents\": 69,\n     8\t  \"total_cents\": 991\n     9\t}\n[End of file: final line ending is LF.]\n\n(Complete: all 4 file(s) processed.)"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848494181,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 8800,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 83306,
+        "completionTokens": 185,
+        "totalTokens": 8985,
+        "cacheReadTokens": 8462,
+        "cacheWriteTokens": null,
+        "callSequence": 2,
+        "estimatedPromptTokens": 10142,
+        "estimatedUserTokens": 5780,
+        "estimatedOtherContextTokens": 4362
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848498770,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_01dd1ffdfa3c425dbd886004e1a12072",
+      "title": "edit",
+      "kind": "edit",
+      "status": "in_progress",
+      "rawInput": {
+        "edits": [
+          {
+            "new_string": "  \"revision\": 3,",
+            "old_string": "  \"revision\": 2,"
+          },
+          {
+            "new_string": "  \"subtotal_cents\": 952,",
+            "old_string": "  \"subtotal_cents\": 922,"
+          },
+          {
+            "new_string": "  \"tax_cents\": 0,",
+            "old_string": "  \"tax_cents\": 69,"
+          },
+          {
+            "new_string": "  \"total_cents\": 952",
+            "old_string": "  \"total_cents\": 991"
+          }
+        ],
+        "expected_replacements": 4,
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848498822,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_01dd1ffdfa3c425dbd886004e1a12072",
+      "kind": "edit",
+      "status": "in_progress",
+      "title": "edit",
+      "rawInput": {
+        "edits": [
+          {
+            "new_string": "  \"revision\": 3,",
+            "old_string": "  \"revision\": 2,"
+          },
+          {
+            "new_string": "  \"subtotal_cents\": 952,",
+            "old_string": "  \"subtotal_cents\": 922,"
+          },
+          {
+            "new_string": "  \"tax_cents\": 0,",
+            "old_string": "  \"tax_cents\": 69,"
+          },
+          {
+            "new_string": "  \"total_cents\": 952",
+            "old_string": "  \"total_cents\": 991"
+          }
+        ],
+        "expected_replacements": 4,
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848498879,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_01dd1ffdfa3c425dbd886004e1a12072",
+      "status": "completed",
+      "content": [
+        {
+          "type": "diff",
+          "path": "report.json",
+          "oldText": "  \"revision\": 2,\n  \"subtotal_cents\": 922,\n  \"tax_cents\": 69,\n  \"total_cents\": 991",
+          "newText": "  \"revision\": 3,\n  \"subtotal_cents\": 952,\n  \"tax_cents\": 0,\n  \"total_cents\": 952"
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848498880,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 9160,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 92516,
+        "completionTokens": 50,
+        "totalTokens": 9210,
+        "cacheReadTokens": 8800,
+        "cacheWriteTokens": null,
+        "callSequence": 3,
+        "estimatedPromptTokens": 10418,
+        "estimatedUserTokens": 6382,
+        "estimatedOtherContextTokens": 4036
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848501818,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_005f6622dd434643a80c733134347093",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848501840,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_005f6622dd434643a80c733134347093",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "     1\t{\n     2\t  \"revision\": 3,\n     3\t  \"currency\": \"USD\",\n     4\t  \"units\": 8,\n     5\t  \"subtotal_cents\": 952,\n     6\t  \"discount_cents\": 0,\n     7\t  \"tax_cents\": 0,\n     8\t  \"total_cents\": 952\n     9\t}\n[End of file: final line ending is LF.]\n"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848501841,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "Updated an"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848504342,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "d verified `report."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848504451,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "json` for revision"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848504541,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": " 3:\n\n- Curren"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848504722,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "cy: `USD`\n- Unit"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848504788,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "s: `8`\n- Subtotal: `"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848504869,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "952` cents\n- Discount: `0`"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848505200,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": " cents\n- Tax: `0` cents\n- Total: `952` cen"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848505348,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ts\n\nAll source files and unrelated work remain unchanged."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848505350,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 9328,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 101923,
+        "completionTokens": 79,
+        "totalTokens": 9407,
+        "cacheReadTokens": 8960,
+        "cacheWriteTokens": null,
+        "callSequence": 4,
+        "estimatedPromptTokens": 10504,
+        "estimatedUserTokens": 6906,
+        "estimatedOtherContextTokens": 3598
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848505368,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848482660,
+      "streamStartMs": 1795848482660,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "method": "aster/turn/outcome",
+    "params": {
+      "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+      "promptId": null,
+      "outcome": {
+        "sessionUpdate": "turn_outcome",
+        "terminal": "verified",
+        "status": "passed",
+        "requiredChecks": 1,
+        "failedChecks": 0
+      }
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 0
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "I’ll re-r"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848514340,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ead the cur"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848514406,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "rent contract"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848514503,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": " and"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848514600,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": " inputs, then update and ve"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848514675,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "rify only `report.json`."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848514758,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 9412,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 112154,
+        "completionTokens": 88,
+        "totalTokens": 9500,
+        "cacheReadTokens": 9216,
+        "cacheWriteTokens": null,
+        "callSequence": 1,
+        "estimatedPromptTokens": 10527,
+        "estimatedUserTokens": 6978,
+        "estimatedOtherContextTokens": 3549
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848515358,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_7f79153dadf44053a16fa5ba6f130c1b",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "files": [
+          {
+            "path": "README.md"
+          },
+          {
+            "path": "order.json"
+          },
+          {
+            "path": "policy.json"
+          },
+          {
+            "path": "report.json"
+          }
+        ]
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848515373,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_7f79153dadf44053a16fa5ba6f130c1b",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "=== README.md ===\n     1\tMaintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n[End of file: final line ending is LF.]\n\n=== order.json ===\n     1\t{\"revision\":4,\"currency\":\"USD\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":109}]}\n[End of file: no final newline.]\n\n=== policy.json ===\n     1\t{\"tax_bps\":750,\"discount_bps\":500}\n[End of file: no final newline.]\n\n=== report.json ===\n     1\t{\n     2\t  \"revision\": 3,\n     3\t  \"currency\": \"USD\",\n     4\t  \"units\": 8,\n     5\t  \"subtotal_cents\": 952,\n     6\t  \"discount_cents\": 0,\n     7\t  \"tax_cents\": 0,\n     8\t  \"total_cents\": 952\n     9\t}\n[End of file: final line ending is LF.]\n\n(Complete: all 4 file(s) processed.)"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848515374,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 9
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 9
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 12
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 9
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 4
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 2
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 33
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 16
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 43
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 19
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "The 5% disc"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848519939,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ount rounds to 48 cents. Applying it bef"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848520170,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ore the 7.5% tax gives a taxable amount of 904 cen"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848520335,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ts, tax of 68 cents, and a total of 972 cents."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848520433,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 9752,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 122187,
+        "completionTokens": 281,
+        "totalTokens": 10033,
+        "cacheReadTokens": 9412,
+        "cacheWriteTokens": null,
+        "callSequence": 2,
+        "estimatedPromptTokens": 10771,
+        "estimatedUserTokens": 7878,
+        "estimatedOtherContextTokens": 2893
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848522446,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_992f89e0d1194558a74ccc87ba7ad21d",
+      "title": "edit",
+      "kind": "edit",
+      "status": "in_progress",
+      "rawInput": {
+        "edits": [
+          {
+            "new_string": "  \"revision\": 4,",
+            "old_string": "  \"revision\": 3,"
+          },
+          {
+            "new_string": "  \"discount_cents\": 48,",
+            "old_string": "  \"discount_cents\": 0,"
+          },
+          {
+            "new_string": "  \"tax_cents\": 68,",
+            "old_string": "  \"tax_cents\": 0,"
+          },
+          {
+            "new_string": "  \"total_cents\": 972",
+            "old_string": "  \"total_cents\": 952"
+          }
+        ],
+        "expected_replacements": 4,
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848522513,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_992f89e0d1194558a74ccc87ba7ad21d",
+      "kind": "edit",
+      "status": "in_progress",
+      "title": "edit",
+      "rawInput": {
+        "edits": [
+          {
+            "new_string": "  \"revision\": 4,",
+            "old_string": "  \"revision\": 3,"
+          },
+          {
+            "new_string": "  \"discount_cents\": 48,",
+            "old_string": "  \"discount_cents\": 0,"
+          },
+          {
+            "new_string": "  \"tax_cents\": 68,",
+            "old_string": "  \"tax_cents\": 0,"
+          },
+          {
+            "new_string": "  \"total_cents\": 972",
+            "old_string": "  \"total_cents\": 952"
+          }
+        ],
+        "expected_replacements": 4,
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848522585,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_992f89e0d1194558a74ccc87ba7ad21d",
+      "status": "completed",
+      "content": [
+        {
+          "type": "diff",
+          "path": "report.json",
+          "oldText": "  \"revision\": 3,\n  \"discount_cents\": 0,\n  \"tax_cents\": 0,\n  \"total_cents\": 952",
+          "newText": "  \"revision\": 4,\n  \"discount_cents\": 48,\n  \"tax_cents\": 68,\n  \"total_cents\": 972"
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848522586,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 10208,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 132445,
+        "completionTokens": 50,
+        "totalTokens": 10258,
+        "cacheReadTokens": 9752,
+        "cacheWriteTokens": null,
+        "callSequence": 3,
+        "estimatedPromptTokens": 11123,
+        "estimatedUserTokens": 8480,
+        "estimatedOtherContextTokens": 2643
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848526259,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_6b813cf90afe4980baa6944f0f7dd28b",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848526291,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_6b813cf90afe4980baa6944f0f7dd28b",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "     1\t{\n     2\t  \"revision\": 4,\n     3\t  \"currency\": \"USD\",\n     4\t  \"units\": 8,\n     5\t  \"subtotal_cents\": 952,\n     6\t  \"discount_cents\": 48,\n     7\t  \"tax_cents\": 68,\n     8\t  \"total_cents\": 972\n     9\t}\n[End of file: final line ending is LF.]\n"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848526293,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "Updated an"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848530207,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "d verified `report."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848530295,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "json` for revision"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848530492,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": " 4:\n\n- Curren"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848530590,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "cy: `USD`\n- Unit"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848530674,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "s: `8`\n- Subtotal: `"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848530938,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "952` cents\n- Discount: `48` cents, appli"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848531060,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ed before tax\n- Tax: `68` cents\n-"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848531253,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": " Total: `972` cents\n\nAll source files and unrelated work remain unchanged."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848531254,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 10376,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 142904,
+        "completionTokens": 83,
+        "totalTokens": 10459,
+        "cacheReadTokens": 9984,
+        "cacheWriteTokens": null,
+        "callSequence": 4,
+        "estimatedPromptTokens": 11210,
+        "estimatedUserTokens": 9004,
+        "estimatedOtherContextTokens": 2206
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848531275,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848505457,
+      "streamStartMs": 1795848505457,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "method": "aster/turn/outcome",
+    "params": {
+      "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+      "promptId": null,
+      "outcome": {
+        "sessionUpdate": "turn_outcome",
+        "terminal": "verified",
+        "status": "passed",
+        "requiredChecks": 1,
+        "failedChecks": 0
+      }
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 0
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 13
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 5
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 13
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 13
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 25
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 57
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 21
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "I’ll re-read the current contract and inputs"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848545255,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": ", then update and verify only `report.json`."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848545488,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 10410,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 154234,
+        "completionTokens": 120,
+        "totalTokens": 10530,
+        "cacheReadTokens": 9728,
+        "cacheWriteTokens": null,
+        "callSequence": 1,
+        "estimatedPromptTokens": 11239,
+        "estimatedUserTokens": 9076,
+        "estimatedOtherContextTokens": 2163
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848546037,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_66b84adb4dcf4e8195c6adc61cb1629d",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "files": [
+          {
+            "path": "README.md"
+          },
+          {
+            "path": "order.json"
+          },
+          {
+            "path": "policy.json"
+          },
+          {
+            "path": "report.json"
+          }
+        ]
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848546068,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_66b84adb4dcf4e8195c6adc61cb1629d",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "=== README.md ===\n     1\tMaintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n[End of file: final line ending is LF.]\n\n=== order.json ===\n     1\t{\"revision\":5,\"currency\":\"EUR\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":109}]}\n[End of file: no final newline.]\n\n=== policy.json ===\n     1\t{\"tax_bps\":750,\"discount_bps\":500}\n[End of file: no final newline.]\n\n=== report.json ===\n     1\t{\n     2\t  \"revision\": 4,\n     3\t  \"currency\": \"USD\",\n     4\t  \"units\": 8,\n     5\t  \"subtotal_cents\": 952,\n     6\t  \"discount_cents\": 48,\n     7\t  \"tax_cents\": 68,\n     8\t  \"total_cents\": 972\n     9\t}\n[End of file: final line ending is LF.]\n\n(Complete: all 4 file(s) processed.)"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848546070,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 4
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 10
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 20
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 20
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 14
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 7
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 5
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 4
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 61
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 40
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 10782,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 165181,
+        "completionTokens": 165,
+        "totalTokens": 10947,
+        "cacheReadTokens": 10410,
+        "cacheWriteTokens": null,
+        "callSequence": 2,
+        "estimatedPromptTokens": 11524,
+        "estimatedUserTokens": 9978,
+        "estimatedOtherContextTokens": 1546
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848551527,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_b6b3b7f5be70462aa7a40dd39ec835be",
+      "title": "edit",
+      "kind": "edit",
+      "status": "in_progress",
+      "rawInput": {
+        "edits": [
+          {
+            "new_string": "  \"revision\": 5,",
+            "old_string": "  \"revision\": 4,"
+          },
+          {
+            "new_string": "  \"currency\": \"EUR\",",
+            "old_string": "  \"currency\": \"USD\","
+          }
+        ],
+        "expected_replacements": 2,
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848551592,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_b6b3b7f5be70462aa7a40dd39ec835be",
+      "kind": "edit",
+      "status": "in_progress",
+      "title": "edit",
+      "rawInput": {
+        "edits": [
+          {
+            "new_string": "  \"revision\": 5,",
+            "old_string": "  \"revision\": 4,"
+          },
+          {
+            "new_string": "  \"currency\": \"EUR\",",
+            "old_string": "  \"currency\": \"USD\","
+          }
+        ],
+        "expected_replacements": 2,
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848551656,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_b6b3b7f5be70462aa7a40dd39ec835be",
+      "status": "completed",
+      "content": [
+        {
+          "type": "diff",
+          "path": "report.json",
+          "oldText": "  \"revision\": 4,\n  \"currency\": \"USD\",",
+          "newText": "  \"revision\": 5,\n  \"currency\": \"EUR\","
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848551657,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 4
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 14
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 7
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 6
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 68
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 61
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 66
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 38
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 75
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 45
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 15
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 11122,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 176432,
+        "completionTokens": 129,
+        "totalTokens": 11251,
+        "cacheReadTokens": 10782,
+        "cacheWriteTokens": null,
+        "callSequence": 3,
+        "estimatedPromptTokens": 11807,
+        "estimatedUserTokens": 10580,
+        "estimatedOtherContextTokens": 1227
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848558916,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_9046a77f84cc498ebc9222cc57f6d0ac",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "file_path": "report.json"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848558954,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_9046a77f84cc498ebc9222cc57f6d0ac",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "     1\t{\n     2\t  \"revision\": 5,\n     3\t  \"currency\": \"EUR\",\n     4\t  \"units\": 8,\n     5\t  \"subtotal_cents\": 952,\n     6\t  \"discount_cents\": 48,\n     7\t  \"tax_cents\": 68,\n     8\t  \"total_cents\": 972\n     9\t}\n[End of file: final line ending is LF.]\n"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848558955,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "Updated an"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848561458,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "d verified `report."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848561525,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "json` for revision"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848561649,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": " 5:\n\n- Curren"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848561719,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "cy: `EUR`\n- Unit"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848561822,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "s: `8`\n- Subtotal: `"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848561918,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "952` cents\n- Discount: `48` "
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848562041,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "cents\n- Tax: `68` cents\n- Total: `972` cen"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848562196,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ts\n\nAll source files and unrelated work remain unchanged."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848562197,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 11369,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 187880,
+        "completionTokens": 79,
+        "totalTokens": 11448,
+        "cacheReadTokens": 11008,
+        "cacheWriteTokens": null,
+        "callSequence": 4,
+        "estimatedPromptTokens": 12001,
+        "estimatedUserTokens": 11104,
+        "estimatedOtherContextTokens": 897
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848562223,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848531375,
+      "streamStartMs": 1795848531375,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "method": "aster/turn/outcome",
+    "params": {
+      "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+      "promptId": null,
+      "outcome": {
+        "sessionUpdate": "turn_outcome",
+        "terminal": "verified",
+        "status": "passed",
+        "requiredChecks": 1,
+        "failedChecks": 0
+      }
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 0
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 5
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 19
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 6
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 6
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 5
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 10
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 67
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 58
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 71
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 55
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 16
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "I’ll re-read the cur"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848572301,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "rent contract and source data, then update and verify only `report"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848572471,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": ".json`."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848572580,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 11306,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 200032,
+        "completionTokens": 152,
+        "totalTokens": 11458,
+        "cacheReadTokens": 10240,
+        "cacheWriteTokens": null,
+        "callSequence": 1,
+        "estimatedPromptTokens": 12025,
+        "estimatedUserTokens": 11176,
+        "estimatedOtherContextTokens": 849
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848573026,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_8d0d735b82ee46d1a3bafb81793df6c1",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "files": [
+          {
+            "path": "README.md"
+          },
+          {
+            "path": "order.json"
+          },
+          {
+            "path": "policy.json"
+          },
+          {
+            "path": "report.json"
+          },
+          {
+            "path": "notes.txt"
+          }
+        ]
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848573065,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_8d0d735b82ee46d1a3bafb81793df6c1",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "=== README.md ===\n     1\tMaintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n[End of file: final line ending is LF.]\n\n=== order.json ===\n     1\t{\"revision\":6,\"currency\":\"EUR\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":109}]}\n[End of file: no final newline.]\n\n=== policy.json ===\n     1\t{\"tax_bps\":750,\"discount_bps\":500}\n[End of file: no final newline.]\n\n=== report.json ===\n     1\t{\n     2\t  \"revision\": 5,\n     3\t  \"currency\": \"EUR\",\n     4\t  \"units\": 8,\n     5\t  \"subtotal_cents\": 952,\n     6\t  \"discount_cents\": 48,\n     7\t  \"tax_cents\": 68,\n     8\t  \"total_cents\": 972\n     9\t}\n[End of file: final line ending is LF.]\n\n=== notes.txt ===\n     1\tUnrelated user draft: preserve this exact text.\n[End of file: final line ending is LF.]\n\n(Complete: all 5 file(s) processed.)"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848573067,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 6
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 19
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 1
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 4
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 9
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 7
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 6
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 43
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 24
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 32
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 29
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 33
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 23
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 67
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 72
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 41
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 48
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 54
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 47
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 15
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 11739,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 212028,
+        "completionTokens": 257,
+        "totalTokens": 11996,
+        "cacheReadTokens": 11306,
+        "cacheWriteTokens": null,
+        "callSequence": 2,
+        "estimatedPromptTokens": 12385,
+        "estimatedUserTokens": 12124,
+        "estimatedOtherContextTokens": 261
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848582772,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_33e088b8be954781bf85153ab4cf9681",
+      "title": "edit",
+      "kind": "edit",
+      "status": "in_progress",
+      "rawInput": {
+        "expected_replacements": 1,
+        "file_path": "report.json",
+        "new_string": "  \"revision\": 6,",
+        "old_string": "  \"revision\": 5,"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848582840,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_33e088b8be954781bf85153ab4cf9681",
+      "kind": "edit",
+      "status": "in_progress",
+      "title": "edit",
+      "rawInput": {
+        "expected_replacements": 1,
+        "file_path": "report.json",
+        "new_string": "  \"revision\": 6,",
+        "old_string": "  \"revision\": 5,"
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848582898,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_33e088b8be954781bf85153ab4cf9681",
+      "status": "completed",
+      "content": [
+        {
+          "type": "diff",
+          "path": "report.json",
+          "oldText": "  \"revision\": 5,",
+          "newText": "  \"revision\": 6,"
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848582899,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 12167,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 224269,
+        "completionTokens": 74,
+        "totalTokens": 12241,
+        "cacheReadTokens": 11739,
+        "cacheWriteTokens": null,
+        "callSequence": 3,
+        "estimatedPromptTokens": 12742,
+        "estimatedUserTokens": 12723,
+        "estimatedOtherContextTokens": 19
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848586433,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call",
+      "toolCallId": "call_6544e8a041b04d8586329f20d6b7be9d",
+      "title": "read",
+      "kind": "read",
+      "status": "in_progress",
+      "rawInput": {
+        "files": [
+          {
+            "path": "report.json"
+          },
+          {
+            "path": "README.md"
+          },
+          {
+            "path": "order.json"
+          },
+          {
+            "path": "policy.json"
+          },
+          {
+            "path": "notes.txt"
+          }
+        ]
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848586474,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "tool_call_update",
+      "toolCallId": "call_6544e8a041b04d8586329f20d6b7be9d",
+      "status": "completed",
+      "content": [
+        {
+          "type": "content",
+          "content": {
+            "type": "text",
+            "text": "=== report.json ===\n     1\t{\n     2\t  \"revision\": 6,\n     3\t  \"currency\": \"EUR\",\n     4\t  \"units\": 8,\n     5\t  \"subtotal_cents\": 952,\n     6\t  \"discount_cents\": 48,\n     7\t  \"tax_cents\": 68,\n     8\t  \"total_cents\": 972\n     9\t}\n[End of file: final line ending is LF.]\n\n=== README.md ===\n     1\tMaintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n[End of file: final line ending is LF.]\n\n=== order.json ===\n     1\t{\"revision\":6,\"currency\":\"EUR\",\"items\":[{\"sku\":\"cedar\",\"quantity\":5,\"unit_cents\":125},{\"sku\":\"maple\",\"quantity\":3,\"unit_cents\":109}]}\n[End of file: no final newline.]\n\n=== policy.json ===\n     1\t{\"tax_bps\":750,\"discount_bps\":500}\n[End of file: no final newline.]\n\n=== notes.txt ===\n     1\tUnrelated user draft: preserve this exact text.\n[End of file: final line ending is LF.]\n\n(Complete: all 5 file(s) processed.)"
+          }
+        }
+      ]
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848586476,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 6
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 16
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 8
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 7
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 13
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 15
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 11
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 17
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 80
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_thought_chunk",
+      "contentOmitted": true,
+      "textBytes": 7
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "Updated and verified `report."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848590191,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "json` for revision 6:\n\n- Curren"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848590312,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "cy: `EUR`\n- Units: `8`\n- Subtotal: `"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848590414,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "952` cents\n- Discount: `48` "
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848590545,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "cents\n- Tax: `68` cents\n- Total: `972` cen"
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848590678,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "agent_message_chunk",
+      "content": {
+        "type": "text",
+        "text": "ts\n\nAll source files and unrelated work remain unchanged."
+      },
+      "_meta": {
+        "asterGenerationDelta": true
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848590681,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+    "update": {
+      "sessionUpdate": "usage_update",
+      "used": 12521,
+      "size": 1048576,
+      "_meta": {
+        "sessionTotalTokens": 236900,
+        "completionTokens": 110,
+        "totalTokens": 12631,
+        "cacheReadTokens": 12032,
+        "cacheWriteTokens": null,
+        "callSequence": 4,
+        "estimatedPromptTokens": 12996,
+        "estimatedUserTokens": 13670,
+        "estimatedOtherContextTokens": 0
+      }
+    },
+    "_meta": {
+      "agentTimestampMs": 1795848590714,
+      "outputLanguage": "en",
+      "turnStartMs": 1795848562325,
+      "streamStartMs": 1795848562325,
+      "streamHeadersTimeoutMs": 120000
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "method": "aster/turn/outcome",
+    "params": {
+      "sessionId": "0c275385-eb2b-404a-a9fc-8e9bbff5cf11",
+      "promptId": null,
+      "outcome": {
+        "sessionUpdate": "turn_outcome",
+        "terminal": "verified",
+        "status": "passed",
+        "requiredChecks": 1,
+        "failedChecks": 0
+      }
+    }
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  },
+  {
+    "method": "aster/session_notification",
+    "paramsOmitted": true
+  }
+]

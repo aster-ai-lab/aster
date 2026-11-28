@@ -22,7 +22,7 @@ impl crate::CompletionAttestor for ByteAttestor {
         }
         let bytes = std::fs::read(self.root.join("source.txt")).ok()?;
         if bytes != b"independent expected source"
-            || paths[0].content_digest != sha256::digest(&bytes)
+            || paths[0].content_digest != crate::content_digest::sha256_hex(&bytes)
         {
             return None;
         }

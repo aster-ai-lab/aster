@@ -1,0 +1,98 @@
+[
+  {
+    "arm": "release",
+    "label": "1-release",
+    "forms": [
+      {
+        "formId": "ask-form-35967fde-cfb2-4a05-8dc2-3d64d2e91141-run-e2b9d0fd-41cf-4095-95fa-256cede01d0d-1",
+        "prompt": "发运确认",
+        "spec": "{\"root\":\"f\",\"elements\":{\"f\":{\"type\":\"Form\",\"props\":{\"submitAction\":\"submit\"},\"children\":[\"t\",\"r\",\"q\",\"e\",\"c\",\"b\"]},\"t\":{\"type\":\"Text\",\"props\":{\"content\":\"发运确认\"}},\"r\":{\"type\":\"Select\",\"props\":{\"label\":\"region\",\"value\":{\"$bindState\":\"/form/region\"},\"options\":[\"北线\",\"南线\"],\"required\":true}},\"q\":{\"type\":\"Input\",\"props\":{\"label\":\"quantity\",\"value\":{\"$bindState\":\"/form/quantity\"},\"type\":\"number\",\"min\":1,\"max\":9,\"step\":1,\"required\":true}},\"e\":{\"type\":\"Checkbox\",\"props\":{\"label\":\"enabled\",\"checked\":{\"$bindState\":\"/form/enabled\"}}},\"c\":{\"type\":\"BarChart\",\"props\":{\"labels\":[\"North\",\"South\"],\"values\":[2,5]}},\"b\":{\"type\":\"Button\",\"props\":{\"action\":\"submit\",\"label\":\"提交\"}}},\"state\":{\"form\":{\"region\":\"\",\"quantity\":1,\"enabled\":false}}}",
+        "format": "json-render",
+        "sessionId": "35967fde-cfb2-4a05-8dc2-3d64d2e91141"
+      }
+    ],
+    "shape_ok": true,
+    "response": "```json\n{\"region\":\"南线\",\"quantity\":7,\"enabled\":true}\n```",
+    "permissions": [],
+    "passed": true,
+    "api_requests": 7,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 40159,
+      "completion_tokens": 1251,
+      "total_tokens": 41410,
+      "prompt_cache_hit_tokens": 32896,
+      "prompt_cache_miss_tokens": 7263
+    },
+    "tool_calls": {
+      "ask_user_form": 4
+    },
+    "primary_requests": 5
+  },
+  {
+    "arm": "candidate",
+    "label": "1-candidate",
+    "forms": [],
+    "shape_ok": false,
+    "response": "",
+    "permissions": [],
+    "passed": false,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 35869,
+      "completion_tokens": 1367,
+      "total_tokens": 37236,
+      "prompt_cache_hit_tokens": 24960,
+      "prompt_cache_miss_tokens": 10909
+    },
+    "tool_calls": {
+      "ask_user_form": 5
+    },
+    "primary_requests": 5
+  },
+  {
+    "arm": "candidate",
+    "label": "2-candidate",
+    "forms": [],
+    "shape_ok": false,
+    "response": "",
+    "permissions": [],
+    "passed": false,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 35869,
+      "completion_tokens": 1367,
+      "total_tokens": 37236,
+      "prompt_cache_hit_tokens": 24960,
+      "prompt_cache_miss_tokens": 10909
+    },
+    "tool_calls": {
+      "ask_user_form": 5
+    },
+    "primary_requests": 5
+  },
+  {
+    "arm": "release",
+    "label": "2-release",
+    "forms": [],
+    "shape_ok": false,
+    "response": "",
+    "permissions": [],
+    "passed": false,
+    "api_requests": 7,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 48636,
+      "completion_tokens": 1663,
+      "total_tokens": 50299,
+      "prompt_cache_hit_tokens": 41472,
+      "prompt_cache_miss_tokens": 7164
+    },
+    "tool_calls": {
+      "ask_user_form": 6
+    },
+    "primary_requests": 6
+  }
+]

@@ -11,6 +11,11 @@ publish = false
 default = []
 default-bazel = []
 memory-log = []
+otlp-grpc = [
+    "opentelemetry-otlp/grpc-tonic",
+    "opentelemetry-otlp/tls-aws-lc",
+    "dep:webpki-roots",
+]
 
 [dependencies]
 anyhow = {workspace = true}
@@ -54,11 +59,11 @@ opentelemetry_sdk = {version = "0.32.1", features = ["spec_unstable_metrics_view
 # no longer implies a TLS provider feature — without one, every `https://`
 # gRPC collector endpoint is rejected at exporter build time (GB-4580).
 # aws-lc matches the TLS backend the workspace `tonic` already uses.
-opentelemetry-otlp = {version = "0.32", features = ["grpc-tonic", "reqwest-blocking-client", "tls-roots", "tls-aws-lc"]}
+opentelemetry-otlp = {version = "0.32", default-features = false, features = ["http-proto", "reqwest-blocking-client", "trace", "metrics", "logs", "tls-roots"]}
 # Embedded Mozilla trust anchors for the gRPC TLS fallback: keeps `https://`
 # collectors working on hosts with no readable system CA store (parity with
 # the HTTP transport's embedded-roots reqwest client in `otlp_http.rs`).
-webpki-roots = {version = "0.26"}
+webpki-roots = {version = "0.26", optional = true}
 # Re-encodes the validated GROK_EXTRA_CA_BUNDLE DERs as PEM for tonic's
 # `Certificate::from_pem` (the gRPC transport's extra-CA parity with HTTP).
 base64 = {workspace = true}
@@ -104,6 +109,22 @@ tokio = {version = "1", features = ["full", "macros", "net", "rt-multi-thread", 
 filetime = {workspace = true}
 tempfile = {workspace = true}
 aster-test-support = {path = "../aster-test-support"}
+
+[[test]]
+name = "external_otlp_grpc"
+required-features = ["otlp-grpc"]
+
+[[test]]
+name = "external_otlp_grpc_tls"
+required-features = ["otlp-grpc"]
+
+[[test]]
+name = "external_otlp_mtls_grpc"
+required-features = ["otlp-grpc"]
+
+[[test]]
+name = "external_otlp_mtls_grpc_reject"
+required-features = ["otlp-grpc"]
 
 [lints]
 workspace = true

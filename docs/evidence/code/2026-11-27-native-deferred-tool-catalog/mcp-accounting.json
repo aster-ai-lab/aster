@@ -1,0 +1,110 @@
+[
+  {
+    "run": "before-verification-guidance",
+    "trial": "1-release",
+    "provider_primary_tokens": 30181,
+    "acp_prompt_total_tokens": 30181,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4,
+    "lookup_tokens": 0
+  },
+  {
+    "run": "before-verification-guidance",
+    "trial": "1-candidate",
+    "provider_primary_tokens": 27397,
+    "acp_prompt_total_tokens": 27397,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 5,
+    "lookup_tokens": 5357
+  },
+  {
+    "run": "before-verification-guidance",
+    "trial": "2-candidate",
+    "provider_primary_tokens": 27451,
+    "acp_prompt_total_tokens": 27451,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 5,
+    "lookup_tokens": 5357
+  },
+  {
+    "run": "before-verification-guidance",
+    "trial": "2-release",
+    "provider_primary_tokens": 30182,
+    "acp_prompt_total_tokens": 30182,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4,
+    "lookup_tokens": 0
+  },
+  {
+    "run": "full-catalog",
+    "trial": "1-release",
+    "provider_primary_tokens": 30156,
+    "acp_prompt_total_tokens": 30156,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4,
+    "lookup_tokens": 0
+  },
+  {
+    "run": "full-catalog",
+    "trial": "1-candidate",
+    "provider_primary_tokens": 27415,
+    "acp_prompt_total_tokens": 27415,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 5,
+    "lookup_tokens": 5354
+  },
+  {
+    "run": "full-catalog",
+    "trial": "2-candidate",
+    "provider_primary_tokens": 27424,
+    "acp_prompt_total_tokens": 27424,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 5,
+    "lookup_tokens": 5354
+  },
+  {
+    "run": "full-catalog",
+    "trial": "2-release",
+    "provider_primary_tokens": 30154,
+    "acp_prompt_total_tokens": 30154,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4,
+    "lookup_tokens": 0
+  },
+  {
+    "run": "delivered",
+    "trial": "1-release",
+    "provider_primary_tokens": 30164,
+    "acp_prompt_total_tokens": 30164,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4,
+    "lookup_tokens": 0
+  },
+  {
+    "run": "delivered",
+    "trial": "1-candidate",
+    "provider_primary_tokens": 27461,
+    "acp_prompt_total_tokens": 27461,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 5,
+    "lookup_tokens": 5356
+  },
+  {
+    "run": "delivered",
+    "trial": "2-candidate",
+    "provider_primary_tokens": 27442,
+    "acp_prompt_total_tokens": 27442,
+    "provider_primary_calls": 5,
+    "acp_prompt_model_calls": 5,
+    "lookup_tokens": 5356
+  },
+  {
+    "run": "delivered",
+    "trial": "2-release",
+    "provider_primary_tokens": 30177,
+    "acp_prompt_total_tokens": 30177,
+    "provider_primary_calls": 4,
+    "acp_prompt_model_calls": 4,
+    "lookup_tokens": 0
+  }
+]

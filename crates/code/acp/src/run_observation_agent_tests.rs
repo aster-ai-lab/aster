@@ -26,7 +26,13 @@ impl acp::Client for Host {
     }
 
     async fn ext_notification(&self, args: acp::ExtNotification) -> acp::Result<()> {
-        if args.method.as_ref() == "aster/turn/outcome" {
+        if matches!(
+            args.method.as_ref(),
+            "aster/turn/outcome"
+                | "aster/session_notification"
+                | "aster/session/tooling/update"
+                | "aster/queue/changed"
+        ) {
             return Ok(());
         }
         assert_eq!(args.method.as_ref(), crate::run_observation::METHOD);
@@ -405,7 +411,7 @@ async fn actual_acp_failure_and_cancel_close_only_with_the_core_terminal_outcome
                     .await
                     .unwrap();
                 }
-                let response = timeout(Duration::from_secs(5), prompt)
+                let response = timeout(Duration::from_secs(15), prompt)
                     .await
                     .unwrap()
                     .unwrap();

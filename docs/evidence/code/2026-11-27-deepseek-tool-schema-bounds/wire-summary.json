@@ -1,0 +1,74 @@
+[
+  {
+    "pair": 1,
+    "catalog_size": 26,
+    "main_requests_each": 4,
+    "first_messages_identical": true,
+    "description_differences": {
+      "kill_task": {
+        "release": "Request cancellation of child task by task_id.",
+        "candidate": "Request cancellation of child task by task_id. The cancelled status can precede cleanup. Only the task's original process group is guaranteed to be signalled; on macOS, descendants that create independent process groups with setsid/setpgid can remain running and must be inspected separately."
+      }
+    },
+    "changes": {
+      "top_object": 26,
+      "bounds_notes": 55
+    },
+    "tool_bytes": {
+      "release": 19686,
+      "candidate": 19334
+    },
+    "tool_hashes": {
+      "release": "3ed018e4c867cc312e011e0c7c6c36c2584f0cd80678e4b76e1be3312a50b65a",
+      "candidate": "9883b5eb16fa9a6113b973728eef331876af0357f3d5aad9837f2525cf2050f5"
+    }
+  },
+  {
+    "pair": 2,
+    "catalog_size": 26,
+    "main_requests_each": 4,
+    "first_messages_identical": true,
+    "description_differences": {
+      "kill_task": {
+        "release": "Request cancellation of child task by task_id.",
+        "candidate": "Request cancellation of child task by task_id. The cancelled status can precede cleanup. Only the task's original process group is guaranteed to be signalled; on macOS, descendants that create independent process groups with setsid/setpgid can remain running and must be inspected separately."
+      }
+    },
+    "changes": {
+      "top_object": 26,
+      "bounds_notes": 55
+    },
+    "tool_bytes": {
+      "release": 19686,
+      "candidate": 19334
+    },
+    "tool_hashes": {
+      "release": "3ed018e4c867cc312e011e0c7c6c36c2584f0cd80678e4b76e1be3312a50b65a",
+      "candidate": "9883b5eb16fa9a6113b973728eef331876af0357f3d5aad9837f2525cf2050f5"
+    }
+  },
+  {
+    "pair": 3,
+    "catalog_size": 26,
+    "main_requests_each": 4,
+    "first_messages_identical": true,
+    "description_differences": {
+      "kill_task": {
+        "release": "Request cancellation of child task by task_id.",
+        "candidate": "Request cancellation of child task by task_id. The cancelled status can precede cleanup. Only the task's original process group is guaranteed to be signalled; on macOS, descendants that create independent process groups with setsid/setpgid can remain running and must be inspected separately."
+      }
+    },
+    "changes": {
+      "top_object": 26,
+      "bounds_notes": 55
+    },
+    "tool_bytes": {
+      "release": 19686,
+      "candidate": 19334
+    },
+    "tool_hashes": {
+      "release": "3ed018e4c867cc312e011e0c7c6c36c2584f0cd80678e4b76e1be3312a50b65a",
+      "candidate": "9883b5eb16fa9a6113b973728eef331876af0357f3d5aad9837f2525cf2050f5"
+    }
+  }
+]

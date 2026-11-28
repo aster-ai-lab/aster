@@ -1324,10 +1324,13 @@ impl CodeConfig {
 
     /// Get LlmConfig for the default provider and model
     ///
-    /// Returns None if default provider/model is not configured or API key is missing.
+    /// Returns None if default provider/model is not configured or a required API key is missing.
+    /// The explicitly imported Quark account is keyless and uses local browser authentication.
     pub fn default_llm_config(&self) -> Option<LlmConfig> {
         let (provider, model) = self.default_model_config()?;
-        let api_key = provider.get_api_key(model)?;
+        let api_key = provider.get_api_key(model).or_else(|| {
+            (provider.name == crate::config::AccountImport::Quark.as_str()).then_some("")
+        })?;
         let base_url = provider.get_base_url(model);
         let headers = provider.get_headers(model);
         let session_id_header = provider.get_session_id_header(model);
@@ -1353,11 +1356,14 @@ impl CodeConfig {
 
     /// Get LlmConfig for a specific provider and model
     ///
-    /// Returns None if provider/model is not found or API key is missing.
+    /// Returns None if provider/model is not found or a required API key is missing.
+    /// The explicitly imported Quark account is keyless and uses local browser authentication.
     pub fn llm_config(&self, provider_name: &str, model_id: &str) -> Option<LlmConfig> {
         let provider = self.find_provider(provider_name)?;
         let model = provider.find_model(model_id)?;
-        let api_key = provider.get_api_key(model)?;
+        let api_key = provider.get_api_key(model).or_else(|| {
+            (provider.name == crate::config::AccountImport::Quark.as_str()).then_some("")
+        })?;
         let base_url = provider.get_base_url(model);
         let headers = provider.get_headers(model);
         let session_id_header = provider.get_session_id_header(model);

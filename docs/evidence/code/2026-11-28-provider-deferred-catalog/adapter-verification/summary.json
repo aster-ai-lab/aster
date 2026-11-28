@@ -1,0 +1,122 @@
+{
+  "after-batch_mixed": {
+    "provider_statuses": {
+      "200": 24
+    },
+    "trials": 4,
+    "meter_complete": 4,
+    "complete_markers": 4,
+    "bound_edit_trials": 0,
+    "tool_result_groups": [],
+    "finite_usage_total_median": {
+      "release": 32828.5,
+      "candidate": 32784.5
+    }
+  },
+  "after-short": {
+    "provider_statuses": {
+      "200": 6
+    },
+    "trials": 1,
+    "meter_complete": 1,
+    "complete_markers": 1,
+    "bound_edit_trials": 0,
+    "tool_result_groups": [
+      [
+        0,
+        0,
+        3
+      ],
+      [
+        0,
+        0,
+        3,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "finite_usage_total_median": {
+      "release": 32839
+    }
+  },
+  "after-verified_edit_exact_count": {
+    "provider_statuses": {
+      "200": 32
+    },
+    "trials": 4,
+    "meter_complete": 4,
+    "complete_markers": 4,
+    "bound_edit_trials": 4,
+    "tool_result_groups": [],
+    "finite_usage_total_median": {
+      "release": 49451.5,
+      "candidate": 49390.5
+    }
+  },
+  "before-batch_mixed": {
+    "provider_statuses": {
+      "200": 24
+    },
+    "trials": 4,
+    "meter_complete": 4,
+    "complete_markers": 4,
+    "bound_edit_trials": 0,
+    "tool_result_groups": [],
+    "finite_usage_total_median": {
+      "release": 32954.0,
+      "candidate": 32869.0
+    }
+  },
+  "before-short": {
+    "provider_statuses": {
+      "200": 1,
+      "400": 1
+    },
+    "trials": 1,
+    "meter_complete": 0,
+    "complete_markers": 0,
+    "bound_edit_trials": 0,
+    "tool_result_groups": [],
+    "finite_usage_total_median": {
+      "release": 7736
+    }
+  },
+  "before-verified_edit_exact_count": {
+    "provider_statuses": {
+      "200": 32
+    },
+    "trials": 4,
+    "meter_complete": 4,
+    "complete_markers": 4,
+    "bound_edit_trials": 4,
+    "tool_result_groups": [],
+    "finite_usage_total_median": {
+      "release": 49489.0,
+      "candidate": 49411.5
+    }
+  },
+  "chat-short": {
+    "provider_statuses": {
+      "200": 32
+    },
+    "trials": 6,
+    "meter_complete": 6,
+    "complete_markers": 6,
+    "bound_edit_trials": 0,
+    "tool_result_groups": [],
+    "finite_usage_total_median": {
+      "release": 30969.0,
+      "dsh": 25217.0,
+      "candidate": 31002.0
+    }
+  }
+}

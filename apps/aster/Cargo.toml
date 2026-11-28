@@ -1,6 +1,6 @@
 [package]
 name = "aster"
-version = "0.4.2"
+version = "0.4.3"
 license = "MIT"
 authors = ["Aster"]
 default-run = "aster"
@@ -39,7 +39,7 @@ dunce = {workspace = true}
 semver = {workspace = true}
 
 aster-extra-ca = {path = "../../crates/terminal/crates/codegen/aster-extra-ca"}
-aster-use = {path = "../../crates/use"}
+aster-use = {default-features = false, features = ["extensions"], path = "../../crates/use"}
 aster-confine = {default-features = false, path = "../../crates/terminal/crates/codegen/aster-confine"}
 aster-config = {path = "../../crates/terminal/crates/codegen/aster-config"}
 aster-tty-utils = {path = "../../crates/terminal/crates/codegen/aster-tty-utils"}

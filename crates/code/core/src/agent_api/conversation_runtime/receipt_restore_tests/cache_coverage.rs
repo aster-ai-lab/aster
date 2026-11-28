@@ -435,7 +435,10 @@ async fn a_future_terminal_does_not_erase_prepared_debt_at_the_exact_cached_pref
         .ledger
         .lock()
         .unwrap()
-        .content_digest_matches("cached.txt", &sha256::digest(b"actual later C bytes")));
+        .content_digest_matches(
+            "cached.txt",
+            &crate::content_digest::sha256_hex(b"actual later C bytes")
+        ));
     assert!(matches!(
         fixture.gate(),
         crate::harness_loop::CompletionGate::Incomplete { .. }
@@ -499,11 +502,10 @@ async fn valid_older_cache_is_covered_before_a_later_known_write() {
     fixture.seed();
     assert!(!unresolved(&fixture.pinned).contains(&"tool_effect_cache_evidence_missing".into()));
     let surface = fixture.pinned.parts.surface.as_ref().unwrap();
-    assert!(surface
-        .ledger
-        .lock()
-        .unwrap()
-        .content_digest_matches("cached.txt", &sha256::digest(b"later original bytes")));
+    assert!(surface.ledger.lock().unwrap().content_digest_matches(
+        "cached.txt",
+        &crate::content_digest::sha256_hex(b"later original bytes")
+    ));
     assert!(matches!(
         fixture.gate(),
         crate::harness_loop::CompletionGate::Incomplete { .. }
@@ -664,7 +666,7 @@ async fn incomplete_or_mismatched_original_evidence_cannot_promote_a_passed_cach
                 let mut result = fixture.written.clone();
                 result.effects.changes[0].after.content_digest = Some(format!(
                     "sha256:{}",
-                    sha256::digest(b"different original bytes")
+                    crate::content_digest::sha256_hex(b"different original bytes")
                 ));
                 facts[1].payload = json!({"receipt":result});
             }

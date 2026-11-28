@@ -1,0 +1,49 @@
+{
+  "prompts": [
+    "Search this workspace for the finished export of batch QA44. Report the matching filename and exact target, excluding unfinished imports.",
+    "Read the quality checkpoint and quote its verdict together with the previously found target."
+  ],
+  "expected_markers": [
+    [
+      "exporter.log",
+      "mercury-R57K"
+    ],
+    [
+      "indigo-W72Z",
+      "mercury-R57K"
+    ]
+  ],
+  "fixtures_sha256": {
+    "importer.log": "ae754a8ad489917c31cc1d2550bb64a6220b3b306647dd2841d279019aa8e47e",
+    "exporter.log": "6a89147fac8c60c39002f2354992fd21249f1fcf2c4b4c7e844e9d425f276786",
+    "quality.log": "63305462b6f6c56fa26d8c15ce95182e0d2fd8e36034709b8356fd26d57d2c46"
+  },
+  "required_tool": "search",
+  "scenario": "search",
+  "model": "deepseek-flash",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "approved_program": false,
+  "annotated_signatures": false,
+  "native_required": false,
+  "native_catalog": false,
+  "default_catalog": false,
+  "disk_content_attestation": false,
+  "reference_catalog": "full",
+  "cost_gate": false,
+  "expected_mutation_sha256": null,
+  "exact_count_allowed": false,
+  "orders": [
+    [
+      "release",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "release"
+    ]
+  ]
+}

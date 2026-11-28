@@ -1,0 +1,217 @@
+{
+  "short": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 23170.0,
+      "uncached_input_median": 3108.5,
+      "requests": 12
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 31136.0,
+      "uncached_input_median": 3836.5,
+      "requests": 12
+    },
+    "dsh": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 25170.5,
+      "uncached_input_median": 1006.5,
+      "requests": 8
+    }
+  },
+  "long": {
+    "candidate": {
+      "trials": 2,
+      "passes": 0,
+      "tokens_median": 183782.0,
+      "uncached_input_median": 16448.0,
+      "requests": 56,
+      "reports": 12,
+      "protected": 12,
+      "verification": 12
+    },
+    "release": {
+      "trials": 2,
+      "passes": 1,
+      "tokens_median": 197306.5,
+      "uncached_input_median": 17452.0,
+      "requests": 51,
+      "reports": 12,
+      "protected": 12,
+      "verification": 12
+    },
+    "dsh": {
+      "trials": 2,
+      "passes": 0,
+      "tokens_median": 264561.5,
+      "uncached_input_median": 8427.0,
+      "requests": 52,
+      "reports": 12,
+      "protected": 12,
+      "verification": null
+    }
+  },
+  "read_window": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 30638.0,
+      "uncached_input_median": 4145.0,
+      "requests": 12
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 22684.0,
+      "uncached_input_median": 2844.0,
+      "requests": 12
+    }
+  },
+  "read_batch_repeat": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 34981.5,
+      "uncached_input_median": 4613.5,
+      "requests": 12
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 26981.0,
+      "uncached_input_median": 3597.5,
+      "requests": 12
+    }
+  },
+  "mcp_schema": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 31454.5,
+      "uncached_input_median": 4279.5,
+      "requests": 12
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 28741.5,
+      "uncached_input_median": 4019.5,
+      "requests": 14
+    }
+  },
+  "verified_edit_exact_count": {
+    "release": {
+      "trials": 2,
+      "passes": 1,
+      "tokens_median": 34853.0,
+      "uncached_input_median": 4315.5,
+      "requests": 13
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 34988.0,
+      "uncached_input_median": 3196.0,
+      "requests": 16
+    }
+  },
+  "program_approved": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 30625.0,
+      "uncached_input_median": 4154.0,
+      "requests": 12
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 22664.0,
+      "uncached_input_median": 2977.0,
+      "requests": 12
+    }
+  },
+  "batch_mixed": {
+    "release": {
+      "trials": 2,
+      "passes": 0,
+      "tokens_median": 27123.0,
+      "uncached_input_median": 4088.0,
+      "requests": 11
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 23106.0,
+      "uncached_input_median": 2838.0,
+      "requests": 12
+    }
+  },
+  "directory_discovery": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 39263.0,
+      "uncached_input_median": 4517.0,
+      "requests": 16
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 29492.0,
+      "uncached_input_median": 3569.5,
+      "requests": 16
+    }
+  },
+  "search": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 40395.5,
+      "uncached_input_median": 4968.5,
+      "requests": 16
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 30347.5,
+      "uncached_input_median": 3513.0,
+      "requests": 16
+    }
+  },
+  "forms-prototype": {
+    "default": {
+      "trials": 2,
+      "passes": 0,
+      "tokens_median": 71881.0,
+      "uncached_input_median": 7630.0,
+      "requests": 18
+    },
+    "deferred": {
+      "trials": 2,
+      "passes": 0,
+      "tokens_median": 53276.5,
+      "uncached_input_median": 8106.0,
+      "requests": 18
+    }
+  },
+  "forms-contract": {
+    "default": {
+      "trials": 2,
+      "passes": 1,
+      "tokens_median": 41763.0,
+      "uncached_input_median": 7142.5,
+      "requests": 13
+    },
+    "deferred": {
+      "trials": 2,
+      "passes": 0,
+      "tokens_median": 60214.0,
+      "uncached_input_median": 7851.5,
+      "requests": 20
+    }
+  }
+}

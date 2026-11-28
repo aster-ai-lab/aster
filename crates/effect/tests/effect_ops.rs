@@ -467,3 +467,51 @@ async fn infer_schedule_runs_a_defect_once() {
     assert!(matches!(result, Err(Exit::Die(message)) if message == "m"));
     assert_eq!(calls.load(Ordering::SeqCst), 1);
 }
+
+#[tokio::test]
+async fn retry_exponential_doubles_delay_up_to_cap_and_cancels_cleanly() {
+    let attempts = Arc::new(AtomicUsize::new(0));
+    let attempts_inner = Arc::clone(&attempts);
+    let effect = Effect::<usize, ActorError, ()>::from_async(move |_services, _cancel| {
+        let attempts_inner = Arc::clone(&attempts_inner);
+        async move {
+            let n = attempts_inner.fetch_add(1, Ordering::SeqCst);
+            if n < 3 {
+                Err(Exit::Fail(ActorError::Handler {
+                    key: "infer".into(),
+                    message: "transient".into(),
+                }))
+            } else {
+                Ok(42)
+            }
+        }
+    });
+    let started = std::time::Instant::now();
+    let (result, trace) = effect
+        .retry_exponential(4, Duration::from_millis(10), Duration::from_millis(20))
+        .run(Arc::new(()))
+        .await;
+    let elapsed = started.elapsed();
+    assert_eq!(result.unwrap(), 42);
+    assert_eq!(attempts.load(Ordering::SeqCst), 4);
+    let retry_count = trace.iter().filter(|event| event.name == "retry").count();
+    assert_eq!(retry_count, 3, "{trace:?}");
+    // Exponential delays: 10ms + 20ms + 20ms (capped) = 50ms nominal.
+    assert!(elapsed >= Duration::from_millis(35), "elapsed={elapsed:?}");
+
+    let cancel = tokio_util::sync::CancellationToken::new();
+    let cancel_trigger = cancel.clone();
+    tokio::spawn(async move {
+        tokio::time::sleep(Duration::from_millis(15)).await;
+        cancel_trigger.cancel();
+    });
+    let always_fail = Effect::<(), ActorError, ()>::from_async(|_, _| async {
+        Err(Exit::Fail(ActorError::Handler {
+            key: "infer".into(),
+            message: "down".into(),
+        }))
+    })
+    .retry_exponential(5, Duration::from_secs(10), Duration::from_secs(30));
+    let (cancelled, _) = always_fail.run_with_cancel(Arc::new(()), cancel).await;
+    assert!(matches!(cancelled, Err(Exit::Interrupt)));
+}

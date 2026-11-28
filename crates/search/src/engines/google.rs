@@ -4,7 +4,7 @@
 //! page relies on JavaScript rendering that plain HTTP requests cannot handle.
 
 use crate::html_engine::{
-    selector, validate_search_response, HtmlEngine, HtmlParser, SearchResponseSpec,
+    HtmlEngine, HtmlParser, SearchResponseSpec, selector, validate_search_response,
 };
 use crate::{EngineCategory, EngineConfig, Result, SearchQuery, SearchResult};
 use scraper::Html;
@@ -140,8 +140,8 @@ impl HtmlParser for GoogleParser {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::fetcher_http::HttpFetcher;
     use crate::Engine;
+    use crate::fetcher_http::HttpFetcher;
     use std::sync::Arc;
 
     fn make_google() -> Google {

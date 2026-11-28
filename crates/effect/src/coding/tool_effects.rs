@@ -43,8 +43,8 @@ closed_set!(ToolExecutionOutcome,
     Denied => "denied", Unknown => "unknown",
 );
 closed_set!(ToolRecoveryPolicy,
-    NeverReplay => "never_replay", QueryStatus => "query_status",
-    IdempotencyKey => "idempotency_key",
+    NeverReplay => "never_replay", ReplaySafe => "replay_safe",
+    QueryStatus => "query_status", IdempotencyKey => "idempotency_key",
 );
 closed_set!(ToolObservationCompleteness, Complete => "complete", Incomplete => "incomplete");
 closed_set!(ToolFileKind,

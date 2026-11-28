@@ -6,10 +6,10 @@ publish = false
 
 [dependencies]
 anyhow.workspace = true
-aster-core = { path = "../code/core" }
+aster-core = { path = "../code/core", default-features = false }
 async-trait.workspace = true
 tokio-util.workspace = true
-model2vec-rs = "0.3.0"
+model2vec-rs = { version = "0.3.0", default-features = false, features = ["fancy-regex"] }
 hnsw_rs = "0.3.5"
 serde.workspace = true
 serde_json.workspace = true

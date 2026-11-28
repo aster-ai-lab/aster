@@ -1,0 +1,122 @@
+{
+  "covered": [
+    {
+      "run": "controlled",
+      "reference_input": 8847,
+      "candidate_input": 8335,
+      "main_input_saving": 512,
+      "reference_total": 9147,
+      "candidate_total": 8562,
+      "reference_pass": true,
+      "candidate_pass": true,
+      "reference_tool_text_bytes": [
+        2235,
+        2209
+      ],
+      "candidate_tool_text_bytes": [
+        2235,
+        175
+      ],
+      "same_fresh_text_hashes": null
+    },
+    {
+      "run": "controlled-b",
+      "reference_input": 8848,
+      "candidate_input": 8336,
+      "main_input_saving": 512,
+      "reference_total": 9018,
+      "candidate_total": 8611,
+      "reference_pass": true,
+      "candidate_pass": true,
+      "reference_tool_text_bytes": [
+        2235,
+        2209
+      ],
+      "candidate_tool_text_bytes": [
+        2235,
+        175
+      ],
+      "same_fresh_text_hashes": false
+    }
+  ],
+  "changed": [
+    {
+      "run": "controlled",
+      "reference_input": 8847,
+      "candidate_input": 8848,
+      "main_input_saving": -1,
+      "reference_total": 9170,
+      "candidate_total": 9308,
+      "reference_pass": false,
+      "candidate_pass": false,
+      "reference_tool_text_bytes": [
+        2235,
+        2209
+      ],
+      "candidate_tool_text_bytes": [
+        2235,
+        2209
+      ],
+      "same_fresh_text_hashes": null
+    },
+    {
+      "run": "controlled-b",
+      "reference_input": 8848,
+      "candidate_input": 8849,
+      "main_input_saving": -1,
+      "reference_total": 9297,
+      "candidate_total": 9135,
+      "reference_pass": false,
+      "candidate_pass": false,
+      "reference_tool_text_bytes": [
+        2235,
+        2209
+      ],
+      "candidate_tool_text_bytes": [
+        2235,
+        2209
+      ],
+      "same_fresh_text_hashes": true
+    }
+  ],
+  "continuation": [
+    {
+      "run": "controlled",
+      "reference_input": 8153,
+      "candidate_input": 8154,
+      "main_input_saving": -1,
+      "reference_total": 8479,
+      "candidate_total": 8499,
+      "reference_pass": true,
+      "candidate_pass": true,
+      "reference_tool_text_bytes": [
+        2127,
+        1239
+      ],
+      "candidate_tool_text_bytes": [
+        2127,
+        1239
+      ],
+      "same_fresh_text_hashes": null
+    },
+    {
+      "run": "controlled-b",
+      "reference_input": 8154,
+      "candidate_input": 8155,
+      "main_input_saving": -1,
+      "reference_total": 8376,
+      "candidate_total": 8469,
+      "reference_pass": true,
+      "candidate_pass": true,
+      "reference_tool_text_bytes": [
+        2127,
+        1239
+      ],
+      "candidate_tool_text_bytes": [
+        2127,
+        1239
+      ],
+      "same_fresh_text_hashes": true
+    }
+  ]
+}

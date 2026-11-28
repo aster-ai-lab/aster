@@ -186,3 +186,13 @@ async fn task_control_rejects_out_of_contract_input_before_mutating_the_tracker(
         .is_err());
     assert!(!token.is_cancelled());
 }
+
+#[test]
+fn cancellation_description_declares_the_independent_process_group_limit() {
+    let tool = TaskControlTool::Stop(Arc::new(InMemorySubagentTaskTracker::new()));
+    assert!(tool
+        .description()
+        .contains("cancelled status can precede cleanup"));
+    assert!(tool.description().contains("independent process groups"));
+    assert!(tool.description().contains("setsid/setpgid"));
+}

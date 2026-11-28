@@ -1,0 +1,218 @@
+{
+  "pairs": [
+    {
+      "run": "relations-a",
+      "case": "replacement",
+      "related_records": 4,
+      "prompt_token_saving": 75,
+      "prompt_byte_saving": 108,
+      "reference": {
+        "passed": true,
+        "prompt_tokens": 830,
+        "completion_tokens": 266,
+        "total_tokens": 1096,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 574
+      },
+      "candidate": {
+        "passed": false,
+        "prompt_tokens": 755,
+        "completion_tokens": 225,
+        "total_tokens": 980,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 499
+      }
+    },
+    {
+      "run": "relations-a",
+      "case": "conflict",
+      "related_records": 4,
+      "prompt_token_saving": 75,
+      "prompt_byte_saving": 108,
+      "reference": {
+        "passed": true,
+        "prompt_tokens": 830,
+        "completion_tokens": 288,
+        "total_tokens": 1118,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 574
+      },
+      "candidate": {
+        "passed": true,
+        "prompt_tokens": 755,
+        "completion_tokens": 259,
+        "total_tokens": 1014,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 499
+      }
+    },
+    {
+      "run": "relations-b",
+      "case": "replacement",
+      "related_records": 4,
+      "prompt_token_saving": 89,
+      "prompt_byte_saving": 108,
+      "reference": {
+        "passed": true,
+        "prompt_tokens": 844,
+        "completion_tokens": 232,
+        "total_tokens": 1076,
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 460
+      },
+      "candidate": {
+        "passed": true,
+        "prompt_tokens": 755,
+        "completion_tokens": 231,
+        "total_tokens": 986,
+        "prompt_cache_hit_tokens": 512,
+        "prompt_cache_miss_tokens": 243
+      }
+    },
+    {
+      "run": "relations-b",
+      "case": "conflict",
+      "related_records": 4,
+      "prompt_token_saving": 89,
+      "prompt_byte_saving": 108,
+      "reference": {
+        "passed": true,
+        "prompt_tokens": 844,
+        "completion_tokens": 319,
+        "total_tokens": 1163,
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 460
+      },
+      "candidate": {
+        "passed": true,
+        "prompt_tokens": 755,
+        "completion_tokens": 276,
+        "total_tokens": 1031,
+        "prompt_cache_hit_tokens": 512,
+        "prompt_cache_miss_tokens": 243
+      }
+    },
+    {
+      "run": "relations-fixed-1",
+      "case": "replacement",
+      "related_records": 4,
+      "prompt_token_saving": 75,
+      "prompt_byte_saving": 108,
+      "reference": {
+        "passed": true,
+        "prompt_tokens": 830,
+        "completion_tokens": 244,
+        "total_tokens": 1074,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 190
+      },
+      "candidate": {
+        "passed": true,
+        "prompt_tokens": 755,
+        "completion_tokens": 242,
+        "total_tokens": 997,
+        "prompt_cache_hit_tokens": 512,
+        "prompt_cache_miss_tokens": 243
+      }
+    },
+    {
+      "run": "relations-fixed-1",
+      "case": "conflict",
+      "related_records": 4,
+      "prompt_token_saving": 75,
+      "prompt_byte_saving": 108,
+      "reference": {
+        "passed": false,
+        "prompt_tokens": 830,
+        "completion_tokens": 281,
+        "total_tokens": 1111,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 190
+      },
+      "candidate": {
+        "passed": true,
+        "prompt_tokens": 755,
+        "completion_tokens": 280,
+        "total_tokens": 1035,
+        "prompt_cache_hit_tokens": 512,
+        "prompt_cache_miss_tokens": 243
+      }
+    },
+    {
+      "run": "relations-fixed-2",
+      "case": "replacement",
+      "related_records": 4,
+      "prompt_token_saving": 75,
+      "prompt_byte_saving": 108,
+      "reference": {
+        "passed": true,
+        "prompt_tokens": 830,
+        "completion_tokens": 263,
+        "total_tokens": 1093,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 190
+      },
+      "candidate": {
+        "passed": true,
+        "prompt_tokens": 755,
+        "completion_tokens": 242,
+        "total_tokens": 997,
+        "prompt_cache_hit_tokens": 512,
+        "prompt_cache_miss_tokens": 243
+      }
+    },
+    {
+      "run": "relations-fixed-2",
+      "case": "conflict",
+      "related_records": 4,
+      "prompt_token_saving": 75,
+      "prompt_byte_saving": 108,
+      "reference": {
+        "passed": false,
+        "prompt_tokens": 830,
+        "completion_tokens": 291,
+        "total_tokens": 1121,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 190
+      },
+      "candidate": {
+        "passed": true,
+        "prompt_tokens": 755,
+        "completion_tokens": 290,
+        "total_tokens": 1045,
+        "prompt_cache_hit_tokens": 512,
+        "prompt_cache_miss_tokens": 243
+      }
+    }
+  ],
+  "medians": {
+    "reference": {
+      "prompt_tokens": 830.0,
+      "completion_tokens": 273.5,
+      "total_tokens": 1103.5,
+      "prompt_cache_hit_tokens": 512.0,
+      "prompt_cache_miss_tokens": 325.0
+    },
+    "candidate": {
+      "prompt_tokens": 755.0,
+      "completion_tokens": 250.5,
+      "total_tokens": 1005.5,
+      "prompt_cache_hit_tokens": 512.0,
+      "prompt_cache_miss_tokens": 243.0
+    }
+  },
+  "persistence_pass": {
+    "reference": 6,
+    "candidate": 7
+  },
+  "persistence_pass_by_case": {
+    "replacement": {
+      "reference": 4,
+      "candidate": 3
+    },
+    "conflict": {
+      "reference": 2,
+      "candidate": 4
+    }
+  }
+}

@@ -75,9 +75,9 @@ fn checkbox_selection_is_only_persisted_when_saved() {
     assert_eq!(
         config.import_accounts,
         [
-            AccountImport::Codex,
-            AccountImport::Cursor,
-            AccountImport::Grok
+            aster_core::config::AccountImport::Codex,
+            aster_core::config::AccountImport::Cursor,
+            aster_core::config::AccountImport::Grok
         ]
     );
     assert_eq!(config.default_model.as_deref(), Some("custom/one"));
@@ -130,7 +130,7 @@ fn existing_account_choices_are_loaded_and_duplicate_declarations_are_replaced()
         aster_core::CodeConfig::from_acl(&saved)
             .unwrap()
             .import_accounts,
-        [AccountImport::Grok]
+        [aster_core::config::AccountImport::Grok]
     );
 }
 
@@ -168,7 +168,10 @@ fn a_default_from_a_selected_account_can_be_saved_without_copying_its_models() {
     let config = aster_core::CodeConfig::from_acl(&saved).unwrap();
     assert_eq!(
         config.import_accounts,
-        [AccountImport::Codex, AccountImport::Grok]
+        [
+            aster_core::config::AccountImport::Codex,
+            aster_core::config::AccountImport::Grok
+        ]
     );
     assert_eq!(config.default_model.as_deref(), Some("codex/fixture-model"));
     assert!(config.providers.is_empty());

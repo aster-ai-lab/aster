@@ -5,7 +5,7 @@ use std::path::Path;
 use std::sync::OnceLock;
 
 use syntect::{
-    dumps::from_uncompressed_data,
+    dumps::from_binary,
     easy::HighlightLines,
     highlighting::{Theme as SyntectTheme, ThemeSet},
     parsing::{SyntaxReference, SyntaxSet},
@@ -95,8 +95,7 @@ fn syntax_set() -> SyntaxSet {
 }
 
 fn load_syntax_set() -> SyntaxSet {
-    from_uncompressed_data(include_bytes!(concat!(env!("OUT_DIR"), "/syntaxes.bin")))
-        .expect("syntax dump")
+    from_binary(include_bytes!(concat!(env!("OUT_DIR"), "/syntaxes.bin")))
 }
 
 fn is_swift_token(token: &str) -> bool {

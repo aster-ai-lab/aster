@@ -1,0 +1,20 @@
+{
+  "builds": {
+    "measured": "aster-cli-pair-v1:6e6a22152f215031cc75a8c917009656429f3ce9:aarch64-apple-darwin",
+    "current": "aster-cli-pair-v1:2d579114ec4254f41d94e974ef67a0f88c1b7863:aarch64-apple-darwin"
+  },
+  "cases": [
+    {
+      "case": "replacement",
+      "request_sha256": "ec52067df4af629a2a46de2967e12eff49f1fbc69be51ab54a7617610756da49",
+      "messages": 2,
+      "equal": true
+    },
+    {
+      "case": "conflict",
+      "request_sha256": "4e66740c841a186b21d5b314a353c51bbe3503e586271eb0ccfa5d360989a7e2",
+      "messages": 2,
+      "equal": true
+    }
+  ]
+}

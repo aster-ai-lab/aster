@@ -433,7 +433,7 @@ fn raw_claims<T: ReadTxn>(transaction: &T, claims: &yrs::ArrayRef) -> UseResult<
             _ => {
                 return Err(permission_denied(
                     "A Document record claim is not a string.",
-                ))
+                ));
             }
         }
     }

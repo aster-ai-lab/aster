@@ -1,0 +1,33 @@
+{
+  "model": "deepseek-flash",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "prompts": [
+    "Read alpha.txt and beta.txt, and run bash command `printf '\\033[32mANSI-OK-5512\\033[0m\\n'`. Quote all three exact markers.",
+    "Now read gamma.txt and report the GAMMA marker together with the ANSI-OK marker from the previous turn."
+  ],
+  "expected_markers": [
+    [
+      "ALPHA-MARKER-8419",
+      "BETA-MARKER-2903",
+      "ANSI-OK-5512"
+    ],
+    [
+      "GAMMA-MARKER-6174",
+      "ANSI-OK-5512"
+    ]
+  ],
+  "fixtures_sha256": {
+    "alpha.txt": "f6980bf0c0618fca8ede045425d73bb8cec229c114393381e4824d5170caf8da",
+    "beta.txt": "d8b8c554f4b52a379d14c5554231b153ca483ccb6e2b1a86e9b185ca821bb592",
+    "gamma.txt": "a682d11845b181ab97d01c08bb0015c94efdf215be51c8c96e7df43080a5183b"
+  },
+  "orders": [
+    "release,candidate,dsh",
+    "dsh,candidate,release"
+  ]
+}

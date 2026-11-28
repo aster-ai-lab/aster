@@ -82,6 +82,7 @@ pub enum ModelInputKindV1 {
 #[serde(rename_all = "snake_case")]
 pub enum ModelPresentationApplicationV1 {
     Profiled,
+    Deferred,
     Auxiliary,
 }
 
@@ -329,6 +330,15 @@ impl ModelPresentationSnapshotV1 {
         {
             return Err(HarnessEvidenceError::InvalidContents(
                 "profiled presentation cannot add Tool definitions",
+            ));
+        }
+        if self.application == ModelPresentationApplicationV1::Deferred
+            && (self.profile.mode() != crate::tools::ToolPresentationModeV1::Deferred
+                || self.presented_tool_count <= 1
+                || self.presented_tool_count > self.source_tool_count.saturating_add(1))
+        {
+            return Err(HarnessEvidenceError::InvalidContents(
+                "deferred presentation uses a deferred profile and one local lookup",
             ));
         }
         if self.application == ModelPresentationApplicationV1::Auxiliary

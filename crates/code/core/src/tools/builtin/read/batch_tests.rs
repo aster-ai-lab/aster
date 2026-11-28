@@ -28,7 +28,9 @@ async fn preserves_order_and_isolates_file_errors() {
     assert!(a < missing && missing < b);
     assert!(result.content.contains("alpha"));
     assert!(result.content.contains("bravo"));
-    assert!(result.content.contains("Failed to read file missing.txt"));
+    assert!(result.content.contains(
+        "=== missing.txt ===\nFailed to read file missing.txt: no file found at this exact workspace path."
+    ));
 
     let metadata = result.metadata.unwrap();
     assert_eq!(
@@ -39,6 +41,67 @@ async fn preserves_order_and_isolates_file_errors() {
     assert_eq!(metadata["batch"]["successful_files"], 2);
     assert_eq!(metadata["batch"]["failed_files"], 1);
     assert_eq!(metadata["batch"]["truncated"], false);
+}
+
+#[tokio::test]
+async fn missing_file_keeps_its_typed_cause_through_native_reads() {
+    let temp = tempfile::tempdir().unwrap();
+    std::fs::create_dir(temp.path().join("资料 folder")).unwrap();
+    let ctx = ToolContext::new(temp.path().to_path_buf());
+    let name = "资料 folder/missing.txt";
+    let path = ctx.resolve_workspace_path(name).unwrap();
+
+    let backend = ctx.workspace_services.fs();
+    assert!(matches!(
+        backend.read_text(&path).await.unwrap_err(),
+        WorkspaceError::NotFound { path } if path == name
+    ));
+    let missing = ReadTool
+        .execute(&serde_json::json!({"file_path": name}), &ctx)
+        .await
+        .unwrap();
+    assert!(!missing.success);
+    assert_eq!(missing.content, missing_path_message(name));
+
+    let image = ReadTool
+        .execute(
+            &serde_json::json!({"file_path": "资料 folder/missing.png"}),
+            &ctx,
+        )
+        .await
+        .unwrap();
+    assert!(!image.success);
+    assert_eq!(
+        image.content,
+        missing_path_message("资料 folder/missing.png")
+    );
+
+    let directory = ReadTool
+        .execute(&serde_json::json!({"file_path": "资料 folder"}), &ctx)
+        .await
+        .unwrap();
+    assert!(!directory.success);
+    assert!(directory.content.contains("not a regular file"));
+    assert!(!directory.content.contains("no file found"));
+
+    #[cfg(unix)]
+    {
+        let other = tempfile::tempdir().unwrap();
+        let outside = other.path().join("other.txt");
+        std::fs::write(&outside, "outside data").unwrap();
+        std::os::unix::fs::symlink(outside, temp.path().join("资料 folder/alias.txt")).unwrap();
+        let refused = ReadTool
+            .execute(
+                &serde_json::json!({"file_path": "资料 folder/alias.txt"}),
+                &ctx,
+            )
+            .await
+            .unwrap();
+        assert!(!refused.success);
+        assert!(refused.content.contains("Path escapes workspace"));
+        assert!(!refused.content.contains("outside data"));
+        assert!(!refused.content.contains("no file found"));
+    }
 }
 
 #[tokio::test]

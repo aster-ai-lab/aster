@@ -3,9 +3,9 @@
 mod engines;
 mod fallback;
 
-use crate::config::SearchEngineConfig;
 #[cfg(feature = "headless-search")]
 use crate::config::{BrowserBackend, HeadlessConfig};
+use crate::config::{SearchConfig, SearchEngineConfig};
 #[cfg(feature = "headless-search")]
 use crate::moli_runtime::ensure_moli;
 use crate::tools::types::{Tool, ToolContext, ToolErrorKind, ToolOutput};
@@ -34,18 +34,16 @@ const JSON_OUTPUT_RESERVE_BYTES: usize = 4 * 1024;
 const MAX_JSON_OUTPUT_BYTES: usize = crate::tools::MAX_OUTPUT_SIZE - JSON_OUTPUT_RESERVE_BYTES;
 
 #[cfg(feature = "headless-search")]
-const WEB_SEARCH_DESCRIPTION: &str = "Search saved notes first, then web via cascade (native APIs, HTTP/RSS, Moli headless). Explicit `engines` runs only requested tiers.";
+const WEB_SEARCH_DESCRIPTION: &str = "Search saved notes first, then a logged-in local Quark when available, followed by native APIs/HTTP/RSS and Moli. Explicit `engines` runs only requested tiers.";
 
 #[cfg(not(feature = "headless-search"))]
 const WEB_SEARCH_DESCRIPTION: &str = "Search saved notes first, then web via native APIs/HTTP/RSS. Explicit `engines` runs only requested tiers.";
 
 #[cfg(feature = "headless-search")]
-const ENGINE_CATALOG_DESCRIPTION: &str =
-    "Default anonymous native+HTTP/RSS. Free: anysearch, tavily, ddg, brave, bing (Bing RSS), wiki, sogou, 360/so360, bing_cn; billed: tinyfish, bocha, aliyun, tencent, firecrawl, aster; headless (Moli): g/google (Google, headless), baidu, bing_browser, brave_browser.";
+const ENGINE_CATALOG_DESCRIPTION: &str = "Default logged-in Quark when available, then anonymous native+HTTP/RSS. Free: anysearch, tavily, ddg, brave, bing (Bing RSS), wiki, sogou, 360/so360, bing_cn; billed: tinyfish, bocha, aliyun, tencent, firecrawl, aster; headless (Moli/Chrome/Quark CDP): g/google (Google, headless), baidu, bing_browser, brave_browser, quark (logged-in local browser).";
 
 #[cfg(not(feature = "headless-search"))]
-const ENGINE_CATALOG_DESCRIPTION: &str =
-    "Default anonymous native+HTTP/RSS. Free: anysearch, tavily, ddg, brave, bing (Bing RSS), wiki, sogou, 360/so360, bing_cn; billed: tinyfish, bocha, aliyun, tencent, firecrawl, aster.";
+const ENGINE_CATALOG_DESCRIPTION: &str = "Default anonymous native+HTTP/RSS. Free: anysearch, tavily, ddg, brave, bing (Bing RSS), wiki, sogou, 360/so360, bing_cn; billed: tinyfish, bocha, aliyun, tencent, firecrawl, aster.";
 
 #[cfg(test)]
 pub(crate) use engines::bridge_search_config;
@@ -167,7 +165,8 @@ fn safe_search_result_url(result: &SearchResult) -> String {
         host.as_str(),
         "search.brave.com" | "duckduckgo.com" | "www.sogou.com" | "www.so.com"
     ) || ((host == "google.com" || host.ends_with(".google.com"))
-        && parsed.path().starts_with("/search"));
+        && parsed.path().starts_with("/search"))
+        || ((host == "quark.sm.cn" || host == "s.quark.cn") && matches!(parsed.path(), "/" | "/s"));
     if search_navigation {
         String::new()
     } else {
@@ -317,6 +316,7 @@ fn headless_runtime(
     let browser = match config.backend {
         BrowserBackend::Moli => HeadlessBrowser::Moli,
         BrowserBackend::Chrome => HeadlessBrowser::Chrome,
+        BrowserBackend::Quark => HeadlessBrowser::Quark,
         BrowserBackend::Lightpanda => HeadlessBrowser::Lightpanda,
     };
     if !needed {
@@ -336,10 +336,32 @@ fn headless_runtime(
     }
     let max_tabs = Some(config.max_tabs);
     if !config.backend.is_moli() {
+        let cdp_endpoint = if config.backend == BrowserBackend::Quark {
+            match config
+                .cdp_url
+                .as_deref()
+                .map(|value| {
+                    aster_search::aster_use_browser::LocalCdpEndpoint::parse(value)
+                        .map_err(|error| error.message)
+                })
+                .transpose()
+            {
+                Ok(endpoint) => endpoint,
+                Err(message) => {
+                    return (
+                        browser,
+                        Some(futures::future::ready(Err(message)).boxed().shared()),
+                    );
+                }
+            }
+        } else {
+            None
+        };
         let runtime = aster_search::product::HeadlessRuntime {
             executable: config.browser_path.as_ref().map(PathBuf::from),
             max_tabs,
             launch_args: config.launch_args.clone(),
+            cdp_endpoint,
         };
         return (
             browser,
@@ -352,11 +374,53 @@ fn headless_runtime(
             executable: Some(path),
             max_tabs,
             launch_args: Vec::new(),
+            cdp_endpoint: None,
         })
     }
     .boxed()
     .shared();
     (browser, Some(pending))
+}
+
+#[cfg(feature = "headless-search")]
+fn quark_cdp_url(config: Option<&SearchConfig>) -> Option<String> {
+    let headless = config.and_then(|config| config.headless.as_ref());
+    if headless.is_some_and(|config| config.backend != BrowserBackend::Quark) {
+        return None;
+    }
+    headless
+        .and_then(|config| config.cdp_url.clone())
+        .or_else(|| {
+            std::env::var("ASTER_QUARK_CDP_URL")
+                .ok()
+                .filter(|value| !value.trim().is_empty())
+        })
+        .or_else(|| Some("http://127.0.0.1:9222".to_string()))
+}
+
+#[cfg(feature = "headless-search")]
+async fn should_prefer_logged_in_quark(config: Option<&SearchConfig>, timeout: Duration) -> bool {
+    let Some(raw_endpoint) = quark_cdp_url(config) else {
+        return false;
+    };
+    let endpoint = match aster_search::aster_use_browser::LocalCdpEndpoint::parse(&raw_endpoint) {
+        Ok(endpoint) => endpoint,
+        Err(error) => {
+            tracing::debug!(error = %error.message, "Quark auto-search endpoint is invalid");
+            return false;
+        }
+    };
+    match aster_search::aster_use_browser::QuarkSearchSession::connect(endpoint, timeout).await {
+        Ok(_) => true,
+        Err(error) => {
+            tracing::debug!(
+                code = %error.code,
+                message = %error.message,
+                "Quark login is not available; using the ordinary search cascade"
+            );
+            false
+        }
+    }
 }
 
 fn web_escalations() -> &'static std::sync::Mutex<std::collections::VecDeque<(String, String)>> {
@@ -594,7 +658,7 @@ impl Tool for WebSearchTool {
         let configured = config
             .filter(|config| !config.engines.is_empty())
             .map(|config| enabled_engine_names(&config.engines));
-        let engine_selection_source = if requested.is_some() {
+        let mut engine_selection_source = if requested.is_some() {
             "request"
         } else if configured.is_some() {
             "config"
@@ -678,7 +742,7 @@ impl Tool for WebSearchTool {
         let tier_order = config
             .and_then(|config| config.cascade_order.as_deref())
             .map(engines::tier_order);
-        let plan = match EngineTierPlan::new(
+        let mut plan = match EngineTierPlan::new(
             selection.as_deref(),
             bridged_config.as_ref(),
             tier_order.as_deref(),
@@ -689,6 +753,18 @@ impl Tool for WebSearchTool {
                     .with_error_kind(ToolErrorKind::InvalidArgument { message }));
             }
         };
+        #[cfg(feature = "headless-search")]
+        let prefer_quark = selected_engines.is_none()
+            && should_prefer_logged_in_quark(
+                config.map(|value| &**value),
+                total_timeout.min(Duration::from_secs(10)),
+            )
+            .await;
+        #[cfg(feature = "headless-search")]
+        if prefer_quark {
+            plan = plan.prefer_quark();
+            engine_selection_source = "logged_in_quark";
+        }
         let selected_engines = selected_engines.unwrap_or_else(|| plan.shortcuts());
         if plan.is_empty() {
             let mut message = format!("No valid engines found in: {:?}", selected_engines);
@@ -710,10 +786,14 @@ impl Tool for WebSearchTool {
         let mut controls = cascade_controls(ctx, Arc::clone(&search_metrics));
         #[cfg(feature = "headless-search")]
         let browser = {
-            let headless = effective_headless_config(
+            let mut headless = effective_headless_config(
                 config.and_then(|config| config.headless.as_ref()),
                 proxy_url.as_deref(),
             );
+            if prefer_quark {
+                headless.backend = BrowserBackend::Quark;
+                headless.cdp_url = quark_cdp_url(config.map(|value| &**value));
+            }
             let (browser, runtime) = headless_runtime(headless, !plan.headless().is_empty());
             controls.headless_runtime = runtime;
             browser

@@ -1,4 +1,6 @@
 use super::*;
+use aster_core::CodeConfig;
+use aster_core::config::ReasoningEffort;
 
 #[test]
 fn saved_model_and_effort_reload_together_without_rewriting_providers() {

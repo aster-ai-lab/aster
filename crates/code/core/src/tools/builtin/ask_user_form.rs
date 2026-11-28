@@ -10,6 +10,7 @@ use async_trait::async_trait;
 
 pub const USER_FORM_SCHEMA: &str = "aster.code.user-form.v1";
 const MAX_FORM_BYTES: usize = aster_form_core::MAX_JSON_RENDER_BYTES;
+const FORM_GUIDANCE: &str = "Structured form (no Markdown fence): root, elements (type, props, optional children IDs), optional state.form; bind inputs via {\"$bindState\":\"/form/name\"}, Button action submit, labels in user's language. Catalog: ";
 
 pub struct AskUserFormTool;
 
@@ -21,7 +22,7 @@ impl Tool for AskUserFormTool {
 
     fn description(&self) -> &str {
         static DESCRIPTION: std::sync::LazyLock<String> = std::sync::LazyLock::new(|| {
-            let mut description = "Structured form (no Markdown fence): root, elements (type, props, optional children IDs), optional state.form; bind inputs via {\"$bindState\":\"/form/name\"}, Button action submit, labels in user's language. Catalog: ".to_owned();
+            let mut description = FORM_GUIDANCE.to_owned();
             description.push_str(&aster_form_core::json_render_component_catalog().to_string());
             description
         });
@@ -36,7 +37,7 @@ impl Tool for AskUserFormTool {
                 "form": {
                     "type": "string",
                     "maxLength": MAX_FORM_BYTES,
-                    "description": "JSON Render root/elements/state document, encoded as a JSON string. No Markdown fence."
+                    "description": "JSON Render document encoded as a string."
                 },
                 "prompt": {
                     "type": "string",
@@ -45,6 +46,21 @@ impl Tool for AskUserFormTool {
             },
             "required": ["form"]
         })
+    }
+
+    fn definition(&self) -> crate::llm::ToolDefinition {
+        static DESCRIPTION: std::sync::LazyLock<String> = std::sync::LazyLock::new(|| {
+            let catalog = aster_form_core::json_render_component_catalog();
+            match model_catalog(&catalog) {
+                Some(compact) => format!("{FORM_GUIDANCE}{compact}"),
+                None => format!("{FORM_GUIDANCE}{catalog}"),
+            }
+        });
+        crate::llm::ToolDefinition {
+            name: self.name().to_owned(),
+            description: DESCRIPTION.clone(),
+            parameters: self.parameters(),
+        }
     }
 
     fn capabilities(&self, _args: &serde_json::Value) -> ToolCapabilities {
@@ -130,6 +146,32 @@ impl Tool for AskUserFormTool {
             })),
         )
     }
+}
+
+fn model_catalog(catalog: &serde_json::Value) -> Option<String> {
+    let mut containers = Vec::new();
+    let mut leaves = Vec::new();
+    for (name, entry) in catalog.as_object()? {
+        if entry.as_object()?.len() != 2 {
+            return None;
+        }
+        let props = entry.get("props")?.as_array()?;
+        let props = props
+            .iter()
+            .map(serde_json::Value::as_str)
+            .collect::<Option<Vec<_>>>()?;
+        let group = if entry.get("children")?.as_bool()? {
+            &mut containers
+        } else {
+            &mut leaves
+        };
+        group.push(format!("{name}({})", props.join(",")));
+    }
+    Some(format!(
+        "Component(props). Containers (children allowed): {}. Leaves: {}.",
+        containers.join(" "),
+        leaves.join(" ")
+    ))
 }
 
 /// The host answers with the submitted values object; JSON `null` means the

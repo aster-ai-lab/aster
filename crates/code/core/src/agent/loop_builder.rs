@@ -359,10 +359,9 @@ impl crate::agent::TurnEngine {
 
     pub(crate) fn fact_resolve_deferred_read_only_synthesis(
         &self,
-        style: crate::prompts::AgentStyle,
+        intent: Option<crate::loop_checkpoint::ReadOnlySynthesisIntent>,
     ) {
         use crate::loop_checkpoint::ReadOnlySynthesisStatus;
-        let intent = crate::loop_checkpoint::ReadOnlySynthesisIntent::from_style(style);
         let mut convergence = self
             .fact_convergence
             .lock()

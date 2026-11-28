@@ -266,7 +266,8 @@ async fn cmd_gc(
 async fn cmd_db(tx: &aster_acp_lib::AcpAgentTx, command: WorktreeDbCommand) -> Result<()> {
     match command {
         WorktreeDbCommand::Stats => {
-            let stats: DbStats = ext_call(tx, "aster/git/worktree/db/stats", &()).await?;
+            let stats: DbStats =
+                ext_call(tx, "aster/git/worktree/db/stats", &serde_json::json!({})).await?;
             let written = display::print_stats(&stats, &mut std::io::stdout().lock());
             Ok(crate::util::ignore_broken_pipe(written)?)
         }
@@ -275,12 +276,14 @@ async fn cmd_db(tx: &aster_acp_lib::AcpAgentTx, command: WorktreeDbCommand) -> R
             struct PathResp {
                 path: String,
             }
-            let resp: PathResp = ext_call(tx, "aster/git/worktree/db/path", &()).await?;
+            let resp: PathResp =
+                ext_call(tx, "aster/git/worktree/db/path", &serde_json::json!({})).await?;
             println!("{}", resp.path);
             Ok(())
         }
         WorktreeDbCommand::Rebuild => {
-            let report: RebuildReport = ext_call(tx, "aster/git/worktree/db/rebuild", &()).await?;
+            let report: RebuildReport =
+                ext_call(tx, "aster/git/worktree/db/rebuild", &serde_json::json!({})).await?;
             let written = display::print_rebuild(&report, &mut std::io::stdout().lock());
             Ok(crate::util::ignore_broken_pipe(written)?)
         }
@@ -373,8 +376,11 @@ mod tests {
     }
     #[test]
     fn ext_request_builds_db_stats_empty_params() {
-        let req = ext_request("aster/git/worktree/db/stats", &()).unwrap();
+        let req = ext_request("aster/git/worktree/db/stats", &serde_json::json!({})).unwrap();
         assert_eq!(req.method.as_ref(), "aster/git/worktree/db/stats");
+        let params: serde_json::Value = serde_json::from_str(req.params.get()).unwrap();
+        assert!(params.is_object());
+        assert_eq!(params, serde_json::json!({}));
     }
     #[test]
     fn remove_response_deserializes_with_resolved_path() {

@@ -281,8 +281,11 @@ fn checked_surface_result(
             return Ok(result);
         }
     }
-    match surface.agent.decide_fact_completion_gate(&ledger, &reports) {
-        crate::harness_loop::CompletionGate::Allow(terminal) => {
+    match surface
+        .agent
+        .evaluate_fact_completion_gate(&ledger, &reports)
+    {
+        Ok(crate::harness_loop::CompletionGate::Allow(terminal)) => {
             // The run closed accountable: mark the log position so the next
             // send's ledger replay starts here instead of inheriting this
             // run's already-verified mutations.
@@ -290,13 +293,14 @@ fn checked_surface_result(
             result.completion = terminal;
             Ok(result)
         }
-        crate::harness_loop::CompletionGate::Incomplete { message }
-        | crate::harness_loop::CompletionGate::Continue { message } => {
-            match crate::harness_loop::ToolEffectUnresolved::from_ledger(&ledger) {
-                Some(error) => Err(error.into()),
-                None => Err(anyhow::anyhow!(message)),
-            }
-        }
+        Ok(
+            crate::harness_loop::CompletionGate::Incomplete { message }
+            | crate::harness_loop::CompletionGate::Continue { message },
+        ) => match crate::harness_loop::ToolEffectUnresolved::from_ledger(&ledger) {
+            Some(error) => Err(error.into()),
+            None => Err(anyhow::anyhow!(message)),
+        },
+        Err(unverified) => Err(unverified.into()),
     }
     .map_err(|error| match forced_stop {
         Some(reason) => {

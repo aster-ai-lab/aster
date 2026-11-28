@@ -11,7 +11,10 @@ use serde_json::json;
 fn file_identity(bytes: &[u8], mode: u32) -> ToolFileIdentityV1 {
     ToolFileIdentityV1 {
         kind: ToolFileKind::File,
-        content_digest: Some(format!("sha256:{}", sha256::digest(bytes))),
+        content_digest: Some(format!(
+            "sha256:{}",
+            crate::content_digest::sha256_hex(bytes)
+        )),
         mode: Some(mode),
     }
 }
@@ -116,7 +119,10 @@ fn file_type_mode_and_bytes_each_bind_the_effect_identity() {
         },
         ToolFileIdentityV1 {
             kind: ToolFileKind::Symlink,
-            content_digest: Some(format!("sha256:{}", sha256::digest(b"same bytes"))),
+            content_digest: Some(format!(
+                "sha256:{}",
+                crate::content_digest::sha256_hex(b"same bytes")
+            )),
             mode: Some(0o644),
         },
     ];
@@ -154,8 +160,8 @@ fn authoritative_after_state_supersedes_stale_bytes_and_survives_cache_round_tri
         "write",
         &receipt("second", "path", file_identity(b"second", 0o644)),
     );
-    assert!(!ledger.content_digest_matches("path", &sha256::digest(b"first")));
-    assert!(ledger.content_digest_matches("path", &sha256::digest(b"second")));
+    assert!(!ledger.content_digest_matches("path", &crate::content_digest::sha256_hex(b"first")));
+    assert!(ledger.content_digest_matches("path", &crate::content_digest::sha256_hex(b"second")));
     let deletion = receipt(
         "delete",
         "path",
@@ -248,8 +254,8 @@ fn observer_provenance_and_receipt_replay_order_do_not_change_workspace_identity
 
 #[test]
 fn legacy_cache_retains_its_original_digest_until_typed_observation() {
-    let bytes = sha256::digest(b"legacy bytes");
-    let digest = sha256::digest(format!("write|path|{bytes}"));
+    let bytes = crate::content_digest::sha256_hex(b"legacy bytes");
+    let digest = crate::content_digest::sha256_hex(format!("write|path|{bytes}"));
     let mut ledger: MutationLedger = serde_json::from_value(json!({
         "records":[{"tool":"write", "path":"path", "content_digest":bytes}], "digest":digest,
     }))
@@ -263,7 +269,9 @@ fn legacy_cache_retains_its_original_digest_until_typed_observation() {
     );
     assert_eq!(ledger.records.len(), 1);
     assert_ne!(ledger.digest(), digest);
-    assert!(ledger.content_digest_matches("path", &sha256::digest(b"legacy bytes")));
+    assert!(
+        ledger.content_digest_matches("path", &crate::content_digest::sha256_hex(b"legacy bytes"))
+    );
 }
 
 #[test]
@@ -314,7 +322,7 @@ fn typed_projection_preserves_real_space_unicode_control_and_backslash_paths() {
         assert_eq!(record.path.as_bytes(), path.as_bytes());
         assert_eq!(
             record.content_digest,
-            sha256::digest(format!("distinct actual bytes {index}"))
+            crate::content_digest::sha256_hex(format!("distinct actual bytes {index}"))
         );
     }
     let path = " unknown path\n ";

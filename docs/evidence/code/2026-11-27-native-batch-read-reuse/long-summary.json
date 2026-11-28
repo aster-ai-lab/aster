@@ -1,0 +1,153 @@
+{
+  "runs": {
+    "candidate": [
+      {
+        "run": "long-a",
+        "label": "1-candidate",
+        "strict_pass": false,
+        "correct_reports": 6,
+        "sources_preserved": 6,
+        "bound_verification": 6,
+        "tool_calls": {
+          "read": 25,
+          "ls": 1,
+          "write": 6
+        },
+        "provider_requests": 32,
+        "main_requests": 20,
+        "batch_read_section_references_on_wire": 0,
+        "prompt_tokens": 167818,
+        "completion_tokens": 6462,
+        "total_tokens": 174280,
+        "prompt_cache_hit_tokens": 150260,
+        "prompt_cache_miss_tokens": 17558
+      },
+      {
+        "run": "long-b",
+        "label": "3-candidate",
+        "strict_pass": false,
+        "correct_reports": 6,
+        "sources_preserved": 6,
+        "bound_verification": 6,
+        "tool_calls": {
+          "read": 24,
+          "ls": 1,
+          "write": 6
+        },
+        "provider_requests": 31,
+        "main_requests": 19,
+        "batch_read_section_references_on_wire": 0,
+        "prompt_tokens": 156764,
+        "completion_tokens": 4224,
+        "total_tokens": 160988,
+        "prompt_cache_hit_tokens": 143860,
+        "prompt_cache_miss_tokens": 12904
+      }
+    ],
+    "release": [
+      {
+        "run": "long-a",
+        "label": "2-release",
+        "strict_pass": false,
+        "correct_reports": 6,
+        "sources_preserved": 6,
+        "bound_verification": 6,
+        "tool_calls": {
+          "read": 25,
+          "ls": 1,
+          "write": 6
+        },
+        "provider_requests": 32,
+        "main_requests": 20,
+        "batch_read_section_references_on_wire": 0,
+        "prompt_tokens": 164395,
+        "completion_tokens": 4549,
+        "total_tokens": 168944,
+        "prompt_cache_hit_tokens": 151924,
+        "prompt_cache_miss_tokens": 12471
+      },
+      {
+        "run": "long-b",
+        "label": "2-release",
+        "strict_pass": false,
+        "correct_reports": 6,
+        "sources_preserved": 6,
+        "bound_verification": 6,
+        "tool_calls": {
+          "read": 26,
+          "ls": 1,
+          "write": 6
+        },
+        "provider_requests": 33,
+        "main_requests": 21,
+        "batch_read_section_references_on_wire": 0,
+        "prompt_tokens": 179884,
+        "completion_tokens": 4432,
+        "total_tokens": 184316,
+        "prompt_cache_hit_tokens": 161396,
+        "prompt_cache_miss_tokens": 18488
+      }
+    ],
+    "dsh": [
+      {
+        "run": "long-a",
+        "label": "3-dsh",
+        "strict_pass": true,
+        "correct_reports": 6,
+        "sources_preserved": 6,
+        "bound_verification": null,
+        "tool_calls": {
+          "read": 30,
+          "write": 1,
+          "edit": 5
+        },
+        "provider_requests": 25,
+        "main_requests": 25,
+        "batch_read_section_references_on_wire": 0,
+        "prompt_tokens": 251899,
+        "completion_tokens": 4803,
+        "total_tokens": 256702,
+        "prompt_cache_hit_tokens": 244736,
+        "prompt_cache_miss_tokens": 7163
+      },
+      {
+        "run": "long-b",
+        "label": "1-dsh",
+        "strict_pass": true,
+        "correct_reports": 6,
+        "sources_preserved": 6,
+        "bound_verification": null,
+        "tool_calls": {
+          "read": 30,
+          "write": 6
+        },
+        "provider_requests": 30,
+        "main_requests": 30,
+        "batch_read_section_references_on_wire": 0,
+        "prompt_tokens": 300774,
+        "completion_tokens": 4285,
+        "total_tokens": 305059,
+        "prompt_cache_hit_tokens": 292864,
+        "prompt_cache_miss_tokens": 7910
+      }
+    ]
+  },
+  "medians": {
+    "candidate": {
+      "total_tokens": 167634.0,
+      "prompt_cache_miss_tokens": 15231.0,
+      "main_requests": 19.5
+    },
+    "release": {
+      "total_tokens": 176630.0,
+      "prompt_cache_miss_tokens": 15479.5,
+      "main_requests": 20.5
+    },
+    "dsh": {
+      "total_tokens": 280880.5,
+      "prompt_cache_miss_tokens": 7536.5,
+      "main_requests": 27.5
+    }
+  },
+  "provider_requests": 183
+}

@@ -41,6 +41,7 @@ pub use crate::tool_name::canonical_tool_name;
 pub use interactive::{InteractiveApprovalMode, InteractiveToolGuardrail};
 pub use manager::{MatchingRules, PermissionManager};
 pub use policy::{policy_for_posture, PermissionEnforcement, PermissionPolicy};
+pub(crate) use read_batch::is_malformed as is_malformed_read_batch;
 pub use risk::{
     EnvironmentSensitivity, ImpactScope, OperationTarget, Reversibility, ToolRiskAction,
     ToolRiskAssessment, ToolRiskDimensions, ToolRiskLevel, ToolRiskReason, ToolRiskType,

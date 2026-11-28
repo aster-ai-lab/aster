@@ -82,14 +82,12 @@ pub(super) fn run() {
     tui.wait_for("Aster form", 120);
     tui.bytes(b"\x03");
     tui.wait_fact("turn.complete", before);
-    assert!(tui
-        .facts()
-        .iter()
-        .skip(before)
-        .any(|f| f["type"] == "tool.result"
+    assert!(tui.facts().iter().skip(before).any(|f| {
+        f["type"] == "tool.result"
             && f["payload"]["receipt"]["output"]
                 .as_str()
-                .is_some_and(|text| text.contains("cancel"))));
+                .is_some_and(|text| text.contains("cancel"))
+    }));
     tui.record(
         "form-cancel",
         "actual tool result carries the cancelled outcome",

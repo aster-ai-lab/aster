@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "variant": "baseline",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 7533,
+        "completion_tokens": 1,
+        "total_tokens": 7534,
+        "prompt_tokens_details": {
+          "cached_tokens": 7296
+        },
+        "prompt_cache_hit_tokens": 7296,
+        "prompt_cache_miss_tokens": 237
+      },
+      "bytes": 27235
+    },
+    {
+      "variant": "bounds_in_notes",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 7368,
+        "completion_tokens": 1,
+        "total_tokens": 7369,
+        "prompt_tokens_details": {
+          "cached_tokens": 1664
+        },
+        "prompt_cache_hit_tokens": 1664,
+        "prompt_cache_miss_tokens": 5704
+      },
+      "bytes": 27053
+    },
+    {
+      "variant": "root_and_bounds",
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 7212,
+        "completion_tokens": 1,
+        "total_tokens": 7213,
+        "prompt_tokens_details": {
+          "cached_tokens": 1664
+        },
+        "prompt_cache_hit_tokens": 1664,
+        "prompt_cache_miss_tokens": 5548
+      },
+      "bytes": 26637
+    }
+  ],
+  "referenced_definitions": {}
+}

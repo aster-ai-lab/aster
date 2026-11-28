@@ -59,7 +59,7 @@ pub(super) fn set(
             return Err(editor_error(
                 "use.office.hyperlink_owner_unsupported",
                 "Native Presentation hyperlinks require a shape or shape hyperlink path.",
-            ))
+            ));
         }
     };
     let slide_path = owner_path

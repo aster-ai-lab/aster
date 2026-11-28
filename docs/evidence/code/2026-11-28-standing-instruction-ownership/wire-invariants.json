@@ -1,0 +1,30 @@
+[
+  {
+    "order": 1,
+    "system_only_changed": true,
+    "tool_count": 26,
+    "tool_declaration_sha256": "fdaba535b50a9e2e08b1746e768f1db072a1e34bee346a4d93e1435c8a1bd0e7",
+    "system_bytes": [
+      7367,
+      7226
+    ],
+    "system_sha256": [
+      "0631190ae1baf743e88c861a65dfc16e60898f33baf422b09703fdfe6fb2a4fc",
+      "66066d665e750db6936b6fb1f3681a7d68e2564f91f397389262dee6ec2597bb"
+    ]
+  },
+  {
+    "order": 2,
+    "system_only_changed": true,
+    "tool_count": 26,
+    "tool_declaration_sha256": "fdaba535b50a9e2e08b1746e768f1db072a1e34bee346a4d93e1435c8a1bd0e7",
+    "system_bytes": [
+      7367,
+      7226
+    ],
+    "system_sha256": [
+      "0631190ae1baf743e88c861a65dfc16e60898f33baf422b09703fdfe6fb2a4fc",
+      "66066d665e750db6936b6fb1f3681a7d68e2564f91f397389262dee6ec2597bb"
+    ]
+  }
+]

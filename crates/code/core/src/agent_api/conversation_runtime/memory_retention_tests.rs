@@ -371,6 +371,7 @@ async fn same_remember_bytes_require_valid_model_authority_in_both_stores() {
             (valid_model_output(), 1), (r#"{"items":[]}"#.into(), 0),
             ("I will keep that in mind.".into(), 0), ("{broken".into(), 0),
             (r#"{"items":[{"memory_type":"semantic","content":"Use verification codename REMEMBER-TOKEN-4411 for this workspace.","importance":0.95,"confidence":0.98,"source":"unknown","scope":"workspace","reason":"The user supplied a durable workspace verification preference."}]}"#.into(), 0),
+            (r#"{"items":[{"memory_type":"procedural","content":"Use verification codename REMEMBER-TOKEN-4411 for this workspace.","importance":0.95,"confidence":0.98,"source":"preference","scope":"workspace","reason":"The user supplied a durable workspace verification preference."}]}"#.into(), 0),
         ] {
             let store = StoreFixture::new(kind).await;
             let workspace = tempfile::tempdir().unwrap();

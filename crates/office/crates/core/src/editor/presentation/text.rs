@@ -27,7 +27,7 @@ pub(super) fn insert_into_empty_target(
                     "Presentation element '{}' has no editable text run.",
                     target.local_name
                 ),
-            ))
+            ));
         }
     };
     let namespace_prefix = prefix(&container.qualified_name);

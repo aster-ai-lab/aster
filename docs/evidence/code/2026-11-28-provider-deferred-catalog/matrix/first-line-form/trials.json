@@ -1,0 +1,116 @@
+[
+  {
+    "arm": "release",
+    "label": "1-release",
+    "forms": [
+      {
+        "formId": "ask-form-d760ddfe-12e7-414f-a77e-e345ba117645-run-c32a7350-37d9-4546-babf-1c7a60a07f00-1",
+        "prompt": "请填写以下表单",
+        "spec": "{\"root\":\"form\",\"elements\":{\"form\":{\"type\":\"Form\",\"props\":{\"submitAction\":\"submit\"},\"children\":[\"title\",\"region\",\"quantity\",\"enabled\",\"chart\",\"submit\"]},\"title\":{\"type\":\"Text\",\"props\":{\"content\":\"发运确认\"}},\"region\":{\"type\":\"Select\",\"props\":{\"label\":\"region\",\"value\":{\"$bindState\":\"/form/region\"},\"options\":[\"北线\",\"南线\"],\"required\":true,\"placeholder\":\"请选择线路\"}},\"quantity\":{\"type\":\"Input\",\"props\":{\"label\":\"quantity\",\"value\":{\"$bindState\":\"/form/quantity\"},\"type\":\"number\",\"min\":1,\"max\":9,\"step\":1,\"required\":true}},\"enabled\":{\"type\":\"Checkbox\",\"props\":{\"label\":\"enabled\",\"checked\":{\"$bindState\":\"/form/enabled\"}}},\"chart\":{\"type\":\"BarChart\",\"props\":{\"labels\":[\"North\",\"South\"],\"values\":[2,5]}},\"submit\":{\"type\":\"Button\",\"props\":{\"action\":\"submit\",\"label\":\"提交\"}}},\"state\":{\"form\":{\"region\":\"\",\"quantity\":1,\"enabled\":false}}}",
+        "format": "json-render",
+        "sessionId": "d760ddfe-12e7-414f-a77e-e345ba117645"
+      }
+    ],
+    "shape_ok": true,
+    "response": "```json\n{\"region\":\"南线\",\"quantity\":7,\"enabled\":true}\n```",
+    "permissions": [],
+    "passed": true,
+    "api_requests": 7,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 40225,
+      "completion_tokens": 1101,
+      "total_tokens": 41326,
+      "prompt_cache_hit_tokens": 32768,
+      "prompt_cache_miss_tokens": 7457
+    },
+    "tool_calls": {
+      "ask_user_form": 4
+    },
+    "primary_requests": 5
+  },
+  {
+    "arm": "candidate",
+    "label": "1-candidate",
+    "forms": [
+      {
+        "formId": "ask-form-0d63ebf4-fce9-41b2-96ca-71881be68360-run-e310c59b-723e-4031-8bee-d55b38b370d6-1",
+        "prompt": "请填写发运确认信息",
+        "spec": "{\"root\":\"f\",\"elements\":{\"f\":{\"type\":\"Form\",\"props\":{\"submitAction\":\"submit\"},\"children\":[\"c\"]},\"c\":{\"type\":\"Card\",\"props\":{\"title\":\"发运确认\"},\"children\":[\"s\"]},\"s\":{\"type\":\"Stack\",\"props\":{\"direction\":\"vertical\",\"gap\":12},\"children\":[\"region\",\"quantity\",\"enabled\",\"chart\",\"submit\"]},\"region\":{\"type\":\"Select\",\"props\":{\"label\":\"region\",\"required\":true,\"placeholder\":\"请选择线路\",\"options\":[\"北线\",\"南线\"],\"value\":{\"$bindState\":\"/form/region\"}}},\"quantity\":{\"type\":\"Input\",\"props\":{\"label\":\"quantity\",\"type\":\"number\",\"required\":true,\"min\":1,\"max\":9,\"step\":1,\"value\":{\"$bindState\":\"/form/quantity\"}}},\"enabled\":{\"type\":\"Checkbox\",\"props\":{\"label\":\"enabled\",\"checked\":{\"$bindState\":\"/form/enabled\"}}},\"chart\":{\"type\":\"BarChart\",\"props\":{\"labels\":[\"North\",\"South\"],\"values\":[2,5]}},\"submit\":{\"type\":\"Button\",\"props\":{\"action\":\"submit\",\"label\":\"提交\"}}},\"state\":{\"form\":{\"region\":\"\",\"quantity\":1,\"enabled\":false}}}",
+        "format": "json-render",
+        "sessionId": "0d63ebf4-fce9-41b2-96ca-71881be68360"
+      }
+    ],
+    "shape_ok": true,
+    "response": "```json\n{\"region\":\"南线\",\"quantity\":7,\"enabled\":true}\n```",
+    "permissions": [],
+    "passed": true,
+    "api_requests": 8,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 28416,
+      "completion_tokens": 1539,
+      "total_tokens": 29955,
+      "prompt_cache_hit_tokens": 24320,
+      "prompt_cache_miss_tokens": 4096
+    },
+    "tool_calls": {
+      "load_tool_definitions": 1,
+      "ask_user_form": 4
+    },
+    "primary_requests": 6
+  },
+  {
+    "arm": "candidate",
+    "label": "2-candidate",
+    "forms": [
+      {
+        "formId": "ask-form-36e58655-4c6e-4d4a-8021-d45b0a8c6294-run-c4ca362d-3f78-43ad-bda6-c73cfac0e0e4-1",
+        "prompt": "请填写发运确认信息",
+        "spec": "{\"root\":\"f\",\"elements\":{\"f\":{\"type\":\"Form\",\"props\":{\"submitAction\":\"submit\"},\"children\":[\"t\",\"r\",\"q\",\"e\",\"c\",\"b\"]},\"t\":{\"type\":\"Text\",\"props\":{\"content\":\"发运确认\"}},\"r\":{\"type\":\"Select\",\"props\":{\"label\":\"region\",\"required\":true,\"options\":[\"北线\",\"南线\"],\"value\":{\"$bindState\":\"/form/region\"}}},\"q\":{\"type\":\"Input\",\"props\":{\"label\":\"quantity\",\"type\":\"number\",\"required\":true,\"min\":1,\"max\":9,\"step\":1,\"value\":{\"$bindState\":\"/form/quantity\"}}},\"e\":{\"type\":\"Checkbox\",\"props\":{\"label\":\"enabled\",\"checked\":{\"$bindState\":\"/form/enabled\"}}},\"c\":{\"type\":\"BarChart\",\"props\":{\"labels\":[\"North\",\"South\"],\"values\":[2,5]}},\"b\":{\"type\":\"Button\",\"props\":{\"action\":\"submit\",\"label\":\"提交\"}}},\"state\":{\"form\":{\"region\":\"\",\"quantity\":1,\"enabled\":false}}}",
+        "format": "json-render",
+        "sessionId": "36e58655-4c6e-4d4a-8021-d45b0a8c6294"
+      }
+    ],
+    "shape_ok": true,
+    "response": "```json\n{\"region\":\"南线\",\"quantity\":7,\"enabled\":true}\n```",
+    "permissions": [],
+    "passed": true,
+    "api_requests": 6,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 17494,
+      "completion_tokens": 909,
+      "total_tokens": 18403,
+      "prompt_cache_hit_tokens": 13824,
+      "prompt_cache_miss_tokens": 3670
+    },
+    "tool_calls": {
+      "load_tool_definitions": 1,
+      "ask_user_form": 2
+    },
+    "primary_requests": 4
+  },
+  {
+    "arm": "release",
+    "label": "2-release",
+    "forms": [],
+    "shape_ok": false,
+    "response": "",
+    "permissions": [],
+    "passed": false,
+    "api_requests": 7,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 48878,
+      "completion_tokens": 1736,
+      "total_tokens": 50614,
+      "prompt_cache_hit_tokens": 41600,
+      "prompt_cache_miss_tokens": 7278
+    },
+    "tool_calls": {
+      "ask_user_form": 6
+    },
+    "primary_requests": 6
+  }
+]

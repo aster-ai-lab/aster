@@ -150,6 +150,38 @@ impl LlmPlanner {
         Self::parse_goal_response(&text)
     }
 
+    /// Generate the two artifacts for an explicitly planned turn. Each half
+    /// can be used independently so a bad plan need not re-extract the goal.
+    pub(crate) async fn create_goal_and_plan(
+        llm: &Arc<dyn LlmClient>,
+        prompt: &str,
+        language: Option<&str>,
+    ) -> Result<(Option<AgentGoal>, Option<ExecutionPlan>)> {
+        let system = planning_system_prompt(
+            include_str!("../../prompts/planning/llm_goal_plan_system.md"),
+            language,
+        );
+        let response = llm
+            .complete(&[Message::user(prompt)], Some(&system), &[])
+            .await
+            .context("LLM call failed during goal and plan creation")?;
+        let mut value = crate::llm::structured::extract_json_value(&response.text())?;
+        let parts = value
+            .as_object_mut()
+            .context("expected a goal and plan object")?;
+        let goal = parts
+            .remove("goal")
+            .and_then(|value| serde_json::from_value::<GoalResponse>(value).ok())
+            .filter(|goal| !goal.description.trim().is_empty())
+            .map(|goal| AgentGoal::new(goal.description).with_criteria(goal.success_criteria));
+        let plan = parts
+            .remove("plan")
+            .and_then(|value| serde_json::from_value::<PlanResponse>(value).ok())
+            .and_then(|plan| Self::plan_from_response(plan).ok())
+            .filter(|plan| !plan.steps.is_empty() && !plan.goal.trim().is_empty());
+        Ok((goal, plan))
+    }
+
     /// Evaluate whether a goal has been achieved given current state
     pub async fn check_achievement(
         llm: &Arc<dyn LlmClient>,
@@ -543,7 +575,10 @@ impl LlmPlanner {
     fn parse_plan_response(text: &str) -> Result<ExecutionPlan> {
         let parsed: PlanResponse = Self::parse_json_lenient(text)
             .context("Failed to parse plan JSON from LLM response")?;
+        Self::plan_from_response(parsed)
+    }
 
+    fn plan_from_response(parsed: PlanResponse) -> Result<ExecutionPlan> {
         let mut plan = ExecutionPlan::new(parsed.goal, parsed.complexity);
         let mut seen_ids = std::collections::HashSet::new();
 

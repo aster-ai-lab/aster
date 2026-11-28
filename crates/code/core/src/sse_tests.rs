@@ -43,17 +43,17 @@ fn take_sse_events_keeps_lf_frames_and_a_split_crlf_pair() {
 }
 
 #[test]
-fn take_sse_events_holds_blank_trailing_cr_before_crlf_terminator() {
+fn take_sse_events_emits_blank_trailing_cr_without_duplicating_split_crlf() {
     // Mirrors the OpenAI stream split: data line + `\r\n` + bare blank `\r`.
     let mut buffer = "data: {\"ok\":true}\r\n\r".to_string();
+    let events = take_sse_events(&mut buffer, false);
+    assert_eq!(events.len(), 1, "bare CR is already an event terminator");
+    assert!(buffer.is_empty());
+    buffer.push('\n');
     assert!(
         take_sse_events(&mut buffer, false).is_empty(),
-        "blank trailing CR may still grow into CRLF"
+        "the optional LF belongs to the committed blank line"
     );
-    assert!(buffer.ends_with('\r'));
-    buffer.push('\n');
-    let events = take_sse_events(&mut buffer, false);
-    assert_eq!(events.len(), 1);
     assert!(buffer.is_empty());
 }
 

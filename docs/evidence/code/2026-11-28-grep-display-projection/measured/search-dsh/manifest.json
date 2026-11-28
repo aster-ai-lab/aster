@@ -1,0 +1,41 @@
+{
+  "model": "deepseek-flash",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "prompts": [
+    "Use a repository text search for the phase-release records in this rollout workspace, with the preceding context line. Identify release-south-09 and release-west-11. For each, give the source location in path:line format and the exact window and route codes.",
+    "Run a repository text search for phase-rollback records with the following context line. Identify rollback-north-04 and rollback-west-12. Report each source location in path:line format, its policy and retention codes, and the south release window from the first answer."
+  ],
+  "expected_markers": [
+    [
+      "region-south-production-service-rollout-safety-review.log:50",
+      "region-west-production-service-rollout-safety-review.log:62",
+      "WND-259",
+      "RTE-509",
+      "WND-431",
+      "RTE-851"
+    ],
+    [
+      "region-north-production-service-rollout-safety-review.log:22",
+      "region-west-production-service-rollout-safety-review.log:70",
+      "POL-404",
+      "RET-504",
+      "POL-1692",
+      "RET-2112",
+      "WND-259"
+    ]
+  ],
+  "fixtures_sha256": {
+    "region-north-production-service-rollout-safety-review.log": "2c9db1995137ede25dc6a85a24d490186cdebc3ed59717ce5ef1f9d8db242887",
+    "region-south-production-service-rollout-safety-review.log": "0034d362f0822945c5ef9d3d696fd79ad4cabf9c7f5f70a5a9b782af5532936a",
+    "region-west-production-service-rollout-safety-review.log": "53292cea311eb9179cd9a1b2c19594191054903d82eab1fdd59b0d5067d7f5f6"
+  },
+  "orders": [
+    "candidate,release,dsh",
+    "dsh,release,candidate"
+  ]
+}

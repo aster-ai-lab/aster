@@ -279,28 +279,6 @@ fn with_changed_paths(metadata: serde_json::Value, paths: &[String]) -> serde_js
 
 pub struct BashTool;
 
-/// Sandbox-shaped failure signals: the command itself was likely fine, the
-/// sandbox denied a capability. The on-failure approval tier (Codex parity):
-/// surface a one-shot escalation SUGGESTION through the model — the retry
-/// must still pass the existing `require_escalated` approval gate, nothing
-/// auto-executes, and escalated runs never see the hint (no retry loop).
-fn sandbox_failure_hint(output: &str) -> Option<&'static str> {
-    const SIGNALS: &[(&str, &str)] = &[
-        ("Operation not permitted", "a syscall was blocked"),
-        ("Permission denied", "a filesystem access was denied"),
-        ("sandbox", "the sandbox rejected the operation"),
-        ("Connection refused", "a network egress was refused"),
-        ("Network is unreachable", "network egress is unavailable"),
-        ("Temporary failure in name resolution", "DNS was refused"),
-        ("Could not resolve host", "DNS was refused"),
-    ];
-    let lower = output.to_lowercase();
-    SIGNALS
-        .iter()
-        .find(|(signal, _)| lower.contains(&signal.to_lowercase()))
-        .map(|(_, why)| *why)
-}
-
 async fn workspace_watch(root: &std::path::Path) -> crate::porcelain::Watch {
     crate::porcelain::Watch::start(root).await
 }
@@ -825,8 +803,7 @@ impl Tool for BashTool {
             "additionalProperties": false,
             "properties": {
                 "command": {
-                    "type": "string",
-                    "description": "Shell command."
+                    "type": "string"
                 },
                 "timeout": {
                     "type": "integer",
@@ -1219,19 +1196,8 @@ impl Tool for BashTool {
                     base_metadata["network_grant"] = grant;
                 }
                 let changed_paths = span.finish(ctx).await;
-                let mut content = output;
-                if isolated && result.exit_code != 0 {
-                    if let Some(why) = sandbox_failure_hint(&content) {
-                        base_metadata["sandbox_failure_hint"] = serde_json::json!(why);
-                        content.push_str(&format!(
-                            "\n\n[The exit looks sandbox-induced ({why}). If the command is \
-                             legitimate, retry once with sandbox_permissions=require_escalated \
-                             and a justification; the host must approve it.]"
-                        ));
-                    }
-                }
                 return Ok(ToolOutput {
-                    content,
+                    content: output,
                     success: result.exit_code == 0,
                     metadata: crate::verification::merge_shell_verification_metadata(
                         Some(with_changed_paths(base_metadata, &changed_paths)),

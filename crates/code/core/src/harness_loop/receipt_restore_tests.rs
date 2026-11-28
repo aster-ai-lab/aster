@@ -38,7 +38,10 @@ fn later_log_uncertainty_and_current_state_survive_a_stale_checkpoint() {
     let mut live = MutationLedger::default();
     let after = aster_effect::ToolFileIdentityV1 {
         kind: aster_effect::ToolFileKind::File,
-        content_digest: Some(format!("sha256:{}", sha256::digest(b"later bytes"))),
+        content_digest: Some(format!(
+            "sha256:{}",
+            crate::content_digest::sha256_hex(b"later bytes")
+        )),
         mode: Some(0o644),
     };
     live.observe_receipt_path("bash", "changed.txt", None, &after);
@@ -168,7 +171,10 @@ fn coverage_receipt(id: &str, path: &str, bytes: &[u8]) -> aster_effect::ToolExe
                 before: None,
                 after: aster_effect::ToolFileIdentityV1 {
                     kind: aster_effect::ToolFileKind::File,
-                    content_digest: Some(format!("sha256:{}", sha256::digest(bytes))),
+                    content_digest: Some(format!(
+                        "sha256:{}",
+                        crate::content_digest::sha256_hex(bytes)
+                    )),
                     mode: Some(0o644),
                 },
             },
@@ -234,7 +240,7 @@ fn cache_coverage_binds_background_fact_identity_and_rejects_legacy_or_bad_diges
     let mut legacy = MutationLedger::default();
     legacy.observe_unseen_paths(&["background.txt".into()]);
     assert!(!legacy.checkpoint_cache_covered_by(&original));
-    cached.digest = sha256::digest(b"invented cached digest");
+    cached.digest = crate::content_digest::sha256_hex(b"invented cached digest");
     assert!(!cached.checkpoint_cache_covered_by(&original));
 }
 

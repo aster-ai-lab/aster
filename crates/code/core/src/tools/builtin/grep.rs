@@ -10,6 +10,9 @@ use futures::stream::{self, StreamExt};
 use regex::Regex;
 use std::collections::{HashMap, HashSet};
 
+mod display;
+pub(crate) use display::{project_grep_display, GREP_DISPLAY_LAYOUT_KEY};
+
 const MAX_GREP_SOURCE_ANCHORS: usize = 64;
 const MAX_GREP_FALLBACK_CANDIDATES: usize = MAX_GREP_SOURCE_ANCHORS * 4;
 
@@ -285,7 +288,7 @@ impl Tool for GrepTool {
         }
 
         let page_request = page_request.ok_or_else(|| anyhow::anyhow!("missing content page"))?;
-        let (rendered, page_metadata, next_cursor, page_paths) = match matches {
+        let (rendered, page_metadata, next_cursor, page_paths, display_runs) = match matches {
             Some(matches) => {
                 let page = match page_request.page(matches) {
                     Ok(page) => page,
@@ -293,6 +296,7 @@ impl Tool for GrepTool {
                 };
                 let mut rendered = String::new();
                 let mut paths = Vec::new();
+                let mut display_runs = Vec::new();
                 for hit in &page.items {
                     let Some(block) = result.output.get(hit.output_range.clone()) else {
                         return Ok(ToolOutput::error(
@@ -300,6 +304,9 @@ impl Tool for GrepTool {
                         ));
                     };
                     rendered.push_str(block);
+                    if context_lines != 0 {
+                        display::extend_run(&mut display_runs, &hit.path, rendered.len());
+                    }
                     paths.push(hit.path.clone());
                 }
                 (
@@ -307,6 +314,7 @@ impl Tool for GrepTool {
                     Some(page.metadata()),
                     page.next_cursor,
                     Some(paths),
+                    display_runs,
                 )
             }
             None if has_non_neutral_page_controls(args) => {
@@ -314,7 +322,7 @@ impl Tool for GrepTool {
                     "this workspace backend does not provide structured content matches; omit limit and cursor, or use output_mode='files_with_matches'",
                 ));
             }
-            None => (result.output.clone(), None, None, None),
+            None => (result.output.clone(), None, None, None, Vec::new()),
         };
         let source_anchors = grep_source_anchors(
             &result,
@@ -337,12 +345,16 @@ impl Tool for GrepTool {
                 rendered, result.match_count, result.file_count
             )
         };
-        let mut output = ToolOutput::success(content).with_metadata(serde_json::json!({
+        let mut metadata = serde_json::json!({
             "output_mode": output_mode.as_str(),
             "source_anchors": source_anchors,
             "search": grep_search_metadata(&result),
             "page": page_metadata,
-        }));
+        });
+        if let Some(layout) = display::layout(&rendered, display_runs) {
+            metadata[GREP_DISPLAY_LAYOUT_KEY] = layout;
+        }
+        let mut output = ToolOutput::success(content).with_metadata(metadata);
         if let Some(cursor) = next_cursor {
             output.content.push_str(&format!(
                 "\nMore matches available; continue with cursor={cursor}"

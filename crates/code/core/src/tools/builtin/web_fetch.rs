@@ -592,10 +592,29 @@ fn parse_safe_request_url(input: &str) -> std::result::Result<(Url, String), Str
     Ok((request, safe))
 }
 
-/// Convert HTML to plain text using html2text (handles encoding, tags, scripts, etc.)
+/// Convert HTML to plain text via `htmd` + `pulldown_cmark` (strips `<script>`/`<style>` first).
 fn html_to_text(html: &str) -> String {
-    html2text::from_read(html.as_bytes(), 120)
-        .unwrap_or_else(|_| String::from("[failed to parse HTML]"))
+    let stripped = strip_embedded_script_and_style(html);
+    let Ok(markdown) = htmd::convert(&stripped) else {
+        return "[failed to parse HTML]".to_string();
+    };
+    let mut out = String::with_capacity(markdown.len());
+    for event in pulldown_cmark::Parser::new(&markdown) {
+        match event {
+            pulldown_cmark::Event::Text(t) | pulldown_cmark::Event::Code(t) => out.push_str(&t),
+            pulldown_cmark::Event::SoftBreak | pulldown_cmark::Event::HardBreak => out.push('\n'),
+            pulldown_cmark::Event::End(
+                pulldown_cmark::TagEnd::Paragraph
+                | pulldown_cmark::TagEnd::Heading(_)
+                | pulldown_cmark::TagEnd::Item
+                | pulldown_cmark::TagEnd::BlockQuote(_)
+                | pulldown_cmark::TagEnd::CodeBlock,
+            ) => out.push_str("\n\n"),
+            pulldown_cmark::Event::Rule => out.push('\n'),
+            _ => {}
+        }
+    }
+    out.trim().to_string()
 }
 
 /// Convert HTML to markdown using htmd.

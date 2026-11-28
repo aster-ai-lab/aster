@@ -7,7 +7,8 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 use aster_acl::{Block, Document, Value, generate_acl, parse_acl};
-use aster_core::config::AccountImport;
+
+use super::AccountImport;
 
 #[derive(Debug, Clone)]
 pub(crate) struct OriginalValue {
@@ -382,6 +383,120 @@ fn validate(draft: &ConfigDraft) -> Result<(), String> {
         parse_timeout_ms(draft.timeout_seconds.trim())?;
     }
     Ok(())
+}
+
+fn validate_acl_document(source: &str, doc: &Document) -> Result<(), String> {
+    let bytes = source.as_bytes();
+    let mut braces = 0usize;
+    let mut brackets = 0usize;
+    let mut parens = 0usize;
+    let mut quote: Option<u8> = None;
+    let mut escaped = false;
+    let mut cursor = 0usize;
+    while let Some(&byte) = bytes.get(cursor) {
+        if let Some(active) = quote {
+            if escaped {
+                escaped = false;
+            } else if byte == b'\\' {
+                escaped = true;
+            } else if byte == active {
+                quote = None;
+            }
+            cursor += 1;
+            continue;
+        }
+        match byte {
+            b'"' | b'\'' => {
+                quote = Some(byte);
+                cursor += 1;
+            }
+            b'#' => cursor = skip_line(bytes, cursor),
+            b'/' if bytes.get(cursor + 1) == Some(&b'/') => cursor = skip_line(bytes, cursor),
+            b'{' => {
+                braces += 1;
+                cursor += 1;
+            }
+            b'}' => {
+                braces = braces
+                    .checked_sub(1)
+                    .ok_or_else(|| "Unbalanced `}` in ACL".to_string())?;
+                cursor += 1;
+            }
+            b'[' => {
+                brackets += 1;
+                cursor += 1;
+            }
+            b']' => {
+                brackets = brackets
+                    .checked_sub(1)
+                    .ok_or_else(|| "Unbalanced `]` in ACL".to_string())?;
+                cursor += 1;
+            }
+            b'(' => {
+                parens += 1;
+                cursor += 1;
+            }
+            b')' => {
+                parens = parens
+                    .checked_sub(1)
+                    .ok_or_else(|| "Unbalanced `)` in ACL".to_string())?;
+                cursor += 1;
+            }
+            _ => cursor += 1,
+        }
+    }
+    if quote.is_some() || braces != 0 || brackets != 0 || parens != 0 {
+        return Err("Unclosed quote or unbalanced delimiter in ACL".to_string());
+    }
+    for block in &doc.blocks {
+        if block.name == "providers" && block.labels.is_empty() {
+            return Err("providers block requires a label".to_string());
+        }
+    }
+    Ok(())
+}
+
+/// Replace selected top-level scalar entries (matching any alias in `aliases`)
+/// without altering unrelated blocks, comments, or raw `env(...)` expressions.
+pub(crate) fn rewrite_top_level_scalars(
+    source: &str,
+    updates: &[(&[&str], &str, Option<Value>)],
+) -> Result<String, String> {
+    let doc = parse_acl(source).map_err(|error| format!("Failed to parse ACL: {error}"))?;
+    validate_acl_document(source, &doc)?;
+    let entries = scan_top_level_entries(source);
+    let mut edits = Vec::new();
+    let mut replaced = vec![false; updates.len()];
+    for entry in &entries {
+        for (slot, (aliases, canonical, value)) in updates.iter().enumerate() {
+            if aliases.contains(&entry.name.as_str())
+                && let Some(slot_seen) = replaced.get_mut(slot)
+            {
+                let replacement = if *slot_seen {
+                    String::new()
+                } else {
+                    *slot_seen = true;
+                    value
+                        .as_ref()
+                        .map(|v| render_assignment(canonical, v.clone()))
+                        .unwrap_or_default()
+                };
+                edits.push((entry.start, entry.end, replacement));
+                break;
+            }
+        }
+    }
+    let mut output = apply_edits(source, edits);
+    for (seen, (_, canonical, value)) in replaced.iter().zip(updates.iter()) {
+        if !seen && let Some(v) = value.as_ref() {
+            output = append_entry(&output, &render_assignment(canonical, v.clone()));
+        }
+    }
+    let output = normalize_final_newline(output);
+    let out_doc = parse_acl(&output)
+        .map_err(|error| format!("Generated ACL did not pass validation: {error}"))?;
+    validate_acl_document(&output, &out_doc)?;
+    Ok(output)
 }
 
 fn rewrite(source: &str, draft: &ConfigDraft) -> Result<String, String> {

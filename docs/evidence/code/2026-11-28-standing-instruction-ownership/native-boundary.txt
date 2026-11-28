@@ -1,0 +1,16 @@
+test tui_readiness::tests::a_resumed_session_uses_its_follow_up_composer_and_product_key_hints ... ok
+test tui_readiness::tests::welcome_readiness_refuses_partial_and_error_frames ... ok
+test tui_readiness::tests::welcome_readiness_uses_the_input_placeholder_instead_of_its_decoration ... ok
+ORACLE test=boundary_e2e name=E-LIST result=pass detail=tools=read,write,bash,office_file,output_check
+test e_list ... ok
+ORACLE test=boundary_e2e name=E-READ result=pass detail=tab-payload=note.txt unchanged
+test e_read ... ok
+ORACLE test=boundary_e2e name=E-EDIT result=pass detail=span=ALPHA outside=unchanged turn=completion-gate
+test e_edit ... ok
+ORACLE test=boundary_e2e name=E-OFFICE result=pass detail=zip-magic outside=absent turn=end-turn
+test e_office ... ok
+ORACLE test=boundary_e2e name=T-ASK result=pass detail=screen=both next-request=cedar-left-7f3a
+test t_ask ... ok
+ORACLE test=boundary_e2e name=T-PRIOR-VERIFICATION result=pass detail=initial gate, one reply and pending status before and after restart
+test t_prior_verification_pending ... ok
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 6.36s

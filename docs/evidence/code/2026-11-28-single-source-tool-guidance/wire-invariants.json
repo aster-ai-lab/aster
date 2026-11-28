@@ -1,0 +1,138 @@
+[
+  {
+    "order": 1,
+    "original_requests_sha256": {
+      "candidate": "48299f3fedcbd6e60825fb4cf7102e6326a6b1e5b1aab61c0dc8ee29a19b76a7",
+      "release": "1d2ccafc401d732cbceee510869d94beefe0567e506478ec7e19118b974ffa51"
+    },
+    "tool_count": 26,
+    "non_tool_fields_exact": true,
+    "input_tokens": {
+      "candidate": 7204,
+      "release": 7318,
+      "dsh": 5864
+    },
+    "differences": {
+      "ask_user_form/parameters/properties/form/description": {
+        "reference": "JSON Render root/elements/state document, encoded as a JSON string. No Markdown fence.",
+        "candidate": "JSON Render document encoded as a string."
+      },
+      "bash/parameters/properties/command/description": {
+        "reference": "Shell command.",
+        "candidate": null
+      },
+      "code_symbols/parameters/properties/limit/description": {
+        "reference": "Max symbols for search (default 100, max 500). (1–500)",
+        "candidate": "Symbol cap for search (default 100). (1–500)"
+      },
+      "edit/description": {
+        "reference": "Exact replacement via old_string/new_string or atomic edits array (unique unless replace_all); preserves LF/CRLF and refuses mixed endings.",
+        "candidate": "Atomic same-file replacement: old_string/new_string or edits, never both. Exact unique match unless replace_all. Preserve LF/CRLF; reject mixed endings."
+      },
+      "edit/parameters/properties/edits/description": {
+        "reference": "Atomic same-file replacements (mutually exclusive with old_string/new_string).",
+        "candidate": null
+      },
+      "edit/parameters/properties/edits/items/properties/new_string/description": {
+        "reference": "Replacement.",
+        "candidate": null
+      },
+      "edit/parameters/properties/edits/items/properties/old_string/description": {
+        "reference": "Exact match (unique unless replace_all).",
+        "candidate": null
+      },
+      "edit/parameters/properties/new_string/description": {
+        "reference": "Replacement unless edits.",
+        "candidate": null
+      },
+      "edit/parameters/properties/old_string/description": {
+        "reference": "Exact match unless edits (unique unless replace_all).",
+        "candidate": null
+      },
+      "program/parameters/properties/name/description": {
+        "reference": "Template name (required for template).",
+        "candidate": "Required for template."
+      },
+      "program/parameters/properties/source/description": {
+        "reference": "Inline JS defining async function run(ctx, inputs).",
+        "candidate": "Inline JS."
+      },
+      "program/parameters/properties/type/description": {
+        "reference": "script or template.",
+        "candidate": null
+      },
+      "search/parameters/properties/limit/description": {
+        "reference": "grep/glob page cap (default 200, max 1000); bm25/hybrid (default 10, max 25). (1–1000)",
+        "candidate": "grep/glob default 200; bm25/hybrid default 10, max 25. (1–1000)"
+      }
+    }
+  },
+  {
+    "order": 2,
+    "original_requests_sha256": {
+      "candidate": "48299f3fedcbd6e60825fb4cf7102e6326a6b1e5b1aab61c0dc8ee29a19b76a7",
+      "release": "1d2ccafc401d732cbceee510869d94beefe0567e506478ec7e19118b974ffa51"
+    },
+    "tool_count": 26,
+    "non_tool_fields_exact": true,
+    "input_tokens": {
+      "candidate": 7204,
+      "release": 7318,
+      "dsh": 5864
+    },
+    "differences": {
+      "ask_user_form/parameters/properties/form/description": {
+        "reference": "JSON Render root/elements/state document, encoded as a JSON string. No Markdown fence.",
+        "candidate": "JSON Render document encoded as a string."
+      },
+      "bash/parameters/properties/command/description": {
+        "reference": "Shell command.",
+        "candidate": null
+      },
+      "code_symbols/parameters/properties/limit/description": {
+        "reference": "Max symbols for search (default 100, max 500). (1–500)",
+        "candidate": "Symbol cap for search (default 100). (1–500)"
+      },
+      "edit/description": {
+        "reference": "Exact replacement via old_string/new_string or atomic edits array (unique unless replace_all); preserves LF/CRLF and refuses mixed endings.",
+        "candidate": "Atomic same-file replacement: old_string/new_string or edits, never both. Exact unique match unless replace_all. Preserve LF/CRLF; reject mixed endings."
+      },
+      "edit/parameters/properties/edits/description": {
+        "reference": "Atomic same-file replacements (mutually exclusive with old_string/new_string).",
+        "candidate": null
+      },
+      "edit/parameters/properties/edits/items/properties/new_string/description": {
+        "reference": "Replacement.",
+        "candidate": null
+      },
+      "edit/parameters/properties/edits/items/properties/old_string/description": {
+        "reference": "Exact match (unique unless replace_all).",
+        "candidate": null
+      },
+      "edit/parameters/properties/new_string/description": {
+        "reference": "Replacement unless edits.",
+        "candidate": null
+      },
+      "edit/parameters/properties/old_string/description": {
+        "reference": "Exact match unless edits (unique unless replace_all).",
+        "candidate": null
+      },
+      "program/parameters/properties/name/description": {
+        "reference": "Template name (required for template).",
+        "candidate": "Required for template."
+      },
+      "program/parameters/properties/source/description": {
+        "reference": "Inline JS defining async function run(ctx, inputs).",
+        "candidate": "Inline JS."
+      },
+      "program/parameters/properties/type/description": {
+        "reference": "script or template.",
+        "candidate": null
+      },
+      "search/parameters/properties/limit/description": {
+        "reference": "grep/glob page cap (default 200, max 1000); bm25/hybrid (default 10, max 25). (1–1000)",
+        "candidate": "grep/glob default 200; bm25/hybrid default 10, max 25. (1–1000)"
+      }
+    }
+  }
+]

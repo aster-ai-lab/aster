@@ -1,0 +1,399 @@
+[
+  {
+    "label": "1-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 7177,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "other:completed": 1,
+          "search:completed": 1,
+          "read:completed": 1
+        },
+        "permissions": []
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 3251,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {},
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 895,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 3,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 7,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 31508,
+      "completion_tokens": 472,
+      "total_tokens": 31980,
+      "prompt_cache_hit_tokens": 23808,
+      "prompt_cache_miss_tokens": 7700
+    },
+    "tool_calls": {
+      "ls": 1,
+      "search": 1,
+      "read": 1
+    },
+    "primary_requests": 4,
+    "tool_catalog_sizes": [
+      26,
+      26,
+      26,
+      26
+    ],
+    "compact_requests": 0,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 22372,
+        "outputTokens": 348,
+        "totalTokens": 22720,
+        "cachedReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "modelCalls": 3,
+        "costIsPartial": true,
+        "numTurns": 3,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 7854,
+        "outputTokens": 108,
+        "totalTokens": 7962,
+        "cachedReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "modelCalls": 1,
+        "costIsPartial": true,
+        "numTurns": 1,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [
+      [
+        "ls",
+        "succeeded"
+      ],
+      [
+        "search",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ]
+    ],
+    "required_tool_succeeded": true,
+    "qualified_pass": true
+  },
+  {
+    "label": "1-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 1585,
+        "stop": "end_turn",
+        "missing_markers": [
+          "exporter.log",
+          "mercury-R57K"
+        ],
+        "tools": {
+          "execute:failed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": false
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 2809,
+        "stop": "end_turn",
+        "missing_markers": [
+          "indigo-W72Z",
+          "mercury-R57K"
+        ],
+        "tools": {
+          "execute:failed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": false
+          }
+        ]
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 210,
+    "fixtures_unchanged": true,
+    "task_pass": false,
+    "aster_receipts": 0,
+    "aster_receipts_ansi_free": false,
+    "api_requests": 4,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 12879,
+      "completion_tokens": 140,
+      "total_tokens": 13019,
+      "prompt_cache_hit_tokens": 7808,
+      "prompt_cache_miss_tokens": 5071
+    },
+    "tool_calls": {
+      "bash": 2
+    },
+    "primary_requests": 2,
+    "tool_catalog_sizes": [
+      26,
+      26
+    ],
+    "compact_requests": 2,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 6021,
+        "outputTokens": 70,
+        "totalTokens": 6091,
+        "cachedReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "modelCalls": 1,
+        "costIsPartial": true,
+        "numTurns": 1,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 6087,
+        "outputTokens": 60,
+        "totalTokens": 6147,
+        "cachedReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "modelCalls": 1,
+        "costIsPartial": true,
+        "numTurns": 1,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [],
+    "required_tool_succeeded": false,
+    "qualified_pass": false
+  },
+  {
+    "label": "2-candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 1743,
+        "stop": "end_turn",
+        "missing_markers": [
+          "exporter.log",
+          "mercury-R57K"
+        ],
+        "tools": {
+          "execute:failed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": false
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 3186,
+        "stop": "end_turn",
+        "missing_markers": [
+          "indigo-W72Z",
+          "mercury-R57K"
+        ],
+        "tools": {
+          "execute:failed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": false
+          }
+        ]
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 216,
+    "fixtures_unchanged": true,
+    "task_pass": false,
+    "aster_receipts": 0,
+    "aster_receipts_ansi_free": false,
+    "api_requests": 4,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 12877,
+      "completion_tokens": 140,
+      "total_tokens": 13017,
+      "prompt_cache_hit_tokens": 12159,
+      "prompt_cache_miss_tokens": 718
+    },
+    "tool_calls": {
+      "bash": 2
+    },
+    "primary_requests": 2,
+    "tool_catalog_sizes": [
+      26,
+      26
+    ],
+    "compact_requests": 2,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 6021,
+        "outputTokens": 69,
+        "totalTokens": 6090,
+        "cachedReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "modelCalls": 1,
+        "costIsPartial": true,
+        "numTurns": 1,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 6085,
+        "outputTokens": 61,
+        "totalTokens": 6146,
+        "cachedReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "modelCalls": 1,
+        "costIsPartial": true,
+        "numTurns": 1,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [],
+    "required_tool_succeeded": false,
+    "qualified_pass": false
+  },
+  {
+    "label": "2-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 8017,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "other:completed": 1,
+          "search:completed": 1,
+          "read:completed": 1
+        },
+        "permissions": []
+      },
+      {
+        "turn": 2,
+        "elapsed_ms": 5085,
+        "stop": "end_turn",
+        "missing_markers": [],
+        "tools": {
+          "read:completed": 1
+        },
+        "permissions": []
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 183,
+    "fixtures_unchanged": true,
+    "task_pass": true,
+    "aster_receipts": 4,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 8,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 39721,
+      "completion_tokens": 842,
+      "total_tokens": 40563,
+      "prompt_cache_hit_tokens": 37632,
+      "prompt_cache_miss_tokens": 2089
+    },
+    "tool_calls": {
+      "search": 1,
+      "ls": 1,
+      "read": 2
+    },
+    "primary_requests": 5,
+    "tool_catalog_sizes": [
+      26,
+      26,
+      26,
+      26,
+      26
+    ],
+    "compact_requests": 0,
+    "definition_queries": 0,
+    "acp_prompt_usage": [
+      {
+        "inputTokens": 22372,
+        "outputTokens": 426,
+        "totalTokens": 22798,
+        "cachedReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "modelCalls": 3,
+        "costIsPartial": true,
+        "numTurns": 3,
+        "usageIsIncomplete": true
+      },
+      {
+        "inputTokens": 15946,
+        "outputTokens": 189,
+        "totalTokens": 16135,
+        "cachedReadTokens": 0,
+        "cacheCreationTokens": 0,
+        "modelCalls": 2,
+        "costIsPartial": true,
+        "numTurns": 2,
+        "usageIsIncomplete": true
+      }
+    ],
+    "receipt_outcomes": [
+      [
+        "search",
+        "succeeded"
+      ],
+      [
+        "ls",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ],
+      [
+        "read",
+        "succeeded"
+      ]
+    ],
+    "required_tool_succeeded": true,
+    "qualified_pass": true
+  }
+]

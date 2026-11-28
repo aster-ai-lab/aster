@@ -1,0 +1,42 @@
+{
+  "tool_count": 26,
+  "ordered_tool_name_and_parameter_schema_sha256": "7e628844cb9c62f21d8e2286aa2275b557c3908d1ad15b01e15f8c600eecfdb2",
+  "changed_descriptions": [
+    "ask_user_form"
+  ],
+  "non_system_messages_equal": true,
+  "baseline_system_bytes": 9087,
+  "candidate_system_bytes": 8477,
+  "baseline_tools_bytes": 20549,
+  "candidate_tools_bytes": 19990,
+  "fact_session_auxiliary": [
+    {
+      "trial": "1-release",
+      "turn": 2,
+      "memory_extraction": true,
+      "request_aliases": 0,
+      "response_aliases": 0
+    },
+    {
+      "trial": "1-release",
+      "turn": 2,
+      "memory_extraction": true,
+      "request_aliases": 0,
+      "response_aliases": 0
+    },
+    {
+      "trial": "1-candidate",
+      "turn": 2,
+      "memory_extraction": true,
+      "request_aliases": 0,
+      "response_aliases": 0
+    },
+    {
+      "trial": "1-candidate",
+      "turn": 2,
+      "memory_extraction": true,
+      "request_aliases": 0,
+      "response_aliases": 0
+    }
+  ]
+}

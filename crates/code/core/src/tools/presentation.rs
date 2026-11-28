@@ -3,8 +3,8 @@
 //! A presentation profile owns no [`Tool`](super::Tool) values and performs no
 //! execution. It can only select definitions from a caller-supplied governed
 //! source and, for the built-in code profile, rephrase the existing `program`
-//! definition. Names and parameter schemas remain byte-for-byte equivalent to
-//! their source definitions.
+//! definition. A deferred profile has the same eligible source as adaptive;
+//! its transport projection is checked separately for the governed call.
 
 use super::selector;
 use crate::llm::{estimate_prompt_tokens, Message, ToolDefinition};
@@ -28,6 +28,9 @@ pub enum ToolPresentationModeV1 {
     /// Preserve the historical prompt-sensitive Tool selector.
     #[default]
     Adaptive,
+    /// Give the model short tool definitions and let it request the exact ones.
+    /// Uses adaptive presentation on transports without deferred catalog support.
+    Deferred,
     /// Present every Tool definition admitted by the run-owned permission
     /// visibility boundary.
     Direct,
@@ -43,6 +46,7 @@ impl ToolPresentationModeV1 {
     pub fn parse(value: &str) -> Result<Self, ToolPresentationError> {
         match value {
             "adaptive" => Ok(Self::Adaptive),
+            "deferred" => Ok(Self::Deferred),
             "direct" => Ok(Self::Direct),
             "code" => Ok(Self::Code),
             "disabled" => Ok(Self::Disabled),
@@ -55,6 +59,7 @@ impl ToolPresentationModeV1 {
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::Adaptive => "adaptive",
+            Self::Deferred => "deferred",
             Self::Direct => "direct",
             Self::Code => "code",
             Self::Disabled => "disabled",
@@ -78,6 +83,10 @@ impl ToolPresentationProfileV1 {
 
     pub fn direct() -> Self {
         Self::for_mode(ToolPresentationModeV1::Direct)
+    }
+
+    pub fn deferred() -> Self {
+        Self::for_mode(ToolPresentationModeV1::Deferred)
     }
 
     pub fn code() -> Self {
@@ -120,6 +129,16 @@ impl ToolPresentationProfileV1 {
         parent.validate()?;
         let within = self.mode == ToolPresentationModeV1::Disabled
             || self.mode == parent.mode
+            || matches!(
+                (self.mode, parent.mode),
+                (
+                    ToolPresentationModeV1::Adaptive,
+                    ToolPresentationModeV1::Deferred
+                ) | (
+                    ToolPresentationModeV1::Deferred,
+                    ToolPresentationModeV1::Adaptive
+                )
+            )
             || parent.mode == ToolPresentationModeV1::Direct;
         if within {
             Ok(())
@@ -144,7 +163,7 @@ impl ToolPresentationProfileV1 {
         self.validate()?;
         let source = canonical_source(source)?;
         let projected = match self.mode {
-            ToolPresentationModeV1::Adaptive => {
+            ToolPresentationModeV1::Adaptive | ToolPresentationModeV1::Deferred => {
                 selector::select_tools_for_messages(&source, messages)
             }
             ToolPresentationModeV1::Direct => source.clone(),
@@ -175,7 +194,7 @@ impl Default for ToolPresentationProfileV1 {
 #[derive(Clone, Debug, Eq, Error, PartialEq)]
 pub enum ToolPresentationError {
     #[error(
-        "Unknown tool presentation mode '{mode}'; expected one of [adaptive, direct, code, disabled]"
+        "Unknown tool presentation mode '{mode}'; expected one of [adaptive, deferred, direct, code, disabled]"
     )]
     UnknownMode { mode: String },
     #[error("Tool presentation profile uses an unsupported schema")]
@@ -192,6 +211,8 @@ pub enum ToolPresentationError {
     DescriptionChanged { name: String },
     #[error("Tool presentation output is not in canonical Tool-name order")]
     NonCanonicalOrder,
+    #[error("Deferred model tool definitions do not match the admitted tool catalog")]
+    InvalidDeferredCatalog,
     #[error("Tool presentation child mode '{child}' broadens parent mode '{parent}'")]
     ProfileExpansion {
         parent: &'static str,
@@ -380,6 +401,7 @@ mod tests {
     fn profiles_are_closed_serializable_values() {
         for (profile, mode) in [
             (ToolPresentationProfileV1::adaptive(), "adaptive"),
+            (ToolPresentationProfileV1::deferred(), "deferred"),
             (ToolPresentationProfileV1::direct(), "direct"),
             (ToolPresentationProfileV1::code(), "code"),
             (ToolPresentationProfileV1::disabled(), "disabled"),

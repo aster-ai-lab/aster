@@ -30,6 +30,7 @@ There are two queues; only the first is visible to hosts.
 - Standard ACP methods keep their ACP names (`initialize`, `session/new`, `session/load`, `session/prompt`, `session/cancel`, `session/request_permission`, `session/update`).
 - Aster extensions are written `aster/<area>/<verb>` in Rust. The ACP SDK prepends `_` on the wire, so `aster/queue/changed` is `_aster/queue/changed`. Host methods are the closed set in `src/agent/host_methods.rs`; anything else is `-32601`.
 - Known seam: `run_observation::METHOD` is already `_aster/execution/observe`, so the wire method is `__aster/execution/observe`. Studio accepts both. Do not change it without a coordinated host change.
+- Worktree inspection is exposed as `aster/git/worktree/list`, garbage collection as `aster/git/worktree/gc` (`dryRun = true` selects a preview), and the read-only database location as `aster/git/worktree/db/path`. The pager's delete command performs the confirmed deletion locally after `gc`; there is no ACP delete method.
 - A shape change to a `…/v1` method is a new `…/v2` method, not an edit.
 
 ## Initialize feature-switch admission (P7)

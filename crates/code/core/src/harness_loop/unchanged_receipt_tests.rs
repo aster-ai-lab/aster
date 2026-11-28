@@ -4,7 +4,10 @@ use aster_effect::{ToolExecutionOutcome, ToolFileIdentityV1, ToolFileKind, ToolP
 fn file(bytes: &[u8], mode: u32) -> ToolFileIdentityV1 {
     ToolFileIdentityV1 {
         kind: ToolFileKind::File,
-        content_digest: Some(format!("sha256:{}", sha256::digest(bytes))),
+        content_digest: Some(format!(
+            "sha256:{}",
+            crate::content_digest::sha256_hex(bytes)
+        )),
         mode: Some(mode),
     }
 }

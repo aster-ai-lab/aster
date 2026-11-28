@@ -16,7 +16,7 @@ impl crate::CompletionAttestor for CurrentBytes {
             return None;
         }
         let bytes = std::fs::read(self.0.join("source.txt")).ok()?;
-        if paths[0].content_digest != sha256::digest(&bytes) {
+        if paths[0].content_digest != crate::content_digest::sha256_hex(&bytes) {
             return None;
         }
         Some(

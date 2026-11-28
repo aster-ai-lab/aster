@@ -24,6 +24,36 @@ fn tool_description_uses_the_shared_json_component_catalog() {
     assert!(description.contains("root, elements"));
 }
 
+#[test]
+fn model_definition_preserves_every_component_property_and_children_flag() {
+    let tool = AskUserFormTool;
+    let definition = tool.definition();
+    let catalog = aster_form_core::json_render_component_catalog();
+    assert_eq!(definition.parameters, tool.parameters());
+    assert!(definition.description.starts_with(FORM_GUIDANCE));
+    assert!(definition.description.len() < tool.description().len());
+
+    let (_, catalog_text) = definition
+        .description
+        .split_once("Containers (children allowed): ")
+        .unwrap();
+    let (containers, leaves) = catalog_text.split_once(". Leaves: ").unwrap();
+    let mut decoded = serde_json::Map::new();
+    for (group, children) in [(containers, true), (leaves.trim_end_matches('.'), false)] {
+        for entry in group.split_whitespace() {
+            let (name, props) = entry.strip_suffix(')').unwrap().split_once('(').unwrap();
+            let props: Vec<_> = props.split_terminator(',').collect();
+            assert!(decoded
+                .insert(
+                    name.to_owned(),
+                    serde_json::json!({"props": props, "children": children})
+                )
+                .is_none());
+        }
+    }
+    assert_eq!(serde_json::Value::Object(decoded), catalog);
+}
+
 const FORM: &str = "{\"root\":\"root\",\"elements\":{\"root\":{\"type\":\"Card\",\"props\":{\"title\":\"Details\"},\"children\":[\"name\",\"go\"]},\"name\":{\"type\":\"Input\",\"props\":{\"label\":\"Name\",\"value\":{\"$bindState\":\"/form/name\"}}},\"go\":{\"type\":\"Button\",\"props\":{\"action\":\"submit\",\"label\":\"Continue\"}}},\"state\":{\"form\":{\"name\":\"\"}}}";
 
 async fn run_form(answer: &'static str) -> ToolOutput {

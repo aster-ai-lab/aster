@@ -8,8 +8,8 @@ use std::collections::HashSet;
 use std::fmt;
 use std::str::FromStr;
 
-use crate::providers::BuiltinProvider;
 use crate::SearchConfig;
+use crate::providers::BuiltinProvider;
 
 #[cfg(feature = "headless")]
 const DEFAULT_HTTP_TIER: [&str; 3] = ["wiki", "ddg", "bing"];
@@ -162,6 +162,17 @@ impl EngineTierPlan {
         push_unique(target, canonical);
     }
 
+    /// Put an available logged-in Quark source ahead of the ordinary default
+    /// cascade. The caller owns the local login probe; explicit selections never
+    /// call this implicitly. Other browser sources are left to the Moli default
+    /// plan when the probe does not succeed.
+    #[cfg(feature = "headless")]
+    pub fn prefer_quark(mut self) -> Self {
+        self.headless = vec!["quark".to_string()];
+        self.order = vec![EngineTier::Headless, EngineTier::Api, EngineTier::HttpRss];
+        self
+    }
+
     /// Returns every recognized shortcut for diagnostics and proxy scoping.
     pub fn shortcuts(&self) -> Vec<String> {
         self.headless
@@ -246,7 +257,7 @@ fn engine_tier(shortcut: &str) -> Option<EngineTier> {
         return Some(EngineTier::Api);
     }
     match shortcut {
-        "g" | "baidu" | "bing_browser" | "brave_browser" => Some(EngineTier::Headless),
+        "g" | "baidu" | "bing_browser" | "brave_browser" | "quark" => Some(EngineTier::Headless),
         "ddg" | "brave" | "bing" | "wiki" | "sogou" | "360" | "bing_cn" => {
             Some(EngineTier::HttpRss)
         }
@@ -296,6 +307,18 @@ mod tests {
         assert_eq!(plan.http_rss(), ["wiki", "ddg", "brave", "bing"]);
         assert!(tiers.iter().any(|(tier, _)| *tier == EngineTier::HttpRss));
         assert!(plan.unknown().is_empty());
+    }
+
+    #[cfg(feature = "headless")]
+    #[test]
+    fn an_available_quark_account_runs_before_default_api_and_http_fallbacks() {
+        let plan = EngineTierPlan::builtin_default().prefer_quark();
+        let tiers = plan.tiers();
+        assert_eq!(tiers[0], (EngineTier::Headless, &["quark".to_string()][..]));
+        assert_eq!(tiers[1].0, EngineTier::Api);
+        assert_eq!(tiers[1].1, ["anysearch", "tavily"]);
+        assert_eq!(tiers[2].0, EngineTier::HttpRss);
+        assert!(!plan.shortcuts().contains(&"brave_browser".to_string()));
     }
 
     #[test]

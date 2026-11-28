@@ -1,0 +1,29 @@
+[
+  {
+    "mode": "split",
+    "status": 400,
+    "use_sizes": [
+      1,
+      1
+    ],
+    "error": {
+      "type": "invalid_request_error",
+      "message": "messages.1:`tool_use` ids were found without `tool_result` blocks immediately after: toolu_fixture_1. Each `tool_use` block must have a corresponding `tool_result` block in the next message. (request_id: c7d8795f-e9e4-4be6-9cf9-29bc86f772d0)"
+    }
+  },
+  {
+    "mode": "grouped",
+    "status": 200,
+    "use_sizes": [
+      2
+    ],
+    "markers": true,
+    "usage": {
+      "input_tokens": 368,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 22,
+      "service_tier": "standard"
+    }
+  }
+]

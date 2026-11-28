@@ -16,6 +16,7 @@ use tokio_util::sync::CancellationToken;
 mod child_policy;
 mod confirmation_snapshot;
 mod convergence;
+mod deferred_catalog;
 mod durable_read;
 mod durable_source;
 mod execution_target;
@@ -1723,10 +1724,22 @@ async fn context_report_and_cost_command_read_usage_weights_and_repeats_from_the
     assert_eq!(report.cache_read_share(), Some(0.4));
     assert_eq!(report.tool_results, 3);
     assert_eq!(report.repeated_results, 1, "{report:?}");
-    let heaviest = &report.heaviest[0];
+    assert_eq!(report.repeated_bytes, "pending".len());
     assert_eq!(
-        (heaviest.tool.as_str(), heaviest.tool_call_id.as_str()),
-        ("probe_state", "probe-2")
+        report
+            .heaviest
+            .iter()
+            .map(|result| (
+                result.tool.as_str(),
+                result.tool_call_id.as_str(),
+                result.bytes
+            ))
+            .collect::<Vec<_>>(),
+        [
+            ("probe_state", "probe-1", "pending".len()),
+            ("probe_state", "probe-2", "pending".len()),
+            ("probe_state", "probe-3", "ready".len()),
+        ],
     );
     assert_eq!(
         report.tool_result_bytes,

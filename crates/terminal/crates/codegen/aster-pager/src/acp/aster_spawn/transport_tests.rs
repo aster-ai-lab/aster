@@ -228,3 +228,250 @@ fn stderr_tail_stays_bounded_and_sanitized() {
     assert!(summary.contains("Error: boom") || summary.contains("boom"));
     assert!(!summary.contains('\n'));
 }
+
+fn write_exec_script(dir: &Path, name: &str, body: &str) -> std::path::PathBuf {
+    let bin = dir.join(name);
+    std::fs::write(&bin, body).unwrap();
+    std::fs::set_permissions(&bin, std::fs::Permissions::from_mode(0o755)).unwrap();
+    bin
+}
+
+#[tokio::test]
+async fn supervised_sidecar_respawns_after_crash_and_restores_rpc() {
+    let dir = tempfile::tempdir().unwrap();
+    let count_file = dir.path().join("gen_count");
+    let script = format!(
+        r#"#!/bin/sh
+count_file="{count_file}"
+gen=1
+if [ -f "$count_file" ]; then
+  prev=$(cat "$count_file")
+  gen=$((prev + 1))
+fi
+printf '%s' "$gen" > "$count_file"
+while IFS= read -r request; do
+  id=$(printf '%s' "$request" | sed -E 's/.*"id":([0-9]+).*/\1/')
+  if [ "$gen" -eq 1 ]; then
+    exit 9
+  fi
+  printf '{{"jsonrpc":"2.0","id":%s,"result":{{"stopReason":"end_turn"}}}}\n' "$id"
+done
+"#,
+        count_file = count_file.display()
+    );
+    let bin = write_exec_script(dir.path(), "crashing-agent", &script);
+    let cancel = CancellationToken::new();
+    let (client, channel) = acp_channels();
+    let policy = SidecarRestartPolicy {
+        max_restarts: 3,
+        crash_window: Duration::from_secs(30),
+        initial_backoff: Duration::from_millis(20),
+        max_backoff: Duration::from_millis(80),
+        heartbeat_interval: None,
+        heartbeat_timeout: Duration::from_secs(1),
+    };
+    let (handle, mut status_rx) =
+        spawn_supervised_bridge(bin, Vec::new(), cancel.clone(), channel, policy).unwrap();
+
+    // First generation receives the prompt and exits with 9; supervisor respawns gen 2.
+    let first = tokio::time::timeout(
+        Duration::from_secs(5),
+        aster_acp_lib::acp_send(
+            acp::PromptRequest::new(acp::SessionId::new("s1"), vec![]),
+            &client.tx,
+        ),
+    )
+    .await
+    .expect("timed out waiting for gen 1 failure");
+    assert!(first.is_err(), "crashed gen 1 call must fail fast");
+
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(5);
+    loop {
+        if let ConnectionStatus::Connected { generation } = *status_rx.borrow()
+            && generation >= 1
+        {
+            break;
+        }
+        tokio::time::timeout_at(deadline, status_rx.changed())
+            .await
+            .expect("timed out waiting for respawn")
+            .unwrap();
+    }
+
+    let second = tokio::time::timeout(
+        Duration::from_secs(5),
+        aster_acp_lib::acp_send(
+            acp::PromptRequest::new(acp::SessionId::new("s1"), vec![]),
+            &client.tx,
+        ),
+    )
+    .await
+    .expect("timed out waiting for respawned RPC")
+    .expect("respawned generation must serve RPCs");
+    assert_eq!(second.stop_reason, acp::StopReason::EndTurn);
+
+    cancel.cancel();
+    tokio::time::timeout(
+        Duration::from_secs(5),
+        tokio::task::spawn_blocking(move || handle.join().unwrap().unwrap()),
+    )
+    .await
+    .expect("timed out waiting for supervised bridge join")
+    .unwrap();
+}
+
+#[tokio::test]
+async fn supervised_sidecar_fails_closed_without_restart_on_oversized_frame() {
+    let dir = tempfile::tempdir().unwrap();
+    let count_file = dir.path().join("gen_count");
+    let script = format!(
+        r#"#!/bin/sh
+printf 'x' >> "{count_file}"
+exec /usr/bin/awk 'BEGIN {{ for (i=0;i<8192;i++) chunk=chunk "x"; for (i=0;i<8320;i++) printf "%s",chunk; fflush(); getline }}'
+"#,
+        count_file = count_file.display()
+    );
+    let bin = write_exec_script(dir.path(), "oversized-agent", &script);
+    let cancel = CancellationToken::new();
+    let (_client, channel) = acp_channels();
+    let policy = SidecarRestartPolicy {
+        max_restarts: 3,
+        crash_window: Duration::from_secs(30),
+        initial_backoff: Duration::from_millis(10),
+        max_backoff: Duration::from_millis(50),
+        heartbeat_interval: None,
+        heartbeat_timeout: Duration::from_secs(1),
+    };
+    let (handle, status_rx) =
+        spawn_supervised_bridge(bin, Vec::new(), cancel, channel, policy).unwrap();
+
+    let result = tokio::task::spawn_blocking(move || handle.join().unwrap())
+        .await
+        .unwrap();
+    let error = format!("{:#}", result.unwrap_err());
+    assert!(
+        error.contains("exceeds") && error.contains("byte limit"),
+        "{error}"
+    );
+    assert_eq!(std::fs::read_to_string(&count_file).unwrap().len(), 1);
+    assert!(matches!(
+        *status_rx.borrow(),
+        ConnectionStatus::Failed { .. }
+    ));
+}
+
+#[tokio::test]
+async fn supervised_sidecar_stops_after_restart_budget_exhausted() {
+    let dir = tempfile::tempdir().unwrap();
+    let count_file = dir.path().join("gen_count");
+    let script = format!(
+        r#"#!/bin/sh
+printf 'x' >> "{count_file}"
+exit 23
+"#,
+        count_file = count_file.display()
+    );
+    let bin = write_exec_script(dir.path(), "always-crash-agent", &script);
+    let cancel = CancellationToken::new();
+    let (_client, channel) = acp_channels();
+    let policy = SidecarRestartPolicy {
+        max_restarts: 2,
+        crash_window: Duration::from_secs(30),
+        initial_backoff: Duration::from_millis(10),
+        max_backoff: Duration::from_millis(20),
+        heartbeat_interval: None,
+        heartbeat_timeout: Duration::from_secs(1),
+    };
+    let (handle, status_rx) =
+        spawn_supervised_bridge(bin, Vec::new(), cancel, channel, policy).unwrap();
+
+    let result = tokio::task::spawn_blocking(move || handle.join().unwrap())
+        .await
+        .unwrap();
+    let error = format!("{:#}", result.unwrap_err());
+    assert!(error.contains("crash loop"), "{error}");
+    // Initial spawn (gen 0) + 2 restarts (gen 1, gen 2) = 3 total attempts before halting.
+    assert_eq!(std::fs::read_to_string(&count_file).unwrap().len(), 3);
+    assert!(matches!(
+        *status_rx.borrow(),
+        ConnectionStatus::Failed { .. }
+    ));
+}
+
+#[tokio::test]
+async fn supervised_sidecar_restarts_hung_child_on_heartbeat_timeout() {
+    let dir = tempfile::tempdir().unwrap();
+    let count_file = dir.path().join("gen_count");
+    let script = format!(
+        r#"#!/bin/sh
+count_file="{count_file}"
+gen=1
+if [ -f "$count_file" ]; then
+  prev=$(cat "$count_file")
+  gen=$((prev + 1))
+fi
+printf '%s' "$gen" > "$count_file"
+while IFS= read -r request; do
+  if [ "$gen" -eq 1 ]; then
+    continue
+  fi
+  rest=${{request#*\"id\":}}
+  id=${{rest%%[!0-9]*}}
+  case "$request" in
+    *"aster/health"*)
+      printf '{{"jsonrpc":"2.0","id":%s,"result":{{"ok":true}}}}\n' "$id"
+      ;;
+    *)
+      printf '{{"jsonrpc":"2.0","id":%s,"result":{{"stopReason":"end_turn"}}}}\n' "$id"
+      ;;
+  esac
+done
+"#,
+        count_file = count_file.display()
+    );
+    let bin = write_exec_script(dir.path(), "hung-sidecar-agent", &script);
+    let cancel = CancellationToken::new();
+    let (client, channel) = acp_channels();
+    let policy = SidecarRestartPolicy {
+        max_restarts: 3,
+        crash_window: Duration::from_secs(30),
+        initial_backoff: Duration::from_millis(20),
+        max_backoff: Duration::from_millis(80),
+        heartbeat_interval: Some(Duration::from_millis(120)),
+        heartbeat_timeout: Duration::from_millis(500),
+    };
+    let (handle, mut status_rx) =
+        spawn_supervised_bridge(bin, Vec::new(), cancel.clone(), channel, policy).unwrap();
+
+    // Wait for watchdog timeout on silent gen 1 -> kill -> respawn gen 2.
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(5);
+    loop {
+        if let ConnectionStatus::Connected { generation } = *status_rx.borrow()
+            && generation >= 1
+        {
+            break;
+        }
+        tokio::time::timeout_at(deadline, status_rx.changed())
+            .await
+            .expect("timed out waiting for heartbeat-triggered respawn")
+            .unwrap();
+    }
+
+    let response = tokio::time::timeout(
+        Duration::from_secs(5),
+        aster_acp_lib::acp_send(
+            acp::PromptRequest::new(acp::SessionId::new("s1"), vec![]),
+            &client.tx,
+        ),
+    )
+    .await
+    .expect("timed out waiting for gen 2 RPC")
+    .expect("gen 2 prompt RPC should succeed");
+    assert_eq!(response.stop_reason, acp::StopReason::EndTurn);
+
+    cancel.cancel();
+    let result = tokio::task::spawn_blocking(move || handle.join().unwrap())
+        .await
+        .unwrap();
+    assert!(result.is_ok(), "{result:?}");
+}

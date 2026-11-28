@@ -1,0 +1,26 @@
+{
+  "candidate": {
+    "trials": 2,
+    "total_tokens_median": 31684.0,
+    "input_tokens_median": 31365.0,
+    "uncached_input_tokens_median": 4167.0,
+    "complete_provider_receipts": 12,
+    "task_pass": 2
+  },
+  "release": {
+    "trials": 2,
+    "total_tokens_median": 31597.0,
+    "input_tokens_median": 31301.5,
+    "uncached_input_tokens_median": 1221.5,
+    "complete_provider_receipts": 12,
+    "task_pass": 2
+  },
+  "dsh": {
+    "trials": 2,
+    "total_tokens_median": 25109.5,
+    "input_tokens_median": 24840.0,
+    "uncached_input_tokens_median": 904.0,
+    "complete_provider_receipts": 8,
+    "task_pass": 2
+  }
+}

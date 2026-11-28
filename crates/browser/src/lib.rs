@@ -17,6 +17,8 @@ pub fn source_driver_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../browser-driver")
 }
 
+#[cfg(feature = "quark-cdp")]
+mod cdp;
 #[cfg(feature = "chrome")]
 mod chrome;
 #[cfg(feature = "chrome")]
@@ -29,6 +31,10 @@ mod install;
 mod management;
 #[cfg(feature = "chrome")]
 mod pool;
+#[cfg(feature = "quark-cdp")]
+mod quark;
+#[cfg(feature = "quark-cdp")]
+mod quark_search;
 #[cfg(feature = "chrome")]
 mod renderer;
 #[cfg(feature = "chrome")]
@@ -53,15 +59,21 @@ mod lightpanda;
 #[cfg(feature = "lightpanda")]
 mod lightpanda_renderer;
 
+#[cfg(feature = "quark-cdp")]
+pub use cdp::LocalCdpEndpoint;
 #[cfg(feature = "chrome")]
 pub use chrome::{detect_chrome, ensure_chrome};
 #[cfg(feature = "chrome")]
 pub use management::{
-    browser_status, browser_statuses, install_browser, repair_browser, uninstall_managed_browsers,
-    update_browser, BrowserInstallSource, BrowserRuntimeStatus, ManagedBrowser,
+    BrowserInstallSource, BrowserRuntimeStatus, ManagedBrowser, browser_status, browser_statuses,
+    install_browser, repair_browser, uninstall_managed_browsers, update_browser,
 };
 #[cfg(feature = "chrome")]
 pub use pool::{BrowserBackend, BrowserPool, BrowserPoolConfig, BrowserProvider};
+#[cfg(feature = "quark-cdp")]
+pub use quark::{QuarkModelPage, QuarkModelReply};
+#[cfg(feature = "quark-cdp")]
+pub use quark_search::QuarkSearchSession;
 #[cfg(feature = "chrome")]
 pub use session::{
     BrowserActionResult, BrowserSessionInfo, BrowserSessions, BrowserSnapshot, OpenSessionRequest,

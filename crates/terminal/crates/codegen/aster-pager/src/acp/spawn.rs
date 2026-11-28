@@ -105,6 +105,9 @@ pub struct SpawnedAgent {
     /// The agent's `AuthManager`, shared so pager-side consumers (e.g. the voice
     /// channel) resolve the same refreshing bearer as chat traffic.
     pub auth_manager: std::sync::Arc<AuthManager>,
+    /// Live lifecycle status for supervised sidecars (reconnect/respawn updates).
+    /// `None` for single-shot non-supervised bridges.
+    pub status_rx: Option<tokio::sync::watch::Receiver<super::leader_bridge::ConnectionStatus>>,
 }
 
 /// Cancels the ACP bridge when the event-loop scope ends.

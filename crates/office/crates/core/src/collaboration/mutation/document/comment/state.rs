@@ -101,7 +101,7 @@ pub(super) fn read_comment_state<T: ReadTxn>(
         Some(_) => {
             return Err(invalid_shared_comments(
                 "The shared Document comment presence setting is invalid.",
-            ))
+            ));
         }
         None => None,
     };
@@ -392,7 +392,7 @@ fn read_comment_record<T: ReadTxn>(
         _ => {
             return Err(invalid_shared_comments(
                 "A shared Document comment resolution is invalid.",
-            ))
+            ));
         }
     };
     let replies = required_nested_map(record.get(transaction, "replies"), "comment replies")?;
@@ -486,7 +486,7 @@ pub(in crate::collaboration) fn read_document_record_claims<T: ReadTxn>(
             _ => {
                 return Err(invalid_shared_comments(
                     "A Document record claim is not a string.",
-                ))
+                ));
             }
         };
         let value: JsonValue = serde_json::from_str(&raw)
@@ -586,7 +586,7 @@ fn validated_order<T: ReadTxn>(
             _ => {
                 return Err(invalid_shared_comments(format!(
                     "The shared Document {label} order contains a non-string identity."
-                )))
+                )));
             }
         };
         validate_shared_identifier(&id, label)?;

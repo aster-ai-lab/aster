@@ -20,14 +20,15 @@ impl ExecutionControl {
                 messages.push(Message::user_wire(&format!(
                     "[host tool recovery] The host refused '{tool}' before execution ({}). \
                      Use tools already authorized for a different way to achieve the original task. \
-                     Do not retry the refused action without new authorization. If no authorized route \
-                     exists, report the specific blocker and preserve verified work.",
+                     Do not retry earlier refused actions without a change in the blocking condition. \
+                     Ask for specific missing task information when needed. Tool permission requires the host's approval channel. \
+                     If no authorized route exists, report the specific blocker and preserve verified work.",
                     kind.as_str(),
                 )));
                 Ok(())
             }
             Self::Refused(tool) => Err(ActorError::Defect(format!(
-                "run.tool_refusal_cycle: tool '{tool}' repeated a refusal without fresh original progress; change the approach or obtain the required host input"
+                "run.tool_refusal_cycle: recovery after a refusal from '{tool}' stalled without fresh original progress; change the approach or obtain the required host input"
             ))),
             Self::ObservedState(tool) => Err(ActorError::Defect(format!(
                 "run.tool_state_cycle: tool '{tool}' exhausted its duplicate allowance while revisiting already observed workspace states without fresh original information; revise the approach or obtain new host input"
@@ -89,6 +90,28 @@ pub(in crate::fact_control) fn child_execution_control(
     fold_execution_control(facts, None, duplicate_threshold)
 }
 
+struct RecoveryAttempt<'a> {
+    round: (u64, u64),
+    alternate_refusal: Option<(&'a str, RefusalKind)>,
+}
+
+struct RefusedArg<'a> {
+    round: (u64, u64),
+    batch_index: u32,
+    call_id: &'a str,
+}
+
+struct RefusedTool<'a> {
+    first_round: (u64, u64),
+    args: BTreeMap<&'a str, RefusedArg<'a>>,
+}
+
+struct PreparedAction {
+    tool: String,
+    args: String,
+    wave: u64,
+}
+
 fn fold_execution_control(
     facts: &[aster_effect::Fact],
     admission: Option<(&str, &str, &str)>,
@@ -107,7 +130,7 @@ fn fold_execution_control(
     };
     let start = facts
         .iter()
-        .rposition(|fact| fact.kind == "user.message")
+        .rposition(|fact| matches!(fact.kind.as_str(), "user.message" | "question.answered"))
         .map_or(0, |index| index + 1);
     // Only possible recovery or repeated actions need the full fold.
     let mut denied = 0u32;
@@ -128,9 +151,11 @@ fn fold_execution_control(
         if duplicate_threshold > 0
             && super::super::goal_evidence::observed_workspace_mutation(&result.effects)
         {
-            let actions = preparations.get_or_insert_with(|| prepared_actions(facts));
+            let (actions, _) = preparations.get_or_insert_with(|| prepared_actions(facts));
             if let Some(action) = actions.get(&result.identity.key().ok()?) {
-                let count = mutated.entry(action.clone()).or_default();
+                let count = mutated
+                    .entry((action.tool.clone(), action.args.clone()))
+                    .or_default();
                 *count = count.saturating_add(1);
                 state_candidate |= *count > duplicate_threshold;
             }
@@ -146,13 +171,14 @@ fn fold_execution_control(
     if debt.integrity_invalid || !debt.unresolved.is_empty() {
         return None;
     }
-    let preparations = preparations.unwrap_or_else(|| prepared_actions(facts));
+    let (preparations, has_model_turns) = preparations.unwrap_or_else(|| prepared_actions(facts));
     let mut information = BTreeSet::new();
-    let mut refused = BTreeSet::new();
+    let mut refused: BTreeMap<&str, RefusedTool<'_>> = BTreeMap::new();
     let mut executions: BTreeMap<(String, String), u32> = BTreeMap::new();
     let mut workspace = crate::goal_control::MutationProgress::default();
     let mut cycle = None;
-    let mut first_refusal: Option<((u64, u64), String, RefusalKind)> = None;
+    let mut first_refusal: Option<((u64, u64), &str, RefusalKind)> = None;
+    let mut recovery_attempt = None;
     for projection in &debt.projection_order {
         let index = debt.projection_fact_index(projection)?;
         let ReceiptProjection::Tool(tool_index) = projection else {
@@ -165,6 +191,7 @@ fn fold_execution_control(
                 executions.clear();
                 cycle = None;
                 first_refusal = None;
+                recovery_attempt = None;
             }
             continue;
         };
@@ -172,7 +199,8 @@ fn fold_execution_control(
         let Some(is_current) = current(result) else {
             continue;
         };
-        let (_, args) = preparations.get(&result.identity.key().ok()?)?;
+        let prepared = preparations.get(&result.identity.key().ok()?)?;
+        let args = &prepared.args;
         let novel = novelty::information_identity(tool, result, args)
             .ok()?
             .is_some_and(|identity| information.insert(identity));
@@ -194,11 +222,25 @@ fn fold_execution_control(
             executions.clear();
             cycle = None;
             first_refusal = None;
+            recovery_attempt = None;
         }
-        let round = (result.identity.turn, result.identity.cycle);
-        if let Some((first, tool, _)) = &first_refusal {
-            if *first != round {
-                cycle = Some(ExecutionControl::Refused(tool.clone()));
+        let round = if has_model_turns {
+            (result.identity.turn, prepared.wave)
+        } else {
+            (result.identity.turn, result.identity.cycle)
+        };
+        if let Some((first_round, first_tool, _)) = first_refusal {
+            if first_round != round {
+                let attempt = recovery_attempt.get_or_insert(RecoveryAttempt {
+                    round,
+                    alternate_refusal: None,
+                });
+                if attempt.round != round {
+                    let blocked_tool = attempt
+                        .alternate_refusal
+                        .map_or(first_tool, |(alternate, _)| alternate);
+                    cycle = Some(ExecutionControl::Refused(blocked_tool.to_owned()));
+                }
             }
         }
         if duplicate_threshold > 0
@@ -220,28 +262,96 @@ fn fold_execution_control(
             && result.effects.completeness == ToolObservationCompleteness::Complete
             && result.effects.changes.is_empty()
         {
-            if !refused.insert((tool.clone(), args.clone())) {
+            let batch_index = result.identity.batch_index;
+            let entry = refused.entry(tool.as_str()).or_insert_with(|| RefusedTool {
+                first_round: round,
+                args: BTreeMap::new(),
+            });
+            let first_denied_round = entry.first_round;
+            let repeated_same_args = match entry.args.get(args.as_str()) {
+                Some(prior) => {
+                    // Calls emitted in the same model turn (including batches
+                    // split on `needs_confirmation`) share one wave before the
+                    // model observes any refusal.
+                    if has_model_turns {
+                        prior.round != round
+                            || prior.call_id == result.identity.tool_call_id.as_str()
+                    } else {
+                        prior.round != round || prior.batch_index == batch_index
+                    }
+                }
+                None => {
+                    entry.args.insert(
+                        args.as_str(),
+                        RefusedArg {
+                            round,
+                            batch_index,
+                            call_id: result.identity.tool_call_id.as_str(),
+                        },
+                    );
+                    false
+                }
+            };
+            if repeated_same_args || (first_refusal.is_some() && first_denied_round != round) {
                 cycle = Some(ExecutionControl::Refused(tool.clone()));
             }
             if let Some(kind) = RefusalKind::from_result(result) {
-                first_refusal.get_or_insert_with(|| (round, tool.clone(), kind));
+                first_refusal.get_or_insert((round, tool, kind));
+                // Surface a new tool's refusal from the first recovery wave.
+                // It buys one decision, with no new allowance for later waves.
+                if let Some(attempt) = &mut recovery_attempt {
+                    if attempt.round == round && first_denied_round == round {
+                        attempt.alternate_refusal.get_or_insert((tool, kind));
+                    }
+                }
             }
         }
     }
-    cycle.or_else(|| first_refusal.map(|(_, tool, kind)| ExecutionControl::Replan { tool, kind }))
+    cycle.or_else(|| {
+        let (_, first_tool, first_kind) = first_refusal?;
+        let (tool, kind) = match recovery_attempt {
+            None => (first_tool, first_kind),
+            Some(attempt) => match attempt.alternate_refusal {
+                Some(alternate) => alternate,
+                None => return Some(ExecutionControl::Refused(first_tool.to_owned())),
+            },
+        };
+        Some(ExecutionControl::Replan {
+            tool: tool.to_owned(),
+            kind,
+        })
+    })
 }
 
-fn prepared_actions(facts: &[aster_effect::Fact]) -> BTreeMap<String, (String, String)> {
-    facts
-        .iter()
-        .filter(|fact| fact.kind == "tool.prepared")
-        .filter_map(|fact| {
-            let prepared: ToolPreparedV1 =
-                ToolPreparedV1::deserialize(fact.payload.get("prepared")?).ok()?;
-            Some((
-                prepared.identity.key().ok()?,
-                (prepared.tool_name, prepared.effective_args_digest),
-            ))
-        })
-        .collect()
+fn prepared_actions(facts: &[aster_effect::Fact]) -> (BTreeMap<String, PreparedAction>, bool) {
+    let mut wave = 0u64;
+    let mut actions = BTreeMap::new();
+    for fact in facts {
+        if fact.kind == "model.turn" {
+            wave = wave.saturating_add(1);
+            continue;
+        }
+        if fact.kind != "tool.prepared" {
+            continue;
+        }
+        let Some(prepared) = fact
+            .payload
+            .get("prepared")
+            .and_then(|value| ToolPreparedV1::deserialize(value).ok())
+        else {
+            continue;
+        };
+        let Ok(key) = prepared.identity.key() else {
+            continue;
+        };
+        actions.insert(
+            key,
+            PreparedAction {
+                tool: prepared.tool_name,
+                args: prepared.effective_args_digest,
+                wave,
+            },
+        );
+    }
+    (actions, wave > 0)
 }

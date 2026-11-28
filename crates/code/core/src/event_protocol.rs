@@ -62,6 +62,7 @@ define_agent_event_types_v1! {
     TurnEnd => TURN_END = "turn_end",
     End => AGENT_END = "agent_end",
     Error => ERROR = "error",
+    PriorVerificationPending => PRIOR_VERIFICATION_PENDING = "prior_verification_pending",
     FactLogByteLimit => FACT_LOG_BYTE_LIMIT = "fact_log_byte_limit",
     ToolEffectUnresolved => TOOL_EFFECT_UNRESOLVED = "tool_effect_unresolved",
     ConfirmationRequired => CONFIRMATION_REQUIRED = "confirmation_required",
@@ -385,7 +386,7 @@ impl From<EventEnvelopeV1> for AgentEventProjectionV1 {
                             });
                 }
             }
-            AgentEventTypeV1::ERROR => {
+            AgentEventTypeV1::ERROR | AgentEventTypeV1::PRIOR_VERIFICATION_PENDING => {
                 projection.error = Self::string(&projection.payload, "message");
             }
             AgentEventTypeV1::CONFIRMATION_REQUIRED | AgentEventTypeV1::PERMISSION_DENIED => {

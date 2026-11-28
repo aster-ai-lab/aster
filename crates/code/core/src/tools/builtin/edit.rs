@@ -14,7 +14,7 @@ impl Tool for EditTool {
     }
 
     fn description(&self) -> &str {
-        "Exact replacement via old_string/new_string or atomic edits array (unique unless replace_all); preserves LF/CRLF and refuses mixed endings."
+        "Atomic same-file replacement: old_string/new_string or edits, never both. Exact unique match unless replace_all. Preserve LF/CRLF; reject mixed endings."
     }
 
     fn parameters(&self) -> serde_json::Value {
@@ -28,18 +28,15 @@ impl Tool for EditTool {
                 "edits": {
                     "type": "array",
                     "minItems": 1,
-                    "description": "Atomic same-file replacements (mutually exclusive with old_string/new_string).",
                     "items": {
                         "type": "object",
                         "additionalProperties": false,
                         "properties": {
                             "old_string": {
-                                "type": "string",
-                                "description": "Exact match (unique unless replace_all)."
+                                "type": "string"
                             },
                             "new_string": {
-                                "type": "string",
-                                "description": "Replacement."
+                                "type": "string"
                             },
                             "replace_all": {
                                 "type": "boolean",
@@ -50,12 +47,10 @@ impl Tool for EditTool {
                     }
                 },
                 "old_string": {
-                    "type": "string",
-                    "description": "Exact match unless edits (unique unless replace_all)."
+                    "type": "string"
                 },
                 "new_string": {
-                    "type": "string",
-                    "description": "Replacement unless edits."
+                    "type": "string"
                 },
                 "replace_all": {
                     "type": "boolean",

@@ -210,6 +210,8 @@ impl PermissionChecker for InteractiveToolGuardrail {
             .contains(&ToolRiskReason::CatastrophicOperation)
         {
             Some("catastrophic_operation")
+        } else if self.mode == InteractiveApprovalMode::Plan {
+            Some("plan_mode_read_only")
         } else {
             None
         }
@@ -229,7 +231,10 @@ fn invocation_crosses_local_symlink(
     }
 
     let tool = tool_name.to_ascii_lowercase();
-    if tool == "bash" {
+    if tool == "bash"
+        || (tool == "background"
+            && args.get("action").and_then(serde_json::Value::as_str) == Some("start"))
+    {
         return shell_path_crosses_symlink(root, args);
     }
     if tool == "read" {
@@ -248,15 +253,21 @@ fn invocation_crosses_local_symlink(
                 })
             });
     }
-    let field = match tool.as_str() {
-        "write" | "edit" | "patch" | "download" | "office_file" => "file_path",
-        "search" | "ls" | "code_symbols" | "code_navigation" | "code_diagnostics" => "path",
-        _ => return false,
-    };
-    let Some(path) = args.get(field).and_then(serde_json::Value::as_str) else {
-        return false;
-    };
-    local_path_crosses_symlink(root, path)
+    match tool.as_str() {
+        "office_read" => args
+            .get("file_path")
+            .and_then(serde_json::Value::as_str)
+            .is_some_and(|path| read_path_crosses_boundary(root, path)),
+        "search" | "ls" | "code_symbols" | "code_navigation" | "code_diagnostics" => args
+            .get("path")
+            .and_then(serde_json::Value::as_str)
+            .is_some_and(|path| read_path_crosses_boundary(root, path)),
+        "write" | "edit" | "patch" | "download" | "office_file" => args
+            .get("file_path")
+            .and_then(serde_json::Value::as_str)
+            .is_some_and(|path| local_path_crosses_symlink(root, path)),
+        _ => false,
+    }
 }
 
 fn shell_path_crosses_symlink(root: &std::path::Path, args: &serde_json::Value) -> bool {
@@ -276,18 +287,71 @@ fn local_path_crosses_symlink(root: &std::path::Path, path: &str) -> bool {
 }
 
 fn read_path_crosses_boundary(root: &std::path::Path, path: &str) -> bool {
-    if !local_path_crosses_symlink(root, path) {
-        return false;
-    }
-    // Read-only aliases such as AGENTS.md -> CLAUDE.md keep the same workspace authority.
-    let Ok(root) = root.canonicalize() else {
-        return true;
-    };
-    aster_common::tools::resolve_path(&root, path).is_err()
+    path_crosses_symlink_boundary(root, path, false)
 }
 
 fn shell_token_path_crosses_symlink(root: &std::path::Path, path: &str) -> bool {
-    path_crosses_symlink(root, path, true)
+    path_crosses_symlink_boundary(root, path, true)
+}
+
+fn path_crosses_symlink_boundary(
+    root: &std::path::Path,
+    path: &str,
+    stop_at_shell_glob: bool,
+) -> bool {
+    if !path_crosses_symlink(root, path, stop_at_shell_glob) {
+        return false;
+    }
+    // In-workspace aliases (for example AGENTS.md -> CLAUDE.md or
+    // build/wasi -> build/wasi-deps/...) preserve workspace authority when every
+    // resolved symlink target stays inside the canonical workspace root.
+    let Ok(canonical_root) = root.canonicalize() else {
+        return true;
+    };
+    let Some(relative) = workspace_relative_path(root, path) else {
+        return true;
+    };
+    let mut current = canonical_root.clone();
+    for component in std::path::Path::new(&relative).components() {
+        match component {
+            std::path::Component::CurDir => continue,
+            std::path::Component::Normal(part) => {
+                if stop_at_shell_glob
+                    && part
+                        .to_string_lossy()
+                        .contains(['*', '?', '[', ']', '{', '}'])
+                {
+                    return false;
+                }
+                current.push(part);
+                match std::fs::symlink_metadata(&current) {
+                    Ok(meta) if meta.file_type().is_symlink() => {
+                        let Ok(resolved) = current.canonicalize() else {
+                            return true;
+                        };
+                        if !resolved.starts_with(&canonical_root) {
+                            return true;
+                        }
+                        current = resolved;
+                    }
+                    Ok(_) => {}
+                    Err(err) if is_absent_path_component_error(&err) => return false,
+                    Err(_) => return true,
+                }
+            }
+            _ => return true,
+        }
+    }
+    false
+}
+
+fn is_absent_path_component_error(error: &std::io::Error) -> bool {
+    matches!(
+        error.kind(),
+        std::io::ErrorKind::NotFound
+            | std::io::ErrorKind::NotADirectory
+            | std::io::ErrorKind::InvalidFilename
+    )
 }
 
 fn path_crosses_symlink(root: &std::path::Path, path: &str, stop_at_shell_glob: bool) -> bool {
@@ -319,7 +383,7 @@ fn path_crosses_symlink(root: &std::path::Path, path: &str, stop_at_shell_glob: 
         match std::fs::symlink_metadata(&current) {
             Ok(metadata) if metadata.file_type().is_symlink() => return true,
             Ok(_) => {}
-            Err(error) if error.kind() == std::io::ErrorKind::NotFound => return false,
+            Err(error) if is_absent_path_component_error(&error) => return false,
             Err(_) => return true,
         }
     }
@@ -413,6 +477,7 @@ pub(super) fn classify_atomic_tool(
         // boundary-crossing target must never be silently approved.
         "patch" => classify_scoped_path(args, "file_path", PermissionDecision::Ask, workspace),
         "bash" => classify_bash(args, workspace),
+        "background" => classify_background(args, workspace),
         "git" => classify_git(args),
         // Delegation, scripts, skills, runtime calls, dynamic and MCP tools can
         // perform nested or external side effects, so they need authorization.
@@ -617,6 +682,25 @@ fn classify_bash(
         PermissionDecision::Allow
     } else {
         PermissionDecision::Ask
+    }
+}
+
+fn classify_background(
+    args: &serde_json::Value,
+    workspace: Option<&std::path::Path>,
+) -> PermissionDecision {
+    match args.get("action").and_then(serde_json::Value::as_str) {
+        // Inspecting or stopping a Run-owned background task has no new
+        // external execution authority and must not stall on HITL prompts.
+        Some("tail" | "stop") => PermissionDecision::Allow,
+        Some("start") => {
+            if classify_bash(args, workspace) == PermissionDecision::Deny {
+                PermissionDecision::Deny
+            } else {
+                PermissionDecision::Ask
+            }
+        }
+        _ => PermissionDecision::Ask,
     }
 }
 

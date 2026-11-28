@@ -491,3 +491,223 @@ fn a_gap_clears_an_old_cycle_before_recounting_fresh_original_actions() {
     push_state(&mut facts, "B", "A", "B");
     assert!(state_cycle(&facts, 3).is_some());
 }
+
+fn push_batch_read_receipt(
+    facts: &mut Vec<Fact>,
+    turn: u64,
+    cycle: u64,
+    batch_index: u32,
+    path: &str,
+    outcome: ToolExecutionOutcome,
+    host_refusal: Option<&str>,
+) {
+    let digest = aster_effect::tool_args_digest(&json!({"file_path": path})).unwrap();
+    let prepared = ToolPreparedV1 {
+        schema: TOOL_PREPARED_SCHEMA.into(),
+        identity: ToolInvocationIdentityV1 {
+            turn,
+            cycle,
+            tool_call_id: format!("read-{turn}-{cycle}-{batch_index}"),
+            batch_index,
+            admission: Some(ToolAdmissionIdentityV1 {
+                run_id: "current".into(),
+                thread_id: "session".into(),
+                capability_binding_digest: binding(),
+            }),
+        },
+        tool_name: "read".into(),
+        original_args_digest: digest.clone(),
+        effective_args_digest: digest,
+        recovery: ToolRecoveryPolicy::NeverReplay,
+        baseline: None,
+    };
+    let output = match host_refusal {
+        Some(kind) => serde_json::json!({
+            "kind": FACT_TOOL_RESULT_KIND,
+            "text": "refused",
+            "is_error": true,
+            "outcome": outcome,
+            "metadata": { "host_refusal": kind },
+        })
+        .to_string(),
+        None => "observed".to_string(),
+    };
+    let mut receipt = result_without_execution(&prepared, outcome, output).unwrap();
+    if outcome == ToolExecutionOutcome::Succeeded {
+        receipt.exit_code = Some(0);
+    }
+    for mut item in [prepared_fact(&prepared), result_fact(&receipt)] {
+        item.seq = facts.len() as u64 + 1;
+        item.key = format!("batch-fixture-{}", item.seq);
+        facts.push(item);
+    }
+}
+
+#[test]
+fn same_batch_refusals_do_not_abort_before_model_recovery_while_next_round_stops() {
+    let mut duplicate_facts = Vec::new();
+    push_batch_read_receipt(
+        &mut duplicate_facts,
+        1,
+        0,
+        0,
+        "a.txt",
+        ToolExecutionOutcome::Succeeded,
+        None,
+    );
+    push_batch_read_receipt(
+        &mut duplicate_facts,
+        1,
+        0,
+        1,
+        "a.txt",
+        ToolExecutionOutcome::Denied,
+        None,
+    );
+    push_batch_read_receipt(
+        &mut duplicate_facts,
+        1,
+        0,
+        2,
+        "a.txt",
+        ToolExecutionOutcome::Denied,
+        None,
+    );
+    assert!(
+        super::super::execution_control(&duplicate_facts, "session", "current", &binding(), 3)
+            .is_none()
+    );
+
+    push_batch_read_receipt(
+        &mut duplicate_facts,
+        1,
+        3,
+        0,
+        "a.txt",
+        ToolExecutionOutcome::Denied,
+        None,
+    );
+    assert!(matches!(
+        super::super::execution_control(&duplicate_facts, "session", "current", &binding(), 3),
+        Some(super::super::ExecutionControl::Refused(tool)) if tool == "read"
+    ));
+
+    let mut permission_facts = Vec::new();
+    push_batch_read_receipt(
+        &mut permission_facts,
+        1,
+        0,
+        0,
+        "/outside/a.txt",
+        ToolExecutionOutcome::Denied,
+        Some("permission_denied"),
+    );
+    push_batch_read_receipt(
+        &mut permission_facts,
+        1,
+        0,
+        1,
+        "/outside/a.txt",
+        ToolExecutionOutcome::Denied,
+        Some("permission_denied"),
+    );
+    assert!(matches!(
+        super::super::execution_control(&permission_facts, "session", "current", &binding(), 3),
+        Some(super::super::ExecutionControl::Replan { tool, .. }) if tool == "read"
+    ));
+
+    push_batch_read_receipt(
+        &mut permission_facts,
+        1,
+        2,
+        0,
+        "/outside/a.txt",
+        ToolExecutionOutcome::Denied,
+        Some("permission_denied"),
+    );
+    assert!(matches!(
+        super::super::execution_control(&permission_facts, "session", "current", &binding(), 3),
+        Some(super::super::ExecutionControl::Refused(tool)) if tool == "read"
+    ));
+}
+
+fn push_bash_model_wave_refusal(facts: &mut Vec<Fact>, cycle: u64, id: &str, command: &str) {
+    let digest = aster_effect::tool_args_digest(&json!({"command": command})).unwrap();
+    let prepared = ToolPreparedV1 {
+        schema: TOOL_PREPARED_SCHEMA.into(),
+        identity: ToolInvocationIdentityV1 {
+            turn: 1,
+            cycle,
+            tool_call_id: id.into(),
+            batch_index: 0,
+            admission: Some(ToolAdmissionIdentityV1 {
+                run_id: "current".into(),
+                thread_id: "session".into(),
+                capability_binding_digest: binding(),
+            }),
+        },
+        tool_name: "bash".into(),
+        original_args_digest: digest.clone(),
+        effective_args_digest: digest,
+        recovery: ToolRecoveryPolicy::NeverReplay,
+        baseline: None,
+    };
+    let output = serde_json::json!({
+        "kind": FACT_TOOL_RESULT_KIND,
+        "text": "refused",
+        "is_error": true,
+        "outcome": ToolExecutionOutcome::Denied,
+        "metadata": { "host_refusal": "permission_denied" },
+    })
+    .to_string();
+    let receipt =
+        result_without_execution(&prepared, ToolExecutionOutcome::Denied, output).unwrap();
+    for mut item in [prepared_fact(&prepared), result_fact(&receipt)] {
+        item.seq = facts.len() as u64 + 1;
+        item.key = format!("wave-fixture-{}", item.seq);
+        facts.push(item);
+    }
+}
+
+#[test]
+fn split_confirmation_batch_within_one_model_turn_allows_recovery_and_question_answered_resets() {
+    let mut facts = Vec::new();
+    facts.push(fact(
+        "model.turn",
+        "wave-1",
+        json!({"calls":[{"id":"b1","name":"bash"},{"id":"b2","name":"bash"}]}),
+    ));
+    push_bash_model_wave_refusal(&mut facts, 0, "b1", "echo first");
+    push_bash_model_wave_refusal(&mut facts, 1, "b2", "echo second");
+    assert!(matches!(
+        super::super::execution_control(&facts, "session", "current", &binding(), 3),
+        Some(super::super::ExecutionControl::Replan { ref tool, .. }) if tool == "bash"
+    ));
+
+    facts.push(fact(
+        "model.turn",
+        "wave-2",
+        json!({"calls":[{"id":"b3","name":"bash"}]}),
+    ));
+    push_bash_model_wave_refusal(&mut facts, 2, "b3", "echo third");
+    assert!(matches!(
+        super::super::execution_control(&facts, "session", "current", &binding(), 3),
+        Some(super::super::ExecutionControl::Refused(ref tool)) if tool == "bash"
+    ));
+
+    let mut answered = fact("question.answered", "qa-1", json!({"text": "clarified"}));
+    answered.seq = facts.len() as u64 + 1;
+    facts.push(answered);
+    assert!(super::super::execution_control(&facts, "session", "current", &binding(), 3).is_none());
+
+    facts.push(fact(
+        "model.turn",
+        "wave-3",
+        json!({"calls":[{"id":"b4","name":"bash"}]}),
+    ));
+    push_bash_model_wave_refusal(&mut facts, 3, "b4", "echo fourth");
+    assert!(matches!(
+        super::super::execution_control(&facts, "session", "current", &binding(), 3),
+        Some(super::super::ExecutionControl::Replan { ref tool, .. }) if tool == "bash"
+    ));
+}

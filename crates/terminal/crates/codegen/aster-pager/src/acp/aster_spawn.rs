@@ -2,10 +2,14 @@
 //! the pager's typed ACP channels (same pattern as [`super::leader_bridge`]).
 
 use std::borrow::Cow;
+use std::cell::RefCell;
+use std::collections::VecDeque;
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
+use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 use std::thread;
+use std::time::{Duration, Instant};
 
 use anyhow::{Context, Result, anyhow};
 use tokio::io::AsyncReadExt;
@@ -14,11 +18,15 @@ use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 use tokio_util::sync::CancellationToken;
 
 use agent_client_protocol as acp;
-use aster_acp_lib::{AcpGatewayReceiver, AcpGatewaySender, LineBufferedRead, acp_channels};
+use aster_acp_lib::{
+    AcpAgentChannel, AcpAgentMessage, AcpClientTx, AcpGatewayReceiver, AcpGatewaySender,
+    LineBufferedRead, acp_channels, acp_internal_error,
+};
 use aster_shell::util::grok_home::grok_home;
 use serde::Deserialize;
 use serde_json::value::RawValue;
 
+use super::leader_bridge::ConnectionStatus;
 use super::spawn::{SpawnedAgent, boot_auth_manager};
 use aster_shell::agent::config::Config as AgentConfig;
 
@@ -58,6 +66,30 @@ async fn validate_pair(bin: &Path) -> Result<()> {
     Ok(())
 }
 
+/// Bounded restart policy for [`spawn_supervised_bridge`].
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct SidecarRestartPolicy {
+    pub(crate) max_restarts: usize,
+    pub(crate) crash_window: Duration,
+    pub(crate) initial_backoff: Duration,
+    pub(crate) max_backoff: Duration,
+    pub(crate) heartbeat_interval: Option<Duration>,
+    pub(crate) heartbeat_timeout: Duration,
+}
+
+impl Default for SidecarRestartPolicy {
+    fn default() -> Self {
+        Self {
+            max_restarts: 5,
+            crash_window: Duration::from_secs(60),
+            initial_backoff: Duration::from_millis(250),
+            max_backoff: Duration::from_secs(5),
+            heartbeat_interval: Some(Duration::from_secs(15)),
+            heartbeat_timeout: Duration::from_secs(10),
+        }
+    }
+}
+
 /// Spawn the shipped ACP agent and bridge its stdio into an [`SpawnedAgent`].
 pub async fn spawn_aster_acp(
     agent_config: &AgentConfig,
@@ -65,6 +97,62 @@ pub async fn spawn_aster_acp(
     cwd: Option<&std::path::Path>,
     model: Option<&str>,
 ) -> Result<SpawnedAgent> {
+    let (bin, auth_manager, agent_cancel, client_channel, agent_channel, arguments) =
+        prepare_sidecar_spawn(agent_config, cancel, cwd, model).await?;
+    let thread_handle = spawn_bridge(bin, arguments, agent_cancel.clone(), agent_channel)?;
+
+    Ok(SpawnedAgent {
+        thread_handle,
+        channel: client_channel,
+        cancel: agent_cancel,
+        auth_manager,
+        status_rx: None,
+    })
+}
+
+/// Spawn the shipped ACP agent behind a self-healing supervisor that automatically
+/// respawns crashed sidecar generations and broadcasts [`ConnectionStatus`] updates.
+pub async fn spawn_supervised_sidecar(
+    agent_config: &AgentConfig,
+    cancel: &CancellationToken,
+    cwd: Option<&std::path::Path>,
+    model: Option<&str>,
+) -> Result<SpawnedAgent> {
+    if !aster_acp_enabled() {
+        return Err(missing_agent_backend());
+    }
+    let (bin, auth_manager, agent_cancel, client_channel, agent_channel, arguments) =
+        prepare_sidecar_spawn(agent_config, cancel, cwd, model).await?;
+    let (thread_handle, status_rx) = spawn_supervised_bridge(
+        bin,
+        arguments,
+        agent_cancel.clone(),
+        agent_channel,
+        SidecarRestartPolicy::default(),
+    )?;
+
+    Ok(SpawnedAgent {
+        thread_handle,
+        channel: client_channel,
+        cancel: agent_cancel,
+        auth_manager,
+        status_rx: Some(status_rx),
+    })
+}
+
+async fn prepare_sidecar_spawn(
+    agent_config: &AgentConfig,
+    cancel: &CancellationToken,
+    cwd: Option<&std::path::Path>,
+    model: Option<&str>,
+) -> Result<(
+    PathBuf,
+    Arc<aster_login::AuthManager>,
+    CancellationToken,
+    aster_acp_lib::AcpClientChannel,
+    AcpAgentChannel,
+    Vec<std::ffi::OsString>,
+)> {
     let bin = aster_acp_executable().ok_or_else(|| {
         anyhow!(
             "no aster-acp beside the pager and ASTER_ACP_AGENT_BIN is not set; cannot spawn the agent"
@@ -72,10 +160,8 @@ pub async fn spawn_aster_acp(
     })?;
     validate_pair(&bin).await?;
     let auth_manager = boot_auth_manager(&grok_home(), agent_config);
-
     let agent_cancel = cancel.child_token();
     let (client_channel, agent_channel) = acp_channels();
-
     let cwd = match cwd {
         Some(cwd) => cwd.to_owned(),
         None => std::env::current_dir().context("resolve ACP workspace")?,
@@ -86,14 +172,222 @@ pub async fn spawn_aster_acp(
         model,
         std::env::var_os("ASTER_CONFIG").as_deref(),
     );
-    let thread_handle = spawn_bridge(bin, arguments, agent_cancel.clone(), agent_channel)?;
-
-    Ok(SpawnedAgent {
-        thread_handle,
-        channel: client_channel,
-        cancel: agent_cancel,
+    Ok((
+        bin,
         auth_manager,
+        agent_cancel,
+        client_channel,
+        agent_channel,
+        arguments,
+    ))
+}
+
+struct ChildGenerationOutcome {
+    stop: BridgeStop,
+    observed_status: Option<std::process::ExitStatus>,
+    stderr_summary: String,
+}
+
+async fn run_child_generation(
+    bin: &Path,
+    arguments: &[std::ffi::OsString],
+    bridge_cancel: &CancellationToken,
+    outbound_tx: AcpClientTx,
+    child_rx: tokio::sync::mpsc::UnboundedReceiver<AcpAgentMessage>,
+    heartbeat: Option<(
+        Duration,
+        Duration,
+        tokio::sync::mpsc::UnboundedSender<AcpAgentMessage>,
+    )>,
+    on_ready: impl FnOnce(),
+) -> Result<ChildGenerationOutcome> {
+    let mut command = Command::new(bin);
+    command.args(arguments);
+    // The welcome screen owns the console. ACP diagnostics stay in
+    // the daily log instead of painting over that screen.
+    apply_interactive_acp_stdio(&mut command);
+    let mut child = command
+        .spawn()
+        .with_context(|| format!("failed to spawn aster ACP agent at {}", bin.display()))?;
+    let child_stdin = child
+        .stdin
+        .take()
+        .ok_or_else(|| anyhow!("aster ACP agent stdin missing"))?;
+    let child_stdout = child
+        .stdout
+        .take()
+        .ok_or_else(|| anyhow!("aster ACP agent stdout missing"))?;
+    let mut child_stderr = child
+        .stderr
+        .take()
+        .ok_or_else(|| anyhow!("aster ACP agent stderr missing"))?;
+
+    // Bounded stderr summary for failure diagnosis only; never paint
+    // raw ACP stderr onto the pager console.
+    let stderr_tail = Arc::new(Mutex::new(Vec::<u8>::new()));
+    let stderr_buf = Arc::clone(&stderr_tail);
+    let stderr_task = tokio::task::spawn_local(async move {
+        let mut chunk = [0_u8; 1024];
+        loop {
+            match child_stderr.read(&mut chunk).await {
+                Ok(0) => break,
+                Ok(n) => {
+                    if let Some(bytes) = chunk.get(..n) {
+                        append_stderr_tail(&stderr_buf, bytes);
+                    }
+                }
+                Err(_) => break,
+            }
+        }
+    });
+
+    let gw_tx = AcpGatewaySender::new(outbound_tx).with_tracing(true);
+    // Apply the frame limit before any unbounded line allocation.
+    // Mirror agent-side RetryTransient*: full pipes must backpressure,
+    // not kill the bridge with -32603 Internal error (EAGAIN).
+    let epoch = Instant::now();
+    let last_activity_ms = Arc::new(std::sync::atomic::AtomicU64::new(0));
+    let activity_cb = Arc::clone(&last_activity_ms);
+    let notification_tx = gw_tx.clone();
+    let incoming = LineBufferedRead::spawn_local_filter(
+        aster_acp_lib::RetryTransientRead::new(child_stdout.compat()),
+        move |line| {
+            let elapsed_ms = u64::try_from(epoch.elapsed().as_millis()).unwrap_or(u64::MAX);
+            activity_cb.store(elapsed_ms, std::sync::atomic::Ordering::Relaxed);
+            forward_wire_notification(line, &notification_tx)
+        },
+    );
+    let gen_tasks: Rc<RefCell<Vec<tokio::task::AbortHandle>>> = Rc::new(RefCell::new(Vec::new()));
+    let conn_tasks = Rc::clone(&gen_tasks);
+    let (conn, handle_io) = acp::ClientSideConnection::new(
+        gw_tx,
+        aster_acp_lib::RetryTransientWrite::new(child_stdin.compat_write()),
+        incoming,
+        move |fut| {
+            conn_tasks
+                .borrow_mut()
+                .push(tokio::task::spawn_local(fut).abort_handle());
+        },
+    );
+    let gw_tasks = Rc::clone(&gen_tasks);
+    let gw_rx = AcpGatewayReceiver::new(child_rx, conn)
+        .with_tracing(true)
+        .with_spawn_fn(move |fut| {
+            gw_tasks
+                .borrow_mut()
+                .push(tokio::task::spawn_local(fut).abort_handle());
+        });
+    let mut io_task = tokio::task::spawn_local(handle_io);
+    let gateway_task = tokio::task::spawn_local(gw_rx.run());
+    on_ready();
+    tokio::task::yield_now().await;
+
+    // Prefer cancel over transport/exit so intentional teardown is not a failure.
+    // The pager cancels before dropping client channels; both can race.
+    let stop = tokio::select! {
+        biased;
+        () = bridge_cancel.cancelled() => BridgeStop::Cancelled,
+        result = &mut io_task => BridgeStop::Failed(match result {
+            Ok(Ok(())) => anyhow!("Aster Code ACP transport closed"),
+            Ok(Err(error)) => anyhow::Error::new(error),
+            Err(error) => anyhow::Error::new(error).context("ACP transport task"),
+        }),
+        status = child.wait() => BridgeStop::Failed(match status {
+            Ok(status) => anyhow!("Aster Code ACP exited: {status}"),
+            Err(error) => anyhow::Error::new(error).context("wait for ACP agent"),
+        }),
+        error = async {
+            match heartbeat {
+                Some((interval, timeout, tx)) => {
+                    sidecar_heartbeat_watchdog(interval, timeout, tx, epoch, last_activity_ms).await
+                }
+                None => std::future::pending().await,
+            }
+        } => BridgeStop::Failed(error),
+    };
+    // Snapshot exit status before cleanup kill replaces it.
+    let observed_status = child.try_wait().ok().flatten();
+    stderr_task.abort();
+    io_task.abort();
+    gateway_task.abort();
+    for handle in gen_tasks.borrow_mut().drain(..) {
+        handle.abort();
+    }
+    let stderr_summary = stderr_summary(&stderr_tail);
+    // Cancel and unexpected-exit paths both need a reap; a gone child is fine.
+    if let Err(error) = child.kill().await {
+        tracing::debug!(%error, "ACP child already gone during bridge teardown");
+    }
+    // Let aborted local RPC tasks drop immediately so callers receive fast disconnect errors.
+    tokio::task::yield_now().await;
+    Ok(ChildGenerationOutcome {
+        stop,
+        observed_status,
+        stderr_summary,
     })
+}
+
+async fn sidecar_heartbeat_watchdog(
+    interval: Duration,
+    timeout: Duration,
+    child_tx: tokio::sync::mpsc::UnboundedSender<AcpAgentMessage>,
+    epoch: Instant,
+    last_activity_ms: Arc<std::sync::atomic::AtomicU64>,
+) -> anyhow::Error {
+    use std::sync::atomic::Ordering;
+
+    let idle_duration = || {
+        let now_ms = u64::try_from(epoch.elapsed().as_millis()).unwrap_or(u64::MAX);
+        let last_ms = last_activity_ms.load(Ordering::Relaxed);
+        Duration::from_millis(now_ms.saturating_sub(last_ms))
+    };
+    let mark_activity = || {
+        let now_ms = u64::try_from(epoch.elapsed().as_millis()).unwrap_or(u64::MAX);
+        last_activity_ms.store(now_ms, Ordering::Relaxed);
+    };
+
+    loop {
+        tokio::time::sleep(interval).await;
+        if idle_duration() < interval {
+            continue;
+        }
+        let Ok(raw) = RawValue::from_string("{}".to_string()) else {
+            return anyhow!("failed to build ACP health probe payload");
+        };
+        let (response_tx, response_rx) = tokio::sync::oneshot::channel();
+        let message = AcpAgentMessage::ExtMethod(aster_acp_lib::AcpArgs {
+            request: acp::ExtRequest::new("aster/health", Arc::from(raw)),
+            response_tx,
+        });
+        if child_tx.send(message).is_err() {
+            return anyhow!("ACP sidecar command channel closed before heartbeat");
+        }
+        match tokio::time::timeout(timeout, response_rx).await {
+            Ok(Ok(Ok(_))) => {
+                mark_activity();
+            }
+            Ok(Ok(Err(error))) if error.code == acp::ErrorCode::MethodNotFound => {
+                // Older sidecar binaries respond with -32601 MethodNotFound,
+                // which still proves the JSON-RPC event loop is responsive.
+                mark_activity();
+            }
+            Ok(Ok(Err(error))) => {
+                return anyhow!("ACP sidecar heartbeat failed: {error}");
+            }
+            Ok(Err(_)) => {
+                return anyhow!("ACP sidecar dropped heartbeat response channel");
+            }
+            Err(_) => {
+                if idle_duration() < timeout {
+                    continue;
+                }
+                return anyhow!(
+                    "ACP sidecar heartbeat timed out after {}ms",
+                    timeout.as_millis()
+                );
+            }
+        }
+    }
 }
 
 fn spawn_bridge(
@@ -110,107 +404,266 @@ fn spawn_bridge(
             let rt = aster_tty_utils::runtime::apply_blocking_pool(builder.enable_all()).build()?;
             let local = tokio::task::LocalSet::new();
             local.block_on(&rt, async move {
-                let mut command = Command::new(&bin);
-                command.args(arguments);
-                // The welcome screen owns the console. ACP diagnostics stay in
-                // the daily log instead of painting over that screen.
-                apply_interactive_acp_stdio(&mut command);
-                let mut child = command.spawn().with_context(|| {
-                    format!("failed to spawn aster ACP agent at {}", bin.display())
-                })?;
-                let child_stdin = child
-                    .stdin
-                    .take()
-                    .ok_or_else(|| anyhow!("aster ACP agent stdin missing"))?;
-                let child_stdout = child
-                    .stdout
-                    .take()
-                    .ok_or_else(|| anyhow!("aster ACP agent stdout missing"))?;
-                let mut child_stderr = child
-                    .stderr
-                    .take()
-                    .ok_or_else(|| anyhow!("aster ACP agent stderr missing"))?;
-
-                // Bounded stderr summary for failure diagnosis only; never paint
-                // raw ACP stderr onto the pager console.
-                let stderr_tail = Arc::new(Mutex::new(Vec::<u8>::new()));
-                let stderr_buf = Arc::clone(&stderr_tail);
-                let stderr_task = tokio::task::spawn_local(async move {
-                    let mut chunk = [0_u8; 1024];
-                    loop {
-                        match child_stderr.read(&mut chunk).await {
-                            Ok(0) => break,
-                            Ok(n) => {
-                                if let Some(bytes) = chunk.get(..n) {
-                                    append_stderr_tail(&stderr_buf, bytes);
-                                }
-                            }
-                            Err(_) => break,
-                        }
-                    }
-                });
-
-                let gw_tx = AcpGatewaySender::new(agent_channel.tx).with_tracing(true);
-                // Apply the frame limit before any unbounded line allocation.
-                // Mirror agent-side RetryTransient*: full pipes must backpressure,
-                // not kill the bridge with -32603 Internal error (EAGAIN).
-                let notification_tx = gw_tx.clone();
-                let incoming = LineBufferedRead::spawn_local_filter(
-                    aster_acp_lib::RetryTransientRead::new(child_stdout.compat()),
-                    move |line| forward_wire_notification(line, &notification_tx),
-                );
-                let (conn, handle_io) = acp::ClientSideConnection::new(
-                    gw_tx,
-                    aster_acp_lib::RetryTransientWrite::new(child_stdin.compat_write()),
-                    incoming,
-                    |fut| {
-                        tokio::task::spawn_local(fut);
-                    },
-                );
-                let gw_rx = AcpGatewayReceiver::new(agent_channel.rx, conn).with_tracing(true);
-                let mut io_task = tokio::task::spawn_local(handle_io);
-                let gateway_task = tokio::task::spawn_local(gw_rx.run());
-                tokio::task::yield_now().await;
-
-                // Prefer cancel over transport/exit so intentional teardown is not a failure.
-                // The pager cancels before dropping client channels; both can race.
-                let stop = tokio::select! {
-                    biased;
-                    () = bridge_cancel.cancelled() => BridgeStop::Cancelled,
-                    result = &mut io_task => BridgeStop::Failed(match result {
-                        Ok(Ok(())) => anyhow!("Aster Code ACP transport closed"),
-                        Ok(Err(error)) => anyhow::Error::new(error),
-                        Err(error) => anyhow::Error::new(error).context("ACP transport task"),
-                    }),
-                    status = child.wait() => BridgeStop::Failed(match status {
-                        Ok(status) => anyhow!("Aster Code ACP exited: {status}"),
-                        Err(error) => anyhow::Error::new(error).context("wait for ACP agent"),
-                    }),
-                };
-                // Snapshot exit status before cleanup kill replaces it.
-                let observed_status = child.try_wait().ok().flatten();
-                stderr_task.abort();
-                io_task.abort();
-                gateway_task.abort();
-                let stderr_summary = stderr_summary(&stderr_tail);
-                // Cancel and unexpected-exit paths both need a reap; a gone child is fine.
-                if let Err(error) = child.kill().await {
-                    tracing::debug!(%error, "ACP child already gone during bridge teardown");
-                }
-                match stop {
+                let outcome = run_child_generation(
+                    &bin,
+                    &arguments,
+                    &bridge_cancel,
+                    agent_channel.tx,
+                    agent_channel.rx,
+                    None,
+                    || {},
+                )
+                .await?;
+                match outcome.stop {
                     BridgeStop::Cancelled => Ok(()),
                     BridgeStop::Failed(error) if bridge_cancel.is_cancelled() => {
                         // Channel drop closed stdio in the same wakeup as cancel.
                         tracing::debug!(%error, "ACP bridge stop overlapped cancel; treating as clean");
                         Ok(())
                     }
-                    BridgeStop::Failed(error) => {
-                        Err(annotate_bridge_failure(error, observed_status, &stderr_summary))
-                    }
+                    BridgeStop::Failed(error) => Err(annotate_bridge_failure(
+                        error,
+                        outcome.observed_status,
+                        &outcome.stderr_summary,
+                    )),
                 }
             })
         })
         .context("failed to start aster ACP bridge thread")
+}
+
+fn fail_acp_request(msg: AcpAgentMessage, reason: &str) {
+    let err = acp_internal_error(reason);
+    match msg {
+        AcpAgentMessage::Initialize(args) => {
+            let _ = args.response_tx.send(Err(err));
+        }
+        AcpAgentMessage::Authenticate(args) => {
+            let _ = args.response_tx.send(Err(err));
+        }
+        AcpAgentMessage::NewSession(args) => {
+            let _ = args.response_tx.send(Err(err));
+        }
+        AcpAgentMessage::LoadSession(args) => {
+            let _ = args.response_tx.send(Err(err));
+        }
+        AcpAgentMessage::SetSessionMode(args) => {
+            let _ = args.response_tx.send(Err(err));
+        }
+        AcpAgentMessage::Prompt(args) => {
+            let _ = args.response_tx.send(Err(err));
+        }
+        AcpAgentMessage::Cancel(args) => {
+            let _ = args.response_tx.send(Err(err));
+        }
+        AcpAgentMessage::ExtMethod(args) => {
+            let _ = args.response_tx.send(Err(err));
+        }
+        AcpAgentMessage::ExtNotification(args) => {
+            let _ = args.response_tx.send(Err(err));
+        }
+        AcpAgentMessage::SetSessionModel(args) => {
+            let _ = args.response_tx.send(Err(err));
+        }
+    }
+}
+
+fn is_non_restartable_bridge_error(error: &anyhow::Error) -> bool {
+    let text = format!("{error:#}");
+    text.contains("exceeds") && text.contains("byte limit")
+}
+
+fn backoff_for_attempt(policy: &SidecarRestartPolicy, attempt: usize) -> Duration {
+    let shift = attempt.saturating_sub(1).min(16) as u32;
+    let multiplier = 1_u32.checked_shl(shift).unwrap_or(u32::MAX);
+    policy
+        .initial_backoff
+        .saturating_mul(multiplier)
+        .min(policy.max_backoff)
+}
+
+pub(crate) fn spawn_supervised_bridge(
+    bin: PathBuf,
+    arguments: Vec<std::ffi::OsString>,
+    bridge_cancel: CancellationToken,
+    agent_channel: AcpAgentChannel,
+    policy: SidecarRestartPolicy,
+) -> Result<(
+    thread::JoinHandle<Result<()>>,
+    tokio::sync::watch::Receiver<ConnectionStatus>,
+)> {
+    let (status_tx, status_rx) =
+        tokio::sync::watch::channel(ConnectionStatus::Connected { generation: 0 });
+    let handle = thread::Builder::new()
+        .name("aster-acp-bridge".into())
+        .stack_size(8 * 1024 * 1024)
+        .spawn(move || -> Result<()> {
+            let mut builder = tokio::runtime::Builder::new_current_thread();
+            let rt = aster_tty_utils::runtime::apply_blocking_pool(builder.enable_all()).build()?;
+            let local = tokio::task::LocalSet::new();
+            local.block_on(&rt, async move {
+                let outbound_tx = agent_channel.tx;
+                let mut client_rx = agent_channel.rx;
+                let active_child_tx: Rc<
+                    RefCell<Option<tokio::sync::mpsc::UnboundedSender<AcpAgentMessage>>>,
+                > = Rc::new(RefCell::new(None));
+                let initial_ready = Rc::new(std::cell::Cell::new(false));
+                let ready_notify = Rc::new(tokio::sync::Notify::new());
+                let dispatch_tx = Rc::clone(&active_child_tx);
+                let dispatch_initial_ready = Rc::clone(&initial_ready);
+                let dispatch_notify = Rc::clone(&ready_notify);
+                let dispatcher = tokio::task::spawn_local(async move {
+                    while let Some(msg) = client_rx.recv().await {
+                        // Wait for generation 0 to finish spawning before failing RPCs as "restarting".
+                        while !dispatch_initial_ready.get() && dispatch_tx.borrow().is_none() {
+                            dispatch_notify.notified().await;
+                        }
+                        let maybe_tx = dispatch_tx.borrow().clone();
+                        match maybe_tx {
+                            Some(tx) => {
+                                if let Err(tokio::sync::mpsc::error::SendError(unsent)) =
+                                    tx.send(msg)
+                                {
+                                    fail_acp_request(
+                                        unsent,
+                                        "ACP sidecar connection interrupted; reconnecting",
+                                    );
+                                }
+                            }
+                            None => fail_acp_request(
+                                msg,
+                                "ACP sidecar restarting; try again after reconnect",
+                            ),
+                        }
+                    }
+                });
+
+                let mut generation: u64 = 0;
+                let mut recent_crashes: VecDeque<Instant> = VecDeque::new();
+
+                let supervisor_result = loop {
+                    if bridge_cancel.is_cancelled() {
+                        break Ok(());
+                    }
+
+                    let (child_tx, child_rx) = tokio::sync::mpsc::unbounded_channel();
+                    let heartbeat = policy
+                        .heartbeat_interval
+                        .map(|interval| (interval, policy.heartbeat_timeout, child_tx.clone()));
+                    let active_slot = Rc::clone(&active_child_tx);
+                    let slot_initial_ready = Rc::clone(&initial_ready);
+                    let slot_notify = Rc::clone(&ready_notify);
+                    let status_sender = &status_tx;
+                    let current_generation = generation;
+                    let outcome = run_child_generation(
+                        &bin,
+                        &arguments,
+                        &bridge_cancel,
+                        outbound_tx.clone(),
+                        child_rx,
+                        heartbeat,
+                        move || {
+                            *active_slot.borrow_mut() = Some(child_tx);
+                            slot_initial_ready.set(true);
+                            slot_notify.notify_waiters();
+                            if current_generation > 0 {
+                                let _ = status_sender.send(ConnectionStatus::Connected {
+                                    generation: current_generation,
+                                });
+                            }
+                        },
+                    )
+                    .await;
+
+                    *active_child_tx.borrow_mut() = None;
+                    initial_ready.set(true);
+                    ready_notify.notify_waiters();
+
+                    let failure = match outcome {
+                        Ok(ChildGenerationOutcome {
+                            stop: BridgeStop::Cancelled,
+                            ..
+                        }) => break Ok(()),
+                        Ok(ChildGenerationOutcome {
+                            stop: BridgeStop::Failed(error),
+                            ..
+                        })
+                        | Err(error)
+                            if bridge_cancel.is_cancelled() =>
+                        {
+                            tracing::debug!(
+                                %error,
+                                "ACP bridge stop overlapped cancel; treating as clean"
+                            );
+                            break Ok(());
+                        }
+                        Ok(ChildGenerationOutcome {
+                            stop: BridgeStop::Failed(error),
+                            observed_status,
+                            stderr_summary,
+                        }) => annotate_bridge_failure(error, observed_status, &stderr_summary),
+                        Err(error) if generation == 0 => {
+                            let _ = status_tx.send(ConnectionStatus::Failed {
+                                error: error.to_string(),
+                            });
+                            break Err(error);
+                        }
+                        Err(error) => error,
+                    };
+
+                    if is_non_restartable_bridge_error(&failure) {
+                        let _ = status_tx.send(ConnectionStatus::Failed {
+                            error: failure.to_string(),
+                        });
+                        break Err(failure);
+                    }
+
+                    let now = Instant::now();
+                    while let Some(&front) = recent_crashes.front() {
+                        if now.saturating_duration_since(front) > policy.crash_window {
+                            recent_crashes.pop_front();
+                        } else {
+                            break;
+                        }
+                    }
+                    recent_crashes.push_back(now);
+                    if recent_crashes.len() > policy.max_restarts {
+                        let msg = format!(
+                            "ACP sidecar crash loop ({} restarts in {}s): {failure}",
+                            policy.max_restarts,
+                            policy.crash_window.as_secs(),
+                        );
+                        let _ = status_tx.send(ConnectionStatus::Failed { error: msg.clone() });
+                        break Err(anyhow!(msg));
+                    }
+
+                    let attempt = recent_crashes.len();
+                    let _ = status_tx.send(ConnectionStatus::Reconnecting {
+                        attempt: attempt as u32,
+                    });
+                    let backoff = backoff_for_attempt(&policy, attempt);
+                    tracing::warn!(
+                        attempt,
+                        generation,
+                        backoff_ms = backoff.as_millis() as u64,
+                        error = %failure,
+                        "ACP sidecar exited unexpectedly; scheduling respawn"
+                    );
+                    tokio::select! {
+                        biased;
+                        () = bridge_cancel.cancelled() => break Ok(()),
+                        () = tokio::time::sleep(backoff) => {}
+                    }
+                    generation = generation.saturating_add(1);
+                };
+
+                dispatcher.abort();
+                supervisor_result
+            })
+        })
+        .context("failed to start supervised aster ACP bridge thread")?;
+
+    Ok((handle, status_rx))
 }
 
 #[derive(Deserialize)]

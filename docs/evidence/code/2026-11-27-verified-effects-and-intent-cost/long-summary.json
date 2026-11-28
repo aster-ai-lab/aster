@@ -1,0 +1,225 @@
+{
+  "trials": {
+    "candidate": [
+      {
+        "label": "1-candidate",
+        "run": "long-a",
+        "strict_pass": false,
+        "correct_artifacts": 6,
+        "input_preserved": 6,
+        "host_verified": 6,
+        "mutation_receipt_sequences": [
+          24,
+          44,
+          61,
+          78,
+          95,
+          112
+        ],
+        "classification_calls": 1,
+        "classification_tokens": 267,
+        "classification_after_mutation_tool": 0,
+        "memory_calls": 6,
+        "memory_tokens": 8811,
+        "main_calls": 21,
+        "provider_requests": 28,
+        "observed_tool_calls": {
+          "read": 26,
+          "ls": 1,
+          "write": 6
+        },
+        "prompt_tokens": 180492,
+        "completion_tokens": 5493,
+        "total_tokens": 185985,
+        "prompt_cache_hit_tokens": 161790,
+        "prompt_cache_miss_tokens": 18702
+      },
+      {
+        "label": "3-candidate",
+        "run": "long-b",
+        "strict_pass": false,
+        "correct_artifacts": 6,
+        "input_preserved": 6,
+        "host_verified": 6,
+        "mutation_receipt_sequences": [
+          24,
+          41,
+          58,
+          75,
+          92,
+          109
+        ],
+        "classification_calls": 1,
+        "classification_tokens": 267,
+        "classification_after_mutation_tool": 0,
+        "memory_calls": 6,
+        "memory_tokens": 8882,
+        "main_calls": 20,
+        "provider_requests": 27,
+        "observed_tool_calls": {
+          "read": 25,
+          "ls": 1,
+          "write": 6
+        },
+        "prompt_tokens": 165117,
+        "completion_tokens": 5415,
+        "total_tokens": 170532,
+        "prompt_cache_hit_tokens": 152702,
+        "prompt_cache_miss_tokens": 12415
+      }
+    ],
+    "release": [
+      {
+        "label": "2-release",
+        "run": "long-a",
+        "strict_pass": false,
+        "correct_artifacts": 6,
+        "input_preserved": 6,
+        "host_verified": 6,
+        "mutation_receipt_sequences": [
+          24,
+          44,
+          61,
+          78,
+          95,
+          112
+        ],
+        "classification_calls": 6,
+        "classification_tokens": 1602,
+        "classification_after_mutation_tool": 5,
+        "memory_calls": 6,
+        "memory_tokens": 6746,
+        "main_calls": 21,
+        "provider_requests": 33,
+        "observed_tool_calls": {
+          "read": 26,
+          "ls": 1,
+          "write": 1,
+          "edit": 5
+        },
+        "prompt_tokens": 179430,
+        "completion_tokens": 4990,
+        "total_tokens": 184420,
+        "prompt_cache_hit_tokens": 167540,
+        "prompt_cache_miss_tokens": 11890
+      },
+      {
+        "label": "2-release",
+        "run": "long-b",
+        "strict_pass": false,
+        "correct_artifacts": 6,
+        "input_preserved": 6,
+        "host_verified": 6,
+        "mutation_receipt_sequences": [
+          24,
+          44,
+          61,
+          78,
+          95,
+          112
+        ],
+        "classification_calls": 6,
+        "classification_tokens": 1602,
+        "classification_after_mutation_tool": 5,
+        "memory_calls": 6,
+        "memory_tokens": 10651,
+        "main_calls": 21,
+        "provider_requests": 33,
+        "observed_tool_calls": {
+          "read": 26,
+          "ls": 1,
+          "write": 6
+        },
+        "prompt_tokens": 178972,
+        "completion_tokens": 6627,
+        "total_tokens": 185599,
+        "prompt_cache_hit_tokens": 159732,
+        "prompt_cache_miss_tokens": 19240
+      }
+    ],
+    "dsh": [
+      {
+        "label": "3-dsh",
+        "run": "long-a",
+        "strict_pass": true,
+        "correct_artifacts": 6,
+        "input_preserved": 6,
+        "host_verified": null,
+        "mutation_receipt_sequences": null,
+        "classification_calls": 0,
+        "classification_tokens": 0,
+        "classification_after_mutation_tool": 0,
+        "memory_calls": 0,
+        "memory_tokens": 0,
+        "main_calls": 25,
+        "provider_requests": 25,
+        "observed_tool_calls": {
+          "read": 30,
+          "write": 1,
+          "edit": 5
+        },
+        "prompt_tokens": 254839,
+        "completion_tokens": 4807,
+        "total_tokens": 259646,
+        "prompt_cache_hit_tokens": 247296,
+        "prompt_cache_miss_tokens": 7543
+      },
+      {
+        "label": "1-dsh",
+        "run": "long-b",
+        "strict_pass": true,
+        "correct_artifacts": 6,
+        "input_preserved": 6,
+        "host_verified": null,
+        "mutation_receipt_sequences": null,
+        "classification_calls": 0,
+        "classification_tokens": 0,
+        "classification_after_mutation_tool": 0,
+        "memory_calls": 0,
+        "memory_tokens": 0,
+        "main_calls": 25,
+        "provider_requests": 25,
+        "observed_tool_calls": {
+          "read": 31,
+          "write": 1,
+          "edit": 5
+        },
+        "prompt_tokens": 266225,
+        "completion_tokens": 5654,
+        "total_tokens": 271879,
+        "prompt_cache_hit_tokens": 258944,
+        "prompt_cache_miss_tokens": 7281
+      }
+    ]
+  },
+  "medians": {
+    "candidate": {
+      "total_tokens": 178258.5,
+      "prompt_cache_miss_tokens": 15558.5,
+      "classification_calls": 1.0,
+      "classification_tokens": 267.0,
+      "memory_calls": 6.0,
+      "memory_tokens": 8846.5,
+      "main_calls": 20.5
+    },
+    "release": {
+      "total_tokens": 185009.5,
+      "prompt_cache_miss_tokens": 15565.0,
+      "classification_calls": 6.0,
+      "classification_tokens": 1602.0,
+      "memory_calls": 6.0,
+      "memory_tokens": 8698.5,
+      "main_calls": 21.0
+    },
+    "dsh": {
+      "total_tokens": 265762.5,
+      "prompt_cache_miss_tokens": 7412.0,
+      "classification_calls": 0.0,
+      "classification_tokens": 0.0,
+      "memory_calls": 0.0,
+      "memory_tokens": 0.0,
+      "main_calls": 25.0
+    }
+  },
+  "provider_requests": 171
+}

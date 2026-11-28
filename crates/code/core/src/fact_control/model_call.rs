@@ -91,7 +91,10 @@ pub(super) async fn complete_detached(
         }
         Err(error) => {
             let failure = model_error(error);
-            if matches!(failure, ActorError::Defect(_)) {
+            if matches!(
+                failure,
+                ActorError::Defect(_) | ActorError::ContextOverflow(_)
+            ) {
                 return Err(failure);
             }
             tokio::select! {
@@ -118,6 +121,9 @@ pub(crate) fn model_error(error: anyhow::Error) -> ActorError {
     {
         return ActorError::Defect(denial.to_string());
     }
+    if let Some(message) = crate::llm::context_overflow_llm_error_message(&error) {
+        return ActorError::ContextOverflow(message.to_string());
+    }
     if let Some(message) = crate::llm::non_retryable_llm_error_message(&error) {
         return ActorError::Defect(message.to_string());
     }
@@ -127,11 +133,16 @@ pub(crate) fn model_error(error: anyhow::Error) -> ActorError {
     }
 }
 
+pub(super) struct PresentedTools {
+    pub(super) definitions: Vec<ToolDefinition>,
+    pub(super) application: crate::harness_evidence::ModelPresentationApplicationV1,
+}
+
 pub(super) async fn model_response(
     client: Arc<dyn LlmClient>,
     messages: Vec<Message>,
     system: Option<String>,
-    tools: Vec<ToolDefinition>,
+    tools: PresentedTools,
     surface: Option<SessionSurface>,
     host_cancel: tokio_util::sync::CancellationToken,
     original_model: Option<crate::agent_api::OriginalModelCallPort>,
@@ -142,6 +153,7 @@ pub(super) async fn model_response(
         })?;
         return governed_model_response(client, messages, system, tools, surface, original).await;
     }
+    let tools = tools.definitions;
     let Some(surface) = surface else {
         return complete_detached(client, &messages, system.as_deref(), &tools, host_cancel).await;
     };
@@ -189,11 +201,11 @@ pub(super) async fn model_response(
     await_model_task_with_idle(handle, &cancel, &attempt, activity.as_ref(), idle).await
 }
 
-pub(super) async fn governed_model_response(
+async fn governed_model_response(
     client: Arc<dyn LlmClient>,
     messages: Vec<Message>,
     system: Option<String>,
-    tools: Vec<ToolDefinition>,
+    tools: PresentedTools,
     surface: &SessionSurface,
     original: crate::agent_api::OriginalModelCallPort,
 ) -> Result<LlmResponse, ActorError> {
@@ -203,7 +215,14 @@ pub(super) async fn governed_model_response(
     // before the existing child is spawned. No fallback owner is constructed.
     let prepared = surface
         .agent
-        .prepare_profiled_fact_model_call(&surface.session_id, client, messages, system, tools)
+        .prepare_profiled_fact_model_call(
+            &surface.session_id,
+            client,
+            messages,
+            system,
+            tools.definitions,
+            tools.application,
+        )
         .map_err(|error| ActorError::Defect(error.to_string()))?;
     let runtime = tokio::runtime::Handle::try_current()
         .map_err(|error| ActorError::Defect(error.to_string()))?;
@@ -538,7 +557,10 @@ pub(super) async fn read_model_response(
                 return Ok(interrupted_response());
             }
             let failure = model_error(error);
-            if matches!(failure, ActorError::Defect(_)) {
+            if matches!(
+                failure,
+                ActorError::Defect(_) | ActorError::ContextOverflow(_)
+            ) {
                 return Err(failure);
             }
             let response = client

@@ -1,0 +1,201 @@
+{
+  "short": {
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 25659.0,
+      "uncached_input_median": 3312.5,
+      "requests": 12
+    },
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 31072.0,
+      "uncached_input_median": 3916.5,
+      "requests": 12
+    },
+    "dsh": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 25141.5,
+      "uncached_input_median": 910.0,
+      "requests": 8
+    }
+  },
+  "long": {
+    "candidate": {
+      "trials": 2,
+      "passes": 0,
+      "tokens_median": 194672.5,
+      "uncached_input_median": 17774.5,
+      "requests": 56,
+      "reports": 12,
+      "protected": 12,
+      "verification": 12
+    },
+    "release": {
+      "trials": 2,
+      "passes": 0,
+      "tokens_median": 211327.5,
+      "uncached_input_median": 18756.5,
+      "requests": 54,
+      "reports": 12,
+      "protected": 12,
+      "verification": 12
+    },
+    "dsh": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 264702.0,
+      "uncached_input_median": 7778.0,
+      "requests": 50,
+      "reports": 12,
+      "protected": 12,
+      "verification": null
+    }
+  },
+  "read_window": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 30630.0,
+      "uncached_input_median": 4137.0,
+      "requests": 12
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 25016.0,
+      "uncached_input_median": 3202.0,
+      "requests": 12
+    }
+  },
+  "read_batch_repeat": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 34999.0,
+      "uncached_input_median": 4682.0,
+      "requests": 12
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 29408.0,
+      "uncached_input_median": 3756.0,
+      "requests": 12
+    }
+  },
+  "mcp_schema": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 31460.5,
+      "uncached_input_median": 4285.5,
+      "requests": 12
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 28811.0,
+      "uncached_input_median": 3336.5,
+      "requests": 13
+    }
+  },
+  "verified_edit_exact_count": {
+    "release": {
+      "trials": 2,
+      "passes": 1,
+      "tokens_median": 38936.5,
+      "uncached_input_median": 4404.0,
+      "requests": 14
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 38442.0,
+      "uncached_input_median": 3788.0,
+      "requests": 16
+    }
+  },
+  "program_approved": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 30655.0,
+      "uncached_input_median": 4168.5,
+      "requests": 12
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 25136.0,
+      "uncached_input_median": 3300.0,
+      "requests": 12
+    }
+  },
+  "batch_mixed": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 31041.0,
+      "uncached_input_median": 4157.0,
+      "requests": 12
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 25755.5,
+      "uncached_input_median": 3159.5,
+      "requests": 12
+    }
+  },
+  "directory_discovery": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 39415.5,
+      "uncached_input_median": 4712.5,
+      "requests": 16
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 32435.5,
+      "uncached_input_median": 3700.5,
+      "requests": 16
+    }
+  },
+  "search": {
+    "release": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 40364.5,
+      "uncached_input_median": 4968.5,
+      "requests": 16
+    },
+    "candidate": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 33743.0,
+      "uncached_input_median": 4042.0,
+      "requests": 16
+    }
+  },
+  "forms-contract": {
+    "default": {
+      "trials": 2,
+      "passes": 1,
+      "tokens_median": 45940.5,
+      "uncached_input_median": 7137.5,
+      "requests": 14
+    },
+    "deferred": {
+      "trials": 2,
+      "passes": 2,
+      "tokens_median": 20105.0,
+      "uncached_input_median": 5423.0,
+      "requests": 10
+    }
+  }
+}

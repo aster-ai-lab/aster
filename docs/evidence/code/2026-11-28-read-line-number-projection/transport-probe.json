@@ -1,0 +1,110 @@
+[
+  {
+    "case": "source",
+    "padded": true,
+    "lines": 1250,
+    "body_bytes": 58300,
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 23387,
+      "completion_tokens": 20,
+      "total_tokens": 23407,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 23387
+    },
+    "expected": {
+      "line": 2163,
+      "slot": 147,
+      "fallback": 19
+    },
+    "actual": {
+      "line": 2163,
+      "slot": 147,
+      "fallback": 19
+    },
+    "pass": true
+  },
+  {
+    "case": "source",
+    "padded": false,
+    "lines": 1250,
+    "body_bytes": 55800,
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 22137,
+      "completion_tokens": 20,
+      "total_tokens": 22157,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 22137
+    },
+    "expected": {
+      "line": 2163,
+      "slot": 147,
+      "fallback": 19
+    },
+    "actual": {
+      "line": 2163,
+      "slot": 147,
+      "fallback": 19
+    },
+    "pass": true
+  },
+  {
+    "case": "config",
+    "padded": false,
+    "lines": 1400,
+    "body_bytes": 39350,
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 14680,
+      "completion_tokens": 13,
+      "total_tokens": 14693,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 14552
+    },
+    "expected": {
+      "line": 990,
+      "spaces": 5
+    },
+    "actual": {
+      "line": 990,
+      "spaces": 5
+    },
+    "pass": true
+  },
+  {
+    "case": "config",
+    "padded": true,
+    "lines": 1400,
+    "body_bytes": 42863,
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 16080,
+      "completion_tokens": 13,
+      "total_tokens": 16093,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 15952
+    },
+    "expected": {
+      "line": 990,
+      "spaces": 5
+    },
+    "actual": {
+      "line": 990,
+      "spaces": 5
+    },
+    "pass": true
+  }
+]

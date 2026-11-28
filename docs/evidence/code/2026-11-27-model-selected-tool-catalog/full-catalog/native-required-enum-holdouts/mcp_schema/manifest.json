@@ -1,0 +1,41 @@
+{
+  "prompts": [
+    "Call mcp__fixture__observe_format with the exact format_version required by its parameter documentation. Open its full definition if needed. Report the returned marker.",
+    "Read digest.txt and report its fixture value and the earlier exact tool marker."
+  ],
+  "expected_markers": [
+    [
+      "SCHEMA-ACK-TEAL-2087"
+    ],
+    [
+      "NODE-CLAY-29",
+      "SCHEMA-ACK-TEAL-2087"
+    ]
+  ],
+  "fixtures_sha256": {
+    "digest.txt": "12942ea528e32ffc82745f1303e8cfeed3946142875ed05ac44cb7e3c6b2388c"
+  },
+  "required_tool": "mcp__fixture__observe_format",
+  "scenario": "mcp_schema",
+  "model": "deepseek-flash",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "approved_program": false,
+  "annotated_signatures": true,
+  "native_required": "enum",
+  "cost_gate": false,
+  "expected_mutation_sha256": null,
+  "orders": [
+    [
+      "release",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "release"
+    ]
+  ]
+}

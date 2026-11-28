@@ -1,0 +1,45 @@
+{
+  "prompts": [
+    "Use the program tool in JavaScript script mode to evaluate this exact source. Report its computed marker.\nasync function run(ctx, inputs) { return { marker: [38 * 7, \"VY\"].join(\"-\") }; }",
+    "Read outcome.log and quote the postcondition together with the previous computed marker."
+  ],
+  "expected_markers": [
+    [
+      "266-VY"
+    ],
+    [
+      "DUSK-Q4TP",
+      "266-VY"
+    ]
+  ],
+  "fixtures_sha256": {
+    "outcome.log": "5c11596b48a7ce976d4157cfb83f89aaaae06358b1d21303ec9d6975262ceb8e"
+  },
+  "required_tool": "program",
+  "scenario": "program_approved",
+  "model": "deepseek-flash",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "approved_program": true,
+  "annotated_signatures": false,
+  "native_required": null,
+  "native_catalog": true,
+  "disk_content_attestation": false,
+  "reference_catalog": "deferred",
+  "cost_gate": true,
+  "expected_mutation_sha256": null,
+  "exact_count_allowed": false,
+  "orders": [
+    [
+      "release",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "release"
+    ]
+  ]
+}

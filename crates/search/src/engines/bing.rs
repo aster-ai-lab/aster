@@ -3,7 +3,7 @@
 //! Bing's RSS endpoint is used instead of the bot-sensitive HTML results page.
 
 use crate::html_engine::{
-    selector, validate_search_response, HtmlEngine, HtmlParser, SearchResponseSpec,
+    HtmlEngine, HtmlParser, SearchResponseSpec, selector, validate_search_response,
 };
 use crate::{EngineCategory, EngineConfig, Result, SearchError, SearchQuery, SearchResult};
 use base64::Engine as _;
@@ -337,9 +337,9 @@ fn resolve_bing_result_url(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::query::{SafeSearch, TimeRange};
     use crate::Engine;
     use crate::HttpFetcher;
+    use crate::query::{SafeSearch, TimeRange};
     use std::sync::Arc;
 
     #[test]

@@ -1,0 +1,90 @@
+[
+  {
+    "scenario": "verify-with-preview",
+    "trial": "1-release",
+    "tool_arguments": {
+      "command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg; echo \"exit=$?\""
+    },
+    "has_current_host_disk_preview": false,
+    "executed_with_exit_zero": false,
+    "tool_output": null,
+    "qualified_pass": false
+  },
+  {
+    "scenario": "verify-with-preview",
+    "trial": "1-candidate",
+    "tool_arguments": {
+      "command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg"
+    },
+    "has_current_host_disk_preview": true,
+    "executed_with_exit_zero": true,
+    "tool_output": "workers=12\n",
+    "qualified_pass": true
+  },
+  {
+    "scenario": "verify-with-preview",
+    "trial": "2-candidate",
+    "tool_arguments": {
+      "command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg"
+    },
+    "has_current_host_disk_preview": true,
+    "executed_with_exit_zero": true,
+    "tool_output": "workers=12\n",
+    "qualified_pass": true
+  },
+  {
+    "scenario": "verify-with-preview",
+    "trial": "2-release",
+    "tool_arguments": {
+      "command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg"
+    },
+    "has_current_host_disk_preview": false,
+    "executed_with_exit_zero": true,
+    "tool_output": "workers=12\n",
+    "qualified_pass": true
+  },
+  {
+    "scenario": "verify-default",
+    "trial": "1-release",
+    "tool_arguments": {
+      "command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg"
+    },
+    "has_current_host_disk_preview": false,
+    "executed_with_exit_zero": true,
+    "tool_output": "workers=12\n",
+    "qualified_pass": true
+  },
+  {
+    "scenario": "verify-default",
+    "trial": "1-candidate",
+    "tool_arguments": {
+      "command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg"
+    },
+    "has_current_host_disk_preview": false,
+    "executed_with_exit_zero": true,
+    "tool_output": "workers=12\n",
+    "qualified_pass": true
+  },
+  {
+    "scenario": "verify-default",
+    "trial": "2-candidate",
+    "tool_arguments": {
+      "command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg"
+    },
+    "has_current_host_disk_preview": false,
+    "executed_with_exit_zero": true,
+    "tool_output": "workers=12\n",
+    "qualified_pass": true
+  },
+  {
+    "scenario": "verify-default",
+    "trial": "2-release",
+    "tool_arguments": {
+      "command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg"
+    },
+    "has_current_host_disk_preview": false,
+    "executed_with_exit_zero": true,
+    "tool_output": "workers=12\n",
+    "qualified_pass": true
+  }
+]

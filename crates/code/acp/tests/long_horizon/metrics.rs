@@ -50,6 +50,7 @@ pub struct RequestSummary {
     pub system_sha256: String,
     pub system_prefix_sha256: BTreeMap<usize, String>,
     pub tools: usize,
+    pub native_deferred_catalog: bool,
     pub tool_schema_bytes: usize,
     pub tools_sha256: String,
 }
@@ -105,6 +106,11 @@ impl RequestSummary {
                 .map(|limit| (limit, hash(&system[..system.len().min(limit)])))
                 .collect(),
             tools: body["tools"].as_array().map_or(0, Vec::len),
+            native_deferred_catalog: body["tools"].as_array().is_some_and(|tools| {
+                tools
+                    .iter()
+                    .any(|tool| tool["function"]["name"].as_str() == Some("load_tool_definitions"))
+            }),
             tool_schema_bytes: tools.len(),
             tools_sha256: hash(tools.as_bytes()),
         }

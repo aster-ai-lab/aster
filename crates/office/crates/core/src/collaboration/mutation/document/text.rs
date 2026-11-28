@@ -446,7 +446,7 @@ fn paragraph_text_node<T: ReadTxn>(
             return Err(collaboration_error(
                 "office.collaboration.mutation_target_missing",
                 format!("Document paragraph '{paragraph_id}' does not exist."),
-            ))
+            ));
         }
         count => {
             return Err(collaboration_error(
@@ -454,7 +454,7 @@ fn paragraph_text_node<T: ReadTxn>(
                 format!(
                     "Document paragraph ID '{paragraph_id}' is assigned to {count} live nodes."
                 ),
-            ))
+            ));
         }
     };
     let mut texts = Vec::new();
@@ -469,7 +469,7 @@ fn paragraph_text_node<T: ReadTxn>(
             return Err(collaboration_error(
                 "office.collaboration.mutation_target_missing",
                 format!("Document paragraph '{paragraph_id}' has no text node to splice."),
-            ))
+            ));
         }
         count => {
             return Err(collaboration_error(
@@ -477,7 +477,7 @@ fn paragraph_text_node<T: ReadTxn>(
                 format!(
                     "Document paragraph '{paragraph_id}' has {count} text nodes; document-splice addresses one Y.XmlText."
                 ),
-            ))
+            ));
         }
     };
     Ok((paragraph, text))

@@ -1,0 +1,82 @@
+[
+  {
+    "arm": "reference",
+    "evidence_sample": 1,
+    "request_sha256": "dbefdecb8b9c69a216687d213a65e856f93d4f1657c3c6223a2a3686547681c4",
+    "system_sha256": "3ed3659a6d343427dd8857942dac1fa4fed64e0ec868ac7f3e95a63b314d32e4",
+    "evidence_sha256": "1e10246bdb51a3c5fe34d1d6f1e39dd3a2c67525286a4b5ff34fe0fa9a715218",
+    "usage": {
+      "prompt_tokens": 531,
+      "completion_tokens": 5,
+      "total_tokens": 536,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 147
+    },
+    "response": {
+      "items": []
+    }
+  },
+  {
+    "arm": "candidate",
+    "evidence_sample": 1,
+    "request_sha256": "8902268560df8f51ac4a9e08f1a361b1cf3385865d7770fee151873c45949d0e",
+    "system_sha256": "31440ae29c196d8f6aa10dfbf1678e4418c630a997da3d654d67e44c953db489",
+    "evidence_sha256": "1e10246bdb51a3c5fe34d1d6f1e39dd3a2c67525286a4b5ff34fe0fa9a715218",
+    "usage": {
+      "prompt_tokens": 453,
+      "completion_tokens": 5,
+      "total_tokens": 458,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 453
+    },
+    "response": {
+      "items": []
+    }
+  },
+  {
+    "arm": "candidate",
+    "evidence_sample": 2,
+    "request_sha256": "10369e1d7ae2959b1b21b1cfbdfff5278a8dbb8bf022d8ad6cff59e06efc68e8",
+    "system_sha256": "31440ae29c196d8f6aa10dfbf1678e4418c630a997da3d654d67e44c953db489",
+    "evidence_sha256": "e0c68d5ac8f4e4a638ada706c0624e0cc06732ae8104239487953d6661a75a4f",
+    "usage": {
+      "prompt_tokens": 388,
+      "completion_tokens": 5,
+      "total_tokens": 393,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 260
+    },
+    "response": {
+      "items": []
+    }
+  },
+  {
+    "arm": "reference",
+    "evidence_sample": 2,
+    "request_sha256": "3a7a54cb2507e8345b188a8a5c9c5e0b93b01a99eabd7dc16ad35bb71f15e32c",
+    "system_sha256": "3ed3659a6d343427dd8857942dac1fa4fed64e0ec868ac7f3e95a63b314d32e4",
+    "evidence_sha256": "e0c68d5ac8f4e4a638ada706c0624e0cc06732ae8104239487953d6661a75a4f",
+    "usage": {
+      "prompt_tokens": 466,
+      "completion_tokens": 5,
+      "total_tokens": 471,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 210
+    },
+    "response": {
+      "items": []
+    }
+  }
+]

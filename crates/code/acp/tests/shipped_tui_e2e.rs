@@ -148,6 +148,16 @@ struct MockState {
     edit_tool_replies: u64,
     expand_replies: u64,
     ask_tool_replies: u64,
+    read_recovery_step: u64,
+    bash_recovery_step: u64,
+    background_recovery_step: u64,
+    systemic_recovery_step: u64,
+    self_heal_overflow_mode: bool,
+    self_heal_overflow_step: u64,
+    self_heal_stream_drop_attempts: u64,
+    midturn_crash_hit: Option<std::sync::mpsc::Sender<()>>,
+    midturn_crash_release: Option<std::sync::mpsc::Receiver<()>>,
+    midturn_crash_attempts: u64,
     queue_release: Option<std::sync::mpsc::Receiver<()>>,
     held_goal_plan: Option<std::sync::mpsc::Sender<TcpStream>>,
     held_compaction: Option<std::sync::mpsc::Sender<TcpStream>>,
@@ -173,6 +183,16 @@ fn spawn_mock_with_catalog(
         edit_tool_replies: 0,
         expand_replies: 0,
         ask_tool_replies: 0,
+        read_recovery_step: 0,
+        bash_recovery_step: 0,
+        background_recovery_step: 0,
+        systemic_recovery_step: 0,
+        self_heal_overflow_mode: false,
+        self_heal_overflow_step: 0,
+        self_heal_stream_drop_attempts: 0,
+        midturn_crash_hit: None,
+        midturn_crash_release: None,
+        midturn_crash_attempts: 0,
         queue_release: None,
         held_goal_plan: None,
         held_compaction: None,
@@ -219,6 +239,95 @@ fn spawn_mock_with_catalog(
                                 &mut stream,
                                 &format!("data: {delta}\n\ndata: {error}\n\ndata: [DONE]\n\n"),
                             );
+                            continue;
+                        }
+                    }
+                    if body.contains("SELF-HEAL-OVERFLOW-STREAM-ORACLE") {
+                        guard.self_heal_overflow_mode = true;
+                    }
+                    if guard.self_heal_overflow_mode
+                        && !body.contains("context-compaction engine")
+                        && !body.contains("emit_pre_analysis")
+                        && !body.contains("You are a pre-analysis assistant")
+                        && !body.contains("You plan a durable Goal.")
+                    {
+                        let parsed: serde_json::Value =
+                            serde_json::from_str(&body).unwrap_or(serde_json::Value::Null);
+                        if has_tools(&parsed) {
+                            let streaming = parsed
+                                .get("stream")
+                                .and_then(serde_json::Value::as_bool)
+                                .unwrap_or(false);
+                            match guard.self_heal_overflow_step {
+                                0 => {
+                                    guard.self_heal_overflow_step = 1;
+                                    let reply = reply_tool(
+                                        "read",
+                                        r#"{"file_path":"big.txt"}"#,
+                                        &mut guard,
+                                        streaming,
+                                    );
+                                    drop(guard);
+                                    let _ = write_http(&mut stream, &reply);
+                                    continue;
+                                }
+                                1 => {
+                                    guard.self_heal_overflow_step = 2;
+                                    let _ = write_http_status(
+                                        &mut stream,
+                                        "400 Bad Request",
+                                        "application/json",
+                                        r#"{"error":{"code":"context_length_exceeded","message":"This model's maximum context length is 8192 tokens."}}"#,
+                                    );
+                                    continue;
+                                }
+                                _ if guard.self_heal_stream_drop_attempts < 2 => {
+                                    guard.self_heal_stream_drop_attempts += 1;
+                                    let partial = serde_json::json!({
+                                        "choices": [{"delta": {"content": "PARTIAL-DROP "}}]
+                                    });
+                                    let _ =
+                                        write_http(&mut stream, &format!("data: {partial}\n\n"));
+                                    continue;
+                                }
+                                _ => {
+                                    let reply =
+                                        reply_text("SELF-HEAL-LONG-HORIZON-DONE", streaming);
+                                    drop(guard);
+                                    let _ = write_http(&mut stream, &reply);
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                    if body.contains("SELF-HEAL-MIDTURN-CRASH-ORACLE")
+                        && !body.contains("context-compaction engine")
+                        && !body.contains("emit_pre_analysis")
+                        && !body.contains("You are a pre-analysis assistant")
+                        && !body.contains("You plan a durable Goal.")
+                    {
+                        let parsed: serde_json::Value =
+                            serde_json::from_str(&body).unwrap_or(serde_json::Value::Null);
+                        if has_tools(&parsed) {
+                            let streaming = parsed
+                                .get("stream")
+                                .and_then(serde_json::Value::as_bool)
+                                .unwrap_or(false);
+                            guard.midturn_crash_attempts += 1;
+                            if guard.midturn_crash_attempts == 1 {
+                                if let Some(hit) = guard.midturn_crash_hit.take() {
+                                    let _ = hit.send(());
+                                }
+                                let release = guard.midturn_crash_release.take();
+                                drop(guard);
+                                if let Some(rx) = release {
+                                    let _ = rx.recv_timeout(Duration::from_secs(10));
+                                }
+                                continue;
+                            }
+                            let reply = reply_text("SELF-HEAL-MIDTURN-RESUMED-OK", streaming);
+                            drop(guard);
+                            let _ = write_http(&mut stream, &reply);
                             continue;
                         }
                     }
@@ -276,6 +385,21 @@ fn read_http_body(stream: &mut TcpStream) -> Option<String> {
     }
     let end = (header_end + length).min(buf.len());
     Some(String::from_utf8_lossy(&buf[header_end..end]).into_owned())
+}
+
+fn write_http_status(
+    stream: &mut TcpStream,
+    status: &str,
+    content_type: &str,
+    body: &str,
+) -> std::io::Result<()> {
+    let header = format!(
+        "HTTP/1.1 {status}\r\nContent-Type: {content_type}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        body.len()
+    );
+    stream.write_all(header.as_bytes())?;
+    stream.write_all(body.as_bytes())?;
+    stream.flush()
 }
 
 fn write_http(stream: &mut TcpStream, body: &str) -> std::io::Result<()> {
@@ -478,6 +602,154 @@ fn decide(raw: &str, state: &mut MockState) -> String {
     if raw.contains("REPEAT-LIST-ORACLE") && tools {
         return reply_tool("ls", r#"{"path":"probe"}"#, state, streaming);
     }
+    if raw.contains("READ-RECOVERY-E2E-ORACLE") && tools {
+        let step = state.read_recovery_step;
+        state.read_recovery_step = step.saturating_add(1);
+        return match step {
+            0 => reply_tool(
+                "read",
+                r#"{"files":[{"file_path":"center.txt"}]}"#,
+                state,
+                streaming,
+            ),
+            1 => {
+                if !raw.contains("Invalid arguments for tool 'read'")
+                    || raw.contains("policy_denied")
+                    || raw.contains("[host tool recovery]")
+                {
+                    return reply_text("READ-RECOVERY-UNEXPECTED-STEP-1", streaming);
+                }
+                reply_tools(
+                    &[
+                        ("read", r#"{"file_path":"center.txt"}"#),
+                        ("read", r#"{"file_path":"center.txt"}"#),
+                        ("read", r#"{"file_path":"center.txt"}"#),
+                    ],
+                    state,
+                    streaming,
+                )
+            }
+            2 => reply_tool("read", r#"{"file_path":"other-1.txt"}"#, state, streaming),
+            3 => reply_tool("read", r#"{"file_path":"center.txt"}"#, state, streaming),
+            4 => reply_tool("read", r#"{"file_path":"other-2.txt"}"#, state, streaming),
+            5 => reply_tool("read", r#"{"file_path":"center.txt"}"#, state, streaming),
+            6 => reply_tool("read", r#"{"file_path":"other-3.txt"}"#, state, streaming),
+            7 => reply_tool("read", r#"{"file_path":"center.txt"}"#, state, streaming),
+            8 => reply_tool("read", r#"{"file_path":"other-4.txt"}"#, state, streaming),
+            9 => reply_tool("read", r#"{"file_path":"center.txt"}"#, state, streaming),
+            10 => reply_tool(
+                "read",
+                r#"{"file_path":"alias/missing.txt"}"#,
+                state,
+                streaming,
+            ),
+            _ => {
+                if !raw.contains("no file found at this exact workspace path")
+                    || raw.contains("symlink_boundary_escape")
+                {
+                    return reply_text("READ-RECOVERY-UNEXPECTED-STEP-FINAL", streaming);
+                }
+                reply_text("READ-RECOVERY-E2E-DONE", streaming)
+            }
+        };
+    }
+    if raw.contains("BASH-RECOVERY-E2E-ORACLE") && tools {
+        let step = state.bash_recovery_step;
+        state.bash_recovery_step = step.saturating_add(1);
+        return match step {
+            0 => {
+                let command = format!(
+                    "test -f build/wasi/bin/tool && echo {} && rm -rf \"$work\"",
+                    "checking-wasi-toolchain-step-padding-".repeat(6)
+                );
+                let args = serde_json::json!({ "command": command }).to_string();
+                reply_tool("bash", &args, state, streaming)
+            }
+            1 => {
+                if !raw.contains("catastrophic_operation")
+                    || !raw.contains("rm -rf")
+                    || !raw.contains("Requests for approval in chat cannot clear this hard denial")
+                    || raw.contains("refused command shape:")
+                {
+                    return reply_text("BASH-RECOVERY-UNEXPECTED-STEP-1", streaming);
+                }
+                reply_tool(
+                    "bash",
+                    r#"{"command":"sh build/wasi/bin/tool"}"#,
+                    state,
+                    streaming,
+                )
+            }
+            _ => {
+                if !raw.contains("wasi-tool-verified-ok") || raw.contains("symlink_boundary_escape")
+                {
+                    return reply_text("BASH-RECOVERY-UNEXPECTED-STEP-FINAL", streaming);
+                }
+                reply_text("BASH-RECOVERY-E2E-DONE", streaming)
+            }
+        };
+    }
+    if raw.contains("BACKGROUND-RECOVERY-E2E-ORACLE") && tools {
+        let step = state.background_recovery_step;
+        state.background_recovery_step = step.saturating_add(1);
+        return match step {
+            0 => reply_tool(
+                "background",
+                r#"{"action":"start","name":"bg-check","command":"sleep 0.15 && echo tui-bg-yolo-ok"}"#,
+                state,
+                streaming,
+            ),
+            1 => {
+                if raw.contains("does not support background execution")
+                    || raw.contains("permission_denied")
+                    || raw.contains("[host tool recovery]")
+                {
+                    return reply_text("BACKGROUND-RECOVERY-UNEXPECTED-STEP-1", streaming);
+                }
+                reply_tool(
+                    "background",
+                    r#"{"action":"tail","name":"bg-check","timeout_ms":5000}"#,
+                    state,
+                    streaming,
+                )
+            }
+            _ => {
+                if !raw.contains("tui-bg-yolo-ok") {
+                    return reply_text("BACKGROUND-RECOVERY-UNEXPECTED-STEP-FINAL", streaming);
+                }
+                reply_text("BACKGROUND-RECOVERY-E2E-DONE", streaming)
+            }
+        };
+    }
+    if raw.contains("SYSTEMIC-RECOVERY-E2E-ORACLE") && tools {
+        let step = state.systemic_recovery_step;
+        state.systemic_recovery_step = step.saturating_add(1);
+        return match step {
+            0 => reply_tools(
+                &[
+                    ("bash", r#"{"command":"rm -rf \"$work\""}"#),
+                    ("bash", r#"{"command":"rm -rf /"}"#),
+                ],
+                state,
+                streaming,
+            ),
+            1 => {
+                if !(raw.contains("[host tool recovery]")
+                    && raw.contains("catastrophic_operation")
+                    && raw.contains("rm -rf"))
+                {
+                    return reply_text("SYSTEMIC-RECOVERY-UNEXPECTED-STEP-1", streaming);
+                }
+                reply_tool("ls", r#"{"path":"alias"}"#, state, streaming)
+            }
+            _ => {
+                if !(raw.contains("inside.txt") && !raw.contains("symlink_boundary_escape")) {
+                    return reply_text("SYSTEMIC-RECOVERY-UNEXPECTED-STEP-FINAL", streaming);
+                }
+                reply_text("SYSTEMIC-RECOVERY-E2E-DONE", streaming)
+            }
+        };
+    }
     if raw.contains("LIST-FILES") {
         if let Some(output) = parsed["messages"].as_array().and_then(|messages| {
             messages
@@ -501,6 +773,12 @@ fn decide(raw: &str, state: &mut MockState) -> String {
         }
         let args = serde_json::json!({ "path": "." }).to_string();
         return reply_tool("ls", &args, state, streaming);
+    }
+    if raw.contains("SELF-HEAL-TURN-2") {
+        return reply_text("SELF-HEAL-TURN-2-OK", streaming);
+    }
+    if raw.contains("SELF-HEAL-TURN-1") {
+        return reply_text("SELF-HEAL-TURN-1-OK", streaming);
     }
     if raw.contains("CONTROL-NEXT") {
         return reply_text("CONTROL-NEXT-DONE", streaming);
@@ -4203,6 +4481,513 @@ fn shipped_tui_shows_recovery_and_an_actionable_stop_in_the_same_session() {
     pty.type_text("/quit");
     pty.enter();
     assert!(pty.child.wait().unwrap().success());
+}
+
+#[test]
+fn shipped_tui_read_recovery_e2e_completes_productive_rereads_twin_batch_and_bad_batch_schema() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let home = root.path().join("home");
+    std::fs::create_dir(&workspace).unwrap();
+    std::fs::create_dir(&home).unwrap();
+    let real_dir = workspace.join("real");
+    std::fs::create_dir(&real_dir).unwrap();
+    std::fs::write(workspace.join("center.txt"), "CENTER-CONTENT\n").unwrap();
+    for i in 1..=4 {
+        std::fs::write(
+            workspace.join(format!("other-{i}.txt")),
+            format!("OTHER-CONTENT-{i}\n"),
+        )
+        .unwrap();
+    }
+    std::os::unix::fs::symlink(&real_dir, workspace.join("alias")).unwrap();
+
+    let (addr, state) = spawn_mock(&workspace.join("unused"), &workspace.join("unused-late"));
+    let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+    let owned = child_env(&binaries::acp_binary(), &config, &home);
+    let env = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let mut pty = open_pty(
+        &tui_binary(),
+        &["--cwd", workspace.to_str().unwrap()],
+        &env,
+        &workspace,
+    );
+    pty.wait_for("mock/gpt", Duration::from_secs(45));
+    pty.type_text("READ-RECOVERY-E2E-ORACLE");
+    pty.enter();
+    let done = pty.wait_for("READ-RECOVERY-E2E-DONE", Duration::from_secs(45));
+    assert!(
+        !done.contains("Tool progress blocked"),
+        "productive reads and recoverable schema/symlink misses must not block: {done}"
+    );
+    pty.type_text("/quit");
+    pty.enter();
+    assert!(pty.child.wait().unwrap().success());
+
+    let joined_facts = log_text(&workspace);
+    assert!(
+        !joined_facts.contains("policy_denied")
+            && !joined_facts.contains("symlink_boundary_escape")
+            && !joined_facts.contains("run.tool_refusal_cycle"),
+        "unexpected refusal facts in log: {joined_facts}"
+    );
+    assert!(
+        state.lock().unwrap().read_recovery_step >= 12,
+        "expected all 12 recovery/exploration model steps, got {}",
+        state.lock().unwrap().read_recovery_step
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn shipped_tui_bash_symlink_and_recovery_e2e_recovers_and_completes() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let home = root.path().join("home");
+    std::fs::create_dir(&workspace).unwrap();
+    std::fs::create_dir(&home).unwrap();
+    let deps_bin = workspace.join("build/wasi-deps/bin");
+    std::fs::create_dir_all(&deps_bin).unwrap();
+    std::fs::write(
+        deps_bin.join("tool-real"),
+        "#!/bin/sh\necho wasi-tool-verified-ok\n",
+    )
+    .unwrap();
+    std::os::unix::fs::symlink("tool-real", deps_bin.join("tool")).unwrap();
+    std::os::unix::fs::symlink("wasi-deps", workspace.join("build/wasi")).unwrap();
+
+    let (addr, state) = spawn_mock(&workspace.join("unused"), &workspace.join("unused-late"));
+    let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+    let owned = child_env(&binaries::acp_binary(), &config, &home);
+    let env = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let mut pty = open_pty(
+        &tui_binary(),
+        &["--cwd", workspace.to_str().unwrap()],
+        &env,
+        &workspace,
+    );
+    pty.wait_for("mock/gpt", Duration::from_secs(45));
+    pty.type_text("BASH-RECOVERY-E2E-ORACLE");
+    pty.enter();
+    let ask_prompt = pty.wait_for("Yes, proceed", Duration::from_secs(30));
+    assert!(
+        !ask_prompt.contains("Tool progress blocked")
+            && !ask_prompt.contains("Turn failed")
+            && !ask_prompt.contains("symlink_boundary_escape"),
+        "expected hard denial recovery into ordinary HITL prompt for in-workspace symlink: {ask_prompt}"
+    );
+    pty.write_bytes(b"1");
+    let done = pty.wait_for("BASH-RECOVERY-E2E-DONE", Duration::from_secs(45));
+    assert!(
+        !done.contains("Tool progress blocked")
+            && !done.contains("Turn failed")
+            && !done.contains("repeated a refusal"),
+        "bash refusal hint + in-workspace symlink command must recover cleanly: {done}"
+    );
+    pty.type_text("/quit");
+    pty.enter();
+    assert!(pty.child.wait().unwrap().success());
+
+    let joined_facts = log_text(&workspace);
+    assert!(
+        !joined_facts.contains("symlink_boundary_escape")
+            && !joined_facts.contains("run.tool_refusal_cycle"),
+        "unexpected symlink denial or refusal cycle in log: {joined_facts}"
+    );
+    assert!(
+        joined_facts.contains("catastrophic_operation")
+            && joined_facts.contains("wasi-tool-verified-ok"),
+        "expected catastrophic hint + in-workspace symlink bash execution in log: {joined_facts}"
+    );
+    assert!(
+        state.lock().unwrap().bash_recovery_step >= 3,
+        "expected all 3 bash recovery model steps, got {}",
+        state.lock().unwrap().bash_recovery_step
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn shipped_tui_background_yolo_recovery_e2e_completes_without_refusal_cycle() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let home = root.path().join("home");
+    std::fs::create_dir(&workspace).unwrap();
+    std::fs::create_dir(&home).unwrap();
+
+    let (addr, state) = spawn_mock(&workspace.join("unused"), &workspace.join("unused-late"));
+    let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+    let owned = child_env(&binaries::acp_binary(), &config, &home);
+    let env = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let mut pty = open_pty(
+        &tui_binary(),
+        &["--cwd", workspace.to_str().unwrap(), "--yolo"],
+        &env,
+        &workspace,
+    );
+    pty.wait_for("mock/gpt", Duration::from_secs(45));
+    pty.type_text("BACKGROUND-RECOVERY-E2E-ORACLE");
+    pty.enter();
+    let done = pty.wait_for("BACKGROUND-RECOVERY-E2E-DONE", Duration::from_secs(45));
+    assert!(
+        !done.contains("Tool progress blocked")
+            && !done.contains("Turn failed")
+            && !done.contains("repeated a refusal")
+            && !done.contains("does not support background execution"),
+        "background start/tail under --yolo must complete cleanly: {done}"
+    );
+    pty.type_text("/quit");
+    pty.enter();
+    assert!(pty.child.wait().unwrap().success());
+
+    let joined_facts = log_text(&workspace);
+    assert!(
+        !joined_facts.contains("does not support background execution")
+            && !joined_facts.contains("permission_denied")
+            && !joined_facts.contains("run.tool_refusal_cycle"),
+        "unexpected background refusal in log: {joined_facts}"
+    );
+    assert!(
+        joined_facts.contains("tui-bg-yolo-ok"),
+        "expected background output in log: {joined_facts}"
+    );
+    assert!(
+        state.lock().unwrap().background_recovery_step >= 3,
+        "expected all 3 background model steps, got {}",
+        state.lock().unwrap().background_recovery_step
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn shipped_tui_split_batch_and_readonly_symlink_recovery_e2e_completes() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let home = root.path().join("home");
+    let real_dir = workspace.join("real");
+    std::fs::create_dir_all(&real_dir).unwrap();
+    std::fs::create_dir(&home).unwrap();
+    std::fs::write(real_dir.join("inside.txt"), "ok\n").unwrap();
+    std::os::unix::fs::symlink(&real_dir, workspace.join("alias")).unwrap();
+
+    let (addr, state) = spawn_mock(&workspace.join("unused"), &workspace.join("unused-late"));
+    let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+    let owned = child_env(&binaries::acp_binary(), &config, &home);
+    let env = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let mut pty = open_pty(
+        &tui_binary(),
+        &["--cwd", workspace.to_str().unwrap()],
+        &env,
+        &workspace,
+    );
+    pty.wait_for("mock/gpt", Duration::from_secs(45));
+    pty.type_text("SYSTEMIC-RECOVERY-E2E-ORACLE");
+    pty.enter();
+    let done = pty.wait_for("SYSTEMIC-RECOVERY-E2E-DONE", Duration::from_secs(45));
+    assert!(
+        !done.contains("Tool progress blocked")
+            && !done.contains("Turn failed")
+            && !done.contains("repeated a refusal")
+            && !done.contains("symlink_boundary_escape"),
+        "systemic wave refusal + in-workspace symlink ls recovery must complete cleanly: {done}"
+    );
+    pty.type_text("/quit");
+    pty.enter();
+    assert!(pty.child.wait().unwrap().success());
+
+    let joined_facts = log_text(&workspace);
+    assert!(
+        !joined_facts.contains("Tool progress blocked")
+            && !joined_facts.contains("Turn failed")
+            && !joined_facts.contains("repeated a refusal")
+            && !joined_facts.contains("symlink_boundary_escape")
+            && !joined_facts.contains("run.tool_refusal_cycle"),
+        "unexpected refusal cycle or symlink denial in log: {joined_facts}"
+    );
+    assert!(
+        joined_facts.contains("catastrophic_operation") && joined_facts.contains("inside.txt"),
+        "expected catastrophic hint + in-workspace symlink ls output in log: {joined_facts}"
+    );
+    assert!(
+        state.lock().unwrap().systemic_recovery_step >= 3,
+        "expected all 3 systemic recovery model steps, got {}",
+        state.lock().unwrap().systemic_recovery_step
+    );
+}
+
+#[test]
+fn shipped_tui_sidecar_crash_self_heals_and_continues_e2e() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let home = root.path().join("home");
+    std::fs::create_dir(&workspace).unwrap();
+    std::fs::create_dir(&home).unwrap();
+
+    let (addr, _state) = spawn_mock(&workspace.join("unused"), &workspace.join("unused-late"));
+    let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+    let pids_log = root.path().join("pids.log");
+    let wrapper = root.path().join("acp-wrapper.sh");
+    std::fs::write(
+        &wrapper,
+        format!(
+            "#!/bin/sh\nprintf '%s\\n' \"$$\" >> \"{}\"\nexec \"{}\" \"$@\"\n",
+            pids_log.display(),
+            binaries::acp_binary(),
+        ),
+    )
+    .unwrap();
+    std::fs::set_permissions(&wrapper, std::fs::Permissions::from_mode(0o755)).unwrap();
+
+    let owned = child_env(wrapper.to_str().unwrap(), &config, &home);
+    let env = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let mut pty = open_pty(
+        &tui_binary(),
+        &["--cwd", workspace.to_str().unwrap()],
+        &env,
+        &workspace,
+    );
+    pty.wait_for("mock/gpt", Duration::from_secs(45));
+    pty.type_text("SELF-HEAL-TURN-1");
+    pty.enter();
+    pty.wait_for("SELF-HEAL-TURN-1-OK", Duration::from_secs(45));
+
+    let first_pid = std::fs::read_to_string(&pids_log)
+        .expect("wrapper pid log")
+        .lines()
+        .next()
+        .expect("first sidecar pid")
+        .trim()
+        .to_string();
+    let kill_status = std::process::Command::new("/bin/kill")
+        .args(["-KILL", &first_pid])
+        .status()
+        .expect("invoke /bin/kill");
+    assert!(
+        kill_status.success(),
+        "failed to SIGKILL sidecar pid {first_pid}"
+    );
+
+    let deadline = Instant::now() + Duration::from_secs(30);
+    let mut respawned_pid = None;
+    let mut screen = String::new();
+    while Instant::now() < deadline {
+        screen = pty.pump(Duration::from_millis(120));
+        if let Ok(contents) = std::fs::read_to_string(&pids_log) {
+            let pids: Vec<&str> = contents
+                .lines()
+                .map(str::trim)
+                .filter(|s| !s.is_empty())
+                .collect();
+            if pids.len() >= 2 && pids[1] != first_pid {
+                respawned_pid = Some(pids[1].to_string());
+                if screen.contains("Session restored") {
+                    break;
+                }
+            }
+        }
+    }
+    assert!(
+        respawned_pid.is_some(),
+        "supervised sidecar did not respawn: {screen}"
+    );
+    if !screen.contains("Session restored") {
+        let restored = pty.wait_for("Session restored", Duration::from_secs(15));
+        assert!(restored.contains("Session restored"), "{restored}");
+    }
+    assert!(
+        pty.child.try_wait().unwrap().is_none(),
+        "TUI must remain running after sidecar crash & respawn"
+    );
+
+    pty.type_text("SELF-HEAL-TURN-2");
+    pty.enter();
+    let turn2 = pty.wait_for("SELF-HEAL-TURN-2-OK", Duration::from_secs(45));
+    assert!(
+        !turn2.contains("Turn failed"),
+        "post-respawn turn must succeed cleanly: {turn2}"
+    );
+    pty.type_text("/quit");
+    pty.enter();
+    assert!(pty.child.wait().unwrap().success());
+}
+
+#[test]
+fn shipped_tui_long_horizon_stream_drop_and_context_overflow_self_heal_e2e() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let home = root.path().join("home");
+    std::fs::create_dir(&workspace).unwrap();
+    std::fs::create_dir(&home).unwrap();
+    std::fs::write(
+        workspace.join("big.txt"),
+        format!("BIG-FILE-MARKER {}\n", "payload-".repeat(512)),
+    )
+    .unwrap();
+
+    let (addr, state) = spawn_mock(&workspace.join("unused"), &workspace.join("unused-late"));
+    let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+    let owned = child_env(&binaries::acp_binary(), &config, &home);
+    let env = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let mut pty = open_pty(
+        &tui_binary(),
+        &["--cwd", workspace.to_str().unwrap()],
+        &env,
+        &workspace,
+    );
+    pty.wait_for("mock/gpt", Duration::from_secs(45));
+    pty.type_text("SELF-HEAL-OVERFLOW-STREAM-ORACLE");
+    pty.enter();
+    let done = pty.wait_for("SELF-HEAL-LONG-HORIZON-DONE", Duration::from_secs(60));
+    assert!(
+        !done.contains("Turn failed"),
+        "overflow + stream-drop recovery must complete cleanly without Turn failed: {done}"
+    );
+    pty.type_text("/quit");
+    pty.enter();
+    assert!(pty.child.wait().unwrap().success());
+
+    let joined_facts = log_text(&workspace);
+    assert!(
+        joined_facts.contains("\"overflow_recovery\":true")
+            && joined_facts.contains("SELF-HEAL-LONG-HORIZON-DONE"),
+        "expected overflow_recovery compaction + recovered output in fact log: {joined_facts}"
+    );
+    let mock = state.lock().unwrap();
+    assert_eq!(mock.self_heal_overflow_step, 2);
+    assert_eq!(mock.self_heal_stream_drop_attempts, 2);
+}
+
+#[test]
+fn shipped_tui_mid_turn_sidecar_crash_auto_resumes_without_duplicating_prompt_e2e() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let home = root.path().join("home");
+    std::fs::create_dir(&workspace).unwrap();
+    std::fs::create_dir(&home).unwrap();
+
+    let (hit_tx, hit_rx) = std::sync::mpsc::channel();
+    let (rel_tx, rel_rx) = std::sync::mpsc::channel();
+    let (addr, state) = spawn_mock(&workspace.join("unused"), &workspace.join("unused-late"));
+    {
+        let mut guard = state.lock().unwrap();
+        guard.midturn_crash_hit = Some(hit_tx);
+        guard.midturn_crash_release = Some(rel_rx);
+    }
+    let config = write_acl(&home, &workspace, &format!("http://{addr}/v1"));
+    let pids_log = root.path().join("pids.log");
+    let wrapper = root.path().join("acp-wrapper.sh");
+    std::fs::write(
+        &wrapper,
+        format!(
+            "#!/bin/sh\nprintf '%s\\n' \"$$\" >> \"{}\"\nexec \"{}\" \"$@\"\n",
+            pids_log.display(),
+            binaries::acp_binary(),
+        ),
+    )
+    .unwrap();
+    std::fs::set_permissions(&wrapper, std::fs::Permissions::from_mode(0o755)).unwrap();
+
+    let owned = child_env(wrapper.to_str().unwrap(), &config, &home);
+    let env = owned
+        .iter()
+        .map(|(key, value)| (key.as_str(), value.as_str()))
+        .collect::<Vec<_>>();
+    let mut pty = open_pty(
+        &tui_binary(),
+        &["--cwd", workspace.to_str().unwrap()],
+        &env,
+        &workspace,
+    );
+    pty.wait_for("mock/gpt", Duration::from_secs(45));
+    pty.type_text("SELF-HEAL-MIDTURN-CRASH-ORACLE");
+    pty.enter();
+
+    hit_rx
+        .recv_timeout(Duration::from_secs(30))
+        .expect("mid-turn model request never reached mock server");
+    let first_pid = std::fs::read_to_string(&pids_log)
+        .expect("wrapper pid log")
+        .lines()
+        .next()
+        .expect("first sidecar pid")
+        .trim()
+        .to_string();
+    let kill_status = std::process::Command::new("/bin/kill")
+        .args(["-KILL", &first_pid])
+        .status()
+        .expect("invoke /bin/kill");
+    assert!(
+        kill_status.success(),
+        "failed to SIGKILL sidecar pid {first_pid}"
+    );
+    drop(rel_tx);
+
+    let deadline = Instant::now() + Duration::from_secs(30);
+    let mut respawned = false;
+    while Instant::now() < deadline {
+        let _ = pty.pump(Duration::from_millis(120));
+        if let Ok(contents) = std::fs::read_to_string(&pids_log) {
+            let pids: Vec<&str> = contents
+                .lines()
+                .map(str::trim)
+                .filter(|s| !s.is_empty())
+                .collect();
+            if pids.len() >= 2 && pids[1] != first_pid {
+                respawned = true;
+                break;
+            }
+        }
+    }
+    assert!(
+        respawned,
+        "expected supervised sidecar respawn after mid-turn SIGKILL"
+    );
+
+    let resumed = pty.wait_for("SELF-HEAL-MIDTURN-RESUMED-OK", Duration::from_secs(45));
+    assert!(
+        !resumed.contains("Turn failed"),
+        "mid-turn crash auto-resume must suppress Turn failed and finish cleanly: {resumed}"
+    );
+    pty.type_text("/quit");
+    pty.enter();
+    assert!(pty.child.wait().unwrap().success());
+
+    let joined_facts = log_text(&workspace);
+    let user_message_count = joined_facts
+        .lines()
+        .filter(|line| {
+            line.contains("\"type\":\"user.message\"")
+                && line.contains("SELF-HEAL-MIDTURN-CRASH-ORACLE")
+        })
+        .count();
+    assert_eq!(
+        user_message_count, 1,
+        "mid-turn auto-resume must not duplicate user.message: {joined_facts}"
+    );
+    let mock = state.lock().unwrap();
+    assert!(
+        mock.midturn_crash_attempts >= 2,
+        "expected retried model request after crash respawn, got {}",
+        mock.midturn_crash_attempts
+    );
 }
 
 /// Ask-user choice and edit tool mutate through the real pager under yolo.

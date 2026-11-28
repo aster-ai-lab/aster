@@ -52,7 +52,9 @@ async fn yolo_runs_actual_host_tools_and_git_while_normal_keeps_its_sandbox() {
     let write = "Set-Content -LiteralPath selected.txt -Value selected -NoNewline";
     #[cfg(not(windows))]
     let write = "printf selected > selected.txt";
-    let command = format!("git init -q; {write}; git add selected.txt; git -c user.name=Fixture -c user.email=fixture@example.invalid -c commit.gpgsign=false commit -qm fixture; git show HEAD:selected.txt");
+    let command = format!(
+        "git init -q; {write}; git add selected.txt; git -c user.name=Fixture -c user.email=fixture@example.invalid -c commit.gpgsign=false commit -qm fixture; git show HEAD:selected.txt"
+    );
     #[cfg(target_os = "macos")]
     let command = format!("{command}; printf '\\n'; uname -s");
     let output = crate::tools::builtin::bash::BashTool
@@ -71,6 +73,30 @@ async fn yolo_runs_actual_host_tools_and_git_while_normal_keeps_its_sandbox() {
     let normal = base.with_run_governance(Some(Arc::new(policy_for_posture("default"))), None);
     assert!(normal.sandbox.as_ref().unwrap().is_isolated());
     assert!(Arc::ptr_eq(normal.sandbox.as_ref().unwrap(), &sandbox));
+    assert!(yolo
+        .sandbox
+        .as_ref()
+        .unwrap()
+        .supports_background_execution());
+
+    let manifest_sandbox: Arc<dyn BashSandbox> = Arc::new(HostAccessSandbox {
+        runner: crate::workspace::ManifestWorkspaceBackend::new(root.path()),
+    });
+    assert!(manifest_sandbox.supports_background_execution());
+
+    let custom_only: Arc<dyn BashSandbox> = Arc::new(HostAccessSandbox {
+        runner: Arc::new(DummyRunner),
+    });
+    assert!(!custom_only.supports_background_execution());
+}
+
+struct DummyRunner;
+
+#[async_trait::async_trait]
+impl WorkspaceCommandRunner for DummyRunner {
+    async fn exec(&self, _: CommandRequest) -> anyhow::Result<crate::workspace::CommandOutput> {
+        anyhow::bail!("unused")
+    }
 }
 
 #[tokio::test]

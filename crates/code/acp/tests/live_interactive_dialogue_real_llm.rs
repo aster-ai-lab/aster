@@ -18,6 +18,9 @@ use agent_client_protocol::{Client, ClientSideConnection};
 use async_trait::async_trait;
 use tokio_util::compat::{TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt};
 
+#[path = "support/binaries.rs"]
+mod binaries;
+
 /// Permission gate that auto-allows read-only requests and cancels anything
 /// else — the dialogue here is read-only by construction, and an unexpected
 /// write request failing closed is part of the oracle.
@@ -147,7 +150,7 @@ fn spawn_live_client(
     model: Option<&str>,
     client: impl Client + 'static,
 ) -> (tokio::process::Child, std::rc::Rc<ClientSideConnection>) {
-    let bin = PathBuf::from(env!("CARGO_BIN_EXE_aster-acp"));
+    let bin = PathBuf::from(binaries::acp_binary());
     let home = workspace.join("home");
     std::fs::create_dir_all(&home).expect("home");
     let stderr_path = workspace.join("acp.stderr");

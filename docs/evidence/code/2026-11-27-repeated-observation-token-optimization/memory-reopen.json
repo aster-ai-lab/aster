@@ -1,0 +1,16 @@
+[
+  {
+    "arm": "release",
+    "responded": true,
+    "reopened_queried_records": 1,
+    "usage_complete": true,
+    "api_requests": 2
+  },
+  {
+    "arm": "candidate",
+    "responded": true,
+    "reopened_queried_records": 1,
+    "usage_complete": true,
+    "api_requests": 2
+  }
+]

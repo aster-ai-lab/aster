@@ -407,6 +407,7 @@ impl AgentView {
                 )
             };
         let can_demote = self.surface() == ViewSurface::Root
+            && !crate::app::aster_active()
             && self
                 .session
                 .tracker
@@ -5006,20 +5007,23 @@ mod status_line_draw_tests {
     }
     const FIVE_ROW_SCRIPT: &str = "row-1\nrow-2\nrow-3\nrow-4\nrow-5";
     #[test]
-    fn short_terminal_leaves_the_row_four_of_its_five_rows() {
+    fn short_terminal_keeps_script_usage_prompt_and_shortcuts() {
         let buf = draw_script(FIVE_ROW_SCRIPT, 16);
         let screen = dump(&buf);
+        for row in ["row-1", "row-2", "row-3"] {
+            assert!(find(&buf, row).is_some(), "missing {row}\n{screen}");
+        }
         assert!(
-            find(&buf, "row-4").is_some(),
-            "four rows are left over at height 16\n{screen}"
+            find(&buf, "Σ — tokens").is_some(),
+            "the usage meter keeps its row\n{screen}"
         );
         assert!(
-            find(&buf, "row-5").is_none(),
-            "a fifth row could only come out of the prompt\n{screen}"
+            find(&buf, "row-4").is_none() && find(&buf, "row-5").is_none(),
+            "the usage meter consumes one row, so later script rows stay clipped\n{screen}"
         );
         assert!(
-            find(&buf, "\u{2570}").is_some(),
-            "the prompt keeps its bottom rule\n{screen}"
+            find(&buf, "Add a follow-up").is_some() && find(&buf, "▀").is_some(),
+            "the borderless prompt keeps its text and half-block rule\n{screen}"
         );
         assert!(
             // The label, not the binding: a terminal that cannot send `Ctrl+.` draws `Ctrl+x` for the same cheatsheet

@@ -146,7 +146,7 @@ fn rewrite_merges<T: ReadTxn>(
             _ => {
                 return Err(invalid_shared_spreadsheet(
                     "A shared Spreadsheet merge address is not a flat record.",
-                ))
+                ));
             }
         }
     }
@@ -493,7 +493,7 @@ fn rewrite_formula_json(
                         _ => {
                             return Err(invalid_shared_spreadsheet(
                                 "A shared Spreadsheet reference field is not text.",
-                            ))
+                            ));
                         }
                     }
                     continue;
@@ -787,7 +787,7 @@ fn array_indexes_of<T: ReadTxn>(
             _ => {
                 return Err(invalid_shared_spreadsheet(
                     "A shared Spreadsheet table order entry is not text.",
-                ))
+                ));
             }
         }
     }
@@ -826,7 +826,7 @@ fn assign_merge_field(group: &mut MergeGroup, field: &str, number: u32) -> UseRe
         _ => {
             return Err(invalid_shared_spreadsheet(
                 "A shared Spreadsheet merge contains an unknown field.",
-            ))
+            ));
         }
     };
     if slot.replace(number).is_some() {

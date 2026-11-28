@@ -1,0 +1,64 @@
+[
+  {
+    "build": "reference",
+    "child_requests": [
+      [
+        true,
+        7
+      ],
+      [
+        true,
+        7
+      ],
+      [
+        false,
+        0
+      ],
+      [
+        false,
+        0
+      ]
+    ],
+    "actual_child_prepared": [
+      "read",
+      "read"
+    ],
+    "child_text_recovered": true,
+    "parent_stop": "end_turn",
+    "calls_by_lane": {
+      "parent": 2,
+      "child": 4
+    }
+  },
+  {
+    "build": "candidate",
+    "child_requests": [
+      [
+        true,
+        7
+      ],
+      [
+        true,
+        7
+      ],
+      [
+        false,
+        0
+      ],
+      [
+        false,
+        0
+      ]
+    ],
+    "actual_child_prepared": [
+      "read",
+      "read"
+    ],
+    "child_text_recovered": true,
+    "parent_stop": "end_turn",
+    "calls_by_lane": {
+      "parent": 2,
+      "child": 4
+    }
+  }
+]

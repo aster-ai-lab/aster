@@ -84,7 +84,7 @@ pub(crate) fn parse_named_range_path(path: &str) -> UseResult<Option<NamedRangeP
             _ => {
                 return Err(path_error(format!(
                     "Named-range selector attribute '@{key}' is unsupported or repeated."
-                )))
+                )));
             }
         }
     }

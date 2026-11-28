@@ -397,15 +397,25 @@ impl OpenAiClient {
     }
 
     pub(crate) fn convert_tools(&self, tools: &[ToolDefinition]) -> Vec<serde_json::Value> {
+        self.render_tools(tools, true)
+    }
+
+    fn render_tools(&self, tools: &[ToolDefinition], compact: bool) -> Vec<serde_json::Value> {
+        let deepseek = super::effort::is_deepseek_model(&self.model);
         tools
             .iter()
             .map(|t| {
+                let parameters = if deepseek {
+                    super::wire_tool_parameters_deepseek(&t.parameters, compact)
+                } else {
+                    super::wire_tool_parameters(&t.parameters)
+                };
                 serde_json::json!({
                     "type": "function",
                     "function": {
                         "name": t.name,
                         "description": t.description,
-                        "parameters": super::wire_tool_parameters(&t.parameters),
+                        "parameters": parameters,
                     }
                 })
             })
@@ -515,7 +525,12 @@ impl OpenAiClient {
         }
 
         if !tools.is_empty() {
-            request["tools"] = serde_json::json!(self.convert_tools(tools));
+            let tools = if directive.is_some() {
+                self.render_tools(tools, false)
+            } else {
+                self.convert_tools(tools)
+            };
+            request["tools"] = serde_json::Value::Array(tools);
         }
 
         if let Some(directive) = directive {
@@ -704,6 +719,10 @@ impl OpenAiClient {
 
 #[async_trait]
 impl LlmClient for OpenAiClient {
+    fn supports_deferred_tool_catalog(&self) -> bool {
+        self.model == "deepseek-flash" && self.request_reasoning_effort() == Some("none")
+    }
+
     fn context_output_reserve(&self) -> usize {
         self.request_max_tokens().unwrap_or_default()
     }

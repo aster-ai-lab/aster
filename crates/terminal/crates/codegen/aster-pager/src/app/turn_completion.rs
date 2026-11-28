@@ -282,6 +282,11 @@ pub(crate) fn terminal_marker(input: TerminalMarkerInput<'_>) -> Option<SessionE
             elapsed,
         )),
         TurnStopReason::RateLimit => None,
+        TurnStopReason::Error
+            if input.error_kind == Some(WireErrorType::PriorVerificationPending) =>
+        {
+            Some(SessionEvent::PriorVerificationPending)
+        }
         TurnStopReason::Error if input.error_banner_present => None,
         TurnStopReason::Error => Some(failed_turn_event(
             input.error_kind,

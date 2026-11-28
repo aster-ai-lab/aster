@@ -1038,6 +1038,17 @@ impl PagerArgs {
     pub(crate) fn launch_plan_mode(&self) -> bool {
         self.plan && !self.no_plan
     }
+
+    /// Permission mode for a new headless session; the explicit mode wins.
+    pub fn launch_permission_mode(&self) -> Option<&str> {
+        self.permission_mode_flag
+            .as_deref()
+            .or(if self.launch_plan_mode() {
+                Some("plan")
+            } else {
+                None
+            })
+    }
 }
 #[cfg(test)]
 #[path = "cli_cwd_tests.rs"]
@@ -1066,6 +1077,11 @@ mod tests {
         assert!(!off.launch_plan_mode());
         let on = PagerArgs::try_parse_from(["grok", "--plan"]).expect("--plan parses");
         assert!(on.launch_plan_mode());
+        assert_eq!(on.launch_permission_mode(), Some("plan"));
+        let explicit =
+            PagerArgs::try_parse_from(["grok", "--plan", "--permission-mode", "acceptEdits"])
+                .expect("an explicit permission mode overrides the plan shorthand");
+        assert_eq!(explicit.launch_permission_mode(), Some("acceptEdits"));
         assert!(PagerArgs::try_parse_from(["grok", "--plan", "--no-plan"]).is_err());
     }
     #[test]

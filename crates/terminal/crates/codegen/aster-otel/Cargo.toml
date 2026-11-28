@@ -16,7 +16,7 @@ bytes = {workspace = true}
 http = {workspace = true}
 opentelemetry = {workspace = true}
 opentelemetry-http = {version = "0.32", features = ["reqwest-blocking"]}
-opentelemetry-otlp = {version = "0.32", features = ["grpc-tonic", "reqwest-blocking-client", "tls-roots"]}
+opentelemetry-otlp = {version = "0.32", default-features = false, features = ["http-proto", "reqwest-blocking-client", "trace", "metrics", "logs", "tls-roots"]}
 opentelemetry_sdk = {version = "0.32.1", features = ["spec_unstable_metrics_views"]}
 parking_lot = {workspace = true}
 reqwest = {workspace = true}

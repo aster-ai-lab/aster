@@ -308,8 +308,10 @@ fn later_terminal_cannot_erase_the_original_pending_interval_at_a_verified_byte_
     cached.observe_tool_receipt("bash", &verified);
     cached.set_unresolved_tool_effects(BTreeSet::from([pending.identity.key().unwrap()]));
     let mut later = result(&pending, ToolExecutionOutcome::Succeeded);
-    later.effects.changes[0].after.content_digest =
-        Some(format!("sha256:{}", sha256::digest(b"later C bytes")));
+    later.effects.changes[0].after.content_digest = Some(format!(
+        "sha256:{}",
+        crate::content_digest::sha256_hex(b"later C bytes")
+    ));
     let debt = fold_cache_evidence(&[
         prepared_fact(&pending),
         prepared_fact(&write),

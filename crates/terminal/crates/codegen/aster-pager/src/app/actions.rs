@@ -1566,6 +1566,13 @@ pub enum Effect {
         /// File URI of the keep. Omitted on the wire when empty.
         plan_file_uri: Option<String>,
     },
+    /// `session/prompt` with `_meta["aster/resumeInterruptedTurn"] = true` after
+    /// a sidecar crash reload reports an interrupted resumable turn in the fact log.
+    ResumeInterruptedTurn {
+        agent_id: AgentId,
+        session_id: acp::SessionId,
+        prompt_id: String,
+    },
     /// Send a direct bash command to the agent (with typed PromptBlockMeta).
     SendBashCommand {
         agent_id: AgentId,
@@ -2623,6 +2630,11 @@ pub enum TaskResult {
         /// The dispatch gate uses it to discard errors from queued/stale prompts instead of painting them onto the running turn.
         /// `None` for synthetic/test constructions that don't need gating.
         prompt_id: Option<String>,
+    },
+    PromptVerificationPending {
+        agent_id: AgentId,
+        message: String,
+        prompt_id: String,
     },
     /// A send-now `session/prompt` RPC failed at the transport/RPC layer; the prompt never reached the shell's queue.
     /// Carries the payload so dispatch can requeue it locally.

@@ -24,6 +24,9 @@ pub enum ActorError {
     /// A defect. The coding fold does not retry it and does not append a fact.
     #[error("{0}")]
     Defect(String),
+    /// The provider rejected the prompt for exceeding its context window.
+    #[error("{0}")]
+    ContextOverflow(String),
     #[error("transition {key} failed: {message}")]
     Handler { key: String, message: String },
 }

@@ -9,12 +9,15 @@ use sha2::{Digest, Sha256};
 use tracing::warn;
 use url::Url;
 
-use crate::pool::{browser_error, BrowserPool};
+use crate::pool::{BrowserPool, browser_error};
 use crate::{PageRenderer, RenderRequest, RenderedPage, WaitCondition};
 
 #[async_trait]
 impl PageRenderer for BrowserPool {
     async fn render(&self, request: RenderRequest) -> UseResult<RenderedPage> {
+        if self.config_provider_is_attached() {
+            return crate::quark_search::render_background(self, request).await;
+        }
         #[cfg(feature = "lightpanda")]
         if self.uses_lightpanda() {
             return self.render_with_lightpanda(request).await;
@@ -109,13 +112,13 @@ pub(crate) async fn apply_wait_condition(
                 Ok(Err(error)) => {
                     return Err(browser_error(format!(
                         "Browser selector '{css}' failed: {error}"
-                    )))
+                    )));
                 }
                 Err(_) => {
                     return Err(UseError::new(
                         "use.browser.wait_timeout",
                         format!("Selector '{css}' was not found within {timeout_ms} ms."),
-                    ))
+                    ));
                 }
             }
         }

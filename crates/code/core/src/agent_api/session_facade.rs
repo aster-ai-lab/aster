@@ -434,6 +434,19 @@ impl AgentSession {
         conversation_runtime::stream(self, prompt, history).await
     }
 
+    /// Inspect whether this session's durable fact log holds a safely
+    /// resumable interrupted turn or unresolved tool debt.
+    pub fn interrupted_turn_state(&self) -> Result<crate::fact_control::InterruptedTurnState> {
+        crate::fact_control::inspect_interrupted_turn(&self.workspace, &self.session_id)
+            .map_err(|error| CodeError::Session(error.to_string()))
+    }
+
+    /// Resume a cleanly interrupted turn directly from the durable fact log
+    /// without appending a duplicate `user.message`.
+    pub async fn stream_resume_interrupted_turn(&self) -> Result<AgentRunStream> {
+        conversation_runtime::stream_resume_interrupted_turn(self).await
+    }
+
     /// Cancel the current ongoing operation (send/stream).
     ///
     /// If an operation is in progress, this will trigger cancellation of the LLM streaming

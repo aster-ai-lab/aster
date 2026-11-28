@@ -336,6 +336,7 @@ pub fn render_turn_status(
     // It shows only for running execute tools, never while cancelling (demote no-ops there)
     let show_bg = show_cancel
         && has_running_execute
+        && !crate::app::aster_active()
         && matches!(
             state,
             AgentState::TurnRunning | AgentState::CommandRunning { .. }

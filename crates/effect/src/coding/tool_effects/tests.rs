@@ -12,6 +12,10 @@ fn closed_sets_refuse_unknown_values_and_round_trip() {
         .unwrap_err()
         .to_string()
         .contains("ToolExecutionOutcome"));
+    assert_eq!(
+        ToolRecoveryPolicy::parse("replay_safe").unwrap(),
+        ToolRecoveryPolicy::ReplaySafe
+    );
     assert!(ToolRecoveryPolicy::parse("retry").is_err());
     assert!(ToolObservationCompleteness::parse("partial").is_err());
     assert!(ToolFileKind::parse("link").is_err());

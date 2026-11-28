@@ -222,7 +222,7 @@ impl GeminiClient {
             self.config.reasoning_effort.as_deref(),
         ) {
             (Some(_), Some(_)) => {
-                return Err(GeminiError::Invalid("conflicting Gemini thinking settings"))
+                return Err(GeminiError::Invalid("conflicting Gemini thinking settings"));
             }
             (Some(budget), None) => {
                 config["thinkingConfig"] =

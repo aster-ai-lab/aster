@@ -863,7 +863,18 @@ pub(super) fn dispatch_task_result(result: TaskResult, app: &mut AppView) -> Vec
             http_status,
             prompt_id,
         } => {
-            let effects = handle_prompt_response(app, agent_id, result, http_status, prompt_id);
+            let effects =
+                handle_prompt_response(app, agent_id, result, http_status, prompt_id, false);
+            app.refresh_status_line_for(agent_id);
+            effects
+        }
+        TaskResult::PromptVerificationPending {
+            agent_id,
+            message,
+            prompt_id,
+        } => {
+            let effects =
+                handle_prompt_response(app, agent_id, Err(message), None, Some(prompt_id), true);
             app.refresh_status_line_for(agent_id);
             effects
         }

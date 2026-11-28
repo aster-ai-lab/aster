@@ -59,6 +59,8 @@ pub enum SessionEvent {
     /// The line is pre-formatted by its single copy owner
     /// (`turn_completion::turn_outcome_event`).
     TurnOutcome { line: String },
+    /// A reply was delivered with earlier workspace changes still awaiting verification.
+    PriorVerificationPending,
     /// Agent turn was cancelled.
     TurnCancelled {
         /// `None` when unknown: do not render `0.0s`.
@@ -394,6 +396,9 @@ impl SessionEvent {
             }
             SessionEvent::TurnCompleted { elapsed: None } => "Turn completed.".to_string(),
             SessionEvent::TurnOutcome { line } => line.clone(),
+            SessionEvent::PriorVerificationPending => {
+                "Previous workspace changes still await verification".into()
+            }
             SessionEvent::TurnCancelled {
                 elapsed: Some(elapsed),
                 cause,
@@ -595,6 +600,7 @@ impl SessionEvent {
         matches!(
             self,
             SessionEvent::TurnCompleted { .. }
+                | SessionEvent::PriorVerificationPending
                 | SessionEvent::TurnCancelled { .. }
                 | SessionEvent::TurnBlockedByHook { .. }
                 | SessionEvent::TurnHalted { .. }

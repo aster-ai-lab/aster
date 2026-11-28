@@ -1,0 +1,264 @@
+{
+  "source_trial": "2-release",
+  "label_changes": 3,
+  "request_sha256": {
+    "padded": "f95e6cadffd23faf031cae41a91636b2141d8f3d0f96b740305fe574ff763e44",
+    "compact": "17c256530ad498e8bfd048b5e40a29035fe6d605ce39b064909440b12ec7b44e"
+  },
+  "calls_from_frozen_model_turn": [
+    {
+      "name": "read",
+      "args": {
+        "file_path": "README.md"
+      }
+    },
+    {
+      "name": "read",
+      "args": {
+        "file_path": "order.json"
+      }
+    },
+    {
+      "name": "read",
+      "args": {
+        "file_path": "policy.json"
+      }
+    },
+    {
+      "name": "read",
+      "args": {
+        "file_path": "report.json"
+      }
+    }
+  ],
+  "trials": [
+    {
+      "pair": 1,
+      "format": "padded",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5837,
+        "completion_tokens": 20,
+        "total_tokens": 5857,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "prompt_cache_hit_tokens": 1152,
+        "prompt_cache_miss_tokens": 4685
+      }
+    },
+    {
+      "pair": 1,
+      "format": "compact",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5834,
+        "completion_tokens": 20,
+        "total_tokens": 5854,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "prompt_cache_hit_tokens": 1152,
+        "prompt_cache_miss_tokens": 4682
+      }
+    },
+    {
+      "pair": 2,
+      "format": "compact",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5834,
+        "completion_tokens": 20,
+        "total_tokens": 5854,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 202
+      }
+    },
+    {
+      "pair": 2,
+      "format": "padded",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5837,
+        "completion_tokens": 20,
+        "total_tokens": 5857,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 205
+      }
+    },
+    {
+      "pair": 3,
+      "format": "padded",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5837,
+        "completion_tokens": 20,
+        "total_tokens": 5857,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 205
+      }
+    },
+    {
+      "pair": 3,
+      "format": "compact",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5834,
+        "completion_tokens": 20,
+        "total_tokens": 5854,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 202
+      }
+    },
+    {
+      "pair": 4,
+      "format": "compact",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5834,
+        "completion_tokens": 20,
+        "total_tokens": 5854,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 202
+      }
+    },
+    {
+      "pair": 4,
+      "format": "padded",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5837,
+        "completion_tokens": 20,
+        "total_tokens": 5857,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 205
+      }
+    },
+    {
+      "pair": 5,
+      "format": "padded",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5837,
+        "completion_tokens": 20,
+        "total_tokens": 5857,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 205
+      }
+    },
+    {
+      "pair": 5,
+      "format": "compact",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5834,
+        "completion_tokens": 20,
+        "total_tokens": 5854,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 202
+      }
+    },
+    {
+      "pair": 6,
+      "format": "compact",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5834,
+        "completion_tokens": 20,
+        "total_tokens": 5854,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 202
+      }
+    },
+    {
+      "pair": 6,
+      "format": "padded",
+      "calls": [
+        "ls"
+      ],
+      "text_output": false,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 5837,
+        "completion_tokens": 20,
+        "total_tokens": 5857,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 205
+      }
+    }
+  ]
+}

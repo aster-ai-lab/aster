@@ -6,8 +6,8 @@ use anyhow::Result;
 
 use aster_search::product::create_provider_engine as product_create_provider_engine;
 use aster_search::{
-    providers::{BuiltinProvider, ProviderAuthentication, ProviderEngine, ProviderReadiness},
     SearchConfig,
+    providers::{BuiltinProvider, ProviderAuthentication, ProviderEngine, ProviderReadiness},
 };
 
 pub(crate) fn list_engines(config_path: Option<&Path>) -> Result<()> {
@@ -33,6 +33,7 @@ pub(crate) fn list_engines(config_path: Option<&Path>) -> Result<()> {
         println!("    bing_browser  - Bing International");
         println!("    g             - Google");
         println!("    baidu         - Baidu (百度)");
+        println!("    quark         - Quark (logged-in local browser over CDP)");
     }
 
     println!();

@@ -1,0 +1,72 @@
+[
+  {
+    "variant": "baseline",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 7913,
+      "completion_tokens": 1,
+      "total_tokens": 7914,
+      "prompt_tokens_details": {
+        "cached_tokens": 7680
+      },
+      "prompt_cache_hit_tokens": 7680,
+      "prompt_cache_miss_tokens": 233
+    }
+  },
+  {
+    "variant": "no_parameter_descriptions",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 6545,
+      "completion_tokens": 1,
+      "total_tokens": 6546,
+      "prompt_tokens_details": {
+        "cached_tokens": 6400
+      },
+      "prompt_cache_hit_tokens": 6400,
+      "prompt_cache_miss_tokens": 145
+    }
+  },
+  {
+    "variant": "enum_implied_type",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 7799,
+      "completion_tokens": 1,
+      "total_tokens": 7800,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 5495
+    }
+  },
+  {
+    "variant": "empty_defaults",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 7913,
+      "completion_tokens": 1,
+      "total_tokens": 7914,
+      "prompt_tokens_details": {
+        "cached_tokens": 7680
+      },
+      "prompt_cache_hit_tokens": 7680,
+      "prompt_cache_miss_tokens": 233
+    }
+  },
+  {
+    "variant": "top_level_property_notes",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 7831,
+      "completion_tokens": 1,
+      "total_tokens": 7832,
+      "prompt_tokens_details": {
+        "cached_tokens": 1792
+      },
+      "prompt_cache_hit_tokens": 1792,
+      "prompt_cache_miss_tokens": 6039
+    }
+  }
+]

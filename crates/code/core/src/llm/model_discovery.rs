@@ -30,6 +30,13 @@ pub enum DiscoveryError {
 
 /// Read the selected model's own account/catalog metadata with bounded work.
 pub async fn discover(config: &LlmConfig) -> Result<ModelDiscovery, DiscoveryError> {
+    #[cfg(feature = "quark-account")]
+    if config.provider == super::quark_account::PROVIDER_NAME {
+        return Ok(ModelDiscovery {
+            source: "account",
+            ..Default::default()
+        });
+    }
     let cancel = CancellationToken::new();
     let _cancel_on_drop = cancel.clone().drop_guard();
     tokio::time::timeout(Duration::from_secs(10), read_catalog(config, cancel))

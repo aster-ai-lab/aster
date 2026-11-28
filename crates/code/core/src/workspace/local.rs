@@ -127,8 +127,16 @@ impl LocalWorkspaceBackend {
         }
     }
 
-    fn local_path_for_read(&self, path: &WorkspacePath) -> Result<PathBuf> {
-        aster_common::tools::resolve_path(&self.root, path.as_str()).map_err(|e| anyhow!("{}", e))
+    fn local_path_for_read(&self, path: &WorkspacePath) -> WorkspaceResult<PathBuf> {
+        aster_common::tools::resolve_read_path(&self.root, path.as_str()).map_err(|error| {
+            if error.is_not_found() {
+                WorkspaceError::NotFound {
+                    path: path.as_str().to_owned(),
+                }
+            } else {
+                WorkspaceError::Backend(error.into())
+            }
+        })
     }
 
     fn local_path_for_write(&self, path: &WorkspacePath) -> Result<PathBuf> {
@@ -1047,6 +1055,10 @@ impl WorkspaceCommandRunner for LocalWorkspaceBackend {
         crate::sandbox::ShellExecutionTarget::local_host_shell()
     }
 
+    fn supports_background_execution(&self) -> bool {
+        true
+    }
+
     #[cfg(windows)]
     fn shell_note(&self) -> Option<String> {
         let powershell = crate::tools::builtin::bash::windows_host_powershell(&self.root).ok()?;
@@ -1079,6 +1091,19 @@ impl LocalWorkspaceBackend {
             crate::tools::builtin::bash::maybe_execute_simple_windows_http_command(&request.command)
                 .await
         {
+            if let Some(observer) = request.output_observer.as_deref() {
+                if !output.content.is_empty() {
+                    observer.on_output_delta(&output.content).await;
+                }
+                observer
+                    .on_output_complete(&crate::workspace::CommandOutputSummary {
+                        total_bytes: output.content.len(),
+                        captured_bytes: output.content.len(),
+                        truncated: false,
+                        timed_out: false,
+                    })
+                    .await;
+            }
             let exit_code = output
                 .metadata
                 .as_ref()

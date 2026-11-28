@@ -224,7 +224,7 @@ fn paint_style(table: &JsonValue) -> UseResult<Option<PaintStyle>> {
         _ => {
             return Err(invalid_shared_spreadsheet(
                 "A shared Spreadsheet table style is invalid.",
-            ))
+            ));
         }
     };
     Ok(Some(palette))
@@ -282,13 +282,13 @@ fn border_write(
             Some(_) => {
                 return Err(invalid_shared_spreadsheet(
                     "Shared Spreadsheet border information is not an array.",
-                ))
+                ));
             }
         },
         Some(_) => {
             return Err(invalid_shared_spreadsheet(
                 "Shared Spreadsheet 'config' is not a typed map.",
-            ))
+            ));
         }
     };
     items.push(json_to_any(

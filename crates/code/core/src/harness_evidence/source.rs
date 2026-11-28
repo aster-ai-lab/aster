@@ -221,13 +221,22 @@ impl RunCapabilityEvidenceSource {
     > {
         let tools_measurement = measure(MODEL_TOOLS_DOMAIN, observation.tools)?;
         let (presentation_source, source_measurement) = match observation.presentation_application {
-            ModelPresentationApplicationV1::Profiled => {
+            ModelPresentationApplicationV1::Profiled | ModelPresentationApplicationV1::Deferred => {
                 let source =
                     crate::tools::canonical_presentation_source(&self.presentation_source_tools)?;
                 let expected = self
                     .tool_presentation_profile
                     .present_for_messages(&source, observation.messages)?;
-                crate::tools::is_definition_subset(&expected, observation.tools)?;
+                if observation.presentation_application == ModelPresentationApplicationV1::Deferred
+                {
+                    if !crate::tools::deferred_catalog::verify(&expected, observation.tools) {
+                        return Err(
+                            crate::tools::ToolPresentationError::InvalidDeferredCatalog.into()
+                        );
+                    }
+                } else {
+                    crate::tools::is_definition_subset(&expected, observation.tools)?;
+                }
                 let measurement = measure(MODEL_TOOLS_DOMAIN, &source)?;
                 (source, measurement)
             }

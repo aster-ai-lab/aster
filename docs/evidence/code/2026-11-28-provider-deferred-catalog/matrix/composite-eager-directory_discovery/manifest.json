@@ -1,0 +1,48 @@
+{
+  "prompts": [
+    "List the workspace with ls to discover the calibration filename. Read that file. Use only ls and read in this turn. Return the exact calibration marker.",
+    "Use read only to read handoff.txt. Return its exact marker and the calibration marker from the first turn."
+  ],
+  "expected_markers": [
+    [
+      "WEST-PLUM-7296"
+    ],
+    [
+      "LANTERN-57B",
+      "WEST-PLUM-7296"
+    ]
+  ],
+  "fixtures_sha256": {
+    "calibration-west.txt": "a8aeb67ffd069c8f77be01a39dc8de130e8cbe7b0c6696d0b04162fcbd9b7e6e",
+    "handoff.txt": "7afc6fa13acf5b8bd0f6f839d4ace58bad80df65fa737e0cd4dafe359a791796",
+    "unrelated-draft.txt": "cdc93cfb7e9a649edae7a894c6205a267a70a2976e91b8f3edbacec436a09165"
+  },
+  "required_tool": "ls",
+  "scenario": "directory_discovery",
+  "model": "deepseek-flash",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "approved_program": false,
+  "annotated_signatures": false,
+  "native_required": false,
+  "native_catalog": false,
+  "default_catalog": false,
+  "disk_content_attestation": false,
+  "reference_catalog": "full",
+  "cost_gate": false,
+  "expected_mutation_sha256": null,
+  "exact_count_allowed": false,
+  "orders": [
+    [
+      "release",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "release"
+    ]
+  ]
+}

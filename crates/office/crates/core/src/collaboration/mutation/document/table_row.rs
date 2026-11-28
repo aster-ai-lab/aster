@@ -276,7 +276,7 @@ fn assert_table_reaches_section<T: ReadTxn>(
         _ => {
             return Err(structure_conflict(
                 "The target Document table is detached from a supported block container.",
-            ))
+            ));
         }
     };
     for _ in 0..MAX_DOCUMENT_ANCESTOR_DEPTH {
@@ -322,7 +322,7 @@ fn assert_table_reaches_section<T: ReadTxn>(
             _ => {
                 return Err(structure_conflict(
                     "The target Document table is not inside a supported section, list item, table cell, or blockquote.",
-                ))
+                ));
             }
         }
     }

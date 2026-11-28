@@ -43,7 +43,7 @@ pub fn apply_forced_layers(config: &mut CodeConfig, layers: &[LayerAcl]) -> Forc
         .map(|layer| layer.acl.as_str())
         .collect::<Vec<_>>()
         .join("\n---\n");
-    let trusted_acl_digest = sha256::digest(trusted_material);
+    let trusted_acl_digest = crate::content_digest::sha256_hex(trusted_material);
     let withheld_host_blocks = withhold_untrusted_host_authoritative_blocks(config, layers);
     ForcedLayerProvenance {
         trusted_acl_digest,

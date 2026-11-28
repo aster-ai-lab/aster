@@ -1,0 +1,28 @@
+{
+  "model": "deepseek-flash",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "prompts": [
+    "Run the shell command `cat inventory.json` exactly. Quote the value for slot 17 verbatim.",
+    "Independently verify the current file by running the same shell command `cat inventory.json` again exactly. Quote the value for slot 77 verbatim."
+  ],
+  "expected_markers": [
+    [
+      "C-badc12874d64465b"
+    ],
+    [
+      "C-0594fc1df444c330"
+    ]
+  ],
+  "fixtures_sha256": {
+    "inventory.json": "fdf1a490a47a737108c7f1ca315a0948a7927d546fb74b3d8a1e3fb8f9bb355f"
+  },
+  "orders": [
+    "release,candidate",
+    "candidate,release"
+  ]
+}

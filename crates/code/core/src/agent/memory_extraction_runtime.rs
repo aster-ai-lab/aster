@@ -7,9 +7,9 @@ use crate::tools::ToolContext;
 use aster_durable_memory::{MemoryItem, MemoryType};
 use regex::Regex;
 use serde::Deserialize;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::path::Path;
-use std::sync::{Arc, OnceLock};
+use std::sync::{Arc, LazyLock, OnceLock};
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 
@@ -18,11 +18,6 @@ use authority::{
     ArchiveProgress, MemoryRetentionAttempt, MemoryRetentionProgress, MemoryRetentionRefusalV1,
     PrimaryProgress,
 };
-
-const MEMORY_EXTRACTION_SYSTEM: &str = "\
-You extract durable, reusable memory for a coding agent.
-Return JSON only (no markdown): keep durable facts, preferences, decisions, workflows, or failure lessons; exclude transient progress, praise, raw logs, secrets, or current-turn narration.
-Items must be standalone, concise, scoped, and plain language (no orchestration jargon); return {\"items\":[]} if none qualify.";
 
 const MAX_MEMORY_CONTENT_CHARS: usize = 1_200;
 const MAX_MEMORY_REASON_CHARS: usize = 320;
@@ -40,6 +35,24 @@ const MAX_TRANSCRIPT_MESSAGE_CHARS: usize = 1_200;
 const SENSITIVE_REDACTION: &str = "[redacted sensitive value]";
 const MIN_MEMORY_IMPORTANCE: f32 = 0.70;
 const MIN_MEMORY_CONFIDENCE: f32 = 0.75;
+
+// Keep the complete policy ahead of request-specific limits and evidence so
+// extraction requests with different inputs can reuse the same model prefix.
+static MEMORY_EXTRACTION_SYSTEM: LazyLock<String> = LazyLock::new(|| {
+    format!(
+        r#"You extract durable, reusable memory for a coding agent.
+JSON shape: {{"items":[item,...]}}. Return JSON only; if nothing qualifies, return {{"items":[]}}.
+
+Item fields:
+- "content": concise standalone fact, preference, decision, workflow or failure lesson for future sessions, in plain language. Failure lessons need a reusable cause, diagnostic or prevention.
+- "memory_type": one of ["semantic","procedural"]. "source": one of ["project_fact","workflow","failure","preference","decision"]. Use semantic for project_fact or preference, procedural for workflow or failure, and either for decision.
+- "importance">={MIN_MEMORY_IMPORTANCE:.2}, "confidence">={MIN_MEMORY_CONFIDENCE:.2}. Honor explicit remember requests in ANY language with importance>=0.90 and confidence>=0.95 (never current-turn narration).
+- "tags": array of strings; "scope": workspace or user; "reason": future value.
+- "evolution": null or an object. "kind": preference (stable choice), skill (reusable workflow/prevention), or okf (durable domain knowledge). Reuse lowercase semantic "pattern_key" without quotes or session IDs. "title": 3–8 words, at most {MAX_EVOLUTION_TITLE_CHARS} characters; "summary": one sentence, <={MAX_EVOLUTION_SUMMARY_CHARS} chars; "instructions": <={MAX_EVOLUTION_INSTRUCTIONS} standalone strings, each <={MAX_EVOLUTION_INSTRUCTION_CHARS} chars. Use plain user-facing language.
+
+Write in the user's language when clear. Preserve identifiers, code and commands verbatim. Exclude transient progress, praise, secrets, raw logs, prompts, summaries, handoffs, agent or subagent orchestration, tool traces and task metadata. A task-specific direction is not a stable preference or skill."#
+    )
+});
 
 #[derive(Debug, Deserialize)]
 struct ExtractedMemory {
@@ -94,6 +107,21 @@ struct EvolutionSignal {
 struct RelatedMemoryContext {
     prompt: String,
     allowed_supersedes: HashSet<String>,
+    aliases: HashMap<String, String>,
+}
+
+impl RelatedMemoryContext {
+    fn resolve_aliases(&self, extracted: &mut ExtractedMemory) {
+        for relation in extracted
+            .supersedes
+            .iter_mut()
+            .chain(&mut extracted.conflicts_with)
+        {
+            if let Some(id) = self.aliases.get(relation.trim()) {
+                relation.clone_from(id);
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -316,14 +344,16 @@ impl crate::agent::TurnEngine {
             return;
         }
         let max_items = memory.llm_extraction_max_items().clamp(1, 10);
-        let related_memories = related_memories_for_extraction(&memory, prompt, response).await;
         let transcript = turn_transcript_for_extraction(
             snapshot,
             prompt,
             response,
             memory.llm_extraction_max_input_chars(),
         );
-        let evidence_fields = normalized_turn_evidence_fields(prompt, response, &transcript);
+        let related_memories =
+            related_memories_for_extraction(&memory, prompt, response, &transcript.model).await;
+        let evidence_fields =
+            normalized_turn_evidence_fields(prompt, response, &transcript.evidence);
         let durable_evidence = memory.durable_memory().and_then(|_| {
             let occurred_at = i64::try_from(self.config.host_env.now_ms())
                 .ok()
@@ -351,7 +381,7 @@ impl crate::agent::TurnEngine {
         let extraction_prompt = build_extraction_prompt(
             prompt,
             response,
-            &transcript,
+            &transcript.model,
             &related_memories.prompt,
             max_items,
         );
@@ -398,7 +428,8 @@ impl crate::agent::TurnEngine {
         let mut rejected = parsed.rejected_items;
         let mut seen = HashSet::new();
         let mut selected = Vec::new();
-        for extracted in parsed.items.into_iter().take(max_items) {
+        for mut extracted in parsed.items.into_iter().take(max_items) {
+            related_memories.resolve_aliases(&mut extracted);
             let Some((item, supersedes, conflicts_with)) = extracted.into_memory_item(
                 &self.tool_context.workspace,
                 session_id,
@@ -511,7 +542,7 @@ impl crate::agent::TurnEngine {
         let llm_client = self.scoped_llm_client_for_parts(Some(session_id), event_tx, cancel_token);
         let llm_client = llm_client.with_minimal_reasoning().unwrap_or(llm_client);
         let response = llm_client
-            .complete(messages, Some(MEMORY_EXTRACTION_SYSTEM), &[])
+            .complete(messages, Some(MEMORY_EXTRACTION_SYSTEM.as_str()), &[])
             .await?;
         Ok(response.text())
     }
@@ -703,20 +734,16 @@ fn build_extraction_prompt(
     let prompt = fields.prompt;
     let response = fields.response;
     let transcript = fields.transcript;
+    let related = related_memories.trim();
+    let has_related = !related.is_empty() && related != "None";
+    let related_rules = if has_related {
+        "\n- Use related memories to avoid duplicates. Update instead of repeating. Optional item fields {\"supersedes\":[\"id\"],\"conflicts_with\":[\"id\"]} take exact related ids for replacements and direct contradictions, respectively."
+    } else {
+        ""
+    };
     let mut out = format!(
         "\
-Extract at most {max_items} durable memories using related memories to avoid duplicates (update instead of repeating; put replaced IDs in supersedes, directly contradictory IDs in conflicts_with).
-
-JSON shape:
-{{\"items\":[{{\"memory_type\":\"semantic|procedural\",\"content\":\"...\",\"importance\":0.0,\"confidence\":0.0,\"tags\":[\"tag\"],\"source\":\"project_fact|workflow|failure|preference|decision\",\"scope\":\"workspace|user\",\"reason\":\"why future sessions need this\",\"supersedes\":[\"id\"],\"conflicts_with\":[\"id\"],\"evolution\":null|{{\"kind\":\"preference|skill|okf\",\"pattern_key\":\"stable.semantic.pattern\",\"title\":\"short title\",\"summary\":\"one-sentence summary\",\"instructions\":[\"standalone instruction\"]}}}}]}}
-
-Rules:
-- Explicit remember requests in ANY language (\"remember this\", \"请记住\", \"覚えておいて\", \"기억해\"): extract with importance>=0.90, confidence>=0.95, source \"preference\" (never current-turn narration).
-- Return {{\"items\":[]}} unless useful to future answers/actions. semantic=facts/preferences/decisions; procedural=workflows/failure lessons.
-- Write in the user's language when clear; keep identifiers/code/commands verbatim. Minimums: importance>={MIN_MEMORY_IMPORTANCE:.2}, confidence>={MIN_MEMORY_CONFIDENCE:.2}.
-- Failures need reusable cause/diagnostic/prevention, not raw traces; reject current-turn narration.
-- Evolution (preference=stable choice, skill=reusable workflow/prevention, okf=durable domain knowledge; same lowercase semantic pattern_key without wording/session-id quotes): write 3-8 word title (at most {MAX_EVOLUTION_TITLE_CHARS} characters), one-sentence summary (<={MAX_EVOLUTION_SUMMARY_CHARS} chars), <={MAX_EVOLUTION_INSTRUCTIONS} instructions (<={MAX_EVOLUTION_INSTRUCTION_CHARS} chars each) in plain user-facing language, no secrets.
-- Never promote prompts, summaries, handoffs, agent or subagent orchestration, tool traces, or task metadata; A task-specific direction is not a stable preference or skill.
+At most {max_items} items.{related_rules}
 
 User request:
 {prompt}
@@ -724,8 +751,7 @@ User request:
 Assistant final response:
 {response}"
     );
-    let related = related_memories.trim();
-    if !related.is_empty() && related != "None" {
+    if has_related {
         out.push_str("\n\nRelated existing memories:\n");
         out.push_str(related);
     }
@@ -740,6 +766,7 @@ async fn related_memories_for_extraction(
     memory: &Arc<AgentMemory>,
     prompt: &str,
     response: &str,
+    transcript: &str,
 ) -> RelatedMemoryContext {
     let query = compact(&format!("{prompt}\n{response}"), MAX_RELATED_MEMORY_CHARS);
     let items = match memory
@@ -752,12 +779,46 @@ async fn related_memories_for_extraction(
             Vec::new()
         }
     };
-    format_related_memories_for_extraction(items)
+    format_related_memories_for_extraction(&items, &[prompt, response, transcript])
 }
 
-fn format_related_memories_for_extraction(items: Vec<MemoryItem>) -> RelatedMemoryContext {
+fn format_related_memories_for_extraction(
+    items: &[MemoryItem],
+    turn_fields: &[&str],
+) -> RelatedMemoryContext {
     let mut out = String::new();
     let mut allowed_supersedes = HashSet::new();
+    let mut alias_by_id = HashMap::new();
+    let mut next_alias = 1;
+    let mut render_id = |id: &str| {
+        // A literal ID can carry meaning when supplied by the host or cited
+        // elsewhere in the input. Only alias opaque, generated UUIDs.
+        let generated = uuid::Uuid::parse_str(id)
+            .is_ok_and(|uuid| uuid.get_version_num() == 4 && uuid.hyphenated().to_string() == id);
+        if !generated
+            || turn_fields.iter().any(|field| field.contains(id))
+            || items.iter().any(|item| {
+                item.content.contains(id)
+                    || item.tags.iter().any(|tag| tag.contains(id))
+                    || item
+                        .metadata
+                        .get("source")
+                        .is_some_and(|source| source.contains(id))
+            })
+        {
+            return id.to_owned();
+        }
+        alias_by_id
+            .entry(id.to_owned())
+            .or_insert_with(|| loop {
+                let alias = format!("@{next_alias}");
+                next_alias += 1;
+                if !items.iter().any(|item| item.id == alias) {
+                    break alias;
+                }
+            })
+            .clone()
+    };
     for item in items {
         if contains_sensitive_memory_material(&item.content) {
             continue;
@@ -778,36 +839,30 @@ fn format_related_memories_for_extraction(items: Vec<MemoryItem>) -> RelatedMemo
             .filter_map(|tag| sanitize_tag(tag.clone()))
             .take(MAX_MEMORY_TAGS)
             .collect::<Vec<_>>();
-        let mut line = serde_json::Map::new();
-        line.insert("id".to_string(), serde_json::json!(item.id));
-        line.insert(
-            "type".to_string(),
-            serde_json::json!(memory_type_label(item.memory_type)),
-        );
-        line.insert("importance".to_string(), serde_json::json!(item.importance));
-        line.insert("source".to_string(), serde_json::json!(source));
-        line.insert("tags".to_string(), serde_json::json!(tags));
-        let supersedes = metadata_relation_ids(&item, "supersedes");
-        if !supersedes.is_empty() {
-            line.insert("supersedes".to_string(), serde_json::json!(supersedes));
-        }
-        let conflicts_with = metadata_relation_ids(&item, "conflicts_with");
-        if !conflicts_with.is_empty() {
-            line.insert(
-                "conflicts_with".to_string(),
-                serde_json::json!(conflicts_with),
-            );
-        }
-        line.insert("content".to_string(), serde_json::json!(content));
+        let id = render_id(&item.id);
+        let [supersedes, conflicts_with] = ["supersedes", "conflicts_with"].map(|key| {
+            metadata_relation_ids(item, key)
+                .iter()
+                .map(|id| render_id(id))
+                .collect::<Vec<_>>()
+        });
+        let row = RelatedMemoryRow {
+            id: &id,
+            memory_type: memory_type_label(item.memory_type),
+            importance: item.importance,
+            source: &source,
+            tags: &tags,
+            supersedes: (!supersedes.is_empty()).then_some(supersedes.as_slice()),
+            conflicts_with: (!conflicts_with.is_empty()).then_some(conflicts_with.as_slice()),
+            content: &content,
+        };
+        let remaining = MAX_RELATED_MEMORY_CHARS.saturating_sub(out.chars().count() + 1);
+        let Some(row) = bounded_related_row(row, remaining) else {
+            break;
+        };
         allowed_supersedes.insert(item.id.clone());
-        out.push_str(&serde_json::Value::Object(line).to_string());
+        out.push_str(&row);
         out.push('\n');
-        if out.chars().count() >= MAX_RELATED_MEMORY_CHARS {
-            return RelatedMemoryContext {
-                prompt: compact(&out, MAX_RELATED_MEMORY_CHARS),
-                allowed_supersedes,
-            };
-        }
     }
 
     let prompt = if out.trim().is_empty() {
@@ -818,7 +873,52 @@ fn format_related_memories_for_extraction(items: Vec<MemoryItem>) -> RelatedMemo
     RelatedMemoryContext {
         prompt,
         allowed_supersedes,
+        aliases: alias_by_id
+            .into_iter()
+            .map(|(id, alias)| (alias, id))
+            .collect(),
     }
+}
+
+#[derive(Clone, Copy, serde::Serialize)]
+struct RelatedMemoryRow<'a> {
+    id: &'a str,
+    #[serde(rename = "type")]
+    memory_type: &'static str,
+    // A JSON Value would widen this to f64 before serialization.
+    importance: f32,
+    source: &'a str,
+    tags: &'a [String],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    supersedes: Option<&'a [String]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    conflicts_with: Option<&'a [String]>,
+    content: &'a str,
+}
+
+fn bounded_related_row(row: RelatedMemoryRow<'_>, remaining: usize) -> Option<String> {
+    fn render(row: RelatedMemoryRow<'_>, content: &str) -> Option<String> {
+        serde_json::to_string(&RelatedMemoryRow { content, ..row }).ok()
+    }
+
+    let content = row.content;
+    let full = render(row, content)?;
+    if full.chars().count() <= remaining {
+        return Some(full);
+    }
+    // Keep every admitted record parseable and give precedence to identity
+    // and relation fields when the last record runs out of content space.
+    let offsets = content
+        .char_indices()
+        .skip(1)
+        .map(|(index, _)| index)
+        .collect::<Vec<_>>();
+    let fits = offsets.partition_point(|&index| {
+        render(row, &format!("{}…", &content[..index]))
+            .is_some_and(|row| row.chars().count() <= remaining)
+    });
+    let end = offsets[fits.checked_sub(1)?];
+    render(row, &format!("{}…", &content[..end]))
 }
 
 fn metadata_relation_ids(item: &MemoryItem, key: &str) -> Vec<String> {
@@ -880,12 +980,18 @@ fn normalize_related_ids(ids: Vec<String>, allowed_supersedes: &HashSet<String>)
         .collect()
 }
 
+#[derive(Default)]
+struct ExtractionTranscript {
+    evidence: String,
+    model: String,
+}
+
 fn turn_transcript_for_extraction(
     snapshot: &MemoryExtractionSnapshot,
     prompt: &str,
     response: &str,
     max_chars: usize,
-) -> String {
+) -> ExtractionTranscript {
     let has_tools_or_multi = snapshot.messages.len() > 2
         || snapshot.messages.iter().any(|message| {
             message.content.iter().any(|block| {
@@ -904,16 +1010,19 @@ fn turn_transcript_for_extraction(
             .filter(|t| !t.trim().is_empty())
             .collect();
         if texts.iter().all(|t| t == prompt || t == response) {
-            return String::new();
+            return ExtractionTranscript::default();
         }
     }
-    turn_transcript(snapshot, max_chars)
-}
 
-fn turn_transcript(snapshot: &MemoryExtractionSnapshot, max_chars: usize) -> String {
-    let mut lines = Vec::new();
+    let latest_user = snapshot
+        .messages
+        .iter()
+        .rposition(|message| message.role == "user");
+    let final_assistant = snapshot.messages.len().checked_sub(1);
+    let mut model_lines = Vec::new();
+    let mut evidence_lines = Vec::new();
     let mut remaining = max_chars;
-    for message in snapshot.messages.iter().rev() {
+    for (index, message) in snapshot.messages.iter().enumerate().rev() {
         if remaining == 0 {
             break;
         }
@@ -921,13 +1030,39 @@ fn turn_transcript(snapshot: &MemoryExtractionSnapshot, max_chars: usize) -> Str
         if text.trim().is_empty() {
             continue;
         }
-        let line = format!("{}: {}", message.role, text);
-        let line = compact(&line, remaining);
+        let original = format!("{}: {text}", message.role);
+        let line = compact(&original, remaining);
+        // Keep the evidence and its source budget identical. The model already
+        // receives both full boundary fields above the transcript.
         remaining = remaining.saturating_sub(line.chars().count());
-        lines.push(line);
+        let alias = match message.content.as_slice() {
+            [crate::llm::ContentBlock::Text { text: raw }] if line == original && raw == &text => {
+                if Some(index) == latest_user && text == prompt {
+                    Some("user: [User request above]")
+                } else if Some(index) == final_assistant
+                    && message.role == "assistant"
+                    && text == response
+                {
+                    Some("assistant: [Assistant final response above]")
+                } else {
+                    None
+                }
+            }
+            _ => None,
+        };
+        model_lines.push(
+            alias
+                .filter(|alias| alias.len() < line.len())
+                .map_or_else(|| line.clone(), str::to_owned),
+        );
+        evidence_lines.push(line);
     }
-    lines.reverse();
-    lines.join("\n\n")
+    model_lines.reverse();
+    evidence_lines.reverse();
+    ExtractionTranscript {
+        evidence: evidence_lines.join("\n\n"),
+        model: model_lines.join("\n\n"),
+    }
 }
 
 struct ParsedExtractedMemories {

@@ -48,7 +48,7 @@ pub(crate) fn goal_scope_sequences_from_facts(facts: &[aster_effect::Fact]) -> R
     Ok(sequences)
 }
 
-/// One tool result as the model received it, for the session context view.
+/// One recorded tool result, for the session context view.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct ToolResultWeight {
     pub(crate) tool: String,
@@ -268,7 +268,8 @@ pub(super) fn exit_to_error(error: Exit<ActorError>) -> anyhow::Error {
         Exit::Die(message) => anyhow::anyhow!(message),
         Exit::Interrupt => anyhow::anyhow!("cancelled"),
         Exit::Fail(ActorError::Handler { message, .. }) => anyhow::anyhow!(message),
-        Exit::Fail(ActorError::Defect(message)) => anyhow::anyhow!(message),
+        Exit::Fail(ActorError::Defect(message))
+        | Exit::Fail(ActorError::ContextOverflow(message)) => anyhow::anyhow!(message),
         Exit::Fail(error @ ActorError::StepLimit { .. }) => {
             let label = format!("StepLimit: {error}");
             anyhow::Error::new(error).context(label)

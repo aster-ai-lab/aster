@@ -31,7 +31,13 @@
       "aster/session/tooling/v1",
       "aster/session/background-tasks/v1",
       "aster/session/background-tasks/stop/v1",
-      "aster/subagent/cancel"
+      "aster/subagent/cancel",
+      "aster/git/worktree/list",
+      "aster/git/worktree/gc",
+      "aster/git/worktree/db/path",
+      "aster/git/worktree/create_from_worktree_sync",
+      "aster/git/worktree/resume_session",
+      "aster/health"
     ],
     "prefixFamilies": [
       "aster/compact_conversation",

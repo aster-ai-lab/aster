@@ -324,3 +324,90 @@ async fn valid_unchanged_arguments_still_execute_once() {
         b"schema-admitted bytes"
     );
 }
+
+#[tokio::test]
+async fn malformed_batch_read_reports_invalid_arguments_unless_read_or_path_is_denied() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("ok.txt"), "ok").unwrap();
+    let (base, _) = executor_tools(root.path());
+
+    for args in [
+        json!({"files": [{"file_path": "ok.txt"}]}),
+        json!({"files": []}),
+    ] {
+        let (events, mut received) = tokio::sync::mpsc::channel(8);
+        let mut tools = base.as_ref().clone();
+        tools.permission = PermissionPolicy::new();
+        tools.checker = Some(Arc::new(
+            crate::permissions::InteractiveToolGuardrail::default().with_workspace(root.path()),
+        ));
+        tools.events = Some(events);
+        let tools = Arc::new(tools);
+        let mut call = request("bad-batch-read", args);
+        call.call.name = "read".into();
+        let prepared = prepare_tools(Arc::clone(&tools), call, Default::default())
+            .await
+            .unwrap();
+        let result = execute_prepared(tools, prepared).await;
+        assert_eq!(result.outcome, ToolExecutionOutcome::Failed);
+        assert!(
+            result
+                .output
+                .as_str()
+                .unwrap()
+                .contains("Invalid arguments for tool 'read'"),
+            "{}",
+            result.output
+        );
+        assert!(matches!(
+            received.try_recv().unwrap(),
+            crate::agent::AgentEvent::ToolEnd {
+                error_kind: Some(crate::tools::ToolErrorKind::InvalidArgument { .. }),
+                ..
+            }
+        ));
+    }
+
+    for (policy, args, expected_code) in [
+        (
+            PermissionPolicy::new().deny("read"),
+            json!({"files": [{"file_path": "ok.txt"}]}),
+            "policy_denied",
+        ),
+        (
+            PermissionPolicy::new(),
+            json!({"file_path": "../outside.txt", "files": []}),
+            "policy_denied",
+        ),
+        (
+            PermissionPolicy::new(),
+            json!({"files": [{"path": "../outside.txt"}]}),
+            "workspace_boundary_escape",
+        ),
+    ] {
+        let (events, mut received) = tokio::sync::mpsc::channel(8);
+        let mut tools = base.as_ref().clone();
+        tools.permission = policy;
+        tools.checker = Some(Arc::new(
+            crate::permissions::InteractiveToolGuardrail::default().with_workspace(root.path()),
+        ));
+        tools.events = Some(events);
+        let tools = Arc::new(tools);
+        let mut call = request("denied-batch-read", args);
+        call.call.name = "read".into();
+        let prepared = prepare_tools(Arc::clone(&tools), call, Default::default())
+            .await
+            .unwrap();
+        let result = execute_prepared(tools, prepared).await;
+        assert_eq!(result.outcome, ToolExecutionOutcome::Denied);
+        assert!(
+            result.output.as_str().unwrap().contains(expected_code),
+            "{}",
+            result.output
+        );
+        assert!(matches!(
+            received.try_recv().unwrap(),
+            crate::agent::AgentEvent::PermissionDenied { .. }
+        ));
+    }
+}

@@ -117,7 +117,7 @@ pub fn feature_switch_registry_digest() -> Result<Sha256Digest, CapabilitySetErr
         .collect::<Vec<_>>();
     rows.sort();
     let material = rows.join("\n");
-    let hex = sha256::digest(material);
+    let hex = crate::content_digest::sha256_hex(material);
     Sha256Digest::new(format!("sha256:{hex}"))
 }
 
@@ -202,8 +202,11 @@ mod tests {
             .collect::<Vec<_>>();
         rows.sort();
         rows.push("tamper|stable|".into());
-        let tampered =
-            Sha256Digest::new(format!("sha256:{}", sha256::digest(rows.join("\n")))).unwrap();
+        let tampered = Sha256Digest::new(format!(
+            "sha256:{}",
+            crate::content_digest::sha256_hex(rows.join("\n"))
+        ))
+        .unwrap();
         assert_ne!(first, tampered);
     }
 }

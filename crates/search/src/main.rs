@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use std::time::Duration;
 
 use anyhow::Result;
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{CommandFactory as _, FromArgMatches as _, Parser, Subcommand, ValueEnum};
 use tracing::Level;
 use tracing_subscriber::FmtSubscriber;
 
@@ -13,10 +13,10 @@ use aster_search::{EngineTier, EngineTierPlan, SafeSearch, SearchQuery, TimeRang
 mod cli;
 
 use cli::cascade::{
-    execute_cascade, CascadeRequest, CliEngineTier, HeadlessBrowser, DEFAULT_TIMEOUT_SECONDS,
+    CascadeRequest, CliEngineTier, DEFAULT_TIMEOUT_SECONDS, HeadlessBrowser, execute_cascade,
 };
 use cli::circuit_state::PersistentCircuitState;
-use cli::output::{print_cascade_results, OutputFormat};
+use cli::output::{OutputFormat, print_cascade_results};
 use cli::provider::{list_engines, load_search_config};
 use cli::proxy::report_proxy_scope;
 
@@ -25,8 +25,8 @@ use cli::provider::create_provider_engine;
 
 #[cfg(test)]
 use aster_search::{
-    providers::{BuiltinProvider, ProviderAuthentication, ProviderReadiness},
     Engine, SearchResults,
+    providers::{BuiltinProvider, ProviderAuthentication, ProviderReadiness},
 };
 #[cfg(test)]
 use cli::output::{json_output, truncate_str};
@@ -42,7 +42,7 @@ struct Cli {
     query: Option<String>,
 
     /// Exact search engines to use (comma-separated); omit for the default cascade
-    /// Available: brave_browser, bing_browser, g, baidu, ddg, brave, bing, wiki,
+    /// Available: brave_browser, bing_browser, g, baidu, quark, ddg, brave, bing, wiki,
     /// sogou, 360, bing_cn, anysearch, tavily, tinyfish, bocha, aliyun, tencent, firecrawl, aster, doubao, deepseek
     #[arg(short, long, value_delimiter = ',')]
     engines: Option<Vec<String>>,
@@ -84,7 +84,7 @@ struct Cli {
     #[arg(short, long)]
     proxy: Option<String>,
 
-    /// Headless browser backend (Moli by default; Chrome also discovers Chromium)
+    /// Browser backend (Moli by default; Quark attaches to an existing local CDP login)
     #[arg(long, value_enum, default_value_t)]
     browser: HeadlessBrowser,
 
@@ -111,6 +111,9 @@ struct Cli {
     /// Enable verbose output
     #[arg(short, long)]
     verbose: bool,
+
+    #[arg(skip)]
+    browser_explicit: bool,
 
     #[command(subcommand)]
     command: Option<Commands>,
@@ -191,7 +194,11 @@ impl From<TimeRangeArg> for TimeRange {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let cli = Cli::parse();
+    let matches = Cli::command().get_matches();
+    let browser_explicit =
+        matches.value_source("browser") == Some(clap::parser::ValueSource::CommandLine);
+    let mut cli = Cli::from_arg_matches(&matches).unwrap_or_else(|error| error.exit());
+    cli.browser_explicit = browser_explicit;
 
     // Setup logging
     if cli.verbose {
@@ -224,6 +231,7 @@ async fn main() -> Result<()> {
                     format: cli.format,
                     proxy: cli.proxy,
                     browser: cli.browser,
+                    browser_explicit: cli.browser_explicit,
                     browser_retries: cli.browser_retries,
                     tier_order: cli.tier_order,
                     config: cli.config,
@@ -241,7 +249,7 @@ async fn main() -> Result<()> {
                 println!("  aster-search \"Rust\" -p http://127.0.0.1:8080\n");
                 println!("Options:");
                 println!(
-                    "  -e, --engines <ENGINES>  Exact engines/providers (omit for API-first cascade)"
+                    "  -e, --engines <ENGINES>  Exact engines/providers (omit to prefer logged-in Quark, then API-first fallback)"
                 );
                 println!("  -l, --limit <N>          Max results (default: 10)");
                 println!("  -t, --timeout <SECS>     Shared deadline (default: 20 seconds)");
@@ -251,7 +259,9 @@ async fn main() -> Result<()> {
                 println!("      --time-range <RANGE> day, week, month, year");
                 println!("  -f, --format <FORMAT>    Output: text, json, compact");
                 println!("  -p, --proxy <URL>        Proxy URL (http/https/socks5)");
-                println!("      --browser <BACKEND>  Headless backend: moli, chrome, lightpanda (default: moli)");
+                println!(
+                    "      --browser <BACKEND>  Browser backend: moli, chrome, quark, lightpanda (default: moli)"
+                );
                 println!(
                     "      --browser-retries <N> Headless retries per render (default: 1; maximum: 10)"
                 );
@@ -281,15 +291,16 @@ struct SearchArgs {
     format: OutputFormat,
     proxy: Option<String>,
     browser: HeadlessBrowser,
+    browser_explicit: bool,
     browser_retries: u32,
     tier_order: Option<Vec<CliEngineTier>>,
     config: Option<PathBuf>,
 }
 
 #[cfg(test)]
-use aster_search::product::is_config_enabled;
-#[cfg(test)]
 use aster_search::SearchConfig;
+#[cfg(test)]
+use aster_search::product::is_config_enabled;
 
 async fn run_search(args: SearchArgs) -> Result<()> {
     let config = load_search_config(args.config.as_deref())?;
@@ -300,12 +311,34 @@ async fn run_search(args: SearchArgs) -> Result<()> {
             .map(EngineTier::from)
             .collect::<Vec<_>>()
     });
-    let plan = EngineTierPlan::new(
+    let mut plan = EngineTierPlan::new(
         args.engines.as_deref(),
         config.as_ref(),
         tier_order.as_deref(),
     )
     .map_err(anyhow::Error::msg)?;
+    let mut browser = args.browser;
+    #[cfg(feature = "headless")]
+    if args.engines.is_none()
+        && config
+            .as_ref()
+            .is_none_or(|config| config.engines.is_empty() && config.providers.is_empty())
+        && (!args.browser_explicit || args.browser == HeadlessBrowser::Quark)
+    {
+        let endpoint =
+            aster_search::aster_use_browser::LocalCdpEndpoint::parse("http://127.0.0.1:9222")
+                .map_err(|error| anyhow::anyhow!(error.message))?;
+        if aster_search::aster_use_browser::QuarkSearchSession::connect(
+            endpoint,
+            Duration::from_secs(10),
+        )
+        .await
+        .is_ok()
+        {
+            plan = plan.prefer_quark();
+            browser = HeadlessBrowser::Quark;
+        }
+    }
     for shortcut in plan.unknown() {
         eprintln!("Warning: Unknown engine '{shortcut}', skipping");
     }
@@ -316,7 +349,7 @@ async fn run_search(args: SearchArgs) -> Result<()> {
     let persistent_circuits = match PersistentCircuitState::load_default(
         &engine_shortcuts,
         args.proxy.as_deref(),
-        args.browser.as_str(),
+        browser.as_str(),
     )
     .await
     {
@@ -357,7 +390,7 @@ async fn run_search(args: SearchArgs) -> Result<()> {
             timeout: Duration::from_secs(timeout),
             proxy: args.proxy.as_deref(),
             config: config.as_ref(),
-            browser: args.browser,
+            browser,
             browser_max_retries: args.browser_retries,
         },
         circuit,
@@ -705,6 +738,12 @@ mod tests {
     fn test_cli_chrome_requires_explicit_selection() {
         let cli = Cli::parse_from(["aster-search", "query", "--browser", "chrome"]);
         assert_eq!(cli.browser, HeadlessBrowser::Chrome);
+    }
+
+    #[test]
+    fn test_cli_quark_requires_explicit_selection() {
+        let cli = Cli::parse_from(["aster-search", "query", "--browser", "quark"]);
+        assert_eq!(cli.browser, HeadlessBrowser::Quark);
     }
 
     #[test]

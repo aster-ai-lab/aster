@@ -193,7 +193,9 @@ pub(super) fn coding() {
     let mut tui = LiveTui::new("coding");
     let source = "function Get-Total($a, $b) { return $a - $b }\nfunction Get-Tax($amount) { return $amount + 3 }\n";
     let token = format!("CHECKED-{}", uuid::Uuid::new_v4());
-    let checker = format!(". \"$PSScriptRoot/calc.ps1\"\nif ((Get-Total 7 5) -ne 12 -or (Get-Tax 4) -ne 8) {{ throw 'CHECK-FAILED' }}\nWrite-Output '{token}'\n");
+    let checker = format!(
+        ". \"$PSScriptRoot/calc.ps1\"\nif ((Get-Total 7 5) -ne 12 -or (Get-Tax 4) -ne 8) {{ throw 'CHECK-FAILED' }}\nWrite-Output '{token}'\n"
+    );
     std::fs::write(tui.workspace.join("calc.ps1"), source).unwrap();
     std::fs::write(tui.workspace.join("check.ps1"), &checker).unwrap();
     tui.launch(&[]);
@@ -246,7 +248,9 @@ pub(super) fn coding() {
     let mut tui = LiveTui::new("coding");
     let source = "get_total() { printf '%s\\n' \"$(($1 - $2))\"; }\nget_tax() { printf '%s\\n' \"$(($1 + 3))\"; }\n";
     let token = format!("CHECKED-{}", uuid::Uuid::new_v4());
-    let checker = format!(". \"$(dirname \"$0\")/calc.sh\"\nif [ \"$(get_total 7 5)\" != 12 ] || [ \"$(get_tax 4)\" != 8 ]; then\n  printf '%s\\n' CHECK-FAILED >&2\n  exit 1\nfi\nprintf '%s\\n' '{token}'\n");
+    let checker = format!(
+        ". \"$(dirname \"$0\")/calc.sh\"\nif [ \"$(get_total 7 5)\" != 12 ] || [ \"$(get_tax 4)\" != 8 ]; then\n  printf '%s\\n' CHECK-FAILED >&2\n  exit 1\nfi\nprintf '%s\\n' '{token}'\n"
+    );
     std::fs::write(tui.workspace.join("calc.sh"), source).unwrap();
     std::fs::write(tui.workspace.join("check.sh"), &checker).unwrap();
     tui.launch(&[]);

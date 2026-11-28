@@ -92,10 +92,12 @@ pub fn dashboard_enabled() -> bool {
     state::load_persisted_enabled().unwrap_or(true)
 }
 
-/// `None` when it is off: the tip would name a refused command, so callers fall back to a plain
-/// session-id banner.
-pub(crate) fn session_switch_hint_command(minimal: bool) -> Option<&'static str> {
-    if minimal {
+/// Minimal and Code sessions use `/resume`; other sessions use `/dashboard` only when enabled.
+pub(crate) fn session_switch_hint_command(
+    minimal: bool,
+    code_backend: bool,
+) -> Option<&'static str> {
+    if minimal || code_backend {
         Some("/resume")
     } else if dashboard_enabled() {
         Some("/dashboard")
@@ -117,7 +119,7 @@ mod tests {
         // `serial_test`'s lock ensures no other test marked with the same
         // `GROK_AGENT_DASHBOARD` key reads it concurrently.
         unsafe { std::env::set_var("GROK_AGENT_DASHBOARD", "0") };
-        assert_eq!(session_switch_hint_command(true), Some("/resume"));
+        assert_eq!(session_switch_hint_command(true, false), Some("/resume"));
         unsafe { std::env::remove_var("GROK_AGENT_DASHBOARD") };
     }
 
@@ -129,11 +131,19 @@ mod tests {
     fn switch_hint_non_minimal_follows_dashboard_flag() {
         // SAFETY: see above; serialized on the GROK_AGENT_DASHBOARD key
         unsafe { std::env::set_var("GROK_AGENT_DASHBOARD", "0") };
-        assert_eq!(session_switch_hint_command(false), None);
+        assert_eq!(session_switch_hint_command(false, false), None);
         unsafe { std::env::remove_var("GROK_AGENT_DASHBOARD") };
         assert_eq!(
-            session_switch_hint_command(false),
+            session_switch_hint_command(false, false),
             dashboard_enabled().then_some("/dashboard")
         );
+    }
+
+    #[serial_test::serial(GROK_AGENT_DASHBOARD)]
+    #[test]
+    fn switch_hint_code_backend_is_resume_even_with_dashboard_enabled() {
+        // SAFETY: serialized with the other dashboard environment tests.
+        unsafe { std::env::remove_var("GROK_AGENT_DASHBOARD") };
+        assert_eq!(session_switch_hint_command(false, true), Some("/resume"));
     }
 }

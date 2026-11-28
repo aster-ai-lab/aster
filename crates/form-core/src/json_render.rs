@@ -3,7 +3,7 @@
 use std::collections::{BTreeMap, HashSet};
 
 use serde::Deserialize;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 pub const MAX_JSON_RENDER_BYTES: usize = 65_536;
 
@@ -282,19 +282,25 @@ fn walk(
                 }
             }
             if kind == Component::Select {
+                const OPTIONS_ERROR: &str =
+                    "Select.options must be an array of 1 to 64 distinct nonempty strings";
                 let options = p
                     .get("options")
                     .and_then(Value::as_array)
-                    .ok_or(JsonRenderError("Select requires options"))?;
+                    .ok_or(JsonRenderError(OPTIONS_ERROR))?;
                 let mut unique = HashSet::new();
                 if options.is_empty()
                     || options.len() > 64
                     || options
                         .iter()
                         .any(|v| v.as_str().is_none_or(|s| s.is_empty() || !unique.insert(s)))
-                    || (initial != "" && !options.contains(&initial))
                 {
-                    return Err(JsonRenderError("invalid Select options or state"));
+                    return Err(JsonRenderError(OPTIONS_ERROR));
+                }
+                if initial != "" && !options.contains(&initial) {
+                    return Err(JsonRenderError(
+                        "Select state must match an option or be empty",
+                    ));
                 }
                 schema["enum"] = Value::Array(options.clone());
             }
@@ -334,10 +340,15 @@ fn walk(
         Component::Stack => {
             if p.get("direction")
                 .is_some_and(|v| !matches!(v.as_str(), Some("vertical" | "horizontal")))
-                || p.get("gap")
-                    .is_some_and(|v| v.as_f64().is_none_or(|n| !(0.0..=24.0).contains(&n)))
             {
-                return Err(JsonRenderError("invalid stack layout"));
+                return Err(JsonRenderError(
+                    "Stack.direction must be vertical or horizontal",
+                ));
+            }
+            if p.get("gap")
+                .is_some_and(|v| v.as_f64().is_none_or(|n| !(0.0..=24.0).contains(&n)))
+            {
+                return Err(JsonRenderError("Stack.gap must be a number from 0 to 24"));
             }
         }
         Component::Metric => {

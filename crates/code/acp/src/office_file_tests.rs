@@ -642,7 +642,6 @@ async fn invalid_input_no_clobber_and_cancellation_never_publish() {
     let ctx = context(root.path());
     std::fs::write(root.path().join("existing.xlsx"), b"original").unwrap();
     for args in [
-        workbook("existing.xlsx"),
         workbook("../outside.xlsx"),
         workbook("result.xml"),
         json!({"file_path": "bad.xlsx", "kind": "xlsx", "sheets": [{"name": "bad/name", "rows": [[1]]}]}),
@@ -662,6 +661,46 @@ async fn invalid_input_no_clobber_and_cancellation_never_publish() {
         b"original"
     );
     assert_eq!(std::fs::read_dir(root.path()).unwrap().count(), 1);
+}
+
+#[tokio::test]
+async fn existing_documents_are_replaced_with_the_complete_validated_revision() {
+    let root = tempfile::tempdir().unwrap();
+    let ctx = context(root.path());
+    let initial = workbook("工时统计.xlsx");
+    assert!(
+        execute(&initial, &ctx).await.unwrap().success,
+        "initial workbook must be created"
+    );
+    let mut updated = initial;
+    updated["sheets"][0]["rows"]
+        .as_array_mut()
+        .unwrap()
+        .push(json!(["R03", 15, true, null]));
+    updated["sheets"][1]["rows"] = json!([["合计", {"formula":"SUM(225,240,15)"}]]);
+    let output = execute(&updated, &ctx).await.unwrap();
+    assert!(output.success, "{}", output.content);
+    assert!(output.content.contains("R03"), "{}", output.content);
+    assert!(output.content.contains("480"), "{}", output.content);
+
+    let path = root.path().join("周报.docx");
+    for text in ["原始周报", "原始周报\n追加修订内容"] {
+        let output = execute(
+            &json!({
+                "file_path": "周报.docx",
+                "kind": "docx",
+                "blocks": [{"type":"paragraph","text":text}]
+            }),
+            &ctx,
+        )
+        .await
+        .unwrap();
+        assert!(output.success, "{}", output.content);
+    }
+    let document = NativeOfficeDocument::open(path).await.unwrap();
+    let text = document.text_view().text;
+    assert!(text.contains("原始周报"));
+    assert!(text.contains("追加修订内容"));
 }
 
 #[cfg(unix)]
@@ -853,4 +892,46 @@ fn office_file_definition_omits_block_all_of_while_parameters_keeps_it() {
         .get("allOf")
         .is_none());
     assert!(def.parameters.to_string().len() < params.to_string().len());
+}
+
+#[test]
+fn office_file_schema_uses_single_string_types_for_compatible_gateways() {
+    fn assert_single_types(value: &Value) {
+        match value {
+            Value::Object(map) => {
+                for (key, child) in map {
+                    if key == "type" && (child.is_string() || child.is_array()) {
+                        assert!(child.is_string(), "type must be a string: {value}");
+                    }
+                    assert_single_types(child);
+                }
+            }
+            Value::Array(items) => {
+                for item in items {
+                    assert_single_types(item);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    let root = tempfile::tempdir().unwrap();
+    let tool = OfficeFileTool::new(root.path()).unwrap();
+    for schema in [tool.parameters(), tool.definition().parameters] {
+        assert_single_types(&schema);
+        let branches = schema
+            .pointer("/properties/sheets/items/properties/rows/items/items/oneOf")
+            .and_then(Value::as_array)
+            .unwrap();
+        assert_eq!(branches.len(), 9);
+        for scalar in ["string", "number", "boolean", "null"] {
+            assert!(branches.iter().any(|branch| branch["type"] == scalar));
+            assert!(branches.iter().any(|branch| {
+                branch
+                    .pointer("/properties/value/type")
+                    .and_then(Value::as_str)
+                    == Some(scalar)
+            }));
+        }
+    }
 }

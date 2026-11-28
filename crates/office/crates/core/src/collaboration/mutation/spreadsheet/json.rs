@@ -111,20 +111,20 @@ pub(super) fn assert_compatible_cell(
                 (Some(before), None, Some(current)) if !json_equal(before, current) => {
                     return Err(spreadsheet_match_conflict(format!(
                         "The {field_label} changed before it could be removed."
-                    )))
+                    )));
                 }
                 (_, None, _) => {}
                 (None, Some(after), Some(current)) if !json_equal(after, current) => {
                     return Err(spreadsheet_match_conflict(format!(
                         "The {field_label} was added concurrently with a different value."
-                    )))
+                    )));
                 }
                 (None, Some(_), _) => {}
                 (Some(before), Some(after), _) if json_equal(before, after) => {}
                 (Some(_), Some(_), None) => {
                     return Err(spreadsheet_match_conflict(format!(
                         "The {field_label} was removed before this change could be applied."
-                    )))
+                    )));
                 }
                 (Some(before), Some(after), Some(current)) => {
                     assert_compatible_cell(before, after, current, &field_label)?;
@@ -233,7 +233,7 @@ pub(super) fn decode_flat_json_key(encoded: &str) -> UseResult<(FlatJsonEntryKin
         _ => {
             return Err(invalid_shared_spreadsheet(
                 "A shared Spreadsheet cell field identity has an unsupported kind.",
-            ))
+            ));
         }
     };
     let path = identity[1..].to_vec();
@@ -378,7 +378,7 @@ fn validate_json_value(value: &JsonValue, label: &str, depth: usize) -> UseResul
         JsonValue::Number(value) if value.as_f64().is_none_or(|value| !value.is_finite()) => {
             return Err(invalid_spreadsheet_mutation(format!(
                 "A Spreadsheet {label} contains a non-finite number."
-            )))
+            )));
         }
         _ => {}
     }

@@ -5,6 +5,7 @@ use crate::AgentRegistry;
 struct ModelRequest {
     tool_count: usize,
     text: String,
+    system: String,
 }
 
 struct ReadOnlyAnalysisClient {
@@ -58,12 +59,13 @@ impl LlmClient for ReadOnlyAnalysisClient {
     async fn complete_streaming(
         &self,
         messages: &[Message],
-        _system: Option<&str>,
+        system: Option<&str>,
         tools: &[crate::llm::ToolDefinition],
         _cancel_token: tokio_util::sync::CancellationToken,
     ) -> anyhow::Result<mpsc::Receiver<StreamEvent>> {
         self.requests.lock().unwrap().push(ModelRequest {
             tool_count: tools.len(),
+            system: system.unwrap_or_default().to_owned(),
             text: messages
                 .iter()
                 .map(Message::text)
@@ -80,6 +82,76 @@ impl LlmClient for ReadOnlyAnalysisClient {
             let _ = tx.send(StreamEvent::Done(response)).await;
         });
         Ok(rx)
+    }
+}
+
+#[tokio::test]
+async fn empty_catalog_recovers_a_leaked_call_without_inventing_a_tool_receipt() {
+    let leaked = "<｜DSML｜invoke name=\"ls\"><｜DSML｜parameter name=\"path\" string=\"true\">.</｜DSML｜parameter></｜DSML｜invoke>";
+    let final_text =
+        format!("Here is the example:\n\n```xml\n{leaked}\n```\n\nInline: `{leaked}`.");
+    let mut private_attempt = scripted_text_response("");
+    private_attempt.message.reasoning_content = Some(leaked.to_owned());
+    for (first, retry, fail) in [
+        (scripted_text_response(&final_text), false, false),
+        (scripted_text_response(leaked), true, false),
+        (private_attempt, true, false),
+        (
+            scripted_tool_call_response("unavailable", "ls", serde_json::json!({})),
+            true,
+            true,
+        ),
+    ] {
+        let root = tempfile::tempdir().unwrap();
+        let replacement = if fail { leaked } else { &final_text };
+        let client = Arc::new(ReadOnlyAnalysisClient::new(
+            "GeneralPurpose",
+            vec![first, scripted_text_response(replacement)],
+        ));
+        let agent = Agent::from_config(test_config()).await.unwrap();
+        let session = agent
+            .session_async(
+                root.path().display().to_string(),
+                Some(
+                    SessionOptions::new()
+                        .with_llm_client(client.clone())
+                        .with_planning_mode(PlanningMode::Disabled)
+                        .with_tool_presentation_profile(
+                            crate::tools::ToolPresentationProfileV1::disabled(),
+                        ),
+                ),
+            )
+            .await
+            .unwrap();
+        let result = session
+            .send("Explain the provided markup in normal text.", None)
+            .await;
+        if fail {
+            assert!(result.unwrap_err().to_string().contains("invocation twice"));
+        } else {
+            let result = result.unwrap();
+            assert_eq!(result.text, final_text);
+            assert_eq!(result.tool_calls_count, 0);
+        }
+        {
+            let requests = client.requests.lock().unwrap();
+            assert_eq!(requests.len(), if retry { 2 } else { 1 });
+            assert!(requests.iter().all(|request| request.tool_count == 0));
+            assert!(requests[0]
+                .system
+                .contains("No tools are available for this request."));
+            if retry {
+                assert!(requests[1]
+                    .text
+                    .contains("previous model attempt proposed a tool"));
+                assert!(!requests[1].text.contains(leaked));
+            }
+        }
+        let facts =
+            crate::fact_control::read_workspace_facts(root.path(), session.session_id()).unwrap();
+        assert!(!facts.iter().any(|fact| fact.kind.starts_with("tool.")));
+        session.close().await;
+        agent.close().await;
     }
 }
 
@@ -396,4 +468,94 @@ async fn disabled_planning_defers_intent_classification_until_synthesis_budget()
         session.close().await;
         agent.close().await;
     }
+}
+
+#[tokio::test]
+async fn settled_workspace_change_skips_lazy_classification_for_its_run_only() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::write(root.path().join("notes.txt"), "original\n").unwrap();
+    std::fs::write(root.path().join("guide.txt"), "separate evidence\n").unwrap();
+    let read_notes =
+        |id| scripted_tool_call_response(id, "read", serde_json::json!({"file_path":"notes.txt"}));
+    let client = Arc::new(ReadOnlyAnalysisClient::new(
+        "Plan",
+        vec![
+            read_notes("read-before-edit"),
+            scripted_tool_call_response(
+                "write-notes",
+                "write",
+                serde_json::json!({"file_path":"notes.txt","content":"updated\n"}),
+            ),
+            scripted_text_response("The file is updated."),
+            read_notes("read-after-edit"),
+            scripted_tool_call_response(
+                "read-guide",
+                "read",
+                serde_json::json!({"file_path":"guide.txt"}),
+            ),
+            scripted_text_response("The requested observation is complete."),
+        ],
+    ));
+    let mut config = test_config();
+    config.memory = Some(crate::memory::MemoryConfig {
+        llm_extraction: false,
+        ..Default::default()
+    });
+    let agent = Agent::from_config(config).await.unwrap();
+    let session = agent
+        .session_async(
+            root.path().display().to_string(),
+            Some(
+                SessionOptions::new()
+                    .with_llm_client(client.clone())
+                    .with_planning_mode(PlanningMode::Disabled)
+                    .with_permission_policy(
+                        crate::permissions::PermissionPolicy::new()
+                            .allow("read")
+                            .allow("write(*)"),
+                    )
+                    .with_completion_attestor(Arc::new(
+                        crate::completion_attestor::DiskContentAttestor::new(root.path()),
+                    ))
+                    .with_assistant_final_response(true)
+                    .with_read_only_synthesis_rounds(2)
+                    .with_auto_compact(false),
+            ),
+        )
+        .await
+        .unwrap();
+    let mutation = session
+        .send("Update notes.txt as requested.", None)
+        .await
+        .unwrap();
+    assert_eq!(mutation.text, "The file is updated.");
+    assert!(matches!(
+        mutation.completion,
+        crate::harness_loop::CompletionTerminal::Verified { .. }
+    ));
+    assert_eq!(
+        std::fs::read(root.path().join("notes.txt")).unwrap(),
+        b"updated\n"
+    );
+    let classification_count = || {
+        client
+            .pre_analysis_calls
+            .load(std::sync::atomic::Ordering::SeqCst)
+    };
+    assert_eq!(classification_count(), 0);
+
+    let observation = session
+        .send("Inspect the workspace and report its state.", None)
+        .await
+        .unwrap();
+    assert_eq!(observation.text, "The requested observation is complete.");
+    assert_eq!(observation.tool_calls_count, 2);
+    assert_eq!(classification_count(), 1);
+    {
+        let requests = client.requests.lock().unwrap();
+        assert!(!requests[2].text.contains("interactive exploration budget"));
+        assert!(requests[5].text.contains("interactive exploration budget"));
+    }
+    session.close().await;
+    agent.close().await;
 }

@@ -3,8 +3,8 @@ use std::{
     io::{self, BufRead, BufReader, Write},
     path::PathBuf,
     sync::{
-        atomic::{AtomicBool, Ordering},
         Arc, Mutex,
+        atomic::{AtomicBool, Ordering},
     },
 };
 
@@ -22,7 +22,8 @@ fn main() -> io::Result<()> {
             std::process::id()
         ),
     )?;
-    let push_diagnostics = executable_name.contains("push-diagnostics");
+    let mixed_diagnostics = executable_name.contains("mixed-diagnostics");
+    let push_diagnostics = executable_name.contains("push-diagnostics") || mixed_diagnostics;
     let ignore_shutdown = executable_name.contains("ignore-shutdown");
     let cold_navigation = if executable_name.contains("cold-empty") {
         ColdNavigation::Empty
@@ -136,6 +137,7 @@ fn main() -> io::Result<()> {
                 &method,
                 document_uri.as_deref(),
                 push_diagnostics,
+                mixed_diagnostics,
                 cold_navigation,
                 navigation_requests,
             )
@@ -187,7 +189,9 @@ fn ready_after(
 }
 
 fn server_status(health: &str, quiescent: bool) -> String {
-    format!("{{\"jsonrpc\":\"2.0\",\"method\":\"experimental/serverStatus\",\"params\":{{\"health\":\"{health}\",\"quiescent\":{quiescent}}}}}")
+    format!(
+        "{{\"jsonrpc\":\"2.0\",\"method\":\"experimental/serverStatus\",\"params\":{{\"health\":\"{health}\",\"quiescent\":{quiescent}}}}}"
+    )
 }
 
 #[derive(Clone, Copy)]
@@ -266,12 +270,13 @@ fn response_for(
     method: &str,
     uri: Option<&str>,
     push_diagnostics: bool,
+    mixed_diagnostics: bool,
     cold_navigation: ColdNavigation,
     navigation_requests: usize,
 ) -> String {
     let uri = uri.unwrap_or("file:///missing.rs");
     match method {
-        "initialize" => initialize_response(push_diagnostics),
+        "initialize" => initialize_response(push_diagnostics, mixed_diagnostics),
         "textDocument/documentSymbol" => concat!(
             "[{\"name\":\"answer\",\"kind\":12,",
             "\"range\":{\"start\":{\"line\":0,\"character\":0},",
@@ -290,6 +295,9 @@ fn response_for(
             (ColdNavigation::Empty | ColdNavigation::Partial, _) => settled_locations_response(uri),
             (ColdNavigation::Disabled, _) => locations_response(uri),
         },
+        "textDocument/diagnostic" if mixed_diagnostics => {
+            "{\"kind\":\"full\",\"resultId\":\"fixture-1\",\"items\":[]}".to_owned()
+        }
         "textDocument/diagnostic" => concat!(
             "{\"kind\":\"full\",\"resultId\":\"fixture-1\",\"items\":[{",
             "\"range\":{\"start\":{\"line\":0,\"character\":7},",
@@ -312,7 +320,7 @@ fn is_navigation_method(method: &str) -> bool {
     )
 }
 
-fn initialize_response(push_diagnostics: bool) -> String {
+fn initialize_response(push_diagnostics: bool, mixed_diagnostics: bool) -> String {
     let mut response = concat!(
         "{\"capabilities\":{",
         "\"positionEncoding\":\"utf-16\",",
@@ -322,7 +330,7 @@ fn initialize_response(push_diagnostics: bool) -> String {
         "\"referencesProvider\":true,\"implementationProvider\":true"
     )
     .to_owned();
-    if !push_diagnostics {
+    if !push_diagnostics || mixed_diagnostics {
         response.push_str(concat!(
             ",\"diagnosticProvider\":{\"interFileDependencies\":false,",
             "\"workspaceDiagnostics\":false}"

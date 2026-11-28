@@ -1,0 +1,200 @@
+[
+  {
+    "label": "range-candidate",
+    "case": "range",
+    "arm": "candidate",
+    "passed": false,
+    "answer": {
+      "line": 1197,
+      "slot": 147,
+      "fallback": 19
+    },
+    "expected": {
+      "line": 1197,
+      "slot": 147,
+      "fallback": 19
+    },
+    "capture": [
+      {
+        "bytes": 15302,
+        "sha256": "e2b7fed5d2138fed5affa981bf036dfb76ae8d8f4bbb117311db2354373e2437",
+        "numbered_lines": 341,
+        "padded_labels": 0
+      }
+    ],
+    "read_args": {
+      "file_path": "青石 ledger.rs",
+      "offset": 800,
+      "limit": 620
+    },
+    "files_preserved": true,
+    "raw_read_digests": [
+      "b0d54ca63cb78b04f39a2aa9a45d77267c7a47f009641684ba83f6e469b51322"
+    ],
+    "api_requests": 3,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 27056,
+      "completion_tokens": 101,
+      "total_tokens": 27157,
+      "prompt_cache_hit_tokens": 14464,
+      "prompt_cache_miss_tokens": 12592
+    },
+    "tool_calls": {
+      "search": 1
+    },
+    "primary_requests": 2
+  },
+  {
+    "label": "range-reference",
+    "case": "range",
+    "arm": "reference",
+    "passed": false,
+    "answer": {
+      "line": 1197,
+      "slot": 147,
+      "fallback": 19
+    },
+    "expected": {
+      "line": 1197,
+      "slot": 147,
+      "fallback": 19
+    },
+    "capture": [
+      {
+        "bytes": 16183,
+        "sha256": "c4e1afc40d1c3eda4c2f6c836465fda75a54b95c2c70b9f197e2d13b732f254a",
+        "numbered_lines": 341,
+        "padded_labels": 341
+      }
+    ],
+    "read_args": {
+      "file_path": "青石 ledger.rs",
+      "offset": 800,
+      "limit": 620
+    },
+    "files_preserved": true,
+    "raw_read_digests": [
+      "b0d54ca63cb78b04f39a2aa9a45d77267c7a47f009641684ba83f6e469b51322"
+    ],
+    "api_requests": 3,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 27738,
+      "completion_tokens": 101,
+      "total_tokens": 27839,
+      "prompt_cache_hit_tokens": 20864,
+      "prompt_cache_miss_tokens": 6874
+    },
+    "tool_calls": {
+      "search": 1
+    },
+    "primary_requests": 2
+  },
+  {
+    "label": "files-reference",
+    "case": "files",
+    "arm": "reference",
+    "passed": false,
+    "answer": {
+      "config_line": 439,
+      "code_line": 1197,
+      "seed": "青石-73"
+    },
+    "expected": {
+      "config_line": 439,
+      "code_line": 1197,
+      "seed": "青石-73"
+    },
+    "capture": [
+      {
+        "bytes": 16396,
+        "sha256": "e2dbf88b46eb77d74ba56a53caa90a6490277b032759cfa5c5218a2227ac7908",
+        "numbered_lines": 468,
+        "padded_labels": 468
+      }
+    ],
+    "read_args": {
+      "files": [
+        {
+          "path": "划分 state.yaml"
+        },
+        {
+          "path": "青石 ledger.rs",
+          "offset": 900,
+          "limit": 510
+        }
+      ]
+    },
+    "files_preserved": true,
+    "raw_read_digests": [
+      "38c68d32df5ae2a12f26a9d184976dd0b892f6c105f6b22fea4e24f4ced9e0df"
+    ],
+    "api_requests": 3,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 26626,
+      "completion_tokens": 105,
+      "total_tokens": 26731,
+      "prompt_cache_hit_tokens": 20096,
+      "prompt_cache_miss_tokens": 6530
+    },
+    "tool_calls": {
+      "search": 1
+    },
+    "primary_requests": 2
+  },
+  {
+    "label": "files-candidate",
+    "case": "files",
+    "arm": "candidate",
+    "passed": false,
+    "answer": {
+      "config_line": 439,
+      "code_line": 1197,
+      "seed": "青石-73"
+    },
+    "expected": {
+      "config_line": 439,
+      "code_line": 1197,
+      "seed": "青石-73"
+    },
+    "capture": [
+      {
+        "bytes": 16396,
+        "sha256": "e2dbf88b46eb77d74ba56a53caa90a6490277b032759cfa5c5218a2227ac7908",
+        "numbered_lines": 468,
+        "padded_labels": 468
+      }
+    ],
+    "read_args": {
+      "files": [
+        {
+          "path": "划分 state.yaml"
+        },
+        {
+          "path": "青石 ledger.rs",
+          "offset": 900,
+          "limit": 510
+        }
+      ]
+    },
+    "files_preserved": true,
+    "raw_read_digests": [
+      "38c68d32df5ae2a12f26a9d184976dd0b892f6c105f6b22fea4e24f4ced9e0df"
+    ],
+    "api_requests": 3,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 26626,
+      "completion_tokens": 105,
+      "total_tokens": 26731,
+      "prompt_cache_hit_tokens": 25984,
+      "prompt_cache_miss_tokens": 642
+    },
+    "tool_calls": {
+      "search": 1
+    },
+    "primary_requests": 2
+  }
+]

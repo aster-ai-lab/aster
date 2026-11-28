@@ -1,0 +1,107 @@
+[
+  {
+    "variant": "user",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 43,
+      "completion_tokens": 1,
+      "total_tokens": 44,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 43
+    },
+    "model": "deepseek-flash"
+  },
+  {
+    "variant": "aster_system",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 2043,
+      "completion_tokens": 1,
+      "total_tokens": 2044,
+      "prompt_tokens_details": {
+        "cached_tokens": 1792
+      },
+      "prompt_cache_hit_tokens": 1792,
+      "prompt_cache_miss_tokens": 251
+    },
+    "model": "deepseek-flash"
+  },
+  {
+    "variant": "dsh_system_and_environment",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 790,
+      "completion_tokens": 1,
+      "total_tokens": 791,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 406
+    },
+    "model": "deepseek-flash"
+  },
+  {
+    "variant": "aster_tools",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 6326,
+      "completion_tokens": 1,
+      "total_tokens": 6327,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 6326
+    },
+    "model": "deepseek-flash"
+  },
+  {
+    "variant": "dsh_tools",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 5059,
+      "completion_tokens": 1,
+      "total_tokens": 5060,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 5059
+    },
+    "model": "deepseek-flash"
+  },
+  {
+    "variant": "aster_full",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 8324,
+      "completion_tokens": 1,
+      "total_tokens": 8325,
+      "prompt_tokens_details": {
+        "cached_tokens": 8190
+      },
+      "prompt_cache_hit_tokens": 8190,
+      "prompt_cache_miss_tokens": 134
+    },
+    "model": "deepseek-flash"
+  },
+  {
+    "variant": "dsh_full",
+    "status": 200,
+    "usage": {
+      "prompt_tokens": 5804,
+      "completion_tokens": 1,
+      "total_tokens": 5805,
+      "prompt_tokens_details": {
+        "cached_tokens": 5632
+      },
+      "prompt_cache_hit_tokens": 5632,
+      "prompt_cache_miss_tokens": 172
+    },
+    "model": "deepseek-flash"
+  }
+]

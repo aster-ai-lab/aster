@@ -42,7 +42,10 @@ fn receipt(
                             ToolFileKind::Missing
                         },
                         content_digest: contents.map(|contents| {
-                            format!("sha256:{}", sha256::digest(contents.as_bytes()))
+                            format!(
+                                "sha256:{}",
+                                crate::content_digest::sha256_hex(contents.as_bytes())
+                            )
                         }),
                         mode: None,
                     },

@@ -1,0 +1,38 @@
+[
+  {
+    "arm": "release",
+    "observed_calls": [
+      {
+        "index": 0,
+        "id": "call_00_In89n382FqcLH2i5kYLL7101",
+        "type": "function",
+        "function": {
+          "name": "record_format_observation",
+          "arguments": "{\"format_version\": \"Harbor-Protocol-4387\"}"
+        }
+      }
+    ],
+    "desired_argument": true,
+    "discovery_requests": 0,
+    "provider_requests": 1,
+    "total_tokens": 366
+  },
+  {
+    "arm": "candidate",
+    "observed_calls": [
+      {
+        "index": 0,
+        "id": "call_00_CjkE2bDqQmJF1oBBbtgS2859",
+        "type": "function",
+        "function": {
+          "name": "record_format_observation",
+          "arguments": "{\"format_version\": \"Harbor-Protocol-4387\"}"
+        }
+      }
+    ],
+    "desired_argument": true,
+    "discovery_requests": 1,
+    "provider_requests": 2,
+    "total_tokens": 987
+  }
+]

@@ -6,6 +6,12 @@ use std::path::{Path, PathBuf};
 const README: &str = "Maintain report.json from the CURRENT order.json and policy.json. Use native file read/edit tools only; do not run commands or code. Report exactly these JSON fields: revision, currency, units, subtotal_cents, discount_cents, tax_cents, total_cents. revision copies the current integer order.revision; currency copies order.currency; units is the integer SUM OF ALL ITEM QUANTITIES (not a currency denomination). All monetary fields are nonnegative integer cents. Sum quantity * unit_cents for subtotal_cents. Round discounts and tax to the nearest cent with halves rounded up. Apply the discount to the subtotal BEFORE computing tax. Use basis points / 10000. Preserve README.md and notes.txt exactly. Every user turn may change source data; read the current source again.\n";
 const NOTES: &str = "Unrelated user draft: preserve this exact text.\n";
 
+pub fn revision_prompt(revision: u64) -> String {
+    format!(
+        "Revision {revision}: Read README.md, current order.json and policy.json. Update report.json to satisfy the stated contract. Preserve all source files and unrelated user work. Use native read/edit tools only; do not run commands or code. Finish with a concise account of the current result."
+    )
+}
+
 pub struct NativeFixture {
     pub workspace: PathBuf,
 }

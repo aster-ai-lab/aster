@@ -519,18 +519,19 @@ fn typed_setup_preserves_host_safety_and_context_without_activation() {
         .watch_skill_dirs
         .contains(&root.path().join(".aster/skills")));
     assert!(!store.exists());
+    assert!(options.workspace_retrieval.is_none());
     let slots = options.prompt_slots.expect("prompt slots");
     assert_eq!(slots.output_language.as_deref(), Some("zh-CN"));
     let extra = slots.extra.expect("host context");
     assert!(extra.contains("Preserve these host instructions"));
-    assert!(extra.contains("bm25"));
+    assert!(!extra.contains("search modes:"));
     assert!(extra.contains("code_symbols"));
     assert!(extra.contains("Semantic retrieval is disabled"));
     assert!(options.hook_executor.is_some());
 }
 
 #[test]
-fn host_session_status_names_live_search_and_closed_semantic() {
+fn host_session_status_reports_closed_semantic_without_redeclaring_search_modes() {
     let root = tempfile::tempdir().expect("workspace");
     let store = root.path().join("store");
     let setup = SessionSetup {
@@ -560,12 +561,13 @@ fn host_session_status_names_live_search_and_closed_semantic() {
     )
     .expect("host options");
     assert!(options.hook_executor.is_some());
+    assert!(options.workspace_retrieval.is_none());
     let extra = options
         .prompt_slots
         .expect("prompt slots")
         .extra
         .expect("capability status");
-    assert!(extra.contains("bm25"));
+    assert!(!extra.contains("search modes:"));
     assert!(extra.contains("code_symbols"));
     assert!(extra.contains("Semantic retrieval is disabled"));
     assert!(extra.contains("memory: durable collections"));

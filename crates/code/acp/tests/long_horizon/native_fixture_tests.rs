@@ -3,6 +3,31 @@
 use super::*;
 
 #[test]
+#[ignore = "export the unchanged frozen inputs and independent oracle to an explicit evidence path"]
+fn export_native_file_workflow_fixture() {
+    let root = tempfile::tempdir().unwrap();
+    let fixture = NativeFixture::create(root.path()).unwrap();
+    let turns: Vec<_> = (1..=6)
+        .map(|revision| {
+            let expected = fixture.prepare(revision).unwrap();
+            json!({
+                "prompt": revision_prompt(revision),
+                "order": String::from_utf8(fixture.read("order.json").unwrap()).unwrap(),
+                "policy": String::from_utf8(fixture.read("policy.json").unwrap()).unwrap(),
+                "expected": expected,
+            })
+        })
+        .collect();
+    let output = std::env::var_os("ASTER_LH_FIXTURE_EXPORT").expect("explicit fixture output");
+    let output = std::fs::File::create_new(output).unwrap();
+    serde_json::to_writer_pretty(
+        output,
+        &json!({"readme": README, "notes": NOTES, "turns": turns}),
+    )
+    .unwrap();
+}
+
+#[test]
 fn each_current_revision_requires_its_own_correct_artifact() {
     let root = tempfile::tempdir().unwrap();
     let fixture = NativeFixture::create(root.path()).unwrap();

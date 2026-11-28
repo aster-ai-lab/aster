@@ -1,0 +1,371 @@
+[
+  {
+    "group": 1,
+    "arm": "f64-expanded",
+    "case": "replacement",
+    "message_sha256": "91105612f423a5bc515b9f3ce314e857d9e583fe6e0e4a7aa6be8dbbc91e8fae",
+    "usage": {
+      "prompt_tokens": 766,
+      "completion_tokens": 216,
+      "total_tokens": 982,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 382
+    },
+    "proposal": {
+      "items": [
+        {
+          "memory_type": "procedural",
+          "content": "Cedar 项目的发布流程中，容器重建安排在星期三 09:30 UTC（替代此前星期五 18:00 UTC 的安排）。",
+          "importance": 0.95,
+          "confidence": 0.97,
+          "tags": [
+            "cedar",
+            "release-workflow",
+            "container-rebuild",
+            "schedule"
+          ],
+          "source": "decision",
+          "scope": "workspace",
+          "reason": "这是用户明确要求长期记住的正式流程变更，未来执行 Cedar 发布时必须使用新时间。",
+          "evolution": {
+            "kind": "skill",
+            "pattern_key": "cedar.release.container_rebuild_schedule",
+            "title": "Cedar 容器重建时间",
+            "summary": "Cedar 发布流程的容器重建已改为星期三 09:30 UTC。",
+            "instructions": [
+              "在 Cedar 发布流程中，于星期三 09:30 UTC 执行容器重建。",
+              "不要使用旧的星期五 18:00 UTC 容器重建安排。",
+              "签名、清单和通知流程继续照常执行。"
+            ]
+          },
+          "supersedes": [
+            "@1"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "group": 1,
+    "arm": "f64-expanded",
+    "case": "conflict",
+    "message_sha256": "40fd4a8446b898005d29d277cf4a79f55a770be83c22b7c0fa889a3998a04c0b",
+    "usage": {
+      "prompt_tokens": 766,
+      "completion_tokens": 138,
+      "total_tokens": 904,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 382
+    },
+    "proposal": {
+      "items": [
+        {
+          "memory_type": "semantic",
+          "content": "Cedar container rebuild schedule: the current approved rule is Friday at 18:00 UTC. The operations handbook states 21:45 UTC, but that change is unapproved; retain the 18:00 UTC rule and treat the discrepancy as unresolved.",
+          "importance": 0.9,
+          "confidence": 0.95,
+          "tags": [
+            "cedar",
+            "release",
+            "schedule",
+            "discrepancy"
+          ],
+          "source": "decision",
+          "scope": "workspace",
+          "reason": "Prevents future sessions from adopting an unapproved schedule change while preserving awareness of the unresolved handbook conflict.",
+          "evolution": null,
+          "conflicts_with": [
+            "@1"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "group": 1,
+    "arm": "f32-round-trip",
+    "case": "replacement",
+    "message_sha256": "604e61fa9acd997ce56255ba02f40441ac0b2edb54a656131c5fabf09b1819f9",
+    "usage": {
+      "prompt_tokens": 746,
+      "completion_tokens": 236,
+      "total_tokens": 982,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 362
+    },
+    "proposal": {
+      "items": [
+        {
+          "memory_type": "procedural",
+          "content": "Cedar 项目的发布流程中，容器重建已正式改为每周星期三 09:30 UTC，替代此前星期五 18:00 UTC 的安排；签名、清单和通知流程继续照常使用。",
+          "importance": 0.95,
+          "confidence": 0.97,
+          "tags": [
+            "cedar",
+            "release-workflow",
+            "container-rebuild",
+            "schedule"
+          ],
+          "source": "decision",
+          "scope": "workspace",
+          "reason": "这是用户明确要求长期记住的正式流程变更，未来执行 Cedar 发布时必须使用新时间。",
+          "evolution": {
+            "kind": "skill",
+            "pattern_key": "cedar.release.container_rebuild_schedule",
+            "title": "Cedar 容器重建新时间",
+            "summary": "Cedar 发布流程的容器重建改为星期三 09:30 UTC，取代星期五 18:00 UTC。",
+            "instructions": [
+              "执行 Cedar 发布时，在星期三 09:30 UTC 进行容器重建。",
+              "不要再按星期五 18:00 UTC 安排容器重建。",
+              "签名、清单和通知流程保持原有做法不变。"
+            ]
+          },
+          "supersedes": [
+            "@1"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "group": 1,
+    "arm": "f32-round-trip",
+    "case": "conflict",
+    "message_sha256": "4ec69a89a7b2ae7a14a477f26d6f8bb86cfc0e8d158d4bc9ee93526b09ff8d46",
+    "usage": {
+      "prompt_tokens": 746,
+      "completion_tokens": 148,
+      "total_tokens": 894,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 362
+    },
+    "proposal": {
+      "items": [
+        {
+          "memory_type": "procedural",
+          "content": "Cedar release schedule: the approved rule remains the container rebuild on Friday at 18:00 UTC. The operations handbook's claim of 21:45 UTC is an unapproved change and conflicts with the stored schedule; retain the current rule and treat the discrepancy as unresolved until approved.",
+          "importance": 0.9,
+          "confidence": 0.95,
+          "tags": [
+            "cedar",
+            "release",
+            "schedule",
+            "discrepancy",
+            "unresolved"
+          ],
+          "source": "decision",
+          "scope": "workspace",
+          "reason": "Prevents future sessions from adopting an unapproved schedule change and preserves the known contradiction for resolution.",
+          "evolution": null,
+          "conflicts_with": [
+            "@1"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "group": 2,
+    "arm": "f32-round-trip",
+    "case": "conflict",
+    "message_sha256": "951c7c2510e870cf874944ae3f95d16e29683dc4059e67a1109d1ce098f2b87d",
+    "usage": {
+      "prompt_tokens": 747,
+      "completion_tokens": 265,
+      "total_tokens": 1012,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 363
+    },
+    "proposal": {
+      "items": [
+        {
+          "memory_type": "procedural",
+          "content": "Cedar release rebuild schedule: the current approved rule is Friday at 18:00 UTC. The operations handbook states 21:45 UTC, but that change is unapproved; retain the 18:00 UTC rule and treat the handbook discrepancy as an unresolved contradiction to be reconciled before any schedule change.",
+          "importance": 0.9,
+          "confidence": 0.9,
+          "tags": [
+            "cedar",
+            "release",
+            "schedule",
+            "discrepancy",
+            "unresolved"
+          ],
+          "source": "decision",
+          "scope": "workspace",
+          "reason": "Prevents an unapproved handbook value from silently replacing the approved Cedar rebuild schedule; future sessions must know the contradiction is unresolved.",
+          "evolution": {
+            "kind": "okf",
+            "pattern_key": "cedar.release.rebuild_schedule_discrepancy",
+            "title": "Cedar rebuild schedule contradiction",
+            "summary": "Approved Cedar rebuild is Friday 18:00 UTC; handbook's 21:45 UTC is unapproved and unresolved.",
+            "instructions": [
+              "Keep Friday 18:00 UTC as the current Cedar container rebuild schedule until an approved change exists.",
+              "Do not apply the handbook's 21:45 UTC time; flag it as an unresolved contradiction.",
+              "Reconcile the handbook discrepancy with the release owner before changing the schedule."
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "group": 2,
+    "arm": "f32-round-trip",
+    "case": "replacement",
+    "message_sha256": "53ec5d2dcb4f011059728068302b297afc1a8dce7d29cae9b7de1410a19d5013",
+    "usage": {
+      "prompt_tokens": 747,
+      "completion_tokens": 237,
+      "total_tokens": 984,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 363
+    },
+    "proposal": {
+      "items": [
+        {
+          "memory_type": "procedural",
+          "content": "Cedar 项目的发布流程中，容器重建安排在星期三 09:30 UTC（已替代此前星期五 18:00 UTC 的安排）；签名、清单和通知流程继续照常使用。",
+          "importance": 0.95,
+          "confidence": 0.97,
+          "tags": [
+            "cedar",
+            "release-workflow",
+            "container-rebuild",
+            "schedule"
+          ],
+          "source": "decision",
+          "scope": "workspace",
+          "reason": "用户明确要求长期记住该发布流程变更，未来执行 Cedar 发布时需按新时间安排容器重建。",
+          "evolution": {
+            "kind": "skill",
+            "pattern_key": "cedar.release.container_rebuild_schedule",
+            "title": "Cedar 容器重建时间",
+            "summary": "Cedar 发布流程的容器重建改为星期三 09:30 UTC，替代星期五 18:00 UTC。",
+            "instructions": [
+              "在 Cedar 发布流程中，将容器重建安排在星期三 09:30 UTC。",
+              "不要再使用旧的星期五 18:00 UTC 容器重建安排。",
+              "签名、清单和通知流程保持原有做法不变。"
+            ]
+          },
+          "supersedes": [
+            "@1"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "group": 2,
+    "arm": "f64-expanded",
+    "case": "conflict",
+    "message_sha256": "f8222b7ff291762ae3aff893f6ea981d3f5477296b1b276accdf701680016db6",
+    "usage": {
+      "prompt_tokens": 767,
+      "completion_tokens": 252,
+      "total_tokens": 1019,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 383
+    },
+    "proposal": {
+      "items": [
+        {
+          "memory_type": "procedural",
+          "content": "Cedar container rebuild schedule: the approved/current rule is Friday at 18:00 UTC. The operations handbook states 21:45 UTC, but that change is unapproved; retain the 18:00 UTC rule and treat the handbook discrepancy as an unresolved contradiction to be reconciled before any schedule change.",
+          "importance": 0.9,
+          "confidence": 0.9,
+          "tags": [
+            "cedar",
+            "release",
+            "schedule",
+            "contradiction",
+            "unapproved-change"
+          ],
+          "source": "decision",
+          "scope": "workspace",
+          "reason": "Prevents future sessions from silently adopting an unapproved handbook time and preserves the known conflict for resolution.",
+          "evolution": {
+            "kind": "okf",
+            "pattern_key": "cedar.release.rebuild_schedule_conflict",
+            "title": "Cedar rebuild schedule conflict",
+            "summary": "Approved Cedar rebuild is Friday 18:00 UTC; handbook's 21:45 UTC is unapproved and unresolved.",
+            "instructions": [
+              "Use Friday 18:00 UTC as the current Cedar container rebuild schedule.",
+              "Do not adopt the handbook's 21:45 UTC time until the change is approved.",
+              "Flag the handbook discrepancy as an unresolved contradiction when the schedule is discussed."
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "group": 2,
+    "arm": "f64-expanded",
+    "case": "replacement",
+    "message_sha256": "21e19418e49e3d3d049cd4b6e0a2d59e5577eb8ac2748739c7898e778857d9e6",
+    "usage": {
+      "prompt_tokens": 767,
+      "completion_tokens": 237,
+      "total_tokens": 1004,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 383
+    },
+    "proposal": {
+      "items": [
+        {
+          "memory_type": "procedural",
+          "content": "Cedar 项目的发布流程中，容器重建已正式改为每周星期三 09:30 UTC，替代此前星期五 18:00 UTC 的安排；签名、清单和通知流程继续照常使用。",
+          "importance": 0.95,
+          "confidence": 0.97,
+          "tags": [
+            "cedar",
+            "release-workflow",
+            "container-rebuild",
+            "schedule"
+          ],
+          "source": "decision",
+          "scope": "workspace",
+          "reason": "这是用户明确要求长期记住的正式流程变更，未来执行 Cedar 发布时必须使用新时间。",
+          "evolution": {
+            "kind": "skill",
+            "pattern_key": "cedar.release.container_rebuild_schedule",
+            "title": "Cedar 容器重建时间",
+            "summary": "Cedar 发布流程的容器重建固定在星期三 09:30 UTC，签名、清单和通知流程不变。",
+            "instructions": [
+              "执行 Cedar 发布时，在星期三 09:30 UTC 进行容器重建。",
+              "不要再使用旧的星期五 18:00 UTC 容器重建安排。",
+              "签名、清单和通知流程继续按原有方式执行。"
+            ]
+          },
+          "supersedes": [
+            "@1"
+          ]
+        }
+      ]
+    }
+  }
+]

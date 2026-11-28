@@ -2,12 +2,12 @@
 
 use anyhow::Result;
 
+pub(crate) use aster_search::EngineTierPlan;
 pub(crate) use aster_search::product::DEFAULT_TIMEOUT_SECONDS;
 use aster_search::product::{
-    execute_cascade as execute_product_cascade, CascadeControls,
-    CascadeRequest as ProductCascadeRequest, HeadlessBrowser as ProductHeadlessBrowser,
+    CascadeControls, CascadeRequest as ProductCascadeRequest,
+    HeadlessBrowser as ProductHeadlessBrowser, execute_cascade as execute_product_cascade,
 };
-pub(crate) use aster_search::EngineTierPlan;
 
 mod plan;
 
@@ -19,6 +19,7 @@ pub(crate) enum HeadlessBrowser {
     #[default]
     Moli,
     Chrome,
+    Quark,
     Lightpanda,
 }
 
@@ -27,6 +28,7 @@ impl HeadlessBrowser {
         match self {
             Self::Moli => "moli",
             Self::Chrome => "chrome",
+            Self::Quark => "quark",
             Self::Lightpanda => "lightpanda",
         }
     }
@@ -37,6 +39,7 @@ impl From<HeadlessBrowser> for ProductHeadlessBrowser {
         match value {
             HeadlessBrowser::Moli => Self::Moli,
             HeadlessBrowser::Chrome => Self::Chrome,
+            HeadlessBrowser::Quark => Self::Quark,
             HeadlessBrowser::Lightpanda => Self::Lightpanda,
         }
     }

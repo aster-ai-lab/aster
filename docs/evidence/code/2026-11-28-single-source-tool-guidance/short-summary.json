@@ -1,0 +1,23 @@
+{
+  "candidate": {
+    "trials": 2,
+    "total_tokens_median": 31171.0,
+    "uncached_input_median": 4052.5,
+    "requests": 12,
+    "passes": 2
+  },
+  "release": {
+    "trials": 2,
+    "total_tokens_median": 31531.0,
+    "uncached_input_median": 3865.0,
+    "requests": 12,
+    "passes": 2
+  },
+  "dsh": {
+    "trials": 2,
+    "total_tokens_median": 25194.5,
+    "uncached_input_median": 1027.5,
+    "requests": 8,
+    "passes": 2
+  }
+}

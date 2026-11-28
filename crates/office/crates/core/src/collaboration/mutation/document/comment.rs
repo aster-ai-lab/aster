@@ -504,7 +504,7 @@ fn resolve_comment_target<T: ReadTxn>(
                 return Err(collaboration_error(
                     "office.collaboration.mutation_structure_conflict",
                     "A native Document comment can target only a paragraph with one text node and no inline objects.",
-                ))
+                ));
             }
         }
     }
@@ -537,7 +537,7 @@ fn resolve_comment_target<T: ReadTxn>(
                 return Err(collaboration_error(
                     "office.collaboration.mutation_structure_conflict",
                     "A native Document comment selection cannot cross an inline object.",
-                ))
+                ));
             }
         };
         let end = cursor.checked_add(length).ok_or_else(|| {

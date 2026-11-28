@@ -215,6 +215,59 @@ async fn publish_only_diagnostics_wait_for_the_current_document_revision() {
 }
 
 #[tokio::test]
+async fn empty_pull_diagnostics_preserve_published_compiler_results() {
+    let _permit = crate::test_support::resource_intensive_test_permit().await;
+    let workspace = tempfile::tempdir().unwrap();
+    let source_dir = workspace.path().join("src");
+    std::fs::create_dir(&source_dir).unwrap();
+    std::fs::write(
+        workspace.path().join("Cargo.toml"),
+        "[package]\nname='fixture'\n",
+    )
+    .unwrap();
+    let saved = "pub fn answer() -> u32 { missing_value() }\n";
+    std::fs::write(source_dir.join("lib.rs"), saved).unwrap();
+    let canonical_root = std::fs::canonicalize(workspace.path()).unwrap();
+    let server_dir = tempfile::tempdir().unwrap();
+    let server = server_dir.path().join(if cfg!(windows) {
+        "mixed-diagnostics-fake-lsp.exe"
+    } else {
+        "mixed-diagnostics-fake-lsp"
+    });
+    compile_fake_server(&server);
+    let snapshot = LocalWorkspaceManifestSnapshot {
+        version: 1,
+        root: canonical_root.clone(),
+        files: vec![manifest_file("Cargo.toml"), manifest_file("src/lib.rs")],
+        scanned_at_ms: 1,
+    };
+    let runtime = LanguageRuntime::start(
+        LanguageServerProfile::rust(&server),
+        canonical_root,
+        ProjectLayoutResolver::resolve(&snapshot),
+        Arc::new(DocumentStore::new(1)),
+        Arc::new(DiagnosticsStore::new(1)),
+        CancellationToken::new(),
+        Duration::from_secs(5),
+    )
+    .await
+    .unwrap();
+
+    let result = runtime
+        .diagnostics(
+            &WorkspacePath::from_normalized("src/lib.rs"),
+            saved,
+            CancellationToken::new(),
+        )
+        .await
+        .unwrap();
+    runtime.shutdown().await.unwrap();
+
+    assert_eq!(result.items.len(), 1);
+    assert_eq!(result.items[0].message, "fixture push warning");
+}
+
+#[tokio::test]
 async fn initialization_settle_delays_readiness_and_honors_cancellation() {
     let _permit = crate::test_support::resource_intensive_test_permit().await;
     let workspace = tempfile::tempdir().unwrap();

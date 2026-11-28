@@ -266,6 +266,7 @@ impl AnthropicClient {
             if let Some(last) = messages_value.last_mut() {
                 Self::mark_message_cache_breakpoint(last);
             }
+            group_parallel_tool_results(messages_value);
         }
 
         // Apply optional sampling parameters
@@ -313,6 +314,32 @@ impl AnthropicClient {
 
         request
     }
+}
+
+/// Messages requires all results of a tool-use batch in the next user message.
+/// Group only adjacent result messages, after marking their original blocks.
+fn group_parallel_tool_results(messages: &mut Vec<serde_json::Value>) {
+    fn result_blocks(message: &mut serde_json::Value) -> Option<&mut Vec<serde_json::Value>> {
+        if message["role"] != "user" {
+            return None;
+        }
+        message["content"].as_array_mut().filter(|blocks| {
+            !blocks.is_empty() && blocks.iter().all(|block| block["type"] == "tool_result")
+        })
+    }
+
+    let mut grouped = Vec::with_capacity(messages.len());
+    for mut message in messages.drain(..) {
+        if let (Some(previous), Some(current)) = (
+            grouped.last_mut().and_then(result_blocks),
+            result_blocks(&mut message),
+        ) {
+            previous.append(current);
+        } else {
+            grouped.push(message);
+        }
+    }
+    *messages = grouped;
 }
 
 /// Keep a thinking budget only when Anthropic can accept it and the output
@@ -1068,6 +1095,10 @@ pub(crate) struct AnthropicError {
 // ============================================================================
 // Tests
 // ============================================================================
+
+#[cfg(test)]
+#[path = "anthropic/tool_result_batch_tests.rs"]
+mod tool_result_batch_tests;
 
 #[cfg(test)]
 mod tests {

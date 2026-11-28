@@ -1,0 +1,54 @@
+[
+  {
+    "group": "relations-a",
+    "case": "replacement",
+    "rows_with_identical_typed_scores": 4,
+    "body_bytes_before": 1454,
+    "body_bytes_after": 1398,
+    "input_before": 750,
+    "input_after": 730,
+    "uncached_before": 238,
+    "uncached_after": 346,
+    "passed_before": true,
+    "passed_after": true
+  },
+  {
+    "group": "relations-a",
+    "case": "conflict",
+    "rows_with_identical_typed_scores": 4,
+    "body_bytes_before": 1504,
+    "body_bytes_after": 1448,
+    "input_before": 750,
+    "input_after": 730,
+    "uncached_before": 238,
+    "uncached_after": 346,
+    "passed_before": false,
+    "passed_after": true
+  },
+  {
+    "group": "relations-b",
+    "case": "replacement",
+    "rows_with_identical_typed_scores": 4,
+    "body_bytes_before": 1455,
+    "body_bytes_after": 1399,
+    "input_before": 750,
+    "input_after": 730,
+    "uncached_before": 238,
+    "uncached_after": 346,
+    "passed_before": true,
+    "passed_after": true
+  },
+  {
+    "group": "relations-b",
+    "case": "conflict",
+    "rows_with_identical_typed_scores": 4,
+    "body_bytes_before": 1505,
+    "body_bytes_after": 1449,
+    "input_before": 750,
+    "input_after": 730,
+    "uncached_before": 238,
+    "uncached_after": 346,
+    "passed_before": false,
+    "passed_after": true
+  }
+]

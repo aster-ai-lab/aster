@@ -2,16 +2,23 @@
 
 use std::fmt::Write as _;
 
+#[cfg(feature = "pdf-read")]
 use base64::Engine as _;
+#[cfg(feature = "pdf-read")]
 use base64::engine::general_purpose;
 
-use crate::types::output::{FileContent, PdfPageImage, PdfPageImages, ReadFileOutput};
+use crate::types::output::{FileContent, ReadFileOutput};
+#[cfg(feature = "pdf-read")]
+use crate::types::output::{PdfPageImage, PdfPageImages};
 
 use super::metadata::{bytes_to_metadata, is_pdf_magic};
 
 pub const MAX_PDF_BYTES: usize = 50 * 1024 * 1024;
+#[cfg(feature = "pdf-read")]
 const PDF_AUTO_READ_THRESHOLD: usize = 10;
+#[cfg(feature = "pdf-read")]
 const PDF_RENDER_DPI: u32 = 150;
+#[cfg(feature = "pdf-read")]
 const PDF_RENDER_JPEG_QUALITY: u8 = 85;
 pub const PDF_PROCESS_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(60);
 
@@ -93,22 +100,41 @@ pub(crate) async fn handle_pdf(
         }
     };
 
-    run_document_extraction(
-        file_bytes,
-        path,
-        "PDF",
-        MAX_PDF_BYTES,
-        PDF_PROCESS_TIMEOUT,
-        move |bytes| {
-            if extract_text {
-                extract_pdf_text(bytes, pages.as_deref())
-            } else {
-                let file_size = bytes.len();
-                render_pdf_pages(bytes, pages.as_deref(), file_size)
-            }
-        },
-    )
-    .await
+    if file_bytes.len() > MAX_PDF_BYTES {
+        return Ok(ReadFileOutput::FileReadError(format!(
+            "PDF file is {:.1} MB, exceeds the {:.0} MB limit.",
+            file_bytes.len() as f64 / 1_048_576.0,
+            MAX_PDF_BYTES as f64 / 1_048_576.0,
+        )));
+    }
+
+    #[cfg(feature = "pdf-read")]
+    {
+        run_document_extraction(
+            file_bytes,
+            path,
+            "PDF",
+            MAX_PDF_BYTES,
+            PDF_PROCESS_TIMEOUT,
+            move |bytes| {
+                if extract_text {
+                    extract_pdf_text(bytes, pages.as_deref())
+                } else {
+                    let file_size = bytes.len();
+                    render_pdf_pages(bytes, pages.as_deref(), file_size)
+                }
+            },
+        )
+        .await
+    }
+
+    #[cfg(not(feature = "pdf-read"))]
+    {
+        let _ = (file_bytes, path, pages, extract_text);
+        Ok(ReadFileOutput::FileReadError(
+            "PDF reading requires the `pdf-read` feature (handled by aster-acp)".to_string(),
+        ))
+    }
 }
 
 /// Parse a page range specification into sorted, deduplicated 0-based page indices.
@@ -175,6 +201,7 @@ pub fn parse_page_range(spec: &str, page_count: usize) -> Result<Vec<usize>, Str
     Ok(pages)
 }
 
+#[cfg(feature = "pdf-read")]
 fn open_pdf_document(bytes: Vec<u8>) -> Result<(pdf_oxide::PdfDocument, usize), String> {
     let doc = pdf_oxide::PdfDocument::from_bytes(bytes)
         .map_err(|e| format!("Failed to open PDF: {e}"))?;
@@ -190,6 +217,7 @@ fn open_pdf_document(bytes: Vec<u8>) -> Result<(pdf_oxide::PdfDocument, usize), 
     Ok((doc, page_count))
 }
 
+#[cfg(feature = "pdf-read")]
 fn open_pdf_and_resolve_pages(
     bytes: Vec<u8>,
     pages_spec: Option<&str>,
@@ -214,6 +242,7 @@ fn open_pdf_and_resolve_pages(
     Ok((doc, page_count, page_indices))
 }
 
+#[cfg(feature = "pdf-read")]
 pub(crate) fn render_pdf_pages(
     bytes: Vec<u8>,
     pages_spec: Option<&str>,
@@ -266,11 +295,13 @@ pub fn raw_text_to_file_content(text: String) -> ReadFileOutput {
     })
 }
 
+#[cfg(feature = "pdf-read")]
 enum PageTextStyle {
     GrokBuild,
     Cursor { total_pages: usize },
 }
 
+#[cfg(feature = "pdf-read")]
 fn append_page_body(text: &mut String, doc: &pdf_oxide::PdfDocument, page_idx: usize) {
     match doc.extract_text(page_idx) {
         Ok(page_text) => text.push_str(&page_text),
@@ -285,6 +316,7 @@ fn append_page_body(text: &mut String, doc: &pdf_oxide::PdfDocument, page_idx: u
     }
 }
 
+#[cfg(feature = "pdf-read")]
 fn extract_page_texts(
     doc: &pdf_oxide::PdfDocument,
     page_indices: &[usize],
@@ -313,6 +345,7 @@ fn extract_page_texts(
     Ok(text)
 }
 
+#[cfg(feature = "pdf-read")]
 fn extract_pdf_plain_text(bytes: Vec<u8>, style: PageTextStyle) -> Result<String, String> {
     let (doc, page_count) = open_pdf_document(bytes)?;
     let page_indices: Vec<usize> = (0..page_count).collect();
@@ -326,16 +359,24 @@ fn extract_pdf_plain_text(bytes: Vec<u8>, style: PageTextStyle) -> Result<String
 }
 
 /// Extract plain text from all PDF pages (no auto-read page limit).
-#[cfg(test)]
+#[cfg(all(test, feature = "pdf-read"))]
 pub(crate) fn extract_pdf_plain_text_all(bytes: Vec<u8>) -> Result<String, String> {
     extract_pdf_plain_text(bytes, PageTextStyle::GrokBuild)
 }
 
 /// Plain text from all PDF pages in the `Read` format.
+#[cfg(feature = "pdf-read")]
 pub fn extract_pdf_plain_text_cursor(bytes: Vec<u8>) -> Result<String, String> {
     extract_pdf_plain_text(bytes, PageTextStyle::Cursor { total_pages: 0 })
 }
 
+/// Plain text from all PDF pages in the `Read` format.
+#[cfg(not(feature = "pdf-read"))]
+pub fn extract_pdf_plain_text_cursor(_bytes: Vec<u8>) -> Result<String, String> {
+    Err("PDF extraction requires the `pdf-read` feature".to_string())
+}
+
+#[cfg(feature = "pdf-read")]
 pub(crate) fn extract_pdf_text(
     bytes: Vec<u8>,
     pages_spec: Option<&str>,
@@ -427,7 +468,7 @@ pub fn make_test_pdf(page_texts: &[&str]) -> Vec<u8> {
     pdf
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "pdf-read"))]
 mod tests {
     use super::*;
 

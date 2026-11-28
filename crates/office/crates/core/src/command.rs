@@ -301,23 +301,23 @@ async fn run_captured(
         Ok(Ok(output)) => output,
         Ok(Err(error)) if risk == RiskClass::Mutate => {
             return Err(outcome_unknown(request_id.unwrap_or("unknown"))
-                .with_detail("transportError", error.to_string()))
+                .with_detail("transportError", error.to_string()));
         }
         Ok(Err(error)) => {
             return Err(office_error(
                 "use.office.transport_failed",
                 format!("OfficeCLI communication failed: {error}"),
-            ))
+            ));
         }
         Err(_) if risk == RiskClass::Mutate => {
             return Err(outcome_unknown(request_id.unwrap_or("unknown"))
-                .with_detail("timeoutMs", duration_millis(timeout)))
+                .with_detail("timeoutMs", duration_millis(timeout)));
         }
         Err(_) => {
             return Err(office_error(
                 "use.office.timeout",
                 format!("OfficeCLI did not finish within {timeout:?}."),
-            ))
+            ));
         }
     };
 

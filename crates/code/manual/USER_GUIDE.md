@@ -36,6 +36,65 @@ ACL values. A chat model does not implicitly select an embedding route. Only
 trusted host/user configuration may authorize source egress or optional backends;
 a discovered workspace configuration can only narrow that authority.
 
+### Logged-in Quark browser account
+
+Start Quark with a loopback-only CDP endpoint after quitting its existing main
+process. On macOS:
+
+```bash
+open -a /Applications/Quark.app --args --remote-debugging-port=9222 --remote-debugging-address=127.0.0.1
+```
+
+Do not expose this endpoint on a non-loopback interface. It grants control of the
+logged-in browser. Aster never exports its cookies or profile database.
+
+The trusted user ACL opts into the Kbot account model and its browser search
+source. Neither the account provider nor the search backend adds a model
+protocol:
+
+```acl
+import_accounts = ["quark"]
+default_model = "quark/kbot"
+
+search {
+  headless {
+    backend = "quark"
+    cdp_url = "http://127.0.0.1:9222"
+  }
+  engine "quark" { enabled = true }
+}
+```
+
+`quark/kbot` is the product route for the account's Kbot conversation, not a
+claim about a specific underlying Qwen release. An existing `default_model` is
+preserved; choose `quark/kbot` explicitly or set `ASTER_PREFER_QUARK=1`.
+`ASTER_QUARK_CDP_URL` can select another loopback origin for the model.
+`ASTER_DISABLE_QUARK_ACCOUNT=1` disables the import. For one search, request
+`engines = ["quark"]`; the CLI equivalent is
+`aster-search "query" --engines quark --browser quark`.
+
+When neither the request nor ACL selects search engines, Aster probes the
+loopback browser and puts `quark` before the ordinary API and HTTP/RSS fallbacks
+if the logged-in Kbot editor is available. The no-UI probe reuses an existing
+page session without creating, navigating or closing a page. An unavailable login preserves the
+ordinary default cascade. Explicit `engines` selections and an explicitly chosen
+non-Quark browser backend are never overridden. The account import remains a
+separate model opt-in; it is not required for this search preference.
+
+Search never starts the Quark application, creates a window or opens a tab. It
+uses CDP `Network.loadNetworkResource` with the credentials of an existing Quark
+page, reads only the response stream and leaves the page unchanged. A missing or
+unusable local session falls back to the ordinary cascade. The login probe uses
+the same no-UI path and submits no prompt.
+
+Each model call uses a separate Aster-owned Kbot window and a fresh conversation.
+Cleanup never closes the user's browser process. This account transport supports
+text and governed Aster tool calls; it
+does not provide trustworthy token usage, native structured-output enforcement,
+attachments, or a provider-enforced output-token cap. Quark page changes may
+require updating the adapter. Sign in again if the new-conversation editor is
+unavailable.
+
 ## 3. Create, use and close a session
 
 ```rust,no_run

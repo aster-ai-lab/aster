@@ -1,0 +1,284 @@
+[
+  {
+    "case": "project_fact",
+    "arm": "reference",
+    "passed": true,
+    "records": [
+      {
+        "content": "En el proyecto Cobalto, el lector inicializa el perfil COBALT-BOOT-62 antes de abrir su índice; es una propiedad estable del proyecto.",
+        "type": "semantic",
+        "source": "project_fact",
+        "evolution_kind": "okf"
+      }
+    ],
+    "proposal": {
+      "items": [
+        {
+          "memory_type": "semantic",
+          "content": "En el proyecto Cobalto, el lector inicializa el perfil COBALT-BOOT-62 antes de abrir su índice; es una propiedad estable del proyecto.",
+          "importance": 0.92,
+          "confidence": 0.96,
+          "tags": [
+            "cobalto",
+            "lector",
+            "COBALT-BOOT-62",
+            "inicializacion"
+          ],
+          "source": "project_fact",
+          "scope": "workspace",
+          "reason": "Es un hecho estable del proyecto que futuras sesiones deben asumir al trabajar con el lector y su índice.",
+          "evolution": {
+            "kind": "okf",
+            "pattern_key": "cobalto.lector.inicializa.cobalt.boot.62",
+            "title": "Perfil COBALT-BOOT-62 en el lector",
+            "summary": "El lector de Cobalto inicializa el perfil COBALT-BOOT-62 antes de abrir su índice.",
+            "instructions": [
+              "Asume que el lector de Cobalto inicializa el perfil COBALT-BOOT-62 antes de abrir su índice.",
+              "Trata esta inicialización como una propiedad estable del proyecto, no como una instrucción de sesión."
+            ]
+          }
+        }
+      ]
+    },
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 471,
+      "completion_tokens": 256,
+      "total_tokens": 727,
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 215
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "project_fact",
+    "arm": "candidate",
+    "passed": false,
+    "records": [],
+    "proposal": {
+      "items": [
+        {
+          "content": "En el proyecto Cobalto, el lector inicializa el perfil COBALT-BOOT-62 antes de abrir su índice; es una propiedad estable del proyecto.",
+          "memory_type": "semantic",
+          "source": "user",
+          "importance": 0.95,
+          "confidence": 0.95,
+          "tags": [
+            "cobalto",
+            "lector",
+            "COBALT-BOOT-62",
+            "índice"
+          ],
+          "scope": "workspace",
+          "reason": "Hecho estable del proyecto que afecta al orden de inicialización del lector en futuras sesiones.",
+          "evolution": {
+            "kind": "okf",
+            "pattern_key": "cobalto-lector-inicializa-cobalt-boot-62",
+            "title": "Perfil COBALT-BOOT-62 en el lector",
+            "summary": "El lector de Cobalto inicializa el perfil COBALT-BOOT-62 antes de abrir su índice.",
+            "instructions": [
+              "Antes de abrir el índice del lector, inicializar el perfil COBALT-BOOT-62.",
+              "Tratar esta inicialización como propiedad estable del proyecto Cobalto, no como instrucción de sesión."
+            ]
+          }
+        }
+      ]
+    },
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 403,
+      "completion_tokens": 247,
+      "total_tokens": 650,
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 147
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "failure",
+    "arm": "candidate",
+    "passed": false,
+    "records": [],
+    "proposal": {
+      "items": [
+        {
+          "content": "榉树项目出现 BEECH-LOCK-49 时，通常原因是读写锁迁移后，在关闭句柄之前就启动了新索引；正确顺序是先关闭前一个句柄，再启动新索引。遇到该错误应先核对这个顺序。",
+          "memory_type": "procedural",
+          "source": "user",
+          "importance": 0.95,
+          "confidence": 0.98,
+          "tags": [
+            "榉树",
+            "BEECH-LOCK-49",
+            "读写锁迁移",
+            "句柄顺序",
+            "故障排查"
+          ],
+          "scope": "workspace",
+          "reason": "用户明确要求长期保留该故障原因与预防措施，后续遇到同一错误可直接按顺序核对，避免重复排查。",
+          "evolution": {
+            "kind": "skill",
+            "pattern_key": "beech-lock-49-handle-close-order",
+            "title": "BEECH-LOCK-49 句柄关闭顺序排查",
+            "summary": "榉树项目出现 BEECH-LOCK-49 时，先核对是否在关闭旧句柄前启动了新索引。",
+            "instructions": [
+              "遇到 BEECH-LOCK-49，先检查读写锁迁移后新索引的启动时机。",
+              "确认是否在关闭前一个句柄之前就启动了新索引。",
+              "修正顺序：先关闭前一个句柄，再启动新索引。",
+              "修复后重新运行测试验证该错误消失。"
+            ]
+          }
+        }
+      ]
+    },
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 407,
+      "completion_tokens": 276,
+      "total_tokens": 683,
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 151
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "failure",
+    "arm": "reference",
+    "passed": true,
+    "records": [
+      {
+        "content": "榉树项目读写锁迁移后若测试出现 BEECH-LOCK-49，通常原因是关闭句柄前启动了新索引；应在关闭前一个句柄后再启动新索引。以后遇到该错误，先核对这个顺序。",
+        "type": "procedural",
+        "source": "failure",
+        "evolution_kind": "skill"
+      }
+    ],
+    "proposal": {
+      "items": [
+        {
+          "memory_type": "procedural",
+          "content": "榉树项目读写锁迁移后若测试出现 BEECH-LOCK-49，通常原因是关闭句柄前启动了新索引；应在关闭前一个句柄后再启动新索引。以后遇到该错误，先核对这个顺序。",
+          "importance": 0.95,
+          "confidence": 0.97,
+          "tags": [
+            "榉树项目",
+            "BEECH-LOCK-49",
+            "读写锁迁移",
+            "故障排查"
+          ],
+          "source": "failure",
+          "scope": "workspace",
+          "reason": "用户明确要求长期保留该故障原因与预防措施，后续遇到同一错误可直接按顺序核对，避免重复排查。",
+          "evolution": {
+            "kind": "skill",
+            "pattern_key": "beech.lock.49.handle_close_order",
+            "title": "BEECH-LOCK-49 句柄关闭顺序",
+            "summary": "榉树项目出现 BEECH-LOCK-49 时，先核对是否在关闭旧句柄前启动了新索引。",
+            "instructions": [
+              "遇到 BEECH-LOCK-49 时，先检查新索引的启动时机是否早于前一个句柄的关闭。",
+              "修复方式：先关闭前一个句柄，再启动新索引。",
+              "读写锁迁移后的测试中保持该顺序，避免再次触发该错误。"
+            ]
+          }
+        }
+      ]
+    },
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 475,
+      "completion_tokens": 264,
+      "total_tokens": 739,
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 219
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "ephemeral",
+    "arm": "reference",
+    "passed": true,
+    "records": [],
+    "proposal": {
+      "items": []
+    },
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 448,
+      "completion_tokens": 5,
+      "total_tokens": 453,
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 192
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "ephemeral",
+    "arm": "candidate",
+    "passed": true,
+    "records": [],
+    "proposal": {
+      "items": []
+    },
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 380,
+      "completion_tokens": 5,
+      "total_tokens": 385,
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 252
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "secret",
+    "arm": "candidate",
+    "passed": true,
+    "records": [],
+    "proposal": {
+      "items": []
+    },
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 372,
+      "completion_tokens": 5,
+      "total_tokens": 377,
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 244
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  },
+  {
+    "case": "secret",
+    "arm": "reference",
+    "passed": true,
+    "records": [],
+    "proposal": {
+      "items": []
+    },
+    "api_requests": 1,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 440,
+      "completion_tokens": 5,
+      "total_tokens": 445,
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 184
+    },
+    "tool_calls": {},
+    "primary_requests": 0
+  }
+]

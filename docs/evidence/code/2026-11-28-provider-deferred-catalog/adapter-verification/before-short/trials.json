@@ -1,0 +1,51 @@
+[
+  {
+    "label": "1-release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "elapsed_ms": 3225,
+        "stop": null,
+        "missing_markers": [
+          "ALPHA-MARKER-8419",
+          "BETA-MARKER-2903",
+          "ANSI-OK-5512"
+        ],
+        "tools": {
+          "read:completed": 1,
+          "execute:completed": 1
+        },
+        "permissions": [
+          {
+            "kind": "execute",
+            "allowed": true
+          }
+        ]
+      }
+    ],
+    "selected_model": "deepseek/deepseek-flash",
+    "model_options": [
+      "deepseek/deepseek-flash"
+    ],
+    "startup_ms": 2696,
+    "fixtures_unchanged": true,
+    "task_pass": false,
+    "aster_receipts": 2,
+    "aster_receipts_ansi_free": true,
+    "api_requests": 2,
+    "usage_complete": false,
+    "tokens": {
+      "prompt_tokens": 7639,
+      "completion_tokens": 97,
+      "total_tokens": 7736,
+      "prompt_cache_hit_tokens": 1152,
+      "prompt_cache_miss_tokens": 6487
+    },
+    "tool_calls": {
+      "read": 1,
+      "bash": 1
+    },
+    "primary_requests": 2
+  }
+]

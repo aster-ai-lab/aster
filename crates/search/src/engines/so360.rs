@@ -1,7 +1,7 @@
 //! 360 Search engine implementation.
 
 use crate::html_engine::{
-    selector, validate_search_response, HtmlEngine, HtmlParser, SearchResponseSpec,
+    HtmlEngine, HtmlParser, SearchResponseSpec, selector, validate_search_response,
 };
 use crate::{EngineCategory, EngineConfig, Result, SearchQuery, SearchResult};
 use scraper::Html;

@@ -1541,6 +1541,13 @@ pub struct AgentView {
         agent_client_protocol::SessionUpdate,
         crate::acp::meta::NotificationMeta,
     )>,
+    /// Set when the sidecar/leader connection drops mid-turn or reload reports
+    /// `interruptedTurnResumable`, so `handle_prompt_response` suppresses a noisy
+    /// disconnect `TurnFailed` marker while reconnect + auto-resume runs.
+    pub(crate) crash_interrupted_turn: bool,
+    /// Number of consecutive automatic `ResumeInterruptedTurn` dispatches on the
+    /// active turn; reset whenever the user sends a fresh prompt or a turn completes cleanly.
+    pub(crate) crash_auto_resume_count: u8,
 }
 /// Cap on [`AgentView::self_originated_prompt_ids`]. Only recent ids matter (a stale post-rewind chunk arrives right after its turn ends), so a small bounded ring is plenty and keeps a long-lived session from growing the set without bound.
 const SELF_ORIGINATED_PROMPT_CAP: usize = 64;

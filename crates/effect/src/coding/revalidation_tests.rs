@@ -142,3 +142,197 @@ fn progress_waits_for_the_whole_model_tool_batch() {
     assert!(state.duplicate_calls.is_empty());
     assert!(!state.duplicate_reset_pending);
 }
+
+#[test]
+fn novel_information_clears_prior_duplicate_counts_while_repeats_preserve_them() {
+    let config = HarnessConfig::new(16, usize::MAX, 8, 1, vec![], vec![])
+        .unwrap()
+        .with_duplicate_threshold(3);
+    let args_a = json!({"file_path":"a.txt"});
+    let args_b = json!({"file_path":"b.txt"});
+    let args_c = json!({"file_path":"c.txt"});
+    let digest_a = tool_args_digest(&args_a).unwrap();
+    let digest_b = tool_args_digest(&args_b).unwrap();
+    let digest_c = tool_args_digest(&args_c).unwrap();
+    let info_a = format!("sha256:{}", "a".repeat(64));
+    let info_b = format!("sha256:{}", "b".repeat(64));
+    let info_c = format!("sha256:{}", "c".repeat(64));
+
+    let make_step_receipt =
+        |state: &mut SchedulerState, id: &str, args: &Value, output: &str, info: &str| {
+            let digest = tool_args_digest(args).unwrap();
+            let identity = ToolInvocationIdentityV1 {
+                turn: state.turn,
+                cycle: state.cycle,
+                tool_call_id: id.into(),
+                batch_index: 0,
+                admission: None,
+            };
+            let prepared = ToolPreparedV1 {
+                schema: TOOL_PREPARED_SCHEMA.into(),
+                identity: identity.clone(),
+                tool_name: "read".into(),
+                original_args_digest: digest.clone(),
+                effective_args_digest: digest,
+                recovery: ToolRecoveryPolicy::NeverReplay,
+                baseline: None,
+            };
+            let receipt = ToolExecutionResultV1 {
+                schema: TOOL_RESULT_SCHEMA.into(),
+                identity,
+                prepared_digest: prepared.digest().unwrap(),
+                outcome: ToolExecutionOutcome::Succeeded,
+                exit_code: Some(0),
+                output: json!(output),
+                effects: ToolEffectObservationV1::complete(Vec::new()),
+            };
+            state.phase = CodingPhase::Tool;
+            state.pending_call = Some(ToolCall {
+                id: id.into(),
+                name: "read".into(),
+                args: args.clone(),
+                needs_confirmation: false,
+                text: None,
+                reasoning: None,
+            });
+            state.preparations.push(prepared);
+            Fact {
+                seq: 1,
+                kind: "tool.result".into(),
+                key: format!("res-{id}"),
+                cause: None,
+                payload: json!({
+                    "toolCallId": id,
+                    "ok": true,
+                    "output": "",
+                    "receipt": receipt,
+                    "informationIdentity": info,
+                }),
+            }
+        };
+
+    let mut state = SchedulerState::new();
+    state.turn = 1;
+    state
+        .duplicate_calls
+        .insert(("read".into(), digest_a.clone()), 3);
+    state
+        .duplicate_calls
+        .insert(("read".into(), digest_b.clone()), 2);
+    state.seen_information.insert(info_a);
+    state.seen_information.insert(info_b.clone());
+
+    let fact_c = make_step_receipt(&mut state, "call-c", &args_c, "content c", &info_c);
+    let mut state = step(state, &fact_c, &config);
+    assert_eq!(state.schema_error, None);
+    assert_eq!(
+        state
+            .duplicate_calls
+            .get(&("read".into(), digest_c.clone())),
+        Some(&1)
+    );
+    assert_eq!(
+        state
+            .duplicate_calls
+            .get(&("read".into(), digest_a.clone())),
+        Some(&3),
+        "already-exhausted duplicate action must remain blocked until workspace mutation or fresh self-observation"
+    );
+    assert!(
+        !state
+            .duplicate_calls
+            .contains_key(&("read".into(), digest_b.clone())),
+        "non-exhausted duplicate count must clear on novel information"
+    );
+
+    let fact_b = make_step_receipt(&mut state, "call-b-again", &args_b, "content b", &info_b);
+    let mut state = step(state, &fact_b, &config);
+    assert_eq!(state.schema_error, None);
+    assert_eq!(
+        state
+            .duplicate_calls
+            .get(&("read".into(), digest_b.clone())),
+        Some(&1)
+    );
+    assert_eq!(
+        state
+            .duplicate_calls
+            .get(&("read".into(), digest_c.clone())),
+        Some(&1),
+        "repeat with already-seen information must not clear other non-exhausted counts"
+    );
+
+    let fact_c2 = make_step_receipt(&mut state, "call-c-again", &args_c, "content c", &info_c);
+    let state = step(state, &fact_c2, &config);
+    assert_eq!(state.schema_error, None);
+    assert_eq!(
+        state.duplicate_calls.get(&("read".into(), digest_c)),
+        Some(&2)
+    );
+    assert_eq!(
+        state.duplicate_calls.get(&("read".into(), digest_b)),
+        Some(&1)
+    );
+    assert_eq!(
+        state.duplicate_calls.get(&("read".into(), digest_a)),
+        Some(&3)
+    );
+}
+
+#[test]
+fn question_answered_and_background_output_reset_relevant_duplicate_counts() {
+    let config = HarnessConfig::new(16, usize::MAX, 8, 1, vec![], vec![])
+        .unwrap()
+        .with_duplicate_threshold(3);
+    let bg_args = json!({ "action": "tail", "name": "dev" });
+    let read_args = json!({ "file_path": "a.txt" });
+    let bg_digest = tool_args_digest(&bg_args).unwrap();
+    let read_digest = tool_args_digest(&read_args).unwrap();
+
+    let mut state = SchedulerState::new();
+    state.turn = 1;
+    state
+        .duplicate_calls
+        .insert(("background".into(), bg_digest.clone()), 3);
+    state
+        .duplicate_calls
+        .insert(("read".into(), read_digest.clone()), 2);
+
+    let bg_fact = Fact {
+        seq: 1,
+        kind: "background.output".into(),
+        key: "bg:task-1:1".into(),
+        cause: None,
+        payload: json!({
+            "name": "dev",
+            "line": "listening on 3000"
+        }),
+    };
+    let state = step(state, &bg_fact, &config);
+    assert_eq!(state.schema_error, None);
+    assert!(
+        !state
+            .duplicate_calls
+            .contains_key(&("background".into(), bg_digest)),
+        "live background.output must clear background polling duplicate counts"
+    );
+    assert_eq!(
+        state.duplicate_calls.get(&("read".into(), read_digest)),
+        Some(&2),
+        "background output must preserve unrelated tool duplicate counts"
+    );
+
+    let answer_fact = Fact {
+        seq: 2,
+        kind: "question.answered".into(),
+        key: "qa:1".into(),
+        cause: None,
+        payload: json!({ "text": "use staging target" }),
+    };
+    let state = step(state, &answer_fact, &config);
+    assert_eq!(state.schema_error, None);
+    assert!(
+        state.duplicate_calls.is_empty(),
+        "explicit host answer via ask_user must clear duplicate counts like user.message"
+    );
+}

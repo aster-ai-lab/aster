@@ -338,12 +338,12 @@ impl<'a> EntryRenderer<'a> {
     /// Width reserved for the timestamp on the right side of content lines.
     ///
     /// When non-zero, content is wrapped at `content_width - reserved` so text never collides with the timestamp overlay.
-    fn timestamp_reserved(&self) -> u16 {
-        if self.appearance().show_timestamps && self.should_show_timestamp() {
-            10 // max short format: "  12:30 PM"
-        } else {
-            0
-        }
+    fn timestamp_reserved(&self, content_width: u16) -> u16 {
+        crate::scrollback::render::timestamp_reserved_for_block(
+            &self.entry.block,
+            self.appearance(),
+            content_width,
+        )
     }
 
     /// Thinking entries take no rows when the Appearance toggle is off.
@@ -360,7 +360,7 @@ impl<'a> EntryRenderer<'a> {
         }
         let content_width = width
             .saturating_sub(self.chrome_width())
-            .saturating_sub(self.timestamp_reserved());
+            .saturating_sub(self.timestamp_reserved(width.saturating_sub(self.chrome_width())));
         self.entry
             .ensure_truncated_height_cached(content_width, self.appearance(), self.cwd)
     }
@@ -391,7 +391,7 @@ impl<'a> EntryRenderer<'a> {
         }
         let content_width = width
             .saturating_sub(self.chrome_width())
-            .saturating_sub(self.timestamp_reserved());
+            .saturating_sub(self.timestamp_reserved(width.saturating_sub(self.chrome_width())));
         let content_lines = self.estimate_content_lines(content_width);
         // `inline_media_rows` (in `assemble_height`) covers trailing tool media.
         // `estimate_extra_rows` adds the Mermaid treatment rows (one affordance row or fallback caption per diagram)
@@ -438,7 +438,7 @@ impl<'a> EntryRenderer<'a> {
     pub(crate) fn logical_line_start_rows(&self, width: u16) -> (Vec<u16>, u16) {
         let content_width = width
             .saturating_sub(self.chrome_width())
-            .saturating_sub(self.timestamp_reserved());
+            .saturating_sub(self.timestamp_reserved(width.saturating_sub(self.chrome_width())));
         // Compute vpad and populate the cache before borrowing the cached output
         // `ensure_cached` takes the RefCell mutably on a miss, so the `Ref` from `cached_output_ref` must come after it
         let ctx = self
@@ -567,7 +567,7 @@ impl Renderable for EntryRenderer<'_> {
         }
         let content_width = width
             .saturating_sub(self.chrome_width())
-            .saturating_sub(self.timestamp_reserved());
+            .saturating_sub(self.timestamp_reserved(width.saturating_sub(self.chrome_width())));
         // Use cached output for height calculation
         // The is_selected flag only affects styling (e.g., UserPrompt prefix color), not line count
         // The non-selected cached output therefore gives the correct height
@@ -760,7 +760,7 @@ impl Renderable for EntryRenderer<'_> {
 
         // Render content using cache (keyed on is_selected for blocks like UserPrompt that adjust styling based on selection state)
         // When timestamps are enabled, wrap content at a narrower width so text never collides with the right-aligned timestamp
-        let ts_reserved = self.timestamp_reserved();
+        let ts_reserved = self.timestamp_reserved(content_area.width);
         let text_width = content_area.width.saturating_sub(ts_reserved);
         self.entry.ensure_cached_arc(
             text_width,
@@ -838,6 +838,7 @@ impl Renderable for EntryRenderer<'_> {
             && content_skip == 0
             && !output.is_empty()
             && self.should_show_timestamp()
+            && self.timestamp_reserved(content_area.width) > 0
             && let Some(ts) = self.entry.created_at
         {
             let first_content_y = content_area.y + if vpad_top_visible { 1 } else { 0 };
@@ -1113,7 +1114,8 @@ mod tests {
     /// Derived from the renderer geometry so tests self-adjust to the default layout padding instead of hard-coding column numbers.
     fn gutter_band(renderer: &EntryRenderer, width: u16) -> std::ops::Range<u16> {
         let content_right = width - renderer.appearance().scrollback.layout.block_pad_right;
-        (content_right - renderer.timestamp_reserved())..content_right
+        let reserved = renderer.timestamp_reserved(width.saturating_sub(renderer.chrome_width()));
+        (content_right - reserved)..content_right
     }
 
     /// Check that a right-aligned timestamp ending with "AM" or "PM" exists on a row.

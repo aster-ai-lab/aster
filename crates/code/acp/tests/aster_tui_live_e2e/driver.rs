@@ -656,6 +656,26 @@ impl LiveTui {
         out
     }
 
+    #[cfg(unix)]
+    pub fn wrap_sidecar_pids(&mut self) -> PathBuf {
+        use std::os::unix::fs::PermissionsExt;
+
+        let pids_log = self._root.path().join("pids.log");
+        let wrapper = self._root.path().join("acp-wrapper.sh");
+        std::fs::write(
+            &wrapper,
+            format!(
+                "#!/bin/sh\nif [ \"$1\" != \"--build-id\" ]; then\n  printf '%s\\n' \"$$\" >> \"{}\"\nfi\nexec \"{}\" \"$@\"\n",
+                pids_log.display(),
+                self.companion.display(),
+            ),
+        )
+        .unwrap();
+        std::fs::set_permissions(&wrapper, std::fs::Permissions::from_mode(0o755)).unwrap();
+        self.set_env("ASTER_ACP_AGENT_BIN", wrapper.to_str().unwrap());
+        pids_log
+    }
+
     pub fn trace_acp(&mut self, proxy: &Path) {
         let dir = self._root.path().join("acp-proxy");
         std::fs::create_dir(&dir).unwrap();

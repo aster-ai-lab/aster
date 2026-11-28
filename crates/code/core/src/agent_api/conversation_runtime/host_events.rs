@@ -192,7 +192,17 @@ pub(super) async fn emit_gated(
     response_meta: Option<crate::llm::LlmResponseMeta>,
 ) {
     if let Err(error) = mapped {
-        send_host_event(tx, AgentEvent::execution_error(error), cancellation).await;
+        let event = AgentEvent::execution_error(error);
+        if !streamed_text && matches!(event, AgentEvent::PriorVerificationPending { .. }) {
+            if let Some(text) = settled
+                .as_ref()
+                .ok()
+                .and_then(|settlement| settlement.view.assistant.clone())
+            {
+                send_host_event(tx, AgentEvent::TextDelta { text }, cancellation).await;
+            }
+        }
+        send_host_event(tx, event, cancellation).await;
         return;
     }
     // Only the original sealed publication can authorize a successful End.

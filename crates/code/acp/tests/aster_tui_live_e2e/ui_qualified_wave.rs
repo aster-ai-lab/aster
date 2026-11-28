@@ -127,7 +127,9 @@ fn kimi_markdown_last_match_selects_actual_answer_across_reasoning_variation() {
     let mut tui = start(case, &[]);
     let token = format!("RAW-{}", uuid::Uuid::new_v4());
     let markdown = format!("# Viewer heading\n\n**{token}**\n\n- alpha\n- beta");
-    let prompt = format!("Reply with exactly the following Markdown without a code fence or commentary. Do not call tools.\n{markdown}");
+    let prompt = format!(
+        "Reply with exactly the following Markdown without a code fence or commentary. Do not call tools.\n{markdown}"
+    );
     let facts = tui.turn(&prompt, None);
     let answer = tui.assistant_text(&facts);
     assert_eq!(answer.trim(), markdown);

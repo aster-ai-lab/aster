@@ -260,6 +260,12 @@ struct AgentLoadOutcome {
     running_prompt_id: Option<String>,
     /// Persistent-memory implementation pinned by the re-spawned actor.
     memory_mode: Option<aster_shell::config::MemoryMode>,
+    /// True when the reloaded session fact log ends in an interrupted resumable turn.
+    interrupted_turn_resumable: bool,
+    /// True when the reloaded session stopped across an ambiguous prepared tool boundary.
+    interrupted_turn_unresolved_tool: bool,
+    /// True when the reloaded session has an active durable `/goal` ready to resume.
+    active_goal_resumable: bool,
 }
 type ReconnectLoadState = (
     bool,
@@ -302,6 +308,23 @@ fn plan_reconnect_load(
         && let Some(obj) = meta.as_object_mut()
     {
         obj.insert("cursor".into(), serde_json::Value::String(cursor.clone()));
+    }
+    if agent.plan_mode_pending.unwrap_or(agent.plan_mode_active)
+        && let Some(obj) = meta.as_object_mut()
+    {
+        obj.insert(
+            "permissionPosture".into(),
+            serde_json::Value::String("plan".into()),
+        );
+    }
+    if !agent.session.models.available.is_empty()
+        && let Some(ref model_id) = agent.session.models.current
+        && let Some(obj) = meta.as_object_mut()
+    {
+        obj.insert(
+            "aster/sessionModelId".into(),
+            serde_json::Value::String(model_id.0.to_string()),
+        );
     }
     Some(ReconnectLoadPlan {
         session_id,
@@ -1649,6 +1672,7 @@ pub(crate) async fn run(
     // before those client channels close (avoids false `worker_join` failures).
     let _bridge_shutdown = crate::acp::spawn::BridgeShutdownCancel(connection_cancel.clone());
     let mut leader_status_rx = connection.leader_status_rx;
+    let reconnect_init_template = connection.reconnect_init_template.clone();
     let mut tasks: JoinSet<TaskResult> = JoinSet::new();
     let mut session_load_barrier = SessionLoadBarrier::new();
     let mut ordered_prompt_response: Option<(TaskResult, usize)> = None;
@@ -2294,7 +2318,7 @@ pub(crate) async fn run(
                         // The stdio bridge enqueues wire notifications before delivering
                         // the response. Input can temporarily disable the ACP arm, so
                         // finish only after applying the prefix already in the queue.
-                        if app.is_aster && !deferred && matches!(&result, TaskResult::PromptResponse { .. }) {
+                        if app.is_aster && !deferred && matches!(&result, TaskResult::PromptResponse { .. } | TaskResult::PromptVerificationPending { .. }) {
                             let queued = acp_rx.len() + usize::from(acp_peek.is_some());
                             if queued > 0 {
                                 ordered_prompt_response = Some((result, queued));
@@ -2674,6 +2698,11 @@ pub(crate) async fn run(
                             None,
                             Some(serde_json::json!({ "attempt": attempt })),
                         );
+                        for agent in app.agents.values_mut() {
+                            if !agent.session.state.is_idle() {
+                                agent.crash_interrupted_turn = true;
+                            }
+                        }
                         app.show_toast(&format!(
                             "Disconnected. Reconnecting... (attempt {attempt})"
                         ));
@@ -2768,6 +2797,7 @@ pub(crate) async fn run(
                         });
 
                         let acp_tx = app.acp_tx.clone();
+                        let init_template = reconnect_init_template.clone();
                         let join_handle = tokio::spawn(async move {
                             // 30 s for initialize/authenticate plus a budget per session/load
                             // Each load replays history and may respawn MCP servers on the new leader
@@ -2778,20 +2808,30 @@ pub(crate) async fn run(
                             // Inner result: `None` means init/auth failure (no load was attempted)
                             // `Some(loads)` means per-agent load outcomes with the optional mid-turn running prompt id from each reload response
                             let ok = tokio::time::timeout(timeout, async {
-                                let mut echo_meta = serde_json::Map::new();
+                                let mut echo_meta = init_template
+                                    .capabilities_meta
+                                    .unwrap_or_default();
                                 echo_meta.insert(
                                     aster_shell::session::USER_MESSAGE_ECHO_CAPABILITY.to_owned(),
                                     serde_json::Value::Bool(true),
                                 );
-                                let init_req = acp::InitializeRequest::new(acp::ProtocolVersion::V1).client_capabilities(
-                                    acp::ClientCapabilities::new()
-                                        .fs(acp::FileSystemCapabilities::new())
-                                        .terminal(false)
-                                        .meta(Some(echo_meta)),
-                                ).meta(serde_json::json!({
+                                let init_meta = init_template.init_meta.unwrap_or_else(|| {
+                                    serde_json::json!({
                                         "clientType": PAGER_CLIENT_TYPE,
                                         "clientVersion": PAGER_CLIENT_VERSION,
-                                    }).as_object().cloned());
+                                    })
+                                    .as_object()
+                                    .cloned()
+                                    .unwrap_or_default()
+                                });
+                                let init_req = acp::InitializeRequest::new(acp::ProtocolVersion::V1).client_capabilities(
+                                    acp::ClientCapabilities::new()
+                                        .fs(acp::FileSystemCapabilities::new()
+                                            .read_text_file(init_template.fs_read)
+                                            .write_text_file(init_template.fs_write))
+                                        .terminal(init_template.terminal)
+                                        .meta(Some(echo_meta)),
+                                ).meta(Some(init_meta));
                                 if let Err(e) = acp_send(init_req, &acp_tx).await {
                                     tracing::error!(error = %e, "reconnect: re-initialize failed");
                                     return None;
@@ -2808,6 +2848,13 @@ pub(crate) async fn run(
                                     let load_req = acp::LoadSessionRequest::new(plan.session_id, plan.cwd).mcp_servers(mcp_servers).meta(plan.meta.as_object().cloned());
                                     match acp_send(load_req, &acp_tx).await {
                                         Ok(resp) => {
+                                            let (
+                                                interrupted_turn_resumable,
+                                                interrupted_turn_unresolved_tool,
+                                                active_goal_resumable,
+                                            ) = effects::parse_session_load_resume_flags(
+                                                resp.meta.as_ref(),
+                                            );
                                             loads.push(AgentLoadOutcome {
                                                 agent_id,
                                                 success: true,
@@ -2819,6 +2866,9 @@ pub(crate) async fn run(
                                                     effects::parse_session_memory_mode(
                                                         resp.meta.as_ref(),
                                                     ),
+                                                interrupted_turn_resumable,
+                                                interrupted_turn_unresolved_tool,
+                                                active_goal_resumable,
                                             });
                                         }
                                         Err(e) => {
@@ -2829,6 +2879,9 @@ pub(crate) async fn run(
                                                 success: false,
                                                 running_prompt_id: None,
                                                 memory_mode: None,
+                                                interrupted_turn_resumable: false,
+                                                interrupted_turn_unresolved_tool: false,
+                                                active_goal_resumable: false,
                                             });
                                         }
                                     }
@@ -2897,6 +2950,20 @@ pub(crate) async fn run(
                 // Finalize the reload windows on the agents the re-init was started for, NOT whatever view is active now
                 // See `SessionReload` for the outcome handling
                 // Each window resolves on ITS load outcome (one broken session must not discard the other tabs' replayed transcripts)
+                let mut resume_flags: std::collections::HashMap<_, (bool, bool, bool)> = outcome
+                    .loads
+                    .iter()
+                    .map(|l| {
+                        (
+                            l.agent_id,
+                            (
+                                l.interrupted_turn_resumable,
+                                l.interrupted_turn_unresolved_tool,
+                                l.active_goal_resumable,
+                            ),
+                        )
+                    })
+                    .collect();
                 let mut loads: std::collections::HashMap<_, _> = outcome
                     .loads
                     .into_iter()
@@ -2923,9 +2990,17 @@ pub(crate) async fn run(
                     active_agent_id,
                 );
                 restore_dashboard_peek_before_reload(&mut app.dashboard, &mut app.agents);
+                let mut auto_resume_effects: Vec<Effect> = Vec::new();
+                let mut active_auto_resumed = false;
                 for id in &pending.agent_ids {
                     let (ok, running_prompt_id, memory_mode) =
                         loads.remove(id).unwrap_or((false, None, None));
+                    let has_live_turn = running_prompt_id.is_some();
+                    let (
+                        interrupted_turn_resumable,
+                        interrupted_turn_unresolved_tool,
+                        active_goal_resumable,
+                    ) = resume_flags.remove(id).unwrap_or((false, false, false));
                     if let Some(agent) = app.agents.get_mut(id) {
                         if ok {
                             agent.memory_mode = memory_mode;
@@ -2935,22 +3010,68 @@ pub(crate) async fn run(
                             ok,
                             running_prompt_id,
                         );
+                        agent.crash_interrupted_turn = false;
+                        if ok && !has_live_turn {
+                            if interrupted_turn_unresolved_tool {
+                                agent.scrollback.push_block(
+                                    crate::scrollback::block::RenderBlock::system(
+                                        "Interrupted turn stopped before an unresolved tool boundary; inspect workspace changes and resume or retry manually.",
+                                    ),
+                                );
+                            } else if (interrupted_turn_resumable || active_goal_resumable)
+                                && agent.crash_auto_resume_count < 3
+                                && let Some(session_id) = agent.session.session_id.clone()
+                            {
+                                agent.crash_auto_resume_count =
+                                    agent.crash_auto_resume_count.saturating_add(1);
+                                let prompt_id = uuid::Uuid::new_v4().to_string();
+                                agent.note_self_originated_prompt(&prompt_id);
+                                agent.begin_local_turn(&prompt_id);
+                                agent.session.tracker.clear_user_echo_skip();
+                                if active_goal_resumable {
+                                    auto_resume_effects.push(Effect::SendPrompt {
+                                        agent_id: *id,
+                                        session_id,
+                                        text: "/goal resume".to_owned(),
+                                        prompt_id,
+                                        skill_token_ranges: Vec::new(),
+                                    });
+                                } else {
+                                    auto_resume_effects.push(Effect::ResumeInterruptedTurn {
+                                        agent_id: *id,
+                                        session_id,
+                                        prompt_id,
+                                    });
+                                }
+                                if active_agent_id == Some(*id) {
+                                    active_auto_resumed = true;
+                                }
+                            }
+                        }
                     }
                 }
 
                 if pending.agent_ids.is_empty() {
                     // Nothing was reloaded (no open sessions at reconnect).
                     app.show_toast("Reconnected.");
+                } else if restored && !auto_resume_effects.is_empty() {
+                    app.show_toast("Connection restored. Resuming interrupted work...");
                 } else if restored {
                     app.show_toast("Session restored. In-progress tools and terminals were lost.");
                 } else {
                     app.show_toast("Session restore failed. Kept the existing transcript.");
                 }
 
+                if !auto_resume_effects.is_empty()
+                    && process_effects(auto_resume_effects, &mut tasks, &mut app, &progress_tx)
+                {
+                    return Ok(finish_run_with_stall_flush(&mut app, &mut stall_rollup));
+                }
+
                 // Re-trigger the queue drain suppressed during the outage
                 // Every normal trigger (PromptResponse, DrainQueue, send-prompt, session-created) early-returns while `reconnect_pending` is set
                 // A failed active restore suppresses the drain, since sending into an unrestored session would be wrong
-                if active_restored {
+                if active_restored && !active_auto_resumed {
                     let drain_effects = dispatch::dispatch(Action::DrainQueue, &mut app);
                     if process_effects(drain_effects, &mut tasks, &mut app, &progress_tx) {
                         return Ok(finish_run_with_stall_flush(&mut app, &mut stall_rollup));
@@ -4066,6 +4187,7 @@ pub(crate) fn session_flags_for_effect(
         | Effect::SendPromptNow { agent_id, .. }
         | Effect::SendBashCommand { agent_id, .. }
         | Effect::ExecutePlan { agent_id, .. }
+        | Effect::ResumeInterruptedTurn { agent_id, .. }
         | Effect::SetModeThenPrompt { agent_id, .. } => app.agents.get(agent_id),
         Effect::PersistPermissionMode {
             session_id: Some(id),
@@ -4903,6 +5025,27 @@ mod tests {
     fn plan_reconnect_load_requires_session_id() {
         let agent = crate::test_util::make_agent_view(None, "/work/project");
         assert!(plan_reconnect_load(&agent, std::path::Path::new("/pager/cwd")).is_none());
+    }
+
+    #[test]
+    fn plan_reconnect_load_preserves_plan_posture_and_model_when_populated() {
+        let mut agent = crate::test_util::make_agent_view(Some("sess-plan"), "/work/project");
+        agent.plan_mode_active = true;
+        agent.session.models.available.insert(
+            acp::ModelId::new("gpt"),
+            acp::ModelInfo::new(acp::ModelId::new("gpt"), "GPT"),
+        );
+        agent.session.models.current = Some(acp::ModelId::new("gpt"));
+
+        let plan = plan_reconnect_load(&agent, std::path::Path::new("/pager/cwd")).unwrap();
+        assert_eq!(
+            plan.meta.get("permissionPosture"),
+            Some(&serde_json::json!("plan"))
+        );
+        assert_eq!(
+            plan.meta.get("aster/sessionModelId"),
+            Some(&serde_json::json!("gpt"))
+        );
     }
     /// The session's own cwd keys its on-disk storage; the pager cwd is only a fallback for agents without one.
     #[test]

@@ -701,7 +701,8 @@ impl WorkspaceRuntime {
         };
         match self.read_saved(path, cancellation).await {
             Ok(content) => {
-                snapshot.stale |= sha256::digest(content.as_bytes()) != snapshot.content_hash;
+                snapshot.stale |=
+                    crate::content_digest::sha256_hex(content.as_bytes()) != snapshot.content_hash;
                 Ok(())
             }
             Err(CodeIntelligenceError::Cancelled) => Err(CodeIntelligenceError::Cancelled),

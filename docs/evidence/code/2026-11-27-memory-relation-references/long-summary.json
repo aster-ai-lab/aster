@@ -1,0 +1,173 @@
+{
+  "runs": {
+    "candidate": [
+      {
+        "run": "long-a",
+        "strict_pass": false,
+        "receipt_count": 28,
+        "tool_calls": {
+          "read": 26,
+          "ls": 1,
+          "write": 6
+        },
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 6,
+        "prompt_tokens": 176695,
+        "completion_tokens": 4738,
+        "total_tokens": 181433,
+        "prompt_cache_hit_tokens": 158974,
+        "prompt_cache_miss_tokens": 17721,
+        "memory_calls": 6,
+        "memory_prompt_tokens": 5920,
+        "memory_completion_tokens": 1699,
+        "memory_total_tokens": 7619,
+        "memory_prompt_cache_miss_tokens": 4256
+      },
+      {
+        "run": "long-b",
+        "strict_pass": false,
+        "receipt_count": 27,
+        "tool_calls": {
+          "read": 20,
+          "ls": 1,
+          "write": 6
+        },
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 6,
+        "prompt_tokens": 163805,
+        "completion_tokens": 4766,
+        "total_tokens": 168571,
+        "prompt_cache_hit_tokens": 150910,
+        "prompt_cache_miss_tokens": 12895,
+        "memory_calls": 6,
+        "memory_prompt_tokens": 6337,
+        "memory_completion_tokens": 2166,
+        "memory_total_tokens": 8503,
+        "memory_prompt_cache_miss_tokens": 4161
+      }
+    ],
+    "release": [
+      {
+        "run": "long-a",
+        "strict_pass": false,
+        "receipt_count": 28,
+        "tool_calls": {
+          "read": 25,
+          "ls": 2,
+          "write": 6
+        },
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 6,
+        "prompt_tokens": 175108,
+        "completion_tokens": 4695,
+        "total_tokens": 179803,
+        "prompt_cache_hit_tokens": 162558,
+        "prompt_cache_miss_tokens": 12550,
+        "memory_calls": 6,
+        "memory_prompt_tokens": 5785,
+        "memory_completion_tokens": 1857,
+        "memory_total_tokens": 7642,
+        "memory_prompt_cache_miss_tokens": 3481
+      },
+      {
+        "run": "long-b",
+        "strict_pass": false,
+        "receipt_count": 30,
+        "tool_calls": {
+          "read": 22,
+          "ls": 2,
+          "write": 6
+        },
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 6,
+        "prompt_tokens": 193527,
+        "completion_tokens": 5820,
+        "total_tokens": 199347,
+        "prompt_cache_hit_tokens": 175358,
+        "prompt_cache_miss_tokens": 18169,
+        "memory_calls": 6,
+        "memory_prompt_tokens": 6847,
+        "memory_completion_tokens": 2926,
+        "memory_total_tokens": 9773,
+        "memory_prompt_cache_miss_tokens": 4543
+      }
+    ],
+    "dsh": [
+      {
+        "run": "long-a",
+        "strict_pass": true,
+        "receipt_count": 25,
+        "tool_calls": {
+          "read": 31,
+          "write": 1,
+          "edit": 5
+        },
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 0,
+        "prompt_tokens": 269555,
+        "completion_tokens": 4986,
+        "total_tokens": 274541,
+        "prompt_cache_hit_tokens": 261632,
+        "prompt_cache_miss_tokens": 7923,
+        "memory_calls": 0,
+        "memory_prompt_tokens": 0,
+        "memory_completion_tokens": 0,
+        "memory_total_tokens": 0,
+        "memory_prompt_cache_miss_tokens": 0
+      },
+      {
+        "run": "long-b",
+        "strict_pass": true,
+        "receipt_count": 24,
+        "tool_calls": {
+          "read": 30,
+          "write": 6
+        },
+        "correct_report": 6,
+        "protected_files_exact": 6,
+        "bound_verification": 0,
+        "prompt_tokens": 242285,
+        "completion_tokens": 3227,
+        "total_tokens": 245512,
+        "prompt_cache_hit_tokens": 234368,
+        "prompt_cache_miss_tokens": 7917,
+        "memory_calls": 0,
+        "memory_prompt_tokens": 0,
+        "memory_completion_tokens": 0,
+        "memory_total_tokens": 0,
+        "memory_prompt_cache_miss_tokens": 0
+      }
+    ]
+  },
+  "medians": {
+    "candidate": {
+      "prompt_tokens": 170250.0,
+      "completion_tokens": 4752.0,
+      "total_tokens": 175002.0,
+      "prompt_cache_miss_tokens": 15308.0,
+      "memory_prompt_tokens": 6128.5,
+      "memory_total_tokens": 8061.0
+    },
+    "release": {
+      "prompt_tokens": 184317.5,
+      "completion_tokens": 5257.5,
+      "total_tokens": 189575.0,
+      "prompt_cache_miss_tokens": 15359.5,
+      "memory_prompt_tokens": 6316.0,
+      "memory_total_tokens": 8707.5
+    },
+    "dsh": {
+      "prompt_tokens": 255920.0,
+      "completion_tokens": 4106.5,
+      "total_tokens": 260026.5,
+      "prompt_cache_miss_tokens": 7920.0,
+      "memory_prompt_tokens": 0.0,
+      "memory_total_tokens": 0.0
+    }
+  }
+}

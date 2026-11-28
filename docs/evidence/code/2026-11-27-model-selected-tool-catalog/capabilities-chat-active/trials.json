@@ -1,0 +1,259 @@
+[
+  {
+    "case": "deepseek_flash_search_finds_the_workspace_token",
+    "arm": "release",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "search"
+    ],
+    "tokens": 4056
+  },
+  {
+    "case": "deepseek_flash_search_finds_the_workspace_token",
+    "arm": "candidate",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "search"
+    ],
+    "tokens": 3430
+  },
+  {
+    "case": "deepseek_flash_glob_finds_the_nested_fixture",
+    "arm": "candidate",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "search"
+    ],
+    "tokens": 3436
+  },
+  {
+    "case": "deepseek_flash_glob_finds_the_nested_fixture",
+    "arm": "release",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "search"
+    ],
+    "tokens": 4020
+  },
+  {
+    "case": "deepseek_flash_git_diff_returns_the_changed_token",
+    "arm": "release",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "git"
+    ],
+    "tokens": 4184
+  },
+  {
+    "case": "deepseek_flash_git_diff_returns_the_changed_token",
+    "arm": "candidate",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "git"
+    ],
+    "tokens": 3513
+  },
+  {
+    "case": "deepseek_flash_program_returns_the_script_marker",
+    "arm": "candidate",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "program"
+    ],
+    "tokens": 3539
+  },
+  {
+    "case": "deepseek_flash_program_returns_the_script_marker",
+    "arm": "release",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "program"
+    ],
+    "tokens": 4200
+  },
+  {
+    "case": "deepseek_flash_batch_reads_two_fixture_files",
+    "arm": "release",
+    "pass": false,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "batch"
+    ],
+    "tokens": 4042
+  },
+  {
+    "case": "deepseek_flash_batch_reads_two_fixture_files",
+    "arm": "candidate",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "batch"
+    ],
+    "tokens": 3502
+  },
+  {
+    "case": "deepseek_flash_ask_user_returns_the_host_answer",
+    "arm": "candidate",
+    "pass": true,
+    "requests": 3,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "ask_user",
+      "ask_user"
+    ],
+    "tokens": 5094
+  },
+  {
+    "case": "deepseek_flash_ask_user_returns_the_host_answer",
+    "arm": "release",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "ask_user"
+    ],
+    "tokens": 3568
+  },
+  {
+    "case": "deepseek_flash_edit_replaces_the_fixture_token",
+    "arm": "release",
+    "pass": true,
+    "requests": 5,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "read",
+      "edit",
+      "read",
+      "bash",
+      "read"
+    ],
+    "tokens": 11658
+  },
+  {
+    "case": "deepseek_flash_edit_replaces_the_fixture_token",
+    "arm": "candidate",
+    "pass": true,
+    "requests": 5,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "read",
+      "edit",
+      "read",
+      "bash",
+      "bash"
+    ],
+    "tokens": 10211
+  },
+  {
+    "case": "deepseek_flash_patch_applies_the_given_hunk",
+    "arm": "candidate",
+    "pass": false,
+    "requests": 5,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "read",
+      "patch",
+      "read",
+      "bash",
+      "bash"
+    ],
+    "tokens": 10207
+  },
+  {
+    "case": "deepseek_flash_patch_applies_the_given_hunk",
+    "arm": "release",
+    "pass": false,
+    "requests": 5,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "read",
+      "patch",
+      "read",
+      "bash",
+      "bash"
+    ],
+    "tokens": 11091
+  },
+  {
+    "case": "deepseek_flash_mcp_tool_returns_the_server_token",
+    "arm": "release",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "mcp__fixture__lookup"
+    ],
+    "tokens": 3417
+  },
+  {
+    "case": "deepseek_flash_mcp_tool_returns_the_server_token",
+    "arm": "candidate",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "mcp__fixture__lookup"
+    ],
+    "tokens": 3225
+  },
+  {
+    "case": "deepseek_flash_skill_tool_returns_the_skill_token",
+    "arm": "candidate",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "Skill"
+    ],
+    "tokens": 3564
+  },
+  {
+    "case": "deepseek_flash_skill_tool_returns_the_skill_token",
+    "arm": "release",
+    "pass": true,
+    "requests": 2,
+    "usage_complete": true,
+    "discovery_requests": 0,
+    "tool_calls": [
+      "Skill"
+    ],
+    "tokens": 3824
+  }
+]

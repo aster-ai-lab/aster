@@ -810,7 +810,10 @@ async fn saved_file_change_during_query_marks_the_document_result_stale() {
 
     let document = result.document.unwrap();
     assert!(document.stale);
-    assert_eq!(document.content_hash, sha256::digest(original.as_bytes()));
+    assert_eq!(
+        document.content_hash,
+        crate::content_digest::sha256_hex(original.as_bytes())
+    );
     assert_eq!(
         std::fs::read_to_string(root.join(path.as_str())).unwrap(),
         replacement

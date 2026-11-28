@@ -4,9 +4,19 @@ use tokio::sync::Notify;
 
 const CHILD_SYSTEM: &str = "background_child_settlement_before_parent";
 
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
+enum ChildOutcome {
+    #[default]
+    Finished,
+    InitialError,
+    ReadThenError,
+    WriteThenError,
+}
+
 #[derive(Default)]
 struct BackgroundChildClient {
     return_parent_early: bool,
+    child_outcome: ChildOutcome,
     parent_calls: AtomicUsize,
     memory_calls: AtomicUsize,
     child_calls: AtomicUsize,
@@ -31,17 +41,31 @@ impl crate::llm::LlmClient for BackgroundChildClient {
             self.memory_calls.fetch_add(1, Ordering::SeqCst);
             scripted_text_response(r#"{"items":[]}"#)
         } else if system.is_some_and(|system| system.contains(CHILD_SYSTEM)) {
-            match self.child_calls.fetch_add(1, Ordering::SeqCst) {
-                0 => {
-                    self.child_started.notify_one();
-                    self.release_child.notified().await;
-                    scripted_tool_call_response(
-                        "child-read",
-                        "read",
-                        serde_json::json!({"file_path":"alpha.txt"}),
+            let call = self.child_calls.fetch_add(1, Ordering::SeqCst);
+            if call == 0 {
+                self.child_started.notify_one();
+                self.release_child.notified().await;
+            }
+            match (self.child_outcome, call) {
+                (ChildOutcome::InitialError, 0)
+                | (ChildOutcome::ReadThenError | ChildOutcome::WriteThenError, 2) => {
+                    return Err(crate::llm::NonRetryableLlmError::new(
+                        "controlled child model failure",
                     )
+                    .into());
                 }
-                1 => scripted_text_response("ALPHA"),
+                (ChildOutcome::WriteThenError, 0) => scripted_tool_call_response(
+                    "child-write",
+                    "write",
+                    serde_json::json!({"file_path":"child.txt","content":"CHILD"}),
+                ),
+                (_, 0) => scripted_tool_call_response(
+                    "child-read",
+                    "read",
+                    serde_json::json!({"file_path":"alpha.txt"}),
+                ),
+                (ChildOutcome::Finished, 1) => scripted_text_response("ALPHA"),
+                (_, 1) => scripted_text_response(""),
                 _ => anyhow::bail!("unexpected child model call"),
             }
         } else {
@@ -91,6 +115,148 @@ impl crate::llm::LlmClient for BackgroundChildClient {
         let (tx, rx) = tokio::sync::mpsc::channel(1);
         tx.send(StreamEvent::Done(response)).await.unwrap();
         Ok(rx)
+    }
+}
+
+#[tokio::test]
+async fn background_child_failure_settles_only_proven_effect_free_calls() {
+    use crate::subagent_task_tracker::SubagentStatus;
+    use aster_effect::LogStore;
+
+    for child_outcome in [
+        ChildOutcome::ReadThenError,
+        ChildOutcome::InitialError,
+        ChildOutcome::WriteThenError,
+    ] {
+        let workspace = tempfile::tempdir().unwrap();
+        let root = workspace.path();
+        std::fs::write(root.join("alpha.txt"), "ALPHA").unwrap();
+        std::fs::write(root.join("beta.txt"), "BETA").unwrap();
+        let client = Arc::new(BackgroundChildClient {
+            child_outcome,
+            ..Default::default()
+        });
+        let agent = Agent::from_config(test_config()).await.unwrap();
+        let session = Arc::new(
+            agent
+                .build_session(
+                    root.to_str().unwrap().to_owned(),
+                    client.clone(),
+                    &SessionOptions::new()
+                        .with_session_id("background-continuation-failure")
+                        .with_planning_mode(crate::prompts::PlanningMode::Disabled)
+                        .with_auto_delegation_enabled(false)
+                        .with_manual_delegation_enabled(true)
+                        .with_permission_policy(
+                            crate::permissions::PermissionPolicy::new().allow("*"),
+                        )
+                        .with_worker_agent(
+                            crate::subagent::WorkerAgentSpec::custom(
+                                "background-reader",
+                                "Independent task",
+                            )
+                            .with_prompt(CHILD_SYSTEM)
+                            .with_max_steps(5),
+                        ),
+                )
+                .unwrap(),
+        );
+        let running = Arc::clone(&session);
+        let join = tokio::spawn(async move {
+            running
+                .send("Start the independent task and read beta.", None)
+                .await
+        });
+        let deadline = std::time::Duration::from_secs(10);
+        tokio::time::timeout(deadline, client.parent_ready.notified())
+            .await
+            .unwrap();
+        client.release_child.notify_one();
+        let child = tokio::time::timeout(deadline, async {
+            loop {
+                if session.background_tasks.live().is_empty() {
+                    if let Some(task) = session
+                        .subagent_tasks()
+                        .await
+                        .into_iter()
+                        .find(|task| task.status == SubagentStatus::Failed)
+                    {
+                        break task;
+                    }
+                }
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .expect("the original child must report its failure and exit");
+        assert!(child
+            .output
+            .as_deref()
+            .unwrap()
+            .contains("controlled child model failure"));
+        let continued = child_outcome != ChildOutcome::InitialError;
+        assert_eq!(
+            client.child_calls.load(Ordering::SeqCst),
+            if continued { 3 } else { 1 }
+        );
+        let log = aster_effect::FileLog::open(
+            crate::session_folder::child_effect_log_dir(root, &child.child_session_id).unwrap(),
+        )
+        .unwrap();
+        let child_facts = log
+            .read(&crate::fact_control::thread_for_session(
+                &child.child_session_id,
+            ))
+            .unwrap();
+        assert_eq!(
+            child_facts.iter().any(|fact| fact.kind == "user.message"
+                && fact.payload["text"] == crate::prompts::CONTINUATION),
+            continued
+        );
+        client.finish_parent.notify_one();
+        let parent = tokio::time::timeout(deadline, join).await.unwrap().unwrap();
+        let parent_facts = crate::fact_control::read_workspace_facts(
+            root,
+            &crate::fact_control::thread_for_session(session.id()),
+        )
+        .unwrap();
+        let settlement = parent_facts
+            .iter()
+            .find(|fact| fact.kind == "subagent.settled");
+        if child_outcome == ChildOutcome::WriteThenError {
+            assert_eq!(std::fs::read(root.join("child.txt")).unwrap(), b"CHILD");
+            assert!(!child_facts.iter().any(|fact| fact.kind == "turn.complete"));
+            assert!(settlement.is_none());
+            assert!(parent.is_err());
+            assert!(crate::fact_control::has_unsettled_effects(&parent_facts));
+        } else {
+            assert_eq!(
+                parent
+                    .expect(
+                        "a failed continuation cannot leave proven effect-free reads unresolved"
+                    )
+                    .text,
+                "BETA"
+            );
+            let settlement =
+                settlement.expect("the parent must retain the original child's effect closure");
+            assert_eq!(settlement.payload["task_id"], child.task_id);
+            let closure = child_facts.last().unwrap();
+            assert_eq!(closure.kind, "turn.complete");
+            assert_eq!(closure.payload["child_execution_failed"], true);
+            let cut = aster_effect::cut_log(&child_facts);
+            assert_eq!(
+                settlement.payload["child_log_cut"],
+                serde_json::json!({"seq":cut.seq,"digest":cut.digest})
+            );
+            assert_eq!(
+                settlement.payload["effects"]["changes"],
+                serde_json::json!([])
+            );
+            assert!(!crate::fact_control::has_unsettled_effects(&parent_facts));
+        }
+        session.close().await;
+        agent.close().await;
     }
 }
 

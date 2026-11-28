@@ -1238,6 +1238,8 @@ pub(super) fn dispatch_send_prompt_submission(
             // `clear_follow_ups` keeps `follow_up_seen` (it marks the turn boundary) so a stale re-delivery stays rejected
             agent.clear_follow_ups();
             agent.credit_limit_stashed_prompt = None;
+            agent.crash_interrupted_turn = false;
+            agent.crash_auto_resume_count = 0;
 
             // `agent` borrow ends here; push the optimistic echo via `app`.
             let sid_str = session_id.0.to_string();
@@ -1267,6 +1269,8 @@ pub(super) fn dispatch_send_prompt_submission(
             .session
             .enqueue_prompt_with_skill_tokens(text.clone(), skill_token_ranges);
         agent.credit_limit_stashed_prompt = None;
+        agent.crash_interrupted_turn = false;
+        agent.crash_auto_resume_count = 0;
         if consume_input {
             app.pending_image_notices
                 .extend(agent.unbound_image_placeholder_notice());
@@ -1450,6 +1454,7 @@ pub(super) fn handle_prompt_response(
     result: Result<acp::PromptResponse, String>,
     http_status: Option<u16>,
     prompt_id: Option<String>,
+    prior_verification_pending: bool,
 ) -> Vec<Effect> {
     // A server-authoritative queued prompt may have drained into the running slot while this turn was still finishing
     // The leader's `running_prompt_id` broadcast can arrive before this `PromptResponse`
@@ -1473,7 +1478,7 @@ pub(super) fn handle_prompt_response(
             .pending_turn_end_reconcile
             .as_ref()
             .is_some_and(|pending| response_pid.as_deref() == Some(pending.prompt_id.as_str()));
-        if (result.is_ok() || terminal_notified)
+        if (result.is_ok() || terminal_notified || prior_verification_pending)
             && let Some(pid) = response_pid.as_deref().filter(|pid| !pid.is_empty())
         {
             agent.terminal_prompt_ids.insert(pid.to_owned());
@@ -1635,6 +1640,17 @@ pub(super) fn handle_prompt_response(
                     e.contains(aster_shell::extensions::notification::HTTP_401_NEEDLE)
                 }));
         let request_failed_shown = scrollback_has_recent_request_failed(&agent.scrollback);
+        let reconnect_interrupted = result.is_err()
+            && (app.reconnect_pending
+                || agent.session_reload.is_some()
+                || agent.crash_interrupted_turn
+                || result
+                    .as_ref()
+                    .err()
+                    .is_some_and(|e| is_sidecar_disconnect_error(e)));
+        if reconnect_interrupted {
+            agent.crash_interrupted_turn = true;
+        }
         // A dedicated prompt/modal/banner replaces the generic TurnFailed marker and error toast
         // The cases: rate limit, free-usage paywall, model incompatibility, credit 402/403, 401 re-auth, context overflow, and disk-full
         // A formatted RequestFailed banner from RetryState also counts
@@ -1645,7 +1661,8 @@ pub(super) fn handle_prompt_response(
             || reauth_prompted
             || context_overflow
             || disk_full
-            || request_failed_shown;
+            || request_failed_shown
+            || reconnect_interrupted;
         let elapsed = agent.turn_elapsed();
 
         {
@@ -1705,6 +1722,9 @@ pub(super) fn handle_prompt_response(
         // Insert the session event message (skip TurnCompleted for bash-mode, which has no agent turn)
         let event = match (&result, was_cancelling) {
             (Ok(_), false) if agent.bash_turn => None,
+            (Err(_), _) if prior_verification_pending => {
+                Some(SessionEvent::PriorVerificationPending)
+            }
             (Err(_), _) if dedicated_ux_shown => None,
             // `err` is already banner-formatted by `format_acp_error` at the producer, the single formatting owner
             // Don't re-format here
@@ -1754,7 +1774,7 @@ pub(super) fn handle_prompt_response(
                 };
                 Some((NotificationEventKind::TurnComplete, body))
             }
-            (Err(err), _) if !dedicated_ux_shown => {
+            (Err(err), _) if !dedicated_ux_shown && !prior_verification_pending => {
                 Some((NotificationEventKind::AgentError, format!("Error: {err}")))
             }
             _ => None,
@@ -1774,6 +1794,10 @@ pub(super) fn handle_prompt_response(
             &result,
             Ok(pr) if !was_cancelling && pr.stop_reason == acp::StopReason::EndTurn
         );
+        if result.is_ok() && !was_cancelling {
+            agent.crash_interrupted_turn = false;
+            agent.crash_auto_resume_count = 0;
+        }
         if execute_plan_settled {
             // Failed or cancelled start keeps the original review. Do
             // not treat !plan_mode_active as proof: a user Default can
@@ -1846,7 +1870,9 @@ pub(super) fn handle_prompt_response(
             }
         }
 
-        if let Err(ref err) = result {
+        if let Err(ref err) = result
+            && !prior_verification_pending
+        {
             tracing::error!(agent = ?agent_id, error = %err, "Prompt failed");
         }
 
@@ -1857,7 +1883,7 @@ pub(super) fn handle_prompt_response(
 
         // Cancelled turns resume queue processing one item at a time through the same drain path as normal completions
         // `maybe_drain_queue` keeps the idle-only and editing-front guards so we do not send from under the user
-        if app.reconnect_pending {
+        if app.reconnect_pending || reconnect_interrupted {
             if let Some(p) = pending_adoption {
                 agent.discard_pending_adoption_updates(&p.prompt_id);
             }
@@ -2076,6 +2102,13 @@ pub(super) fn handle_compact_complete(
         return drain.effects;
     }
     vec![]
+}
+
+fn is_sidecar_disconnect_error(error: &str) -> bool {
+    let lower = error.to_ascii_lowercase();
+    lower.contains("acp sidecar connection interrupted")
+        || lower.contains("acp sidecar restarting")
+        || lower.contains("acp request channel closed")
 }
 
 pub(super) fn handle_suggestion_debounce_expired(

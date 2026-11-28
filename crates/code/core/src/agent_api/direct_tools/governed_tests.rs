@@ -115,6 +115,54 @@ fn runtime_policy_retains_visibility_and_the_hosts_snapshot_boundary() {
     );
 }
 
+#[cfg(unix)]
+#[test]
+fn runtime_permission_preserves_the_winning_denial_reason() {
+    use crate::agent_api::agent_loop_runtime::RuntimePermissionChecker;
+    use crate::permissions::{InteractiveToolGuardrail, PermissionPolicy};
+
+    let workspace = tempfile::tempdir().unwrap();
+    let outside = tempfile::tempdir().unwrap();
+    std::fs::write(workspace.path().join("tool"), "fixture").unwrap();
+    std::fs::write(outside.path().join("tool"), "outside").unwrap();
+    std::os::unix::fs::symlink(
+        outside.path().join("tool"),
+        workspace.path().join("tool-link"),
+    )
+    .unwrap();
+    std::os::unix::fs::symlink("tool", workspace.path().join("in-workspace-link")).unwrap();
+    let host: Arc<dyn PermissionChecker> =
+        Arc::new(InteractiveToolGuardrail::default().with_workspace(workspace.path()));
+    let args = serde_json::json!({"command": "test -f ./tool-link"});
+    let checker = RuntimePermissionChecker::for_test(
+        PermissionPolicy::new().allow("bash"),
+        Some(Arc::clone(&host)),
+    );
+    let frozen = checker.snapshot_for_run().unwrap();
+    assert_eq!(frozen.check("bash", &args), PermissionDecision::Deny);
+    assert_eq!(
+        frozen.denial_code("bash", &args),
+        Some("symlink_boundary_escape")
+    );
+
+    let in_workspace_args = serde_json::json!({"command": "test -f ./in-workspace-link"});
+    assert_ne!(
+        frozen.check("bash", &in_workspace_args),
+        PermissionDecision::Deny
+    );
+    assert_eq!(frozen.denial_code("bash", &in_workspace_args), None);
+
+    let args = serde_json::json!({"command": "test -f ./tool"});
+    assert_ne!(frozen.check("bash", &args), PermissionDecision::Deny);
+    assert_eq!(frozen.denial_code("bash", &args), None);
+
+    let checker =
+        RuntimePermissionChecker::for_test(PermissionPolicy::new().deny("bash"), Some(host));
+    let args = serde_json::json!({"command": "test -f ./tool-link"});
+    assert_eq!(checker.check("bash", &args), PermissionDecision::Deny);
+    assert_eq!(checker.denial_code("bash", &args), Some("policy_denied"));
+}
+
 impl PermissionChecker for StaticPermission {
     fn check(&self, _tool_name: &str, _args: &serde_json::Value) -> PermissionDecision {
         self.0

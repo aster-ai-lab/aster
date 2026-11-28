@@ -1,0 +1,27 @@
+{
+  "float_rendering_only": true,
+  "isolated_cache_prefix": true,
+  "forced_identical_recall": false,
+  "position_matches": [
+    [
+      true,
+      211,
+      211
+    ],
+    [
+      true,
+      217,
+      217
+    ],
+    [
+      false,
+      220,
+      221
+    ],
+    [
+      false,
+      221,
+      220
+    ]
+  ]
+}

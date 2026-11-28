@@ -71,13 +71,13 @@ pub(super) fn read_element_state(
             return Err(invalid_shared_presentation(format!(
                 "The shared Presentation {} '{container_id}' is not a typed map.",
                 container_kind.as_str()
-            )))
+            )));
         }
         None => {
             return Err(super::presentation_match_conflict(format!(
                 "Presentation {} ID '{container_id}' does not exist.",
                 container_kind.as_str()
-            )))
+            )));
         }
     };
     match container.get(&transaction, "id") {
@@ -86,7 +86,7 @@ pub(super) fn read_element_state(
             return Err(invalid_shared_presentation(format!(
                 "The shared Presentation {} identity does not match its collection key.",
                 container_kind.as_str()
-            )))
+            )));
         }
     }
     let elements = match container.get(&transaction, "elements") {
@@ -95,7 +95,7 @@ pub(super) fn read_element_state(
             return Err(invalid_shared_presentation(format!(
                 "The shared Presentation {} '{container_id}' elements root is invalid.",
                 container_kind.as_str()
-            )))
+            )));
         }
     };
     let order = match container.get(&transaction, "elementOrder") {
@@ -104,7 +104,7 @@ pub(super) fn read_element_state(
             return Err(invalid_shared_presentation(format!(
                 "The shared Presentation {} '{container_id}' element order is invalid.",
                 container_kind.as_str()
-            )))
+            )));
         }
     };
     if elements.len(&transaction) > MAX_PRESENTATION_ELEMENTS {
@@ -123,7 +123,7 @@ pub(super) fn read_element_state(
             _ => {
                 return Err(invalid_shared_presentation(
                     "The shared Presentation element order contains a non-string identity.",
-                ))
+                ));
             }
         };
         validate_presentation_identifier(&id, "scene element", true)?;
@@ -141,7 +141,7 @@ pub(super) fn read_element_state(
             _ => {
                 return Err(invalid_shared_presentation(
                     "A shared Presentation scene element is not a typed map.",
-                ))
+                ));
             }
         };
         let record = read_element_record(&map, &transaction, id)?;
@@ -223,7 +223,7 @@ fn read_element_record<T: yrs::ReadTxn>(
             _ => {
                 return Err(invalid_shared_presentation(format!(
                     "The shared Presentation scene element field '{key}' contains a shared type."
-                )))
+                )));
             }
         };
         object.insert(key.to_owned(), value);
@@ -259,7 +259,7 @@ fn read_presentation_claims(
             _ => {
                 return Err(invalid_shared_presentation(
                     "A shared Presentation record claim is not a string.",
-                ))
+                ));
             }
         };
         let value: JsonValue = serde_json::from_str(&raw).map_err(|_| {

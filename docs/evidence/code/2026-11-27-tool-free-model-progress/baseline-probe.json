@@ -1,0 +1,114 @@
+[
+  {
+    "trial": "localization-1-combined",
+    "request": 1,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 0,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "localization-1-combined",
+    "request": 2,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 1,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "localization-1-combined",
+    "request": 3,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 2,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "localization-1-combined",
+    "request": 4,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 3,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "localization-1-combined",
+    "request": 5,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 4,
+    "response_has_dsml": false
+  },
+  {
+    "trial": "localization-2-combined",
+    "request": 1,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 0,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "localization-2-combined",
+    "request": 2,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 1,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "localization-2-combined",
+    "request": 3,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 2,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "localization-2-combined",
+    "request": 4,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 3,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "localization-2-combined",
+    "request": 5,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 4,
+    "response_has_dsml": false
+  },
+  {
+    "trial": "reconciliation-1-combined",
+    "request": 1,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 0,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "reconciliation-1-combined",
+    "request": 2,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 2,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "reconciliation-1-combined",
+    "request": 3,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 3,
+    "response_has_dsml": false
+  },
+  {
+    "trial": "reconciliation-2-combined",
+    "request": 1,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 0,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "reconciliation-2-combined",
+    "request": 2,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 1,
+    "response_has_dsml": true
+  },
+  {
+    "trial": "reconciliation-2-combined",
+    "request": 3,
+    "tool_definitions": 0,
+    "prior_tool_result_messages": 2,
+    "response_has_dsml": false
+  }
+]

@@ -77,16 +77,28 @@ pub(in crate::acp) struct AgentEndpoint {
 pub(in crate::acp) enum AgentLocation {
     /// On a thread in this process. Exit joins the thread so the agent can finish flushing.
     Thread(std::thread::JoinHandle<Result<()>>),
+    /// Supervised sidecar child process in this process. Status watch drives auto-reconnect/session reload.
+    Sidecar {
+        thread: std::thread::JoinHandle<Result<()>>,
+        status_rx: tokio::sync::watch::Receiver<leader_bridge::ConnectionStatus>,
+    },
     /// In the leader process. The receiver reports socket reconnects to the event loop.
     Leader(tokio::sync::watch::Receiver<leader_bridge::ConnectionStatus>),
 }
 impl From<spawn::SpawnedAgent> for AgentEndpoint {
     fn from(spawned: spawn::SpawnedAgent) -> Self {
+        let location = match spawned.status_rx {
+            Some(status_rx) => AgentLocation::Sidecar {
+                thread: spawned.thread_handle,
+                status_rx,
+            },
+            None => AgentLocation::Thread(spawned.thread_handle),
+        };
         AgentEndpoint {
             tx: spawned.channel.tx,
             rx: spawned.channel.rx,
             cancel: spawned.cancel,
-            location: AgentLocation::Thread(spawned.thread_handle),
+            location,
         }
     }
 }
@@ -137,6 +149,18 @@ pub struct AcpConnection {
     /// In-process mode shares the agent's instance (single token cache); leader mode builds a dedicated one off the same local `auth.json`.
     /// Either way it resolves a fresh bearer per request via the refresh chain.
     pub auth_manager: std::sync::Arc<aster_login::AuthManager>,
+    /// Client capabilities and metadata template to replay on reconnect `initialize`.
+    pub reconnect_init_template: ReconnectInitializeTemplate,
+}
+
+/// Template of `InitializeRequest` parameters preserved across sidecar respawns.
+#[derive(Clone, Debug, Default)]
+pub struct ReconnectInitializeTemplate {
+    pub init_meta: Option<acp::Meta>,
+    pub capabilities_meta: Option<acp::Meta>,
+    pub fs_read: bool,
+    pub fs_write: bool,
+    pub terminal: bool,
 }
 /// CLI flags that affect agent configuration, threaded from PagerArgs.
 #[derive(Debug, Clone, Default)]
@@ -254,7 +278,7 @@ pub async fn connect(cancel: &CancellationToken, flags: ConnectFlags) -> Result<
         "ACP sidecar spawn model selection"
     );
     let spawned =
-        aster_spawn::spawn_required_sidecar(&agent_config, cancel, cwd.as_deref(), spawn_model)
+        aster_spawn::spawn_supervised_sidecar(&agent_config, cancel, cwd.as_deref(), spawn_model)
             .await?;
     let auth_manager = spawned.auth_manager.clone();
     initialize_connection(AgentEndpoint::from(spawned), &flags, auth_manager).await
@@ -268,7 +292,7 @@ pub(in crate::acp) async fn initialize_connection(
 ) -> Result<AcpConnection> {
     let capability_target = match &endpoint.location {
         AgentLocation::Leader(_) => CapabilityTarget::Leader,
-        AgentLocation::Thread(_) => CapabilityTarget::Sidecar,
+        AgentLocation::Thread(_) | AgentLocation::Sidecar { .. } => CapabilityTarget::Sidecar,
     };
     let AgentEndpoint {
         tx,
@@ -279,6 +303,7 @@ pub(in crate::acp) async fn initialize_connection(
     let startup_cancel = cancel.clone().drop_guard();
     let (agent_thread, leader_status_rx) = match location {
         AgentLocation::Thread(thread) => (Some(thread), None),
+        AgentLocation::Sidecar { thread, status_rx } => (Some(thread), Some(status_rx)),
         AgentLocation::Leader(status_rx) => (None, Some(status_rx)),
     };
     startup::enter(StartupPhase::AcpInitialize);
@@ -320,6 +345,17 @@ pub(in crate::acp) async fn initialize_connection(
         feedback_trace_offer: agent.feedback_trace_offer,
         open_model_config: agent.open_model_config,
         auth_manager,
+        reconnect_init_template: ReconnectInitializeTemplate {
+            init_meta: build_initialize_meta(flags, capability_target)
+                .as_object()
+                .cloned(),
+            capabilities_meta: client_capabilities_meta(flags, capability_target)
+                .as_object()
+                .cloned(),
+            fs_read: flags.fs_read,
+            fs_write: flags.fs_write,
+            terminal: flags.terminal,
+        },
     })
 }
 /// Forward a leader-mode TUI connection to the same ACP child as [`connect`].

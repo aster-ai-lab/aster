@@ -41,12 +41,12 @@ impl PdfClaims {
                 Some(_) => {
                     return Err(invalid_shared_pdf(format!(
                         "The shared PDF {kind} record claim does not match ID '{id}'."
-                    )))
+                    )));
                 }
                 None => {
                     return Err(invalid_shared_pdf(format!(
                         "The shared PDF {kind} record ID '{id}' is missing its immutable claim."
-                    )))
+                    )));
                 }
             }
         }
@@ -196,7 +196,7 @@ pub(super) fn read_pdf_records(
             _ => {
                 return Err(invalid_shared_pdf(format!(
                     "The shared PDF {label} order contains a non-string identity."
-                )))
+                )));
             }
         };
         validate_shared_pdf_identifier(&id, label)?;
@@ -237,13 +237,13 @@ pub(super) fn read_pdf_records(
             (PdfRecordFieldKind::Object, _) => {
                 return Err(invalid_shared_pdf(format!(
                     "The shared PDF {label} contains an invalid object marker."
-                )))
+                )));
             }
             (PdfRecordFieldKind::Value, Out::Any(value)) => any_to_json(value, 0, label)?,
             (PdfRecordFieldKind::Value, _) => {
                 return Err(invalid_shared_pdf(format!(
                     "The shared PDF {label} contains a shared-type field."
-                )))
+                )));
             }
         };
         entries
@@ -295,7 +295,7 @@ pub(super) fn read_pdf_source_page_count(
         _ => {
             return Err(invalid_shared_pdf(
                 "The shared PDF source SHA-256 is invalid.",
-            ))
+            ));
         }
     };
     let byte_length = source
@@ -321,13 +321,13 @@ pub(super) fn read_pdf_source_page_count(
             _ => {
                 return Err(invalid_shared_pdf(
                     "The shared PDF immutable source identity is invalid.",
-                ))
+                ));
             }
         },
         _ => {
             return Err(invalid_shared_pdf(
                 "The shared PDF contains conflicting source identities.",
-            ))
+            ));
         }
     }
     Ok(page_count)
@@ -346,7 +346,7 @@ pub(super) fn read_pdf_claims(
             _ => {
                 return Err(invalid_shared_pdf(
                     "The shared PDF record claim is not a string.",
-                ))
+                ));
             }
         };
         let value: JsonValue = serde_json::from_str(&raw)

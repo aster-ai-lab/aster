@@ -5,8 +5,7 @@ use std::path::Path;
 
 use agent_client_protocol as acp;
 use anyhow::{Context, Result, bail};
-use aster_core::CodeConfig;
-use aster_core::config::{ConfigSection, ReasoningEffort, rewrite_acl_sections};
+use aster_acl::Value;
 use aster_shell::sampling::types::ReasoningEffort as PickerEffort;
 use aster_shell::session::{
     info::Info,
@@ -94,21 +93,46 @@ fn save_to(path: &Path, model: Option<String>, effort: Option<PickerEffort>) -> 
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
         Err(error) => return Err(error).context("read model configuration"),
     }
-    let mut config = CodeConfig::from_acl(&source).context("parse model configuration")?;
-    config.default_model = model.filter(|value| !value.is_empty());
-    config.reasoning_effort = Some(
-        effort
-            .map(|effort| ReasoningEffort::parse(effort.as_ref()))
-            .transpose()?
-            .unwrap_or(ReasoningEffort::Default),
-    );
-    let updated = rewrite_acl_sections(
+    let default_model = model.filter(|value| !value.is_empty());
+    let effort_token = match effort {
+        Some(effort) => normalize_reasoning_effort(effort.as_ref())?,
+        None => "default",
+    };
+    let updated = crate::views::model_config::rewrite_top_level_scalars(
         &source,
-        &config,
-        &[ConfigSection::DefaultModel, ConfigSection::ReasoningEffort],
-    )?;
+        &[
+            (
+                &["default_model", "defaultModel"],
+                "default_model",
+                default_model.map(Value::String),
+            ),
+            (
+                &["reasoning_effort", "reasoningEffort"],
+                "reasoning_effort",
+                Some(Value::String(effort_token.to_string())),
+            ),
+        ],
+    )
+    .map_err(anyhow::Error::msg)?;
     aster_config::fs_atomic::write_atomically_bound(&destination, &updated, None)
         .context("save model preference")
+}
+
+fn normalize_reasoning_effort(value: &str) -> Result<&'static str> {
+    match value {
+        "default" => Ok("default"),
+        "none" => Ok("none"),
+        "minimal" => Ok("minimal"),
+        "low" => Ok("low"),
+        "medium" => Ok("medium"),
+        "high" => Ok("high"),
+        "xhigh" => Ok("xhigh"),
+        "max" => Ok("max"),
+        "ultracode" => Ok("ultracode"),
+        _ => bail!(
+            "reasoning_effort must be one of default, none, minimal, low, medium, high, xhigh, max, ultracode"
+        ),
+    }
 }
 
 #[cfg(test)]

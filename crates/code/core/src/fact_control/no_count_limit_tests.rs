@@ -9,7 +9,7 @@ fn no_count_ceiling_removes_only_derived_tool_and_transition_limits() {
     assert_eq!(config.tool_round_cap(), None);
     assert_eq!(config.step_limit_option(), None);
     assert_eq!(config.compact_after_chars(), 1024);
-    assert_eq!(config.model_attempts(), 2);
+    assert_eq!(config.model_attempts(), DEFAULT_MODEL_ATTEMPTS);
 
     let explicit = session_harness_config_with(0, 1024, Vec::new(), Some(7), Some(3)).unwrap();
     assert_eq!(explicit.tool_budget_limit(), None);

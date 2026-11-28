@@ -75,9 +75,26 @@ impl ChildRun {
             surface.clone(),
             crate::fact_control::RunOwner::Child { effect_dir },
         )?;
-        let mut settled = run.user_text(prompt).await?;
-        settled = settle_host_input(&run, settled, &surface).await?;
-        let stalled = continue_incomplete(&run, &surface, &mut settled).await?;
+        let interaction = async {
+            let settled = run.user_text(prompt).await?;
+            let mut settled = settle_host_input(&run, settled, &surface).await?;
+            let stalled = continue_incomplete(&run, &surface, &mut settled).await?;
+            anyhow::Ok((settled, stalled))
+        }
+        .await;
+        let (settled, stalled) = match interaction {
+            Ok(value) => value,
+            Err(error) => {
+                // The run still owns the child journal. Preserve the original
+                // error even when its already-observed effects can be closed.
+                if let Err(retention) =
+                    crate::fact_control::retain_failed_child_effect_closure(&surface)
+                {
+                    tracing::warn!(%retention, "Could not retain failed child effect closure");
+                }
+                return Err(error);
+            }
+        };
         drop(run);
         let usage = surface
             .usage

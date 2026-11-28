@@ -1659,7 +1659,7 @@ fn toml_mcp_server_configs_from(
                 tracing::debug!(
                     count = project_servers.len(),
                     path = %config_path.display(),
-                    "Loaded project-scoped MCP servers from .grok/config.toml"
+                    "Loaded project-scoped MCP servers from .aster/config.toml"
                 );
                 for (name, config) in project_servers {
                     servers.insert(name, (config, MCP_SCOPE_PROJECT));
@@ -1769,7 +1769,7 @@ pub fn user_config_path() -> PathBuf {
 
 /// Path to a project-level config file (`<dir>/.aster/config.toml`).
 pub fn project_config_path(dir: &std::path::Path) -> PathBuf {
-    dir.join(".grok").join("config.toml")
+    dir.join(".aster").join("config.toml")
 }
 
 /// True when the config file at `path` defines `[mcp_servers.<name>]`.
@@ -1886,6 +1886,15 @@ pub(crate) fn session_registry_local_override(root: Option<&TomlValue>) -> Optio
 mod tests {
     use super::*;
     use toml::Value as TomlValue;
+
+    #[test]
+    fn project_write_path_matches_project_discovery_contract() {
+        let root = std::path::Path::new("repo");
+        assert_eq!(
+            project_config_path(root),
+            root.join(".aster").join("config.toml")
+        );
+    }
 
     /// Env beats config.toml; unrecognized env defers; both absent defers to remote.
     #[test]

@@ -5,6 +5,7 @@
 //! - models from a logged-in Grok CLI account (`~/.grok`)
 //! - models from a logged-in Cursor account on this machine
 //! - models from a logged-in Codex account (`~/.codex`)
+//! - Kbot from a logged-in Quark browser over local CDP
 //!
 //! Without the opt-in, no other product's login, keychain item or database
 //! is read.
@@ -165,7 +166,7 @@ pub fn load_launch_config_with_overlays(
             "default_model must be set in provider/model format \
              (configure ~/.aster/config.acl, or opt into a local account with \
              `import_accounts = [\"cursor\"]` there or `--import-accounts cursor`; \
-             sources: grok, cursor, codex)"
+             sources: grok, cursor, codex, quark)"
         ));
     };
     if !model_id.contains('/') {
@@ -273,6 +274,9 @@ fn merge_account_imports(config: &mut CodeConfig, selected: &[AccountImport]) ->
                 AccountImport::Cursor => cursor_account::merge_into_config(config),
                 AccountImport::Codex => {
                     aster_core::llm::CodexLoginClient::import_local_account(config)
+                }
+                AccountImport::Quark => {
+                    aster_core::llm::quark_account::import_local_account(config)
                 }
             };
             match merged {
@@ -1395,6 +1399,35 @@ sandbox {
                 launch.config.default_model.as_deref(),
                 Some("codex/synthetic-model")
             );
+        });
+    }
+
+    #[cfg(feature = "account-import")]
+    #[test]
+    fn quark_import_uses_the_existing_account_catalog_without_a_new_protocol() {
+        env_locked(|| {
+            let home = tempfile::tempdir().unwrap();
+            let workspace = hermetic_workspace();
+            std::env::set_var("HOME", home.path());
+            let _env = RestoreEnv::set(&[
+                ("ASTER_DEFAULT_MODEL", None),
+                ("ASTER_QUARK_CDP_URL", Some("http://127.0.0.1:9222")),
+                ("ASTER_DISABLE_QUARK_ACCOUNT", None),
+                ("ASTER_PREFER_QUARK", None),
+            ]);
+            let (launch, _) = load_launch_config_with_imports(
+                workspace.path().to_owned(),
+                None,
+                &[AccountImport::Quark],
+            )
+            .unwrap();
+            let provider = launch.config.find_provider("quark").unwrap();
+            assert_eq!(provider.protocol, None);
+            assert_eq!(provider.api_key, None);
+            assert_eq!(provider.models.len(), 1);
+            assert_eq!(provider.models[0].id, "kbot");
+            assert_eq!(launch.model_id, "quark/kbot");
+            assert!(launch.config.llm_config("quark", "kbot").is_some());
         });
     }
 

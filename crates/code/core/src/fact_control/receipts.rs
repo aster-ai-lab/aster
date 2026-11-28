@@ -11,8 +11,7 @@ mod refusal;
 use refusal::RefusalKind;
 pub(super) use refusal::{child_execution_control, execution_control, ExecutionControl};
 
-const UNRESOLVED_MUTATION: &str =
-    "tool_effect_unresolved: mutating calls require reconciliation of earlier uncertain invocations";
+const UNRESOLVED_MUTATION: &str = "tool_effect_unresolved: mutating calls require reconciliation of earlier uncertain invocations";
 
 use aster_effect::{
     Effect, PreparedToolExecution, ToolAdmissionIdentityV1, ToolEffectObservationV1,
@@ -105,10 +104,6 @@ pub(super) async fn prepare_tools_with_refusal(
         .as_ref()
         .and_then(|agent| skill_denial(agent, &request.call.name))
         .map(|(output, _reason)| output);
-    // A refusal must tell the caller how to fix the invocation. The appended
-    // shape hint is diagnostic only: it never changes the reason or the
-    // decision, so every existing receipt assertion still holds.
-    let denial_hint = actionable_denial_hint(&request.call.args);
     if let Some(ledger) = tools.ledger.as_ref() {
         if let Ok(mut guard) = ledger.lock() {
             guard.advance_tool_turn(request.identity.turn);
@@ -121,8 +116,20 @@ pub(super) async fn prepare_tools_with_refusal(
         &request.call.name,
         &request.call.args,
     );
+    let original_evaluation = if is_malformed_read_batch_schema_denial(
+        &tools,
+        &request.call.name,
+        &request.call.args,
+        original_evaluation,
+        argument_error.is_some(),
+    ) {
+        super::tool_results::PermissionEvaluation::Ask
+    } else {
+        original_evaluation
+    };
     let original_permission = original_evaluation.decision();
     if let Some(reason) = original_evaluation.denial_reason() {
+        let denial_hint = permission_refusal_hint(reason, &request.call.args);
         denial = Some(format!(
             "tool_effect_effective_arguments_unapproved: {reason}; arguments_changed=false; execution_started=false; next_action=inspect the original denying authority{denial_hint}"
         ));
@@ -263,12 +270,25 @@ pub(super) async fn prepare_tools_with_refusal(
         &request.call.name,
         &request.call.args,
     );
+    let effective_evaluation = if is_malformed_read_batch_schema_denial(
+        &tools,
+        &request.call.name,
+        &request.call.args,
+        effective_evaluation,
+        argument_error.is_some(),
+    ) {
+        super::tool_results::PermissionEvaluation::Ask
+    } else {
+        effective_evaluation
+    };
     let effective_permission = effective_evaluation.decision();
-    let read_only = tools
+    let capabilities = tools
         .executor
         .registry()
-        .capabilities(&request.call.name, &request.call.args)
-        .is_some_and(|capabilities| capabilities.read_only);
+        .capabilities(&request.call.name, &request.call.args);
+    let read_only = capabilities.is_some_and(|capabilities| capabilities.read_only);
+    let replay_safe =
+        capabilities.is_some_and(|capabilities| capabilities.read_only && capabilities.idempotent);
     let unresolved = blocked_before_hook
         || (!read_only
             && tools.ledger.as_ref().is_some_and(|ledger| {
@@ -347,6 +367,7 @@ pub(super) async fn prepare_tools_with_refusal(
                 } else {
                     "inspect the denying authority; do not retry without changed authorization"
                 };
+                let denial_hint = permission_refusal_hint(reason, &request.call.args);
                 denial = Some(format!(
                     "tool_effect_effective_arguments_unapproved: {reason}; arguments_changed={arguments_changed}; execution_started=false; next_action={next_action}{denial_hint}"
                 ));
@@ -402,13 +423,18 @@ pub(super) async fn prepare_tools_with_refusal(
     } else {
         None
     };
+    let recovery = if replay_safe {
+        ToolRecoveryPolicy::ReplaySafe
+    } else {
+        ToolRecoveryPolicy::NeverReplay
+    };
     let prepared = ToolPreparedV1 {
         schema: TOOL_PREPARED_SCHEMA.into(),
         identity: request.identity,
         tool_name: request.call.name.clone(),
         original_args_digest: original_digest,
         effective_args_digest: effective_digest,
-        recovery: ToolRecoveryPolicy::NeverReplay,
+        recovery,
         baseline: watch
             .as_ref()
             .map(crate::porcelain::Watch::receipt_baseline),
@@ -778,6 +804,93 @@ pub(super) async fn prepare_tools_with_refusal(
     Ok(PreparedToolExecution { prepared, execute })
 }
 
+fn is_malformed_read_batch_schema_denial(
+    tools: &ExecutorTools,
+    tool_name: &str,
+    args: &serde_json::Value,
+    evaluation: super::tool_results::PermissionEvaluation,
+    has_argument_error: bool,
+) -> bool {
+    if !has_argument_error
+        || evaluation.decision() != PermissionDecision::Deny
+        || !crate::permissions::is_malformed_read_batch(tool_name, args)
+    {
+        return false;
+    }
+    let is_child = tools
+        .agent
+        .as_ref()
+        .is_some_and(|agent| agent.is_child_run());
+    if !is_child
+        && tools.permission.check(tool_name, &serde_json::json!({})) == PermissionDecision::Deny
+    {
+        return false;
+    }
+    if let Some(checker) = tools.checker.as_deref() {
+        if checker.check(tool_name, &serde_json::json!({"file_path": "a"}))
+            == PermissionDecision::Deny
+        {
+            return false;
+        }
+        if let Some(file_path) = args.get("file_path").and_then(serde_json::Value::as_str) {
+            if checker.check(tool_name, &serde_json::json!({"file_path": file_path}))
+                == PermissionDecision::Deny
+            {
+                return false;
+            }
+        }
+        if matches!(
+            checker.denial_code(tool_name, args),
+            Some(
+                "workspace_boundary_escape" | "symlink_boundary_escape" | "catastrophic_operation"
+            )
+        ) {
+            return false;
+        }
+    }
+    true
+}
+
+fn permission_refusal_hint(reason: &str, args: &serde_json::Value) -> String {
+    match reason {
+        "symlink_boundary_escape" => "; hint=a workspace path crosses a symbolic link. If its resolved target is confirmed inside the workspace, use that path directly. Requests for approval in chat cannot clear this hard denial".into(),
+        "workspace_boundary_escape" => "; hint=use an authorized workspace path or report the missing workspace access".into(),
+        "catastrophic_operation" => catastrophic_bash_hint(args),
+        "plan_mode_read_only" => "; hint=the session is in read-only Plan mode, so workspace mutations and command execution are denied; use read-only inspection tools or present the plan without modifying files".into(),
+        "policy_denied"
+            if args
+                .get("command")
+                .and_then(serde_json::Value::as_str)
+                .is_some_and(|command| crate::permissions::shell::analyze(command).risk().is_hard_denial()) =>
+        {
+            catastrophic_bash_hint(args)
+        }
+        _ => actionable_denial_hint(args),
+    }
+}
+
+fn catastrophic_bash_hint(args: &serde_json::Value) -> String {
+    use crate::permissions::shell::{analyze, OpaqueConstruct, ShellRisk};
+
+    let Some(command) = args.get("command").and_then(serde_json::Value::as_str) else {
+        return actionable_denial_hint(args);
+    };
+    let analysis = analyze(command);
+    if analysis
+        .opaque_constructs()
+        .any(|construct| construct == OpaqueConstruct::FunctionDefinition)
+    {
+        return "; hint=shell function definitions are hard-denied; inline the commands or run a workspace script instead. Requests for approval in chat cannot clear this hard denial".into();
+    }
+    match analysis.risk() {
+        ShellRisk::RemoteCode => "; hint=piping fetched remote content into a shell or interpreter is hard-denied; download or inspect it in a workspace file without piping into a shell. Requests for approval in chat cannot clear this hard denial".into(),
+        ShellRisk::Escalating => "; hint=privilege-escalation commands (such as sudo, su, or doas) are hard-denied; run without privilege escalation or report the required host prerequisite. Requests for approval in chat cannot clear this hard denial".into(),
+        ShellRisk::Destructive => "; hint=destructive shell operations (such as 'rm -rf' on dynamic variables, globs, or paths outside the workspace, or writing to raw /dev devices) are hard-denied; use an explicit workspace-relative literal path (for example 'rm -rf ./tmp-dir') or remove files without '-rf'. Requests for approval in chat cannot clear this hard denial".into(),
+        ShellRisk::Catastrophic => "; hint=catastrophic system-wide commands (such as recursive deletion of root/home/system directories, block-device writes, or host shutdown/kill-all) are hard-denied; use a workspace-scoped alternative. Requests for approval in chat cannot clear this hard denial".into(),
+        _ => "; hint=this command matched a non-bypassable hard-denial rule; change the operation itself rather than only reformatting it. Requests for approval in chat cannot clear this hard denial".into(),
+    }
+}
+
 /// Describe the shape of a refused shell command so an agent can correct it in
 /// one retry instead of probing the denying authority with throwaway calls.
 ///
@@ -1093,6 +1206,27 @@ pub(super) enum ReceiptProjection {
 
 /// A turn marker bounds verified local changes. It cannot erase uncertainty
 /// about an invocation that never acquired an identity-bound terminal result.
+impl ReceiptDebt {
+    pub(super) fn proves_workspace_change_in(&self, owner: &ToolAdmissionIdentityV1) -> bool {
+        !self.integrity_invalid
+            && self.results.iter().any(|(_, result)| {
+                result.identity.admission.as_ref() == Some(owner)
+                    && result.has_complete_observation()
+                    && result.effects.changes.iter().any(|change| {
+                        !crate::porcelain::is_harness_path(&change.path)
+                            && change.before.as_ref().is_some_and(|before| {
+                                before.kind != change.after.kind
+                                    || before.content_digest != change.after.content_digest
+                                    || before
+                                        .mode
+                                        .zip(change.after.mode)
+                                        .is_some_and(|(a, b)| a != b)
+                            })
+                    })
+            })
+    }
+}
+
 pub(super) fn fold_debt(facts: &[aster_effect::Fact]) -> ReceiptDebt {
     fold_receipts(facts, false)
 }
@@ -1572,7 +1706,7 @@ fn fold_receipts(facts: &[aster_effect::Fact], include_covered: bool) -> Receipt
         }
     }
     for (key, value) in &prepared {
-        if !terminals.contains_key(key) {
+        if !terminals.contains_key(key) && value.recovery != ToolRecoveryPolicy::ReplaySafe {
             // The final debt remains sticky, while prefix proof uses the
             // actual preparation/terminal interval rather than an assertion.
             debt.unresolved.insert(key.clone());

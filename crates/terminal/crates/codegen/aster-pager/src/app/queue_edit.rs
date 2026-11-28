@@ -1140,17 +1140,20 @@ mod tests {
         app.agents.insert(id, agent);
         let effects = crate::app::dispatch::maybe_drain_queue_and_note_peek(&mut app, id);
         let agent = app.agents.get(&id).unwrap();
-        match &agent.scrollback.get(0).unwrap().block {
-            RenderBlock::UserPrompt(b) => {
-                assert_eq!(b.text, "great /pr-workflow go");
-                assert_eq!(
-                    b.skill_token_ranges,
-                    vec![6..18],
-                    "echo must style the recomputed mid-text token"
-                );
-            }
-            other => panic!("expected UserPrompt, got {other:?}"),
-        }
+        let prompt = (0..agent.scrollback.len())
+            .find_map(
+                |index| match agent.scrollback.entry(index).map(|entry| &entry.block) {
+                    Some(RenderBlock::UserPrompt(block)) => Some(block),
+                    _ => None,
+                },
+            )
+            .expect("user prompt");
+        assert_eq!(prompt.text, "great /pr-workflow go");
+        assert_eq!(
+            prompt.skill_token_ranges,
+            vec![6..18],
+            "echo must style the recomputed mid-text token"
+        );
         match nth(&effects, 0) {
             Effect::SendPrompt {
                 text,

@@ -1991,3 +1991,307 @@ fn batch_keeps_admitted_members_when_one_path_escapes_the_workspace() {
         Some("workspace_boundary_escape")
     );
 }
+
+#[cfg(unix)]
+#[test]
+fn read_through_in_workspace_symlink_dir_admits_missing_files_while_denying_escapes() {
+    use std::os::unix::fs::symlink;
+
+    let workspace = tempfile::tempdir().unwrap();
+    let real_dir = workspace.path().join("real");
+    std::fs::create_dir(&real_dir).unwrap();
+    std::fs::write(real_dir.join("present.txt"), "inside").unwrap();
+    symlink(&real_dir, workspace.path().join("alias")).unwrap();
+
+    let outside = tempfile::tempdir().unwrap();
+    symlink(outside.path(), workspace.path().join("escape_dir")).unwrap();
+    symlink(
+        outside.path().join("missing.txt"),
+        workspace.path().join("dangling_out.txt"),
+    )
+    .unwrap();
+    symlink(
+        workspace.path().join("missing_target.txt"),
+        workspace.path().join("dangling_in.txt"),
+    )
+    .unwrap();
+
+    let guardrail = InteractiveToolGuardrail::default().with_workspace(workspace.path());
+    assert_eq!(
+        guardrail.check("read", &json!({"file_path": "alias/present.txt"})),
+        PermissionDecision::Allow
+    );
+    assert_eq!(
+        guardrail.check("read", &json!({"file_path": "alias/missing.txt"})),
+        PermissionDecision::Allow
+    );
+    assert_eq!(
+        guardrail.denial_code("read", &json!({"file_path": "escape_dir/missing.txt"})),
+        Some("symlink_boundary_escape")
+    );
+    assert_eq!(
+        guardrail.denial_code("read", &json!({"file_path": "dangling_out.txt"})),
+        Some("symlink_boundary_escape")
+    );
+    assert_eq!(
+        guardrail.denial_code("read", &json!({"file_path": "dangling_in.txt"})),
+        Some("symlink_boundary_escape")
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn bash_through_in_workspace_symlinks_is_admitted_while_escapes_and_dangling_remain_denied() {
+    use std::os::unix::fs::symlink;
+
+    let workspace = tempfile::tempdir().unwrap();
+    let deps_bin = workspace.path().join("build/wasi-deps/sdk/bin");
+    std::fs::create_dir_all(&deps_bin).unwrap();
+    std::fs::write(deps_bin.join("clang-23"), "#!/bin/sh\necho ok\n").unwrap();
+    symlink("clang-23", deps_bin.join("clang")).unwrap();
+    symlink("wasi-deps/sdk", workspace.path().join("build/wasi")).unwrap();
+    std::fs::write(workspace.path().join("CLAUDE.md"), "doc\n").unwrap();
+    symlink("CLAUDE.md", workspace.path().join("AGENTS.md")).unwrap();
+
+    let outside = tempfile::tempdir().unwrap();
+    std::fs::write(outside.path().join("secret.txt"), "outside\n").unwrap();
+    symlink(outside.path(), workspace.path().join("escape")).unwrap();
+    symlink(outside.path(), deps_bin.join("escape")).unwrap();
+    symlink(
+        workspace.path().join("missing_target"),
+        workspace.path().join("dangling_in"),
+    )
+    .unwrap();
+    symlink(
+        outside.path().join("missing_target"),
+        workspace.path().join("dangling_out"),
+    )
+    .unwrap();
+    symlink("cycle", workspace.path().join("cycle")).unwrap();
+
+    let default_guardrail = InteractiveToolGuardrail::default().with_workspace(workspace.path());
+    let force_guardrail = InteractiveToolGuardrail::for_mode("force")
+        .unwrap()
+        .with_workspace(workspace.path());
+
+    for command in [
+        "test -f build/wasi/bin/clang && echo ok",
+        "build/k --cc build/wasi/bin/clang -o build/wasi/out.wasm",
+    ] {
+        assert_eq!(
+            default_guardrail.check("bash", &json!({"command": command})),
+            PermissionDecision::Ask,
+            "in-workspace symlink command should require ordinary confirmation in default mode: {command}"
+        );
+        assert_eq!(
+            force_guardrail.check("bash", &json!({"command": command})),
+            PermissionDecision::Allow,
+            "in-workspace symlink command should be allowed in force mode: {command}"
+        );
+        assert_eq!(
+            force_guardrail.denial_code("bash", &json!({"command": command})),
+            None
+        );
+    }
+
+    assert_eq!(
+        default_guardrail.check("bash", &json!({"command": "cat AGENTS.md"})),
+        PermissionDecision::Allow
+    );
+    assert_eq!(
+        default_guardrail.check("bash", &json!({"command": "cat build/wasi/bin/*"})),
+        PermissionDecision::Ask
+    );
+    let overlong_token = format!("echo {}", "a".repeat(300));
+    for command in [overlong_token.as_str(), "echo CLAUDE.md/not-a-dir"] {
+        assert_ne!(
+            default_guardrail.check("bash", &json!({"command": command})),
+            PermissionDecision::Deny,
+            "non-path long token or file-child string must not be denied as symlink escape: {command}"
+        );
+        assert_eq!(
+            force_guardrail.check("bash", &json!({"command": command})),
+            PermissionDecision::Allow,
+            "{command}"
+        );
+        assert_eq!(
+            default_guardrail.denial_code("bash", &json!({"command": command})),
+            None
+        );
+    }
+
+    let escaped_overlong = format!("cat escape/{}", "a".repeat(300));
+    for denied in [
+        "cat escape/secret.txt",
+        "cat escape/*.txt",
+        escaped_overlong.as_str(),
+        "cat build/wasi/bin/escape/secret.txt",
+        "test -f dangling_in",
+        "test -f dangling_out",
+        "cat cycle",
+    ] {
+        for guardrail in [&default_guardrail, &force_guardrail] {
+            assert_eq!(
+                guardrail.check("bash", &json!({"command": denied})),
+                PermissionDecision::Deny,
+                "escaped, dangling, or cyclic symlink must remain hard-denied: {denied}"
+            );
+            assert_eq!(
+                guardrail.denial_code("bash", &json!({"command": denied})),
+                Some("symlink_boundary_escape"),
+                "{denied}"
+            );
+        }
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn background_tool_allows_tail_and_stop_while_guarding_start_commands() {
+    use std::os::unix::fs::symlink;
+
+    let workspace = tempfile::tempdir().unwrap();
+    let deps_bin = workspace.path().join("build/wasi-deps/bin");
+    std::fs::create_dir_all(&deps_bin).unwrap();
+    std::fs::write(deps_bin.join("tool"), "ok\n").unwrap();
+    symlink("wasi-deps", workspace.path().join("build/wasi")).unwrap();
+    let outside = tempfile::tempdir().unwrap();
+    std::fs::write(outside.path().join("secret.txt"), "secret\n").unwrap();
+    symlink(outside.path(), workspace.path().join("escape")).unwrap();
+
+    for mode in ["default", "auto", "force", "plan"] {
+        let guardrail = InteractiveToolGuardrail::for_mode(mode)
+            .unwrap()
+            .with_workspace(workspace.path());
+        for action in ["tail", "stop"] {
+            assert_eq!(
+                guardrail.check("background", &json!({"action": action, "name": "watch"})),
+                PermissionDecision::Allow,
+                "{mode}: background {action} should not require HITL"
+            );
+        }
+
+        for cmd in ["cargo test", "sh build/wasi/bin/tool"] {
+            let expected = match mode {
+                "force" => PermissionDecision::Allow,
+                "plan" => PermissionDecision::Deny,
+                _ => PermissionDecision::Ask,
+            };
+            assert_eq!(
+                guardrail.check(
+                    "background",
+                    &json!({"action": "start", "name": "job", "command": cmd})
+                ),
+                expected,
+                "{mode}: {cmd}"
+            );
+        }
+
+        for (cmd, code) in [
+            ("rm -rf /", "catastrophic_operation"),
+            ("rm -rf \"$work\"", "catastrophic_operation"),
+            ("cat escape/secret.txt", "symlink_boundary_escape"),
+        ] {
+            let args = json!({"action": "start", "name": "bad", "command": cmd});
+            assert_eq!(
+                guardrail.check("background", &args),
+                PermissionDecision::Deny,
+                "{mode}: {cmd}"
+            );
+            assert_eq!(
+                guardrail.denial_code("background", &args),
+                Some(code),
+                "{mode}: {cmd}"
+            );
+        }
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn read_only_tools_allow_in_workspace_symlinks_while_writes_and_escapes_deny_and_plan_names_code() {
+    use std::os::unix::fs::symlink;
+
+    let workspace = tempfile::tempdir().unwrap();
+    let real = workspace.path().join("real");
+    std::fs::create_dir(&real).unwrap();
+    std::fs::write(real.join("present.txt"), "ok\n").unwrap();
+    symlink(&real, workspace.path().join("alias")).unwrap();
+
+    let outside = tempfile::tempdir().unwrap();
+    std::fs::write(outside.path().join("secret.txt"), "secret\n").unwrap();
+    symlink(outside.path(), workspace.path().join("escape_dir")).unwrap();
+    symlink(
+        workspace.path().join("missing"),
+        workspace.path().join("dangling_in"),
+    )
+    .unwrap();
+
+    let guardrail = InteractiveToolGuardrail::default().with_workspace(workspace.path());
+    for (tool, args) in [
+        ("ls", json!({"path": "alias"})),
+        ("search", json!({"path": "alias", "query": "ok"})),
+        ("code_symbols", json!({"path": "alias/present.txt"})),
+        ("code_navigation", json!({"path": "alias/present.txt"})),
+        ("code_diagnostics", json!({"path": "alias/present.txt"})),
+        ("office_read", json!({"file_path": "alias/present.txt"})),
+    ] {
+        assert_eq!(
+            guardrail.check(tool, &args),
+            PermissionDecision::Allow,
+            "{tool} should allow verified in-workspace symlink"
+        );
+        assert_eq!(guardrail.denial_code(tool, &args), None);
+    }
+
+    for bad_path in ["escape_dir", "dangling_in"] {
+        for (tool, args) in [
+            ("ls", json!({"path": bad_path})),
+            ("search", json!({"path": bad_path, "query": "secret"})),
+            ("code_symbols", json!({"path": bad_path})),
+            ("code_navigation", json!({"path": bad_path})),
+            ("code_diagnostics", json!({"path": bad_path})),
+            ("office_read", json!({"file_path": bad_path})),
+        ] {
+            assert_eq!(
+                guardrail.check(tool, &args),
+                PermissionDecision::Deny,
+                "{tool} must still deny {bad_path}"
+            );
+            assert_eq!(
+                guardrail.denial_code(tool, &args),
+                Some("symlink_boundary_escape"),
+                "{tool} {bad_path}"
+            );
+        }
+    }
+
+    for write_tool in ["write", "edit"] {
+        let args = json!({"file_path": "alias/present.txt"});
+        assert_eq!(guardrail.check(write_tool, &args), PermissionDecision::Deny);
+        assert_eq!(
+            guardrail.denial_code(write_tool, &args),
+            Some("symlink_boundary_escape")
+        );
+    }
+
+    let plan = InteractiveToolGuardrail::for_mode("plan")
+        .unwrap()
+        .with_workspace(workspace.path());
+    assert_eq!(
+        plan.denial_code("write", &json!({"file_path": "real/present.txt"})),
+        Some("plan_mode_read_only")
+    );
+    assert_eq!(
+        plan.denial_code("bash", &json!({"command": "cargo test"})),
+        Some("plan_mode_read_only")
+    );
+    assert_eq!(
+        plan.denial_code("bash", &json!({"command": "rm -rf /"})),
+        Some("catastrophic_operation")
+    );
+    assert_eq!(
+        plan.denial_code("bash", &json!({"command": "cat escape_dir/secret.txt"})),
+        Some("symlink_boundary_escape")
+    );
+}

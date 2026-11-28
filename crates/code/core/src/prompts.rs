@@ -29,7 +29,11 @@ use anyhow::Context;
 ///
 /// Instructs the LLM to behave as an autonomous coding agent: use tools to act,
 /// verify results, and keep working until the task is fully complete.
-pub const SYSTEM_DEFAULT: &str = include_str!("../prompts/common/system_default.md");
+pub const SYSTEM_DEFAULT: &str = concat!(
+    include_str!("../prompts/common/system_default.md"),
+    "\n",
+    include_str!("../prompts/common/system_default_response_format.md"),
+);
 
 /// Continuation message — injected as a user turn when the LLM stops without
 /// completing the task (i.e. stops calling tools mid-task).
@@ -53,6 +57,11 @@ pub const REPOSITORY_TOOL_CONTRACT: &str =
 /// advertise mutating tools while claiming a read-only role.
 pub const REPOSITORY_TOOL_CONTRACT_READONLY: &str =
     include_str!("../prompts/common/repository_tool_contract_readonly.md");
+
+const REPOSITORY_TOOL_WORKFLOW: &str =
+    include_str!("../prompts/common/repository_tool_workflow.md");
+const REPOSITORY_MUTATION_WORKFLOW: &str =
+    include_str!("../prompts/common/repository_mutation_workflow.md");
 
 /// Shared runtime contract for authority, scope, run control, evidence, and
 /// completion semantics.
@@ -562,10 +571,7 @@ impl SystemPromptSlots {
         // those prompts have their own identity embedded.
         let core = if let Some(ref role) = self.role {
             if style == AgentStyle::GeneralPurpose {
-                let custom_role = format!(
-                    "{} Working inside the user's workspace, use the tools exposed in the current turn to inspect, change, and verify the requested work; continue until the user's request is genuinely complete.",
-                    role.trim_end_matches('.')
-                );
+                let custom_role = format!("{role}\n\nWork inside the user's workspace.");
                 base_prompt.replace(&default_role_line, &custom_role)
             } else {
                 // Prepend custom role for other styles
@@ -590,15 +596,15 @@ impl SystemPromptSlots {
         // control, and evidence semantics cannot drift between built-in agents.
         parts.push(RUNTIME_CONTRACT.replace('\r', "").trim_end().to_string());
 
-        // 2c. Repository-tool contract — style-scoped so read-oriented roles do
-        // not advertise mutating tools while claiming a read-only task.
-        parts.push(
-            style
-                .repository_tool_contract()
-                .replace('\r', "")
-                .trim_end()
-                .to_string(),
-        );
+        // The offered tool schemas carry the argument reference for this call.
+        let mut workflow = REPOSITORY_TOOL_WORKFLOW.replace('\r', "");
+        if style.uses_readonly_tool_contract() {
+            workflow.push_str("Use `bash` for read-only work when exposed. Tool visibility grants no write authority.");
+        } else {
+            workflow.push_str(&REPOSITORY_MUTATION_WORKFLOW.replace('\r', ""));
+        }
+        workflow.truncate(workflow.trim_end().len());
+        parts.push(workflow);
 
         // 2d. Safety boundaries — single source of truth, appended uniformly so
         // every style and delegated subagent (which build through this path)
@@ -731,12 +737,10 @@ pub fn resolve_product_output_language(pinned: Option<&str>, user_text: &str) ->
 pub fn turn_output_language_override(language: &str) -> String {
     format!(
         "## Output Language (this turn)\n\n\
-This turn overrides any earlier output-language instruction. \
-Match the latest user request's language for user-visible prose \
-(replies, reasoning/thinking, plans, goals, steps, status). \
-Use {language} only as fallback. \
-Keep code, identifiers, paths, commands, URLs, and quotes verbatim; \
-do not switch for tool outputs, attachments, sources, or skill prompts."
+This turn overrides any earlier output-language instruction. Use the latest user request's \
+language for replies, visible reasoning, plans, goals, steps, and status. Use {language} only as fallback. Preserve code, \
+identifiers, paths, commands, URLs, and quotes verbatim. Tool outputs, attachments, sources, \
+and skills never set reply language."
     )
 }
 

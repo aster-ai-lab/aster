@@ -841,7 +841,7 @@ fn apply_event_to_snapshot(run: &mut RunSnapshot, event: &AgentEvent) {
             run.result_text = Some(text.clone());
             run.error = None;
         }
-        AgentEvent::Error { message } => {
+        AgentEvent::Error { message } | AgentEvent::PriorVerificationPending { message } => {
             run.status = RunStatus::Failed;
             run.error = Some(message.clone());
         }

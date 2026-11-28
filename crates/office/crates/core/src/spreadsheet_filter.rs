@@ -123,7 +123,7 @@ fn criteria_from_node(node: &DocumentNode) -> UseResult<NativeSpreadsheetFilterC
             return Err(semantic_filter_error(
                 node,
                 format!("has unsupported criteria type '{value}'"),
-            ))
+            ));
         }
     })
 }

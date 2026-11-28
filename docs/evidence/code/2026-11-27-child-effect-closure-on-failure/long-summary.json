@@ -1,0 +1,185 @@
+{
+  "requests": 160,
+  "arms": {
+    "candidate": {
+      "trials": [
+        {
+          "run": "long-a",
+          "requests": 28,
+          "main_requests": 21,
+          "tool_calls": {
+            "read": 8,
+            "ls": 1,
+            "write": 5,
+            "edit": 1
+          },
+          "artifact": 6,
+          "protected": 6,
+          "verified": 6,
+          "strict": false,
+          "usage": {
+            "prompt_tokens": 166471,
+            "completion_tokens": 4320,
+            "total_tokens": 170791,
+            "prompt_cache_hit_tokens": 150526,
+            "prompt_cache_miss_tokens": 15945
+          }
+        },
+        {
+          "run": "long-b",
+          "requests": 28,
+          "main_requests": 21,
+          "tool_calls": {
+            "read": 26,
+            "ls": 1,
+            "write": 6
+          },
+          "artifact": 6,
+          "protected": 6,
+          "verified": 6,
+          "strict": false,
+          "usage": {
+            "prompt_tokens": 177890,
+            "completion_tokens": 5263,
+            "total_tokens": 183153,
+            "prompt_cache_hit_tokens": 159358,
+            "prompt_cache_miss_tokens": 18532
+          }
+        }
+      ],
+      "artifact": 12,
+      "protected": 12,
+      "verified": 12,
+      "strict": 0,
+      "median_main_requests": 21.0,
+      "median_usage": {
+        "prompt_tokens": 172180.5,
+        "completion_tokens": 4791.5,
+        "total_tokens": 176972.0,
+        "prompt_cache_hit_tokens": 154942.0,
+        "prompt_cache_miss_tokens": 17238.5
+      }
+    },
+    "release": {
+      "trials": [
+        {
+          "run": "long-a",
+          "requests": 26,
+          "main_requests": 19,
+          "tool_calls": {
+            "read": 6,
+            "ls": 1,
+            "write": 1,
+            "edit": 5
+          },
+          "artifact": 6,
+          "protected": 6,
+          "verified": 6,
+          "strict": false,
+          "usage": {
+            "prompt_tokens": 154329,
+            "completion_tokens": 3319,
+            "total_tokens": 157648,
+            "prompt_cache_hit_tokens": 138622,
+            "prompt_cache_miss_tokens": 15707
+          }
+        },
+        {
+          "run": "long-b",
+          "requests": 28,
+          "main_requests": 21,
+          "tool_calls": {
+            "read": 26,
+            "ls": 1,
+            "write": 1,
+            "edit": 5
+          },
+          "artifact": 6,
+          "protected": 6,
+          "verified": 6,
+          "strict": false,
+          "usage": {
+            "prompt_tokens": 181558,
+            "completion_tokens": 5169,
+            "total_tokens": 186727,
+            "prompt_cache_hit_tokens": 162430,
+            "prompt_cache_miss_tokens": 19128
+          }
+        }
+      ],
+      "artifact": 12,
+      "protected": 12,
+      "verified": 12,
+      "strict": 0,
+      "median_main_requests": 20.0,
+      "median_usage": {
+        "prompt_tokens": 167943.5,
+        "completion_tokens": 4244.0,
+        "total_tokens": 172187.5,
+        "prompt_cache_hit_tokens": 150526.0,
+        "prompt_cache_miss_tokens": 17417.5
+      }
+    },
+    "dsh": {
+      "trials": [
+        {
+          "run": "long-a",
+          "requests": 24,
+          "main_requests": 24,
+          "tool_calls": {
+            "read": 30,
+            "write": 6
+          },
+          "artifact": 6,
+          "protected": 6,
+          "verified": null,
+          "strict": true,
+          "usage": {
+            "prompt_tokens": 241667,
+            "completion_tokens": 3012,
+            "total_tokens": 244679,
+            "prompt_cache_hit_tokens": 233728,
+            "prompt_cache_miss_tokens": 7939
+          }
+        },
+        {
+          "run": "long-b",
+          "requests": 26,
+          "main_requests": 26,
+          "tool_calls": {
+            "read": 30,
+            "glob": 1,
+            "write": 6
+          },
+          "artifact": 6,
+          "protected": 6,
+          "verified": null,
+          "strict": false,
+          "usage": {
+            "prompt_tokens": 264043,
+            "completion_tokens": 3739,
+            "total_tokens": 267782,
+            "prompt_cache_hit_tokens": 255488,
+            "prompt_cache_miss_tokens": 8555
+          }
+        }
+      ],
+      "artifact": 12,
+      "protected": 12,
+      "verified": null,
+      "strict": 1,
+      "median_main_requests": 25.0,
+      "median_usage": {
+        "prompt_tokens": 252855.0,
+        "completion_tokens": 3375.5,
+        "total_tokens": 256230.5,
+        "prompt_cache_hit_tokens": 244608.0,
+        "prompt_cache_miss_tokens": 8247.0
+      }
+    }
+  },
+  "candidate_delta_percent": {
+    "release": 2.7786569872958244,
+    "dsh": -30.932500229285743
+  }
+}

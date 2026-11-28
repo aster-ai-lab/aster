@@ -103,7 +103,7 @@ fn receipt(
 
 fn metadata(path: &str) -> Option<Value> {
     Some(
-        json!({"file_path":path,"artifact_content_digest":sha256::digest(path.as_bytes()),"validated":true}),
+        json!({"file_path":path,"artifact_content_digest":crate::content_digest::sha256_hex(path.as_bytes()),"validated":true}),
     )
 }
 

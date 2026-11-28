@@ -484,7 +484,7 @@ async fn retrieval_seam_stays_closed_until_a_provider_is_injected() {
     let attached = attached_options.embedding_provider();
     assert!(Arc::ptr_eq(&blocking_port, &attached));
     let blocked_note = capability_note(&blocked_options);
-    assert!(blocked_note.contains("search modes: grep, glob, bm25, semantic, hybrid."));
+    assert!(!blocked_note.contains("search modes:"));
     assert!(blocked_note
         .contains("If the index is degraded, semantic leaves the tool definition; hybrid retains available channels."));
     assert!(!blocked_note.contains("Semantic retrieval is disabled"));

@@ -230,7 +230,7 @@ fn emit_word(root: &DocumentNode) -> UseResult<Vec<NativeOfficeMutation>> {
                         "Word node type '{}' is not exactly replayable yet.",
                         block.node_type.label()
                     ),
-                ))
+                ));
             }
         }
     }
@@ -796,7 +796,7 @@ fn spreadsheet_data_validation(node: &DocumentNode) -> UseResult<NativeSpreadshe
             return Err(dump_unsupported(
                 &node.path,
                 format!("Spreadsheet data-validation type '{value}' is not replayable."),
-            ))
+            ));
         }
     };
     let operator = node
@@ -825,7 +825,7 @@ fn spreadsheet_data_validation(node: &DocumentNode) -> UseResult<NativeSpreadshe
             return Err(dump_unsupported(
                 &node.path,
                 format!("Spreadsheet data-validation error style '{value}' is not replayable."),
-            ))
+            ));
         }
     };
     let ranges = required_format(node, "ref")?
@@ -1032,7 +1032,7 @@ fn emit_presentation(root: &DocumentNode) -> UseResult<Vec<NativeOfficeMutation>
                             "Presentation node type '{}' is not exactly replayable yet.",
                             child.node_type.label()
                         ),
-                    ))
+                    ));
                 }
             }
         }
@@ -1073,7 +1073,7 @@ fn emit_presentation(root: &DocumentNode) -> UseResult<Vec<NativeOfficeMutation>
                     return Err(dump_unsupported(
                         &child.path,
                         "Presentation replay encountered an unsupported node after validation.",
-                    ))
+                    ));
                 }
             }
         }

@@ -345,7 +345,7 @@ async fn prior_call_reports_never_acquire_or_substitute_for_this_call_binding() 
     let agent = agent(workspace.path(), Vec::new());
     let mut ledger = observed_bytes(workspace.path());
     let current_digest = ledger.digest().to_string();
-    let prior_digest = sha256::digest("older effects");
+    let prior_digest = crate::content_digest::sha256_hex("older effects");
     for binding in [
         None,
         Some(prior_digest.as_str()),

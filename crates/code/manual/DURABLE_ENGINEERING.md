@@ -19,15 +19,18 @@ Run owner/writer stay in charge. Evidence:
 | --- | --- |
 | Rust | `SessionOptions::with_work_policy(WorkPolicyV1::new(id, version, body)?)` |
 | Rust / ACP | the same field on the original session options |
-| ACP | session `_meta.asterEngineering = { "policy": "engineering-v1" }` (closed set; the body is `acp/prompts/engineering.md`) |
+| ACP | session `_meta.asterEngineering.policy` admits `engineering-v3`, `engineering-v2`, `engineering-v1`, and `none` |
 
-ACP and Code TUI new sessions select `engineering-v1` by default. A client can
-create a plain session with `_meta.asterEngineering = { "policy": "none" }`.
+New interactive ACP and Code TUI sessions select `engineering-v3`, defined in
+`acp/prompts/engineering_v3.md`. The v2 and v1 policies retain their original
+bodies in `acp/prompts/engineering_compact.md` and `acp/prompts/engineering.md`.
+A client can create a plain session with `_meta.asterEngineering = { "policy": "none" }`.
 Unknown names or malformed selections refuse instead of falling back. Core
 and SDK session defaults stay optional. Loading an old session does not add
 a policy; an already-bound session keeps its original policy.
 
-`--unattended` also selects engineering and goal continuation by default.
+`--unattended` defaults to `engineering-v1` and goal continuation.
+Select the current interactive policy with `--engineering-policy engineering-v3`.
 `--engineering-policy none` and `--no-goal-continuation` opt out separately.
 
 - Building, resuming or replacing a session with a policy admits it as one
@@ -36,7 +39,7 @@ a policy; an already-bound session keeps its original policy.
   even when the host stops selecting one. A different policy, a legacy session
   gaining one, or a corrupt source refuses at session build
   (`work_policy.conflict`, `work_policy.legacy_rebind`, `work_policy.corrupt`).
-- `engineering-v1` guides: smallest complete change, read callers first, reuse,
+- Both policies guide the smallest complete change, caller inspection, reuse,
   root-cause fixes, protected checks unchanged, verify with the existing check,
   delegate review/audit to the original `review` worker (narrowed to read-only
   under a policy), read-only deferral scans.

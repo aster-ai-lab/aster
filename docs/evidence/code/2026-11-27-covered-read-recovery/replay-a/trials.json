@@ -1,0 +1,346 @@
+[
+  {
+    "label": "candidate",
+    "arm": "candidate",
+    "turns": [
+      {
+        "turn": 1,
+        "stop": "end_turn",
+        "report": {
+          "revision": 1,
+          "currency": "USD",
+          "units": 5,
+          "subtotal_cents": 547,
+          "discount_cents": 0,
+          "tax_cents": 41,
+          "total_cents": 588
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 2,
+        "stop": "end_turn",
+        "report": {
+          "revision": 2,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 922,
+          "discount_cents": 0,
+          "tax_cents": 69,
+          "total_cents": 991
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 3,
+        "stop": "end_turn",
+        "report": {
+          "revision": 3,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 0,
+          "tax_cents": 0,
+          "total_cents": 952
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 4,
+        "stop": "end_turn",
+        "report": {
+          "revision": 4,
+          "currency": "USD",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 5,
+        "stop": "end_turn",
+        "report": {
+          "revision": 5,
+          "currency": "EUR",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      },
+      {
+        "turn": 6,
+        "stop": "end_turn",
+        "report": {
+          "revision": 6,
+          "currency": "EUR",
+          "units": 8,
+          "subtotal_cents": 952,
+          "discount_cents": 48,
+          "tax_cents": 68,
+          "total_cents": 972
+        },
+        "correct_report": true,
+        "protected_files_exact": true,
+        "bound_verification": true,
+        "permissions": [
+          {
+            "kind": "edit",
+            "allowed": true
+          }
+        ],
+        "settled_tools": true
+      }
+    ],
+    "meter_drained": true,
+    "api_requests": 25,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 155021,
+      "completion_tokens": 3799,
+      "total_tokens": 158820,
+      "prompt_cache_hit_tokens": 140286,
+      "prompt_cache_miss_tokens": 14735
+    },
+    "tool_calls": {
+      "read": 21,
+      "write": 6
+    },
+    "primary_requests": 18,
+    "native_workflow": true,
+    "passed": true,
+    "scripted_rounds": 3,
+    "first_live_request": {
+      "tool_result_count": 5,
+      "covered_ranges": 2,
+      "recovery_notes": 1
+    },
+    "first_turn_tool_choices": [
+      [
+        "read"
+      ],
+      [
+        "write"
+      ],
+      []
+    ]
+  },
+  {
+    "label": "release",
+    "arm": "release",
+    "turns": [
+      {
+        "turn": 1,
+        "stop": null,
+        "report": null,
+        "correct_report": false,
+        "protected_files_exact": true,
+        "bound_verification": false,
+        "permissions": [],
+        "settled_tools": true
+      }
+    ],
+    "meter_drained": true,
+    "api_requests": 51,
+    "usage_complete": false,
+    "tokens": {
+      "prompt_tokens": 337609,
+      "completion_tokens": 2904,
+      "total_tokens": 340513,
+      "prompt_cache_hit_tokens": 329342,
+      "prompt_cache_miss_tokens": 8267
+    },
+    "tool_calls": {
+      "read": 39
+    },
+    "primary_requests": 50,
+    "native_workflow": false,
+    "passed": false,
+    "scripted_rounds": 3,
+    "first_live_request": {
+      "tool_result_count": 5,
+      "covered_ranges": 2,
+      "recovery_notes": 0
+    },
+    "first_turn_tool_choices": [
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [
+        "read"
+      ],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    ]
+  }
+]

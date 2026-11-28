@@ -1,0 +1,25 @@
+{
+  "forced_identical_recall": true,
+  "position_matches": [
+    [
+      true,
+      211,
+      211
+    ],
+    [
+      true,
+      217,
+      217
+    ],
+    [
+      false,
+      220,
+      221
+    ],
+    [
+      false,
+      221,
+      220
+    ]
+  ]
+}

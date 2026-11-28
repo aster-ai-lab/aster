@@ -137,5 +137,8 @@ async fn background_tool_wait_releases_provider_capacity_for_foreground() {
     scheduler.shutdown().await;
     assert!(result.success, "{}", result.output);
     assert_eq!(result.output, "ALPHA");
-    assert!(admitted, "a background tool wait must not reserve a single-flight provider for the entire child loop");
+    assert!(
+        admitted,
+        "a background tool wait must not reserve a single-flight provider for the entire child loop"
+    );
 }

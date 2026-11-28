@@ -1,0 +1,13 @@
+{
+  "model": "deepseek-flash",
+  "order": [
+    "candidate",
+    "reference"
+  ],
+  "reference_limit": 4,
+  "candidate_limit": 9,
+  "frozen_cases": [
+    "replacement",
+    "conflict"
+  ]
+}

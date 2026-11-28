@@ -14,6 +14,14 @@
             agent.turn_started_at = Some(std::time::Instant::now());
             assert!(!agent.attached_as_viewer);
         }
+        let agent = app.agents.get_mut(&AgentId(0)).unwrap();
+        assert!(agent.session.handle_update(
+            acp::SessionUpdate::AgentMessageChunk(acp::ContentChunk::new(acp::ContentBlock::Text(
+                acp::TextContent::new("response"),
+            ))),
+            &crate::acp::meta::NotificationMeta::default(),
+            &mut agent.scrollback,
+        ));
 
         let affected = handle_ext_notification(&prompt_complete_ext("sess-drive"), &mut app);
         assert!(
@@ -111,6 +119,14 @@
             agent.session.start_turn(&mut agent.scrollback);
             agent.session.current_prompt_id = Some("pid-current".into());
         }
+        let agent = app.agents.get_mut(&AgentId(0)).unwrap();
+        assert!(agent.session.handle_update(
+            acp::SessionUpdate::AgentMessageChunk(acp::ContentChunk::new(acp::ContentBlock::Text(
+                acp::TextContent::new("response"),
+            ))),
+            &crate::acp::meta::NotificationMeta::default(),
+            &mut agent.scrollback,
+        ));
 
         let _ = handle_ext_notification(&prompt_complete_ext("sess-drive"), &mut app);
 

@@ -1,6 +1,8 @@
 use super::execution_state::ExecutionLoopState;
 use super::memory_extraction_runtime::TurnMemoryExtractionSchedule;
 use super::AgentEvent;
+use crate::completion_attestor::ModelVerificationPreview;
+use crate::harness_loop::{CompletionGate, CompletionTerminal};
 use crate::llm::{LlmResponse, Message};
 use crate::prompts::CONTINUATION;
 
@@ -49,18 +51,28 @@ impl crate::agent::TurnEngine {
         self.decide_fact_completion_gate(ledger, &reports)
     }
 
-    pub(crate) fn fact_model_verification_gate(
+    pub(crate) fn fact_model_verification_preview(
         &self,
         ledger: &crate::harness_loop::MutationLedger,
         reports: &[crate::verification::VerificationReport],
-    ) -> crate::harness_loop::CompletionGate {
+    ) -> Option<ModelVerificationPreview> {
         let mut reports = reports.to_vec();
-        crate::completion_attestor::merge_preview_report(
+        let disk_content_verified = crate::completion_attestor::merge_preview_report(
             self.config.completion_attestor.as_ref(),
             ledger,
             &mut reports,
         );
-        self.decide_fact_completion_gate(ledger, &reports)
+        match self.evaluate_fact_completion_gate(ledger, &reports) {
+            Ok(CompletionGate::Allow(CompletionTerminal::Verified { .. })) => {
+                Some(if disk_content_verified {
+                    ModelVerificationPreview::DiskContentVerified
+                } else {
+                    ModelVerificationPreview::Verified
+                })
+            }
+            Err(error) => Some(ModelVerificationPreview::Unverified(error)),
+            _ => None,
+        }
     }
 
     /// Decide the gate without re-running the attestor (reports already merged).
@@ -69,7 +81,21 @@ impl crate::agent::TurnEngine {
         ledger: &crate::harness_loop::MutationLedger,
         reports: &[crate::verification::VerificationReport],
     ) -> crate::harness_loop::CompletionGate {
-        crate::harness_loop::decide_with_contracts(
+        self.evaluate_fact_completion_gate(ledger, reports)
+            .unwrap_or_else(|error| crate::harness_loop::CompletionGate::Incomplete {
+                message: error.message,
+            })
+    }
+
+    pub(crate) fn evaluate_fact_completion_gate(
+        &self,
+        ledger: &crate::harness_loop::MutationLedger,
+        reports: &[crate::verification::VerificationReport],
+    ) -> std::result::Result<
+        crate::harness_loop::CompletionGate,
+        crate::harness_loop::UnverifiedMutation,
+    > {
+        crate::harness_loop::evaluate_with_contracts(
             ledger,
             reports,
             &self.config.completion_waivers,

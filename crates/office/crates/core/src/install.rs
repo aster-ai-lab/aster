@@ -131,7 +131,7 @@ async fn uninstall_at(root: &Path) -> UseResult<bool> {
                     "Failed to inspect Office data root '{}': {error}",
                     root.display()
                 ),
-            ))
+            ));
         }
     };
     while let Some(entry) = entries.next_entry().await.map_err(|error| {
@@ -190,7 +190,7 @@ fn pinned_asset(os: &str, arch: &str) -> UseResult<PinnedAsset> {
             return Err(office_error(
                 "use.office.platform_unsupported",
                 format!("OfficeCLI {SUPPORTED_OFFICECLI_VERSION} does not support {os}/{arch}."),
-            ))
+            ));
         }
     };
     Ok(asset)
@@ -385,7 +385,7 @@ async fn create_stage(root: &Path) -> UseResult<PathBuf> {
                         "Failed to create Office staging directory '{}': {error}",
                         path.display()
                     ),
-                ))
+                ));
             }
         }
     }
@@ -518,7 +518,7 @@ async fn unique_backup_path(target: &Path) -> UseResult<PathBuf> {
                         "Failed to inspect Office backup path '{}': {error}",
                         path.display()
                     ),
-                ))
+                ));
             }
         }
     }
@@ -540,7 +540,7 @@ async fn owned_install_directory(directory: &Path) -> UseResult<bool> {
                     "Failed to read Office install receipt '{}': {error}",
                     path.display()
                 ),
-            ))
+            ));
         }
     };
     let Ok(receipt) = serde_json::from_slice::<OfficeInstallReceipt>(&bytes) else {
@@ -650,7 +650,7 @@ async fn remove_entry(path: &Path) -> UseResult<bool> {
                     "Failed to inspect managed Office path '{}': {error}",
                     path.display()
                 ),
-            ))
+            ));
         }
     };
     let result = if metadata.is_dir() && !metadata.file_type().is_symlink() {

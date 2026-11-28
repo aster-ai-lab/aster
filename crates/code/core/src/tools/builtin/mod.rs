@@ -31,6 +31,7 @@ mod web_fetch;
 mod web_search;
 mod write;
 
+pub(crate) use grep::{project_grep_display, GREP_DISPLAY_LAYOUT_KEY};
 pub(crate) use read::{MAX_BATCH_READ_FILES, MAX_BATCH_READ_PATH_BYTES};
 
 #[cfg(test)]

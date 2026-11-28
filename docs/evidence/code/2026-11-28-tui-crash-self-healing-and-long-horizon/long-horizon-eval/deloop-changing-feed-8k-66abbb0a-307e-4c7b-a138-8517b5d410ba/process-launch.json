@@ -1,0 +1,7 @@
+{
+  "pid": 88626,
+  "parent_pid": 88589,
+  "workspace": "/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/.tmptu1Jfg/workspace 观察",
+  "binary": "/Volumes/GXF-Q-8T/aster/target/qualification/deloop-changing-feed-8k-66abbb0a-307e-4c7b-a138-8517b5d410ba/aster-acp",
+  "scope": "actual Driver child; excludes build-id probes"
+}

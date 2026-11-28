@@ -46,6 +46,8 @@ struct DocumentDiagnosticRequestParams {
 #[derive(Debug, Default)]
 pub(super) struct DiagnosticRuntimeState {
     result_ids: HashMap<WorkspacePath, String>,
+    pulled: HashMap<WorkspacePath, Vec<CodeDiagnostic>>,
+    published: HashMap<WorkspacePath, Vec<CodeDiagnostic>>,
     truncated: HashSet<WorkspacePath>,
 }
 
@@ -90,14 +92,21 @@ impl LanguageRuntime {
                         source,
                     })?;
                 ensure_not_cancelled(&cancellation)?;
-                let (items, truncated) = bound_items(items, MAX_DIAGNOSTICS_PER_DOCUMENT);
+                let (pulled, truncated) = bound_items(items, MAX_DIAGNOSTICS_PER_DOCUMENT);
                 let snapshot = self.documents.complete_query(path, snapshot).await;
+                let _update = self.diagnostic_updates.lock().await;
+                let mut state = self.diagnostic_state.lock().await;
+                let published = state.published.get(path).cloned().unwrap_or_default();
+                let (items, merge_truncated) = bound_items(
+                    merge_diagnostics(pulled.clone(), published),
+                    MAX_DIAGNOSTICS_PER_DOCUMENT,
+                );
+                let truncated = truncated || merge_truncated;
                 if !snapshot.stale {
-                    let _update = self.diagnostic_updates.lock().await;
                     self.diagnostics
                         .publish(path, items.clone(), Some(snapshot.revision))
                         .await;
-                    let mut state = self.diagnostic_state.lock().await;
+                    state.pulled.insert(path.clone(), pulled);
                     match full.result_id {
                         Some(result_id) => {
                             state.result_ids.insert(path.clone(), result_id);
@@ -108,6 +117,8 @@ impl LanguageRuntime {
                     }
                     set_truncated(&mut state, path, truncated);
                 }
+                drop(state);
+                drop(_update);
                 Ok(self.query_result(items, truncated, Some(snapshot)))
             }
             DocumentDiagnosticReportResult::Report(DocumentDiagnosticReport::Unchanged(report)) => {
@@ -202,6 +213,8 @@ impl LanguageRuntime {
         self.diagnostics.invalidate(path).await;
         let mut state = self.diagnostic_state.lock().await;
         state.result_ids.remove(path);
+        state.pulled.remove(path);
+        state.published.remove(path);
         state.truncated.remove(path);
     }
 }
@@ -252,10 +265,29 @@ pub(super) async fn consume_notifications(
             },
             None => None,
         };
-        diagnostics.publish(&path, mapped, revision).await;
         let mut state = diagnostic_state.lock().await;
-        set_truncated(&mut state, &path, truncated);
+        let pulled = state.pulled.get(&path).cloned().unwrap_or_default();
+        state.published.insert(path.clone(), mapped.clone());
+        let (merged, merge_truncated) = bound_items(
+            merge_diagnostics(pulled, mapped),
+            MAX_DIAGNOSTICS_PER_DOCUMENT,
+        );
+        diagnostics.publish(&path, merged, revision).await;
+        set_truncated(&mut state, &path, truncated || merge_truncated);
     }
+}
+
+fn merge_diagnostics(
+    pulled: Vec<CodeDiagnostic>,
+    published: Vec<CodeDiagnostic>,
+) -> Vec<CodeDiagnostic> {
+    let mut merged = pulled;
+    for diagnostic in published {
+        if !merged.contains(&diagnostic) {
+            merged.push(diagnostic);
+        }
+    }
+    merged
 }
 
 fn set_truncated(state: &mut DiagnosticRuntimeState, path: &WorkspacePath, truncated: bool) {
@@ -263,5 +295,37 @@ fn set_truncated(state: &mut DiagnosticRuntimeState, path: &WorkspacePath, trunc
         state.truncated.insert(path.clone());
     } else {
         state.truncated.remove(path);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::code_intelligence::{CodeLocation, CodePosition, CodeRange};
+
+    fn diagnostic(message: &str) -> CodeDiagnostic {
+        CodeDiagnostic {
+            location: CodeLocation {
+                path: WorkspacePath::from_normalized("src/lib.rs"),
+                range: CodeRange::new(CodePosition::new(0, 0), CodePosition::new(0, 1)),
+            },
+            severity: None,
+            code: None,
+            source: Some("fixture".to_owned()),
+            message: message.to_owned(),
+        }
+    }
+
+    #[test]
+    fn merge_keeps_pull_and_push_diagnostics_without_duplicates() {
+        let merged = merge_diagnostics(
+            vec![diagnostic("pull"), diagnostic("shared")],
+            vec![diagnostic("shared"), diagnostic("push")],
+        );
+        let messages: Vec<_> = merged
+            .iter()
+            .map(|diagnostic| diagnostic.message.as_str())
+            .collect();
+        assert_eq!(messages, ["pull", "shared", "push"]);
     }
 }

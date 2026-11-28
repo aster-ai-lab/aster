@@ -27,9 +27,10 @@ pub use actor::{
 };
 pub use coding::{
     answer_fact, background_output_fact, coding_actor, coding_scheduler, confirm_fact,
-    ingest_coding, ingest_coding_with_cancel, ingest_coding_with_optional_limit, merge_coding_view,
-    message_fact, resume_coding, resume_coding_with_cancel, resume_coding_with_optional_limit,
-    tool_args_digest, tool_information_digest, CodingPhase, CodingServices, CodingView, Compactor,
+    ingest_coding, ingest_coding_with_cancel, ingest_coding_with_optional_limit,
+    inspect_coding_phase, merge_coding_view, message_fact, resume_coding,
+    resume_coding_with_cancel, resume_coding_with_optional_limit, tool_args_digest,
+    tool_information_digest, CodingPhase, CodingResumeProbe, CodingServices, CodingView, Compactor,
     Completion, CompletionRequest, HarnessConfig, ModelDecision, PendingConfirmation,
     PendingQuestion, PreparedToolExecution, ToolAdmissionIdentityV1, ToolCall,
     ToolEffectObservationV1, ToolExecutionOutcome, ToolExecutionResultV1, ToolFileIdentityV1,

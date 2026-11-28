@@ -638,6 +638,7 @@ async fn main_turn_rejects_foreign_definitions_before_provider_but_auxiliary_kee
             messages.clone(),
             None,
             foreign.clone(),
+            ModelPresentationApplicationV1::Profiled,
         )
         .unwrap();
     let (sender, _receiver) = mpsc::channel(64);

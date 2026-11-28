@@ -67,16 +67,13 @@ pub(crate) use goal_evidence::{
 pub(crate) use history_seed::seed_history;
 use history_seed::{
     attachments_from_user_payload, emit_tool_request_bound, folded_message_with_images,
-    images_for_user_line, observe_repeated_result, recorded_call_from, recorded_tool_calls_in,
-    recorded_tool_messages, repeat_note_prefix, scheduler_tool_record_indexes,
-    seed_repeats_from_facts, tool_image_ids_to_stub, user_attachment_plan, user_message_fact,
+    images_for_user_line, project_repeated_tool_results, recorded_call_from,
+    recorded_tool_calls_in, recorded_tool_messages, repeat_note_prefix,
+    scheduler_tool_record_indexes, tool_image_ids_to_stub, user_attachment_plan, user_message_fact,
     user_message_with_images, visible_tool_output, workspace_boundary_error, RecordedCall,
-    RepeatObservation, RepeatedResultProjection,
 };
 #[cfg(test)]
 use history_seed::{recorded_tool_calls, PlannedUserImages};
-#[cfg(test)]
-use history_seed::{repeated_result_note, REPEAT_COMPACTION_MIN_BYTES};
 pub(crate) use model_call::model_error;
 #[cfg(test)]
 use model_call::project_model_frame;
@@ -91,8 +88,9 @@ use tool_results::attachments_from_fact_tool_images;
 pub(crate) use tool_results::exposed_tool_specs;
 use tool_results::{
     confirmation_parked, decision_from_response, decode_fact_tool_result, definitions_for,
-    fact_tool_runner_value, latest_user_text, message_from_folded_tool, run_permission,
-    skill_denial, split_folded_message, verified_turn_text, FACT_TOOL_RESULT_KIND,
+    fact_tool_runner_value, latest_user_text, message_from_folded_tool, model_text_decision,
+    run_permission, skill_denial, split_folded_message, tool_attempt_in_text_only_response,
+    verified_turn_text, FACT_TOOL_RESULT_KIND,
 };
 #[cfg(test)]
 use turn_facts::append_steer_input;
@@ -103,8 +101,9 @@ use turn_facts::{
 };
 pub(crate) use turn_facts::{
     append_turn_complete_fact, append_turn_yielded_fact, has_unsettled_effects,
-    replay_unsettled_mutations, restore_checkpoint_mutation_cache, settle_terminal_run_controls,
-    unsettled_mutation_paths, CheckpointMutationCacheCoverage,
+    replay_unsettled_mutations, restore_checkpoint_mutation_cache,
+    retain_failed_child_effect_closure, settle_terminal_run_controls, unsettled_mutation_paths,
+    CheckpointMutationCacheCoverage,
 };
 
 /// Thread id for one session. Valid ids are kept so two sessions in one
@@ -125,6 +124,42 @@ pub fn thread_for_session(session_id: &str) -> String {
     let mut thread = format!("s-{hex}");
     thread.truncate(128);
     thread
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum InterruptedTurnState {
+    Idle,
+    Resumable,
+    UnresolvedTool,
+}
+
+/// Inspect the durable session fact log without spawning transitions, to
+/// distinguish an idle thread, a cleanly resumable mid-turn pause/crash,
+/// and an unresolved prepared tool invocation.
+pub fn inspect_interrupted_turn(
+    workspace: &Path,
+    session_id: &str,
+) -> Result<InterruptedTurnState> {
+    let thread = thread_for_session(session_id);
+    let facts = read_workspace_facts(workspace, &thread)?;
+    if facts.is_empty() {
+        return Ok(InterruptedTurnState::Idle);
+    }
+    let probe =
+        aster_effect::inspect_coding_phase(&facts).map_err(|error| anyhow::anyhow!(error))?;
+    if probe.has_unresolved_preparation || probe.has_legacy_pending {
+        return Ok(InterruptedTurnState::UnresolvedTool);
+    }
+    Ok(match probe.phase {
+        CodingPhase::Infer | CodingPhase::Compact | CodingPhase::Tool => {
+            InterruptedTurnState::Resumable
+        }
+        CodingPhase::Idle
+        | CodingPhase::Confirm
+        | CodingPhase::Question
+        | CodingPhase::Deny
+        | CodingPhase::Done => InterruptedTurnState::Idle,
+    })
 }
 
 /// Whether a tool call parks for confirmation.
@@ -669,7 +704,7 @@ impl Completion for LiveCompletion {
                     _ => components,
                 });
             }
-            let verification_gate = if let Some(surface) = &surface {
+            let verification_preview = if let Some(surface) = &surface {
                 let ledger = surface
                     .ledger
                     .lock()
@@ -682,15 +717,14 @@ impl Completion for LiveCompletion {
                     .clone();
                 let agent = surface.agent.clone();
                 // A host attestor may read disk; its callback can outlive caller cancellation.
-                let gate = tokio::task::spawn_blocking(move || {
-                    agent.fact_model_verification_gate(&ledger, &reports)
+                tokio::task::spawn_blocking(move || {
+                    agent.fact_model_verification_preview(&ledger, &reports)
                 })
                 .await
                 .map_err(|error| ActorError::Handler {
                     key: "model-input-verification".into(),
                     message: error.to_string(),
-                })?;
-                Some(gate)
+                })?
             } else {
                 None
             };
@@ -760,6 +794,7 @@ impl Completion for LiveCompletion {
                 history_seed::scheduler_tool_prose_indexes(&folded, &tool_records, &recorded_calls);
             let mut recorded = recorded_calls.into_iter();
             let mut messages = Vec::new();
+            let mut read_layouts = std::collections::HashMap::new();
             let mut previous_tool_response = None;
             for (index, text) in folded.iter().enumerate() {
                 // The result line below restores this call as a structured
@@ -778,7 +813,7 @@ impl Completion for LiveCompletion {
                     body
                 };
                 if role == "tool" || role == "tool-error" {
-                    recorded_tool_messages(
+                    if let Some((index, layout)) = recorded_tool_messages(
                         &mut recorded,
                         &mut messages,
                         &mut previous_tool_response,
@@ -786,7 +821,9 @@ impl Completion for LiveCompletion {
                         role == "tool-error",
                         image_root,
                         &stub_tool_image_ids,
-                    )?;
+                    )? {
+                        read_layouts.insert(index, layout);
+                    }
                 } else {
                     previous_tool_response = None;
                     let (body, images) = if text.starts_with("user\n") {
@@ -803,8 +840,18 @@ impl Completion for LiveCompletion {
                     "tool history has calls absent from the folded transcript".into(),
                 ));
             }
-            if let Some(gate) = verification_gate {
-                tool_results::apply_verification_context(&mut messages, &mut system, gate);
+            project_repeated_tool_results(&mut messages, &read_layouts);
+            if let Some(preview) = verification_preview {
+                let bash_refused = matches!(
+                    &execution_control,
+                    Some(receipts::ExecutionControl::Replan { tool, .. }) if tool == "bash"
+                );
+                tool_results::apply_verification_context(
+                    &mut messages,
+                    &mut system,
+                    preview,
+                    bash_refused,
+                );
             }
             if let Some(surface) = &surface {
                 // Anchor each path-instruction fragment after the tool result
@@ -901,91 +948,206 @@ impl Completion for LiveCompletion {
                     "read-only staged synthesis"
                 );
             }
-            let execution_limit = surface
-                .as_ref()
-                .and_then(|surface| surface.agent.max_execution_time());
-            let time_left = execution_time_left(started_at, execution_limit)?;
-            let turn = model_turns.load(Ordering::SeqCst).saturating_add(1);
-            if let Some(surface) = &surface {
-                record_run_event(surface, crate::agent::AgentEvent::TurnStart { turn }).await;
-            }
-            let chat = crate::telemetry::gen_ai::chat_span();
             let prompt = request
                 .messages
                 .first()
                 .map(|text| split_folded_message(text).1)
                 .unwrap_or_default();
-            let call = async {
+            let deferred = original_model.is_some()
+                && client.supports_deferred_tool_catalog()
+                && surface
+                    .as_ref()
+                    .is_some_and(|surface| surface.agent.uses_deferred_tool_catalog());
+            let mut remaining_lookups = if deferred { 2 } else { 0 };
+            let mut expanded = std::collections::BTreeSet::new();
+            let mut repaired = false;
+            let (response, text_only) = loop {
+                use crate::harness_evidence::ModelPresentationApplicationV1;
+                use crate::tools::deferred_catalog;
+
+                let execution_limit = surface
+                    .as_ref()
+                    .and_then(|surface| surface.agent.max_execution_time());
+                let time_left = execution_time_left(started_at, execution_limit)?;
+                let turn = model_turns.load(Ordering::SeqCst).saturating_add(1);
                 if let Some(surface) = &surface {
-                    surface
-                        .agent
-                        .fire_generate_start(&surface.session_id, &prompt, &system, &tools)
-                        .await;
+                    record_run_event(surface, crate::agent::AgentEvent::TurnStart { turn }).await;
                 }
-                let tools = match surface.as_ref() {
-                    Some(surface) => surface
-                        .agent
-                        .present_fact_turn_tools(&tools, &messages)
-                        .map_err(model_error)?,
-                    None => tools,
-                };
-                fixed_prompt_tokens.store(
-                    crate::llm::estimate_prompt_tokens(&[], system.as_deref(), &tools) as u64,
-                    Ordering::SeqCst,
-                );
-                model_response(
-                    Arc::clone(&client),
-                    messages.clone(),
-                    system.clone(),
-                    tools,
-                    surface.clone(),
-                    cancel.clone(),
-                    original_model.clone(),
-                )
-                .await
-            };
-            let call = tracing::Instrument::instrument(call, chat.clone());
-            let response = match time_left {
-                Some(left) => tokio::time::timeout(left, call)
-                    .await
-                    .unwrap_or_else(|_| Err(execution_timeout(started_at, execution_limit))),
-                None => call.await,
-            };
-            crate::telemetry::gen_ai::record_chat_outcome(&chat, &response);
-            let response = match response {
-                Ok(response) => {
-                    model_turns.fetch_add(1, Ordering::SeqCst);
+                let chat = crate::telemetry::gen_ai::chat_span();
+                let mut text_only = false;
+                let mut lookup_source = None;
+                let call = async {
                     if let Some(surface) = &surface {
-                        record_run_event(
-                            surface,
-                            crate::agent::AgentEvent::TurnEnd {
-                                turn,
-                                usage: response.usage.clone(),
-                            },
-                        )
-                        .await;
+                        surface
+                            .agent
+                            .fire_generate_start(&surface.session_id, &prompt, &system, &tools)
+                            .await;
                     }
-                    response
-                }
-                Err(error) => {
-                    // Leave `model_turns` unchanged and omit `TurnEnd` on retryable
-                    // handler failures so the fold's retry re-emits the same
-                    // `TurnStart { turn }`, preserving the rollback boundary for
-                    // stream consumers.
-                    if matches!(error, ActorError::Defect(_)) {
+                    let eligible = if repaired {
+                        Vec::new()
+                    } else {
+                        match surface.as_ref() {
+                            Some(surface) => surface
+                                .agent
+                                .present_fact_turn_tools(&tools, &messages)
+                                .map_err(model_error)?,
+                            None => tools.clone(),
+                        }
+                    };
+                    let compact = (remaining_lookups > 0)
+                        .then(|| deferred_catalog::project(&eligible, &expanded))
+                        .flatten();
+                    let (tools, application) = match compact {
+                        Some(projected) => {
+                            lookup_source = Some(eligible);
+                            (projected, ModelPresentationApplicationV1::Deferred)
+                        }
+                        None => (eligible, ModelPresentationApplicationV1::Profiled),
+                    };
+                    text_only = tools.is_empty();
+                    let system = if text_only {
+                        let mut system = system.clone().unwrap_or_default();
+                        if !system.is_empty() {
+                            system.push_str("\n\n");
+                        }
+                        system.push_str(
+                            "No tools are available for this request. Answer in normal text from the supplied context. If essential information is missing, state the limit or ask for it. Tool calls or tool-call markup cannot run."
+                        );
+                        Some(system)
+                    } else {
+                        system.clone()
+                    };
+                    fixed_prompt_tokens.store(
+                        crate::llm::estimate_prompt_tokens(&[], system.as_deref(), &tools) as u64,
+                        Ordering::SeqCst,
+                    );
+                    model_response(
+                        Arc::clone(&client),
+                        messages.clone(),
+                        system,
+                        model_call::PresentedTools {
+                            definitions: tools,
+                            application,
+                        },
+                        surface.clone(),
+                        cancel.clone(),
+                        original_model.clone(),
+                    )
+                    .await
+                };
+                let call = tracing::Instrument::instrument(call, chat.clone());
+                let response = match time_left {
+                    Some(left) => tokio::time::timeout(left, call)
+                        .await
+                        .unwrap_or_else(|_| Err(execution_timeout(started_at, execution_limit))),
+                    None => call.await,
+                };
+                crate::telemetry::gen_ai::record_chat_outcome(&chat, &response);
+                let response = match response {
+                    Ok(response) => {
+                        model_turns.fetch_add(1, Ordering::SeqCst);
                         if let Some(surface) = &surface {
                             record_run_event(
                                 surface,
                                 crate::agent::AgentEvent::TurnEnd {
                                     turn,
-                                    usage: crate::llm::TokenUsage::default(),
+                                    usage: response.usage.clone(),
                                 },
                             )
                             .await;
                         }
+                        response
                     }
-                    return Err(error);
+                    Err(error) => {
+                        // Leave `model_turns` unchanged and omit `TurnEnd` on retryable
+                        // handler failures so the fold's retry re-emits the same
+                        // `TurnStart { turn }`, preserving the rollback boundary for
+                        // stream consumers.
+                        if matches!(error, ActorError::Defect(_)) {
+                            if let Some(surface) = &surface {
+                                record_run_event(
+                                    surface,
+                                    crate::agent::AgentEvent::TurnEnd {
+                                        turn,
+                                        usage: crate::llm::TokenUsage::default(),
+                                    },
+                                )
+                                .await;
+                            }
+                        }
+                        return Err(error);
+                    }
+                };
+                if let Some(source) = lookup_source {
+                    let calls = response.tool_calls();
+                    if calls
+                        .iter()
+                        .any(|call| call.name == deferred_catalog::LOOKUP_NAME)
+                    {
+                        if let Some(surface) = &surface {
+                            let prior_count = messages.len();
+                            apply_run_controls(surface, &mut messages).await?;
+                            if surface.cancel.is_cancelled() || cancel.is_cancelled() {
+                                break (response, true);
+                            }
+                            let valid_lookup = !response.output_truncated()
+                                && calls.len() == 1
+                                && messages.len() == prior_count;
+                            let result = valid_lookup
+                                .then(|| {
+                                    deferred_catalog::lookup(
+                                        &source,
+                                        &calls[0],
+                                        &messages,
+                                        &mut expanded,
+                                    )
+                                })
+                                .flatten();
+                            if let Some(result) = result {
+                                let mut message = response.message;
+                                message.transcript_visibility =
+                                    crate::llm::TranscriptVisibility::Wire;
+                                messages.push(message);
+                                messages.push(result);
+                                remaining_lookups -= 1;
+                                continue;
+                            }
+                        }
+                        // A declined lookup or mixed batch has executed nothing.
+                        // Retry with the ordinary catalog and the original authority.
+                        remaining_lookups = 0;
+                        messages.push(Message::user_wire("[host] Full tool definitions are available in this request. Use them to continue the original task."));
+                        continue;
+                    }
                 }
+                if !text_only
+                    || cancel.is_cancelled()
+                    || surface
+                        .as_ref()
+                        .is_some_and(|surface| surface.cancel.is_cancelled())
+                    || !tool_attempt_in_text_only_response(&response)
+                {
+                    break (response, text_only);
+                }
+                if repaired {
+                    return Err(ActorError::Defect(
+                        "model returned a tool invocation twice for a request with no tools".into(),
+                    ));
+                }
+                repaired = true;
+                if let Some(surface) = &surface {
+                    apply_run_controls(surface, &mut messages).await?;
+                    if surface.cancel.is_cancelled() {
+                        break (response, text_only);
+                    }
+                }
+                // Another governed model entry, with actionable guidance and no
+                // synthetic tool result or untrusted arguments in the transcript.
+                messages.push(Message::user_wire(
+                    "[host] The previous model attempt proposed a tool that cannot run. \
+                     Complete the original request in normal text using the available evidence. \
+                     Ask for any essential missing input.",
+                ));
             };
             if let Some(surface) = &surface {
                 if surface.cancel.is_cancelled() {
@@ -1029,23 +1191,15 @@ impl Completion for LiveCompletion {
                 }
             }
             prompt_tokens.store(response.usage.prompt_tokens as u64, Ordering::SeqCst);
-            let decision = decision_from_response(&response, &policy, surface.as_ref()).await;
+            let decision = if text_only {
+                model_text_decision(&response, surface.as_ref())
+            } else {
+                decision_from_response(&response, &policy, surface.as_ref()).await
+            };
             if matches!(decision, ModelDecision::Tool { .. }) {
                 if let Some(surface) = &surface {
                     surface.agent.fact_observe_read_only_synthesis_tools();
                 }
-            }
-            if synthesis_directive.is_some_and(|directive| directive.requires_no_tools())
-                && matches!(decision, ModelDecision::Tool { .. })
-            {
-                let text = response.text();
-                if text.trim().is_empty() {
-                    return Err(ActorError::Defect(
-                        "read-only finalization returned a tool call despite an empty tool list"
-                            .into(),
-                    ));
-                }
-                return Ok(ModelDecision::Text { text });
             }
             Ok(decision)
         })
@@ -1098,6 +1252,8 @@ fn session_harness_config(
     session_harness_config_with(max_tool_rounds, compact_after_chars, specs, None, None)
 }
 
+pub(crate) const DEFAULT_MODEL_ATTEMPTS: u32 = 5;
+
 pub(crate) fn session_harness_config_with(
     max_tool_rounds: usize,
     compact_after_chars: usize,
@@ -1108,7 +1264,7 @@ pub(crate) fn session_harness_config_with(
     let rounds = (max_tool_rounds != 0).then(|| u32::try_from(max_tool_rounds).unwrap_or(u32::MAX));
     let derived_steps = rounds.map(|rounds| rounds.saturating_mul(4).max(32));
     let step_limit = step_limit.or(derived_steps);
-    let model_attempts = model_attempts.unwrap_or(2);
+    let model_attempts = model_attempts.unwrap_or(DEFAULT_MODEL_ATTEMPTS);
     let mut config = HarnessConfig::new(
         rounds.unwrap_or(0),
         compact_after_chars,
@@ -1332,7 +1488,6 @@ impl FactRun {
             reports: None,
             targeted_paths: None,
             pre_tool_hook_resolved: false,
-            repeats: Arc::default(),
             effect_dir: effect_dir.clone(),
         });
         let mut run = Self::open(effect_dir, Arc::new(completion), tools, config, session_id)?;
@@ -1648,7 +1803,6 @@ impl FactRun {
             inner: Arc::new(completion),
             prompt_tokens: Arc::clone(&prompt_tokens),
         });
-        let repeats = Arc::new(Mutex::new(seed_repeats_from_facts(&existing_facts)));
         let compactor = Arc::new(SessionCompact {
             client: Arc::clone(&client),
             history: (Arc::clone(&shared_log), thread.clone()),
@@ -1658,7 +1812,6 @@ impl FactRun {
             budget: agent.fact_compaction_budget(),
             fixed_prompt_tokens,
             prompt_tokens,
-            repeats: Arc::clone(&repeats),
         });
         let tools = Arc::new(ExecutorTools {
             capability_operation: None,
@@ -1677,7 +1830,6 @@ impl FactRun {
             reports,
             targeted_paths: Some(Arc::clone(&surface.targeted_paths)),
             pre_tool_hook_resolved: false,
-            repeats,
             effect_dir: effect_dir.clone(),
         });
         let mut run = Self::open_with_optional_step_limit(

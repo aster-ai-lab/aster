@@ -134,10 +134,10 @@ fn parse_args_from(mut args: impl Iterator<Item = String>) -> Result<Args> {
             }
             "--help" | "-h" => {
                 eprintln!(
-                    "Usage: aster-acp [--cwd DIR] [--config FILE] [--config-overlay FILE]... [--model provider/model] [--reasoning-effort LEVEL] [--import-accounts grok,cursor,codex] [--plugin-store DIR]\n\
+                    "Usage: aster-acp [--cwd DIR] [--config FILE] [--config-overlay FILE]... [--model provider/model] [--reasoning-effort LEVEL] [--import-accounts grok,cursor,codex,quark] [--plugin-store DIR]\n\
                      \x20      aster-acp --list-workspace-mcp | --trust-workspace-mcp <ID|all> [--cwd DIR]\n\
-                     \x20      aster-acp --unattended [--max-execution-ms MS] [--reasoning-effort LEVEL] [--engineering-policy engineering-v1|none] [--goal-continuation|--no-goal-continuation] [--result-file FILE] [--cwd DIR] [--config FILE] [--model provider/model]\n\
-                     New sessions use engineering-v1 by default. Explicit goals use bounded continuation.\n\
+                     \x20      aster-acp --unattended [--max-execution-ms MS] [--reasoning-effort LEVEL] [--engineering-policy engineering-v1|engineering-v2|engineering-v3|engineering-v4|none] [--goal-continuation|--no-goal-continuation] [--result-file FILE] [--cwd DIR] [--config FILE] [--model provider/model]\n\
+                     New interactive sessions use engineering-v4. Unattended defaults to engineering-v1. Explicit goals use bounded continuation.\n\
                      Speaks Agent Client Protocol on stdio over aster-core {}.",
                     env!("CARGO_PKG_VERSION")
                 );

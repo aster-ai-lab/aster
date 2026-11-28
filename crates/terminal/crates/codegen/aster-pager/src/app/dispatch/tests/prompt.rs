@@ -1000,12 +1000,27 @@ fn send_prompt_produces_effect_and_clears_input() {
     assert!(matches!(effects.first(), Some(Effect::SendPrompt { text, .. }) if text == "hello"));
     assert!(agent_ref(&app, id).prompt.text().is_empty());
     assert!(agent_ref(&app, id).session.state.is_turn_running());
-    assert_eq!(agent_ref(&app, id).scrollback.len(), 1);
+    assert_eq!(count_user_prompts(&app, id), 1);
     assert_eq!(agent_ref(&app, id).session.queue_len(), 0);
 }
 
 /// Register `pr-workflow` as an ACP-advertised skill on the agent's slash registry, mirroring the shell's available-commands sync.
 /// Shared with the modes tests (`/plan <desc>` range forwarding).
+fn sent_user_prompt(app: &AppView, id: AgentId) -> &crate::scrollback::blocks::UserPromptBlock {
+    (0..agent_ref(app, id).scrollback.len())
+        .find_map(|index| {
+            match agent_ref(app, id)
+                .scrollback
+                .entry(index)
+                .map(|entry| &entry.block)
+            {
+                Some(RenderBlock::UserPrompt(block)) => Some(block),
+                _ => None,
+            }
+        })
+        .expect("sent user prompt")
+}
+
 pub(super) fn register_pr_workflow_skill(app: &mut AppView, id: AgentId) {
     let agent = app.agents.get_mut(&id).unwrap();
     let models = agent.session.models.clone();
@@ -1051,12 +1066,7 @@ fn send_prompt_mid_text_skill_token_carries_ranges() {
         other => panic!("expected SendPrompt, got {other:?}"),
     }
     // The drained echo block styles exactly the composer-recognized token.
-    match &agent_ref(&app, id).scrollback.get(0).unwrap().block {
-        RenderBlock::UserPrompt(b) => {
-            assert_eq!(b.skill_token_ranges, vec![6..18]);
-        }
-        other => panic!("expected UserPrompt, got {other:?}"),
-    }
+    assert_eq!(sent_user_prompt(&app, id).skill_token_ranges, vec![6..18]);
 }
 
 /// An unrecognized `/word` mid-text stays a plain prompt: no ranges on the block or the effect.
@@ -1074,10 +1084,7 @@ fn send_prompt_unknown_token_has_empty_ranges() {
         }) => assert!(skill_token_ranges.is_empty()),
         other => panic!("expected SendPrompt, got {other:?}"),
     }
-    match &agent_ref(&app, id).scrollback.get(0).unwrap().block {
-        RenderBlock::UserPrompt(b) => assert!(b.skill_token_ranges.is_empty()),
-        other => panic!("expected UserPrompt, got {other:?}"),
-    }
+    assert!(sent_user_prompt(&app, id).skill_token_ranges.is_empty());
 }
 
 /// An image-bearing prompt with token ranges: the LOCAL echo styles the token, but the wire blocks stay unstamped.
@@ -1098,10 +1105,7 @@ fn image_prompt_with_ranges_styles_echo_but_wire_meta_absent() {
 
     let effects = dispatch(Action::DrainQueue, &mut app);
 
-    match &agent_ref(&app, id).scrollback.get(0).unwrap().block {
-        RenderBlock::UserPrompt(b) => assert_eq!(b.skill_token_ranges, vec![6..18]),
-        other => panic!("expected UserPrompt, got {other:?}"),
-    }
+    assert_eq!(sent_user_prompt(&app, id).skill_token_ranges, vec![6..18]);
     match effects.first() {
         Some(Effect::SendPromptBlocks { blocks, .. }) => {
             let Some(acp::ContentBlock::Text(tb)) = blocks.first() else {
@@ -1134,17 +1138,13 @@ fn send_prompt_leading_skill_keeps_inject_skill_path() {
             .any(|e| matches!(e, Effect::SendPromptBlocks { .. })),
         "leading skill must send structured blocks, got {effects:?}"
     );
-    match &agent_ref(&app, id).scrollback.get(0).unwrap().block {
-        RenderBlock::UserPrompt(b) => {
-            assert_eq!(
-                b.skill_token_ranges,
-                vec![0..12],
-                "InjectSkill path styles the leading /pr-workflow token"
-            );
-            assert_eq!(b.text, "/pr-workflow ship it");
-        }
-        other => panic!("expected UserPrompt, got {other:?}"),
-    }
+    let prompt = sent_user_prompt(&app, id);
+    assert_eq!(
+        prompt.skill_token_ranges,
+        vec![0..12],
+        "InjectSkill path styles the leading /pr-workflow token"
+    );
+    assert_eq!(prompt.text, "/pr-workflow ship it");
 }
 
 #[test]
@@ -2033,6 +2033,39 @@ fn prompt_response_context_overflow_suppresses_turn_failed_and_toast() {
         "context overflow must suppress the redundant TurnFailed block"
     );
     assert!(!toast, "context overflow must suppress the error toast");
+}
+
+#[test]
+fn prompt_response_displays_outstanding_verification_without_an_error_toast() {
+    let mut app = test_app_with_agent();
+    let id = AgentId(0);
+    let prompt_id = "status-reply".to_owned();
+    let agent = app.agents.get_mut(&id).unwrap();
+    agent.session.state = AgentState::TurnRunning;
+    agent.session.current_prompt_id = Some(prompt_id.clone());
+    dispatch(
+        Action::TaskComplete(TaskResult::PromptVerificationPending {
+            agent_id: id,
+            message: "Previous workspace changes await verification".into(),
+            prompt_id,
+        }),
+        &mut app,
+    );
+    let agent = agent_ref(&app, id);
+    assert!(matches!(agent.session.state, AgentState::Idle));
+    assert!(app.deferred_notification.is_none());
+    assert_eq!(
+        (0..agent.scrollback.len())
+            .filter_map(|index| agent.scrollback.entry(index))
+            .filter_map(|entry| match &entry.block {
+                RenderBlock::SessionEvent(block) if block.event.is_turn_terminal() => {
+                    Some(block.event.message())
+                }
+                _ => None,
+            })
+            .collect::<Vec<_>>(),
+        ["Previous workspace changes still await verification"]
+    );
 }
 
 #[test]
@@ -7499,4 +7532,46 @@ fn shift_tab_never_selects_plan() -> bool {
         }
     }
     true
+}
+
+#[test]
+fn aster_pager_shift_tab_never_selects_plan() {
+    assert!(shift_tab_never_selects_plan());
+}
+
+#[test]
+fn handle_prompt_response_suppresses_turn_failed_during_sidecar_reconnect() {
+    let mut app = test_app_with_agent();
+    let id = AgentId(0);
+    app.reconnect_pending = true;
+    {
+        let agent = app.agents.get_mut(&id).expect("agent");
+        agent.begin_local_turn("p-crash");
+        agent.crash_auto_resume_count = 1;
+    }
+
+    let effects = dispatch(
+        Action::TaskComplete(TaskResult::PromptResponse {
+            agent_id: id,
+            result: Err("Internal error: ACP sidecar connection interrupted; reconnecting".into()),
+            http_status: None,
+            prompt_id: Some("p-crash".into()),
+        }),
+        &mut app,
+    );
+
+    assert!(effects.is_empty());
+    let agent = agent_ref(&app, id);
+    assert!(agent.crash_interrupted_turn);
+    let has_turn_failed = (0..agent.scrollback.len()).any(|idx| {
+        matches!(
+            agent.scrollback.entry(idx).map(|e| &e.block),
+            Some(RenderBlock::SessionEvent(ev))
+                if matches!(ev.event, SessionEvent::TurnFailed { .. })
+        )
+    });
+    assert!(
+        !has_turn_failed,
+        "transient sidecar crash disconnect must not paint TurnFailed during reconnect"
+    );
 }

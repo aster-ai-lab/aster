@@ -275,7 +275,10 @@ fn shell_gate_advice_uses_a_present_exact_file_instead_of_a_deleted_suffix_alias
         None,
         &ToolFileIdentityV1 {
             kind: ToolFileKind::File,
-            content_digest: Some(format!("sha256:{}", sha256::digest(b"actual results"))),
+            content_digest: Some(format!(
+                "sha256:{}",
+                crate::content_digest::sha256_hex(b"actual results")
+            )),
             mode: Some(0o100600),
         },
     );

@@ -154,12 +154,12 @@ async fn supersede_preserves_original_and_exact_replacement_on_both_stores() {
         let fixture = Fixture::new(kind).await;
         let old = fixture
             .seed(seeded(
-                "superseded-original",
+                "ea25a077-c736-42dc-8853-f3046a52a4d4",
                 "Use direct store writes when changing FileMemoryStore behavior.",
             ))
             .await;
         let mut replacement = proposal(CONTENT);
-        replacement["supersedes"] = json!([old.id]);
+        replacement["supersedes"] = json!(["@1"]);
         let provider = client(output(vec![replacement]));
         let workspace = workspace("T006 ");
         let memory = fixture.memory(None);
@@ -171,9 +171,9 @@ async fn supersede_preserves_original_and_exact_replacement_on_both_stores() {
         field(&event, "disposition", "stored");
         field(&event, "entered_store_calls", "2");
         field(&event, "archive_acknowledged", "1");
-        assert!(provider.messages.lock().unwrap()[0][0]
-            .text()
-            .contains(&old.id));
+        let prompt = provider.messages.lock().unwrap()[0][0].text();
+        assert!(prompt.contains(r#""id":"@1""#));
+        assert!(!prompt.contains(&old.id));
         let canonical = fixture.results().remove(0);
         assert_eq!(ids(&event), vec![canonical.id.clone()]);
         assert_ne!(canonical.id, old.id);

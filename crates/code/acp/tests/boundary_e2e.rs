@@ -1,4 +1,4 @@
-//! Six shipped-binary cases. Each one owns its mock, home, and workspace.
+//! Shipped-binary cases. Each one owns its mock, home, and workspace.
 //! They stay out of the long pager tour in `shipped_tui_e2e.rs`.
 
 #[path = "support/binaries.rs"]
@@ -24,6 +24,7 @@ const FIXTURE_SECRET: &str = "hermetic-fixture-key";
 const READ_LINE: &str = "boundary-read-line-7f3a";
 const ASK_CHOSEN: &str = "cedar-left-7f3a";
 const ASK_OTHER: &str = "maple-right-7f3a";
+const EDIT_STATUS_REPLY: &str = "The edit is saved. Verification is still pending.";
 
 enum Arm {
     List,
@@ -33,6 +34,7 @@ enum Arm {
     Edit {
         sent_outside: bool,
         sent_inside: bool,
+        sent_verification: bool,
     },
     Office {
         sent_outside: bool,
@@ -43,6 +45,10 @@ enum Arm {
     },
     Ask {
         sent: bool,
+    },
+    Worktree {
+        created: bool,
+        verified: bool,
     },
 }
 
@@ -313,6 +319,7 @@ fn decide(raw: &str, state: &mut MockState) -> String {
         Arm::Edit {
             sent_outside,
             sent_inside,
+            sent_verification,
         } => {
             if !*sent_outside && tools && raw.contains("E-EDIT-MARKER") {
                 *sent_outside = true;
@@ -333,6 +340,17 @@ fn decide(raw: &str, state: &mut MockState) -> String {
                 })
                 .to_string();
                 return reply_tool("edit", &args, state, streaming);
+            }
+            if *sent_inside && !*sent_verification && tools && raw.contains("E-VERIFY-MARKER") {
+                *sent_verification = true;
+                let args = serde_json::json!({
+                    "command": "test -f note.txt && test -f check-link.txt"
+                })
+                .to_string();
+                return reply_tool("bash", &args, state, streaming);
+            }
+            if *sent_inside && tools && raw.contains("E-STATUS-MARKER") {
+                return reply_text(EDIT_STATUS_REPLY, streaming);
             }
             reply_text("ok", streaming)
         }
@@ -377,6 +395,32 @@ fn decide(raw: &str, state: &mut MockState) -> String {
                 return reply_tool("ask_user", &args, state, streaming);
             }
             reply_text("ok", streaming)
+        }
+        Arm::Worktree { created, verified } => {
+            if !*created && tools && raw.contains("E-WORKTREE-MARKER") {
+                *created = true;
+                let args = serde_json::json!({
+                    "command": "worktree",
+                    "subcommand": "create",
+                    "path": "temporary-aster-worktree",
+                    "name": "temporary-aster-worktree"
+                })
+                .to_string();
+                return reply_tool("git", &args, state, streaming);
+            }
+            if *created && !*verified && tools && raw.contains("Created worktree at:") {
+                *verified = true;
+                let args = serde_json::json!({
+                    "command": "test -d temporary-aster-worktree && git -C temporary-aster-worktree branch --show-current",
+                    "timeout": 5000
+                })
+                .to_string();
+                return reply_tool("bash", &args, state, streaming);
+            }
+            if *created {
+                return reply_text("WORKTREE-CHECK-PASSED", streaming);
+            }
+            reply_text("waiting for the worktree operation", streaming)
         }
     }
 }
@@ -656,10 +700,14 @@ async fn finish_prompt(case: &Case, text: &str, allow_gate: bool) -> String {
     .await;
     let result = match result {
         Ok(result) => result,
-        Err(_) => panic!(
-            "prompt timed out\n{}",
-            body_trace(&case.state.lock().expect("mock"))
-        ),
+        Err(_) => {
+            let state = case.state.lock().expect("mock");
+            panic!(
+                "prompt timed out\n{}\n{}",
+                body_trace(&state),
+                request_tool_receipts(&state)
+            );
+        }
     };
     match result {
         Ok(_) => String::new(),
@@ -668,9 +716,11 @@ async fn finish_prompt(case: &Case, text: &str, allow_gate: bool) -> String {
             if allow_gate && detail.contains("completion gate:") {
                 return detail;
             }
+            let state = case.state.lock().expect("mock");
             panic!(
-                "prompt failed: {detail}\n{}",
-                body_trace(&case.state.lock().expect("mock"))
+                "prompt failed: {detail}\n{}\n{}",
+                body_trace(&state),
+                request_tool_receipts(&state)
             );
         }
     }
@@ -678,6 +728,27 @@ async fn finish_prompt(case: &Case, text: &str, allow_gate: bool) -> String {
 
 fn joined_bodies(state: &MockState) -> String {
     state.bodies.join("\n")
+}
+
+fn request_tool_receipts(state: &MockState) -> String {
+    state
+        .bodies
+        .iter()
+        .filter_map(|body| serde_json::from_str::<serde_json::Value>(body).ok())
+        .flat_map(|body| {
+            body.get("messages")
+                .and_then(serde_json::Value::as_array)
+                .cloned()
+                .unwrap_or_default()
+                .into_iter()
+                .filter(|message| {
+                    message.get("role").and_then(serde_json::Value::as_str) != Some("system")
+                })
+                .collect::<Vec<_>>()
+        })
+        .map(|message| message.to_string())
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 #[tokio::test(flavor = "current_thread")]
@@ -756,10 +827,27 @@ async fn e_edit() {
                 Arm::Edit {
                     sent_outside: false,
                     sent_inside: false,
+                    sent_verification: false,
                 },
             )
             .await;
             let gate = finish_prompt(&case, "E-EDIT-MARKER", true).await;
+            assert!(
+                gate.contains("completion gate: workspace mutation"),
+                "{gate}"
+            );
+            assert!(!gate.contains("prior_verification_pending"), "{gate}");
+            let effect_digest = aster_core::harness_loop::unbound_mutation_digest(&gate)
+                .expect("the initial gate names the unchanged mutation");
+            let status = finish_prompt(&case, "E-STATUS-MARKER", true).await;
+            let status: serde_json::Value = serde_json::from_str(&status).expect("typed status");
+            assert_eq!(status["error_kind"], "prior_verification_pending");
+            assert_eq!(
+                status["message"]
+                    .as_str()
+                    .and_then(aster_core::harness_loop::unbound_mutation_digest),
+                Some(effect_digest)
+            );
             let state = case.state.lock().expect("mock");
             let observed = joined_bodies(&state);
             assert!(
@@ -773,7 +861,7 @@ async fn e_edit() {
                     .unwrap_or_default()
             );
             assert!(
-                observed.contains("host_checker_denied")
+                observed.contains("workspace_boundary_escape")
                     && observed.contains("arguments_changed=false")
                     && observed.contains("execution_started=false"),
                 "the original permission refusal must survive ACP projection: {observed}"
@@ -842,6 +930,81 @@ async fn e_office() {
                 "completion-gate"
             };
             oracle("E-OFFICE", &format!("zip-magic outside=absent turn={gate}"));
+        })
+        .await;
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn e_worktree() {
+    tokio::task::LocalSet::new()
+        .run_until(async {
+            let workspace = isolate("worktree");
+            let git = |args: &[&str]| {
+                let output = std::process::Command::new("git")
+                    .args(args)
+                    .current_dir(&workspace)
+                    .output()
+                    .expect("git");
+                assert!(output.status.success(), "{args:?}: {output:?}");
+            };
+            git(&["init", "--initial-branch=main"]);
+            git(&["config", "user.email", "fixture@example.invalid"]);
+            git(&["config", "user.name", "Boundary fixture"]);
+            std::fs::write(workspace.join("README.md"), "worktree fixture").expect("fixture");
+            git(&["add", "README.md"]);
+            git(&["commit", "-m", "Initial fixture"]);
+            let case = open_case(
+                &workspace,
+                Arm::Worktree {
+                    created: false,
+                    verified: false,
+                },
+            )
+            .await;
+            let gate = finish_prompt(&case, "E-WORKTREE-MARKER", true).await;
+            let state = case.state.lock().expect("mock");
+            let checked = state
+                .bodies
+                .iter()
+                .filter_map(|body| serde_json::from_str::<serde_json::Value>(body).ok())
+                .filter_map(|body| {
+                    body.get("messages")?
+                        .as_array()?
+                        .iter()
+                        .find_map(|message| {
+                            let content = message.get("content")?.as_str()?;
+                            (message.get("role")?.as_str()? == "tool"
+                                && content.contains("Tool exit code:")
+                                && content.contains("git -C temporary-aster-worktree"))
+                            .then_some(content.to_owned())
+                        })
+                })
+                .next()
+                .expect("independent Bash result reached the model");
+            assert!(checked.contains("Tool exit code: 0"), "{checked}");
+            assert!(checked.contains("temporary-aster-worktree"), "{checked}");
+            assert!(
+                state
+                    .bodies
+                    .iter()
+                    .any(|body| body.contains("WORKTREE-CHECK-PASSED")),
+                "final assistant reply missing:\n{}",
+                request_tool_receipts(&state)
+            );
+            drop(state);
+            assert!(
+                gate.is_empty(),
+                "bound worktree verification was refused: {gate}"
+            );
+            let worktree = workspace.join("temporary-aster-worktree");
+            assert!(
+                !worktree.exists(),
+                "the owned Run cleaned its worktree after the independent check"
+            );
+            oracle(
+                "E-WORKTREE",
+                "bash-exit=0 turn=end-turn run-cleanup=removed",
+            );
         })
         .await;
 }
@@ -1029,36 +1192,43 @@ fn choice_rows(screen: &str) -> bool {
     first && second
 }
 
-#[test]
-fn t_ask() {
+fn open_tui_case(workspace: &Path, home: &Path, config: &Path, flags: &[&str]) -> PtySession {
     let binary = tui_binary();
     assert!(
         binary.is_file(),
         "shipped aster is missing at {}",
         binary.display()
     );
+    let acp_bin = binaries::acp_binary();
+    let cwd = workspace.to_str().expect("cwd");
+    let config_path = config.to_str().expect("config");
+    let home_path = home.to_str().expect("home");
+    let grok_home = home.join("grok");
+    let grok_home_path = grok_home.to_str().expect("grok home");
+    let env = [
+        ("ASTER_ACP_AGENT_BIN", acp_bin.as_str()),
+        ("ASTER_CONFIG", config_path),
+        ("ASTER_DISABLE_GROK_ACCOUNT", "1"),
+        ("ASTER_DISABLE_CURSOR_ACCOUNT", "1"),
+        ("XAI_API_KEY", "sk-dummy-not-a-model"),
+        ("HOME", home_path),
+        ("GROK_HOME", grok_home_path),
+        ("TERM", "xterm-256color"),
+    ];
+    let mut args = vec!["--cwd", cwd];
+    args.extend_from_slice(flags);
+    let mut pty = open_pty(&binary, &args, &env, workspace);
+    pty.wait_for_frame(Duration::from_secs(45));
+    pty
+}
+
+#[test]
+fn t_ask() {
     let workspace = isolate("ask");
     let home = isolate("ask-home");
     let (addr, state) = spawn_mock(Arm::Ask { sent: false });
     let config = write_acl(&workspace, &format!("http://{addr}/v1"));
-    let acp_bin = binaries::acp_binary();
-    let cwd = workspace.to_str().expect("cwd");
-    let config_path = config.to_str().expect("config").to_string();
-    let home_path = home.to_str().expect("home").to_string();
-    let grok_home = home.join("grok");
-    let grok_home_path = grok_home.to_str().expect("grok home").to_string();
-    let env = [
-        ("ASTER_ACP_AGENT_BIN", acp_bin.as_str()),
-        ("ASTER_CONFIG", config_path.as_str()),
-        ("ASTER_DISABLE_GROK_ACCOUNT", "1"),
-        ("ASTER_DISABLE_CURSOR_ACCOUNT", "1"),
-        ("XAI_API_KEY", "sk-dummy-not-a-model"),
-        ("HOME", home_path.as_str()),
-        ("GROK_HOME", grok_home_path.as_str()),
-        ("TERM", "xterm-256color"),
-    ];
-    let mut pty = open_pty(&binary, &["--cwd", cwd], &env, &workspace);
-    pty.wait_for_frame(Duration::from_secs(45));
+    let mut pty = open_tui_case(&workspace, &home, &config, &[]);
     pty.write_bytes(b"T-ASK-MARKER");
     pty.write_bytes(b"\r");
     let deadline = Instant::now() + Duration::from_secs(40);
@@ -1118,4 +1288,109 @@ fn t_ask() {
     }
     assert_no_leak(&[home, workspace]);
     oracle("T-ASK", "screen=both next-request=cedar-left-7f3a");
+}
+
+#[test]
+fn t_prior_verification_pending() {
+    let root = isolate("prior-verification");
+    let workspace = root.join("workspace");
+    let home = isolate("prior-verification-home");
+    std::fs::create_dir(&workspace).expect("workspace");
+    std::fs::write(workspace.join("note.txt"), b"alpha beta").expect("note");
+    std::fs::write(root.join("outside.txt"), b"keep-outside").expect("outside note");
+    #[cfg(unix)]
+    std::os::unix::fs::symlink(root.join("outside.txt"), workspace.join("check-link.txt"))
+        .expect("verification symlink");
+    let (addr, state) = spawn_mock(Arm::Edit {
+        sent_outside: false,
+        sent_inside: false,
+        sent_verification: false,
+    });
+    let config = write_acl(&workspace, &format!("http://{addr}/v1"));
+    let mut pty = open_tui_case(
+        &workspace,
+        &home,
+        &config,
+        &["--permission-mode", "default"],
+    );
+
+    let prompt = if cfg!(unix) {
+        b"E-EDIT-MARKER E-VERIFY-MARKER\r".as_slice()
+    } else {
+        b"E-EDIT-MARKER\r".as_slice()
+    };
+    pty.write_bytes(prompt);
+    let read_until = |pty: &mut PtySession, contains: &str| {
+        let deadline = Instant::now() + Duration::from_secs(30);
+        loop {
+            let screen = pty.pump(Duration::from_millis(80));
+            if screen.contains(contains) {
+                break screen;
+            }
+            assert!(Instant::now() < deadline, "missing {contains:?}\n{screen}");
+        }
+    };
+    read_until(&mut pty, "Yes, proceed");
+    pty.write_bytes(b"1");
+    let original = read_until(&mut pty, "completion gate:");
+    assert!(original.contains("Turn failed"), "{original}");
+    if cfg!(unix) {
+        let state = state.lock().expect("mock");
+        let recovery = state
+            .bodies
+            .iter()
+            .find(|body| body.contains("The host refused 'bash' before execution"))
+            .expect("model received the original host refusal");
+        assert!(recovery.contains("symlink_boundary_escape"));
+        assert!(recovery.contains("execution_started=false"));
+        assert!(
+            !recovery.contains("Next step: run one `bash` command"),
+            "refusal and Bash retry guidance must not coexist"
+        );
+        assert!(recovery.contains("Workspace verification still pending"));
+    }
+
+    let assert_status_reply = |pty: &mut PtySession, prompt: &str| {
+        pty.write_bytes(prompt.as_bytes());
+        pty.write_bytes(b"\r");
+        let deadline = Instant::now() + Duration::from_secs(30);
+        let status = loop {
+            let screen = pty.pump(Duration::from_millis(80));
+            if screen.rsplit_once(prompt).is_some_and(|(_, turn)| {
+                turn.contains("Previous workspace changes still await verification")
+            }) {
+                break screen;
+            }
+            assert!(Instant::now() < deadline, "missing status reply\n{screen}");
+        };
+        let (_, status_turn) = status.rsplit_once(prompt).expect("status prompt");
+        assert_eq!(
+            status_turn.matches(EDIT_STATUS_REPLY).count(),
+            1,
+            "{status}"
+        );
+        assert!(!status_turn.contains("Turn failed"), "{status}");
+    };
+    assert_status_reply(&mut pty, "E-STATUS-MARKER");
+    drop(pty);
+    let mut resumed = open_tui_case(
+        &workspace,
+        &home,
+        &config,
+        &["--continue", "--permission-mode", "default"],
+    );
+    assert_status_reply(&mut resumed, "RESTART E-STATUS-MARKER");
+    assert_eq!(
+        std::fs::read(workspace.join("note.txt")).unwrap(),
+        b"ALPHA beta"
+    );
+    assert_eq!(
+        std::fs::read(root.join("outside.txt")).unwrap(),
+        b"keep-outside"
+    );
+    assert_no_leak(&[home, root]);
+    oracle(
+        "T-PRIOR-VERIFICATION",
+        "initial gate, one reply and pending status before and after restart",
+    );
 }

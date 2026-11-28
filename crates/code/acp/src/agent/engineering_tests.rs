@@ -13,15 +13,21 @@ use tokio_util::sync::CancellationToken;
 
 #[tokio::test]
 async fn new_sessions_default_to_engineering_and_reopen_preserves_selection() {
-    for disabled in [false, true] {
+    for selection in [
+        None,
+        Some("engineering-v1"),
+        Some("engineering-v2"),
+        Some("engineering-v3"),
+        Some("none"),
+    ] {
         let root = tempfile::tempdir().unwrap();
         let mut launch = super::test_launch(Some(root.path().join("store")));
         launch.workspace = root.path().into();
         let host = AsterCodeAgent::new(launch.clone());
         let mut request = acp::NewSessionRequest::new(root.path());
-        if disabled {
+        if let Some(policy) = selection {
             request = request.meta(
-                serde_json::json!({"asterEngineering":{"policy":"none"}})
+                serde_json::json!({"asterEngineering":{"policy":policy}})
                     .as_object()
                     .unwrap()
                     .clone(),
@@ -36,11 +42,11 @@ async fn new_sessions_default_to_engineering_and_reopen_preserves_selection() {
             .unwrap()
             .session
             .clone();
-        let expected = if disabled {
+        let expected = if selection == Some("none") {
             None
         } else {
             Some(
-                crate::engineering::named_policy("engineering-v1")
+                crate::engineering::named_policy(selection.unwrap_or("engineering-v4"))
                     .unwrap()
                     .digest()
                     .unwrap(),

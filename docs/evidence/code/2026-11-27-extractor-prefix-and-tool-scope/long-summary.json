@@ -1,0 +1,440 @@
+{
+  "runs": {
+    "scope_prototype": {
+      "candidate": [
+        {
+          "run": "long-a",
+          "strict_pass": false,
+          "receipt_count": 28,
+          "tool_calls": {
+            "read": 26,
+            "ls": 1,
+            "write": 1,
+            "edit": 5
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 6,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "prompt_tokens": 176469,
+          "completion_tokens": 5425,
+          "total_tokens": 181894,
+          "prompt_cache_hit_tokens": 158206,
+          "prompt_cache_miss_tokens": 18263,
+          "main_cache_misses": 13786,
+          "memory_cache_misses": 4343,
+          "analysis_cache_misses": 134,
+          "other_cache_misses": 0
+        },
+        {
+          "run": "long-b",
+          "strict_pass": false,
+          "receipt_count": 27,
+          "tool_calls": {
+            "read": 25,
+            "ls": 1,
+            "write": 6
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 6,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "prompt_tokens": 165894,
+          "completion_tokens": 6135,
+          "total_tokens": 172029,
+          "prompt_cache_hit_tokens": 149246,
+          "prompt_cache_miss_tokens": 16648,
+          "main_cache_misses": 12719,
+          "memory_cache_misses": 3795,
+          "analysis_cache_misses": 134,
+          "other_cache_misses": 0
+        }
+      ],
+      "release": [
+        {
+          "run": "long-a",
+          "strict_pass": true,
+          "receipt_count": 24,
+          "tool_calls": {
+            "read": 24,
+            "write": 6
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 6,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "prompt_tokens": 144842,
+          "completion_tokens": 4677,
+          "total_tokens": 149519,
+          "prompt_cache_hit_tokens": 129280,
+          "prompt_cache_miss_tokens": 15562,
+          "main_cache_misses": 12018,
+          "memory_cache_misses": 3544,
+          "analysis_cache_misses": 0,
+          "other_cache_misses": 0
+        },
+        {
+          "run": "long-b",
+          "strict_pass": false,
+          "receipt_count": 28,
+          "tool_calls": {
+            "read": 26,
+            "ls": 1,
+            "write": 1,
+            "edit": 5
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 6,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "prompt_tokens": 173355,
+          "completion_tokens": 4827,
+          "total_tokens": 178182,
+          "prompt_cache_hit_tokens": 158590,
+          "prompt_cache_miss_tokens": 14765,
+          "main_cache_misses": 11920,
+          "memory_cache_misses": 2711,
+          "analysis_cache_misses": 134,
+          "other_cache_misses": 0
+        }
+      ],
+      "dsh": [
+        {
+          "run": "long-a",
+          "strict_pass": true,
+          "receipt_count": 25,
+          "tool_calls": {
+            "read": 31,
+            "write": 1,
+            "edit": 5
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 0,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 0,
+          "prompt_tokens": 259847,
+          "completion_tokens": 5186,
+          "total_tokens": 265033,
+          "prompt_cache_hit_tokens": 252544,
+          "prompt_cache_miss_tokens": 7303,
+          "main_cache_misses": 7303,
+          "memory_cache_misses": 0,
+          "analysis_cache_misses": 0,
+          "other_cache_misses": 0
+        },
+        {
+          "run": "long-b",
+          "strict_pass": true,
+          "receipt_count": 25,
+          "tool_calls": {
+            "read": 31,
+            "write": 1,
+            "edit": 5
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 0,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 0,
+          "prompt_tokens": 263309,
+          "completion_tokens": 5488,
+          "total_tokens": 268797,
+          "prompt_cache_hit_tokens": 256128,
+          "prompt_cache_miss_tokens": 7181,
+          "main_cache_misses": 7181,
+          "memory_cache_misses": 0,
+          "analysis_cache_misses": 0,
+          "other_cache_misses": 0
+        }
+      ]
+    },
+    "final": {
+      "candidate": [
+        {
+          "run": "final-long-a",
+          "strict_pass": false,
+          "receipt_count": 28,
+          "tool_calls": {
+            "read": 26,
+            "ls": 1,
+            "write": 1,
+            "edit": 5
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 6,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "prompt_tokens": 176253,
+          "completion_tokens": 4465,
+          "total_tokens": 180718,
+          "prompt_cache_hit_tokens": 158590,
+          "prompt_cache_miss_tokens": 17663,
+          "main_cache_misses": 13341,
+          "memory_cache_misses": 4188,
+          "analysis_cache_misses": 134,
+          "other_cache_misses": 0
+        },
+        {
+          "run": "final-long-b",
+          "strict_pass": false,
+          "receipt_count": 23,
+          "tool_calls": {
+            "read": 25,
+            "ls": 1
+          },
+          "turns_attempted": 1,
+          "turns_ended": 0,
+          "memory_calls": 0,
+          "correct_report": 0,
+          "protected_files_exact": 1,
+          "bound_verification": 0,
+          "prompt_tokens": 150597,
+          "completion_tokens": 1449,
+          "total_tokens": 152046,
+          "prompt_cache_hit_tokens": 146172,
+          "prompt_cache_miss_tokens": 4425,
+          "main_cache_misses": 4291,
+          "memory_cache_misses": 0,
+          "analysis_cache_misses": 134,
+          "other_cache_misses": 0
+        }
+      ],
+      "release": [
+        {
+          "run": "final-long-a",
+          "strict_pass": false,
+          "receipt_count": 28,
+          "tool_calls": {
+            "read": 26,
+            "ls": 1,
+            "write": 6
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 6,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "prompt_tokens": 171463,
+          "completion_tokens": 5104,
+          "total_tokens": 176567,
+          "prompt_cache_hit_tokens": 158974,
+          "prompt_cache_miss_tokens": 12489,
+          "main_cache_misses": 8551,
+          "memory_cache_misses": 3804,
+          "analysis_cache_misses": 134,
+          "other_cache_misses": 0
+        },
+        {
+          "run": "final-long-b",
+          "strict_pass": false,
+          "receipt_count": 29,
+          "tool_calls": {
+            "read": 25,
+            "ls": 2,
+            "search": 1,
+            "write": 1,
+            "edit": 5
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 6,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 6,
+          "prompt_tokens": 184052,
+          "completion_tokens": 5374,
+          "total_tokens": 189426,
+          "prompt_cache_hit_tokens": 166910,
+          "prompt_cache_miss_tokens": 17142,
+          "main_cache_misses": 13397,
+          "memory_cache_misses": 3611,
+          "analysis_cache_misses": 134,
+          "other_cache_misses": 0
+        }
+      ],
+      "dsh": [
+        {
+          "run": "final-long-a",
+          "strict_pass": true,
+          "receipt_count": 25,
+          "tool_calls": {
+            "read": 31,
+            "write": 6
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 0,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 0,
+          "prompt_tokens": 254486,
+          "completion_tokens": 4598,
+          "total_tokens": 259084,
+          "prompt_cache_hit_tokens": 247168,
+          "prompt_cache_miss_tokens": 7318,
+          "main_cache_misses": 7318,
+          "memory_cache_misses": 0,
+          "analysis_cache_misses": 0,
+          "other_cache_misses": 0
+        },
+        {
+          "run": "final-long-b",
+          "strict_pass": false,
+          "receipt_count": 26,
+          "tool_calls": {
+            "read": 31,
+            "glob": 1,
+            "write": 6
+          },
+          "turns_attempted": 6,
+          "turns_ended": 6,
+          "memory_calls": 0,
+          "correct_report": 6,
+          "protected_files_exact": 6,
+          "bound_verification": 0,
+          "prompt_tokens": 266656,
+          "completion_tokens": 4982,
+          "total_tokens": 271638,
+          "prompt_cache_hit_tokens": 259072,
+          "prompt_cache_miss_tokens": 7584,
+          "main_cache_misses": 7584,
+          "memory_cache_misses": 0,
+          "analysis_cache_misses": 0,
+          "other_cache_misses": 0
+        }
+      ]
+    }
+  },
+  "matched_complete": {
+    "scope_prototype": {
+      "runs": [
+        "long-a",
+        "long-b"
+      ],
+      "medians": {
+        "candidate": {
+          "total_tokens": 176961.5,
+          "prompt_tokens": 171181.5,
+          "prompt_cache_miss_tokens": 17455.5,
+          "main_cache_misses": 13252.5,
+          "memory_cache_misses": 4069.0,
+          "analysis_cache_misses": 134.0
+        },
+        "release": {
+          "total_tokens": 163850.5,
+          "prompt_tokens": 159098.5,
+          "prompt_cache_miss_tokens": 15163.5,
+          "main_cache_misses": 11969.0,
+          "memory_cache_misses": 3127.5,
+          "analysis_cache_misses": 67.0
+        },
+        "dsh": {
+          "total_tokens": 266915.0,
+          "prompt_tokens": 261578.0,
+          "prompt_cache_miss_tokens": 7242.0,
+          "main_cache_misses": 7242.0,
+          "memory_cache_misses": 0.0,
+          "analysis_cache_misses": 0.0
+        }
+      }
+    },
+    "final": {
+      "runs": [
+        "final-long-a"
+      ],
+      "medians": {
+        "candidate": {
+          "total_tokens": 180718,
+          "prompt_tokens": 176253,
+          "prompt_cache_miss_tokens": 17663,
+          "main_cache_misses": 13341,
+          "memory_cache_misses": 4188,
+          "analysis_cache_misses": 134
+        },
+        "release": {
+          "total_tokens": 176567,
+          "prompt_tokens": 171463,
+          "prompt_cache_miss_tokens": 12489,
+          "main_cache_misses": 8551,
+          "memory_cache_misses": 3804,
+          "analysis_cache_misses": 134
+        },
+        "dsh": {
+          "total_tokens": 259084,
+          "prompt_tokens": 254486,
+          "prompt_cache_miss_tokens": 7318,
+          "main_cache_misses": 7318,
+          "memory_cache_misses": 0,
+          "analysis_cache_misses": 0
+        }
+      }
+    }
+  },
+  "receipt_counts": {
+    "long-a": 77,
+    "long-b": 80,
+    "final-long-a": 81,
+    "final-long-b": 78,
+    "cache": 8,
+    "final-cache": 8,
+    "directory-discovery": 32,
+    "verified-edit": 32,
+    "final-sources": 4,
+    "final-sources-b": 4,
+    "final-relations": 4,
+    "final-long-retry": 54
+  },
+  "aster_only_repeat": [
+    {
+      "arm": "candidate",
+      "strict_pass": false,
+      "tool_calls": {
+        "read": 24,
+        "ls": 1,
+        "write": 6
+      },
+      "prompt_tokens": 153311,
+      "completion_tokens": 3803,
+      "total_tokens": 157114,
+      "prompt_cache_hit_tokens": 138238,
+      "prompt_cache_miss_tokens": 15073,
+      "api_requests": 26,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 6
+    },
+    {
+      "arm": "release",
+      "strict_pass": false,
+      "tool_calls": {
+        "read": 26,
+        "ls": 1,
+        "write": 1,
+        "edit": 5
+      },
+      "prompt_tokens": 175521,
+      "completion_tokens": 6023,
+      "total_tokens": 181544,
+      "prompt_cache_hit_tokens": 162174,
+      "prompt_cache_miss_tokens": 13347,
+      "api_requests": 28,
+      "correct_report": 6,
+      "protected_files_exact": 6,
+      "bound_verification": 6
+    }
+  ]
+}

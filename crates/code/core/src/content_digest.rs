@@ -8,6 +8,12 @@
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 
+/// Raw lowercase 64-char hex SHA-256 digest.
+pub fn sha256_hex(bytes: impl AsRef<[u8]>) -> String {
+    let digest = Sha256::digest(bytes.as_ref());
+    format!("{digest:x}")
+}
+
 /// Domain-separated SHA-256 digest encoded as `sha256:<hex>`.
 pub fn digest_bytes(domain: &str, bytes: &[u8]) -> String {
     let mut hasher = Sha256::new();

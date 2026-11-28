@@ -1,6 +1,6 @@
 //! Draw the provider/model modal: providers on the left, connection and models on the right.
 
-use aster_core::config::AccountImport;
+use super::AccountImport;
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
 use ratatui::style::{Modifier, Style};
@@ -269,6 +269,7 @@ fn field_line(state: &ModelConfigState, field: DetailField, focused: bool) -> St
                 AccountImport::Codex => "Codex",
                 AccountImport::Cursor => "Cursor",
                 AccountImport::Grok => "Legacy CLI",
+                AccountImport::Quark => "Quark",
             };
             let mark = if state.draft.import_accounts.contains(&import) {
                 "x"

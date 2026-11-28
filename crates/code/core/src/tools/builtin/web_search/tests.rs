@@ -14,6 +14,87 @@ fn default_headless_backend_is_bundled_moli() {
 
 #[cfg(feature = "headless-search")]
 #[test]
+fn quark_acl_selects_only_the_validated_local_browser_endpoint() {
+    let config = CodeConfig::from_acl(
+        r#"
+search {
+  headless {
+    backend = "quark"
+    cdp_url = "http://127.0.0.1:9222"
+  }
+  engine "quark" { enabled = true }
+}
+"#,
+    )
+    .unwrap();
+    let headless = config.search.unwrap().headless.unwrap();
+    let (browser, pending) = headless_runtime(headless, true);
+    assert_eq!(browser, aster_search::product::HeadlessBrowser::Quark);
+    let runtime = futures::executor::block_on(pending.unwrap()).unwrap();
+    assert_eq!(
+        runtime.cdp_endpoint.unwrap().as_str(),
+        "http://127.0.0.1:9222/"
+    );
+}
+
+#[cfg(feature = "headless-search")]
+#[test]
+fn quark_rejects_a_non_loopback_cdp_endpoint_before_browser_work() {
+    let config = HeadlessConfig {
+        backend: BrowserBackend::Quark,
+        cdp_url: Some("http://192.168.1.2:9222".to_string()),
+        ..HeadlessConfig::default()
+    };
+    let (browser, pending) = headless_runtime(config, true);
+    assert_eq!(browser, aster_search::product::HeadlessBrowser::Quark);
+    let error = futures::executor::block_on(pending.unwrap()).unwrap_err();
+    assert!(error.contains("loopback"), "{error}");
+}
+
+#[cfg(feature = "headless-search")]
+#[test]
+fn quark_auto_preference_respects_an_explicit_non_quark_backend() {
+    let config = CodeConfig::from_acl(
+        r#"
+search {
+  headless { backend = "moli" }
+}
+"#,
+    )
+    .unwrap();
+    assert!(quark_cdp_url(config.search.as_ref()).is_none());
+}
+
+#[cfg(feature = "headless-search")]
+#[test]
+fn quark_auto_preference_uses_the_default_endpoint_without_a_config() {
+    assert_eq!(
+        quark_cdp_url(None).as_deref(),
+        Some("http://127.0.0.1:9222")
+    );
+}
+
+#[cfg(feature = "headless-search")]
+#[tokio::test]
+async fn an_unavailable_quark_login_keeps_the_default_cascade() {
+    let config = CodeConfig::from_acl(
+        r#"
+search {
+  headless {
+    backend = "quark"
+    cdp_url = "http://127.0.0.1:9"
+  }
+}
+"#,
+    )
+    .unwrap();
+    assert!(
+        !should_prefer_logged_in_quark(config.search.as_ref(), Duration::from_millis(200)).await
+    );
+}
+
+#[cfg(feature = "headless-search")]
+#[test]
 fn request_proxy_is_applied_to_the_headless_tier() {
     let configured = HeadlessConfig {
         proxy_url: Some("http://configured.example:8080".to_string()),

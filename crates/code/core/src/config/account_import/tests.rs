@@ -7,7 +7,10 @@ fn the_closed_set_round_trips_and_names_itself_on_refusal() {
         assert_eq!(AccountImport::parse(import.as_str()), Ok(import));
     }
     let error = AccountImport::parse("Cursor").unwrap_err();
-    assert!(error.contains("closed set: grok, cursor, codex"), "{error}");
+    assert!(
+        error.contains("closed set: grok, cursor, codex, quark"),
+        "{error}"
+    );
     assert_eq!(
         AccountImport::parse_list("cursor, grok,cursor"),
         Ok(vec![AccountImport::Cursor, AccountImport::Grok])
@@ -31,15 +34,23 @@ fn retired_cc_switch_import_is_rejected_at_configuration_boundaries() {
 
 #[test]
 fn import_accounts_parses_the_closed_set_and_refuses_unknown_sources() {
-    let config = CodeConfig::from_acl("import_accounts = [\"cursor\", \"codex\"]\n").unwrap();
+    let config =
+        CodeConfig::from_acl("import_accounts = [\"cursor\", \"codex\", \"quark\"]\n").unwrap();
     assert_eq!(
         config.import_accounts,
-        vec![AccountImport::Cursor, AccountImport::Codex]
+        vec![
+            AccountImport::Cursor,
+            AccountImport::Codex,
+            AccountImport::Quark
+        ]
     );
     let error = CodeConfig::from_acl("import_accounts = [\"keychain\"]\n")
         .unwrap_err()
         .to_string();
-    assert!(error.contains("closed set: grok, cursor, codex"), "{error}");
+    assert!(
+        error.contains("closed set: grok, cursor, codex, quark"),
+        "{error}"
+    );
     assert!(CodeConfig::from_acl("import_accounts = \"cursor\"\n").is_err());
 }
 

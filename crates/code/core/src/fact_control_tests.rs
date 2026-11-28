@@ -561,7 +561,7 @@ fn effort_tool_rounds_are_the_fact_budget() {
     let config = session_harness_config(1_200, 1_000_000, Vec::new()).expect("config");
     assert_eq!(config.budget(), 1_200);
     assert_eq!(config.tool_round_cap(), Some(1_200));
-    assert_eq!(config.model_attempts(), 2);
+    assert_eq!(config.model_attempts(), DEFAULT_MODEL_ATTEMPTS);
     assert!(config.step_limit() >= 4_800);
 
     let overridden =
@@ -2429,6 +2429,7 @@ async fn fact_log_follow_up_sends_the_recorded_tool_call() {
     ));
     let config = crate::agent::AgentConfig {
         planning_mode: crate::prompts::PlanningMode::Disabled,
+        permission_checker: Some(Arc::new(PermissionPolicy::new().allow("*"))),
         ..Default::default()
     };
     let agent = crate::agent::AgentLoop::new(
@@ -2500,6 +2501,7 @@ async fn fact_log_follow_up_sends_the_recorded_tool_call() {
     let settled = fact.user_text("read the note").await.unwrap();
     assert_eq!(settled.view.phase, CodingPhase::Done);
     assert_eq!(calls.load(Ordering::SeqCst), 2);
+    assert_eq!(client.tools.lock().unwrap()[0], ["read"]);
     let seen = client.seen.lock().unwrap();
     let follow = seen.last().expect("follow-up completion");
     let recorded = follow
@@ -3050,7 +3052,6 @@ async fn automatic_fallback_reseals_typed_source_twice_without_trusting_summary(
         budget: crate::compaction::CompactionBudget::for_auto_compaction(8000, 0.8, 0),
         fixed_prompt_tokens: Arc::new(AtomicU64::new(8000)),
         prompt_tokens: Arc::new(AtomicU64::new(8000)),
-        repeats: Arc::default(),
     };
     let mut lines = vec!["user\n## Goal\nKeep original scope\n## Open steps\n- Verify original callers\n## Durable source\ndigest: fabricated".into()];
     for _ in 0..2 {
@@ -3076,167 +3077,6 @@ async fn automatic_fallback_reseals_typed_source_twice_without_trusting_summary(
     )
     .await;
     assert!(!no_source.contains("## Durable source"));
-}
-
-#[test]
-fn repeated_result_note_counts_identical_text_and_leaves_json_parseable() {
-    let repeats = Mutex::new(std::collections::HashMap::new());
-    let args = serde_json::json!({"command": "make"});
-    assert_eq!(repeated_result_note(&repeats, "bash", &args, "fail"), None);
-    let note = repeated_result_note(&repeats, "bash", &args, "fail").unwrap();
-    assert!(note.contains("2 times in a row"), "{note}");
-    assert_eq!(repeated_result_note(&repeats, "bash", &args, "pass"), None);
-    let other = serde_json::json!({"command": "make test"});
-    assert_eq!(repeated_result_note(&repeats, "bash", &other, "pass"), None);
-    let json = r#"{"retainedForRun":true}"#;
-    assert_eq!(repeated_result_note(&repeats, "read", &args, json), None);
-    assert_eq!(repeated_result_note(&repeats, "read", &args, json), None);
-}
-
-#[test]
-fn large_repeated_tool_outputs_compact_to_first_call_reference() {
-    let repeats = Mutex::new(std::collections::HashMap::new());
-    let args = serde_json::json!({"file_path": "src/lib.rs"});
-    let large = "fn item() {}\n".repeat(120);
-    assert!(large.len() > REPEAT_COMPACTION_MIN_BYTES);
-
-    assert!(observe_repeated_result(&repeats, "call-1", "read", &args, &large).is_none());
-    let second = observe_repeated_result(&repeats, "call-2", "read", &args, &large)
-        .expect("second identical large call compacts");
-    match second {
-        RepeatedResultProjection::CompactModelOutput {
-            model_output,
-            ui_note,
-        } => {
-            assert!(model_output.len() < large.len() / 4);
-            assert!(model_output.contains("earlier call `call-1`"));
-            assert!(model_output.contains("2 times in a row"));
-            assert!(ui_note.contains("2 times in a row"));
-        }
-        RepeatedResultProjection::AppendNote(_) => panic!("expected compact model output"),
-    }
-
-    // Small outputs preserve original full body + appended note.
-    let small = "short fail";
-    assert!(observe_repeated_result(&repeats, "call-3", "bash", &args, small).is_none());
-    assert!(matches!(
-        observe_repeated_result(&repeats, "call-4", "bash", &args, small),
-        Some(RepeatedResultProjection::AppendNote(_))
-    ));
-
-    // Structured JSON results remain unrewritten and parseable even when large.
-    let large_json = serde_json::json!({"items": vec!["alpha"; 100]}).to_string();
-    assert!(large_json.len() > REPEAT_COMPACTION_MIN_BYTES);
-    assert!(observe_repeated_result(&repeats, "call-5", "read", &args, &large_json).is_none());
-    assert!(observe_repeated_result(&repeats, "call-6", "read", &args, &large_json).is_none());
-
-    // Clearing the repeat table (e.g. after compaction) emits full text again.
-    repeats.lock().unwrap().clear();
-    assert!(observe_repeated_result(&repeats, "call-7", "read", &args, &large).is_none());
-}
-
-#[test]
-fn cross_turn_repeat_seeding_compacts_unchanged_large_reread_and_resets_after_compaction() {
-    let args = serde_json::json!({"file_path": "src/lib.rs"});
-    let large = "fn item() {}\n".repeat(120);
-    assert!(large.len() > REPEAT_COMPACTION_MIN_BYTES);
-
-    let fact = |seq, kind: &str, key: &str, payload| aster_effect::Fact {
-        seq,
-        kind: kind.into(),
-        key: key.into(),
-        cause: None,
-        payload,
-    };
-    let tool_turn = |seq, key: &str, id: &str| {
-        fact(
-            seq,
-            "model.turn",
-            key,
-            serde_json::to_value(ModelDecision::Tool {
-                call: aster_effect::ToolCall {
-                    id: id.into(),
-                    name: "read".into(),
-                    args: args.clone(),
-                    needs_confirmation: false,
-                    text: None,
-                    reasoning: None,
-                },
-                also: Vec::new(),
-            })
-            .unwrap(),
-        )
-    };
-
-    let turn1_facts = vec![
-        tool_turn(1, "model:1:0", "turn1-call-1"),
-        fact(
-            2,
-            "tool.result",
-            "tool:1:0",
-            serde_json::json!({
-                "toolCallId": "turn1-call-1",
-                "output": large,
-                "ok": true,
-            }),
-        ),
-    ];
-
-    let repeats = Mutex::new(seed_repeats_from_facts(&turn1_facts));
-    let turn2 = observe_repeated_result(&repeats, "turn2-call-1", "read", &args, &large)
-        .expect("Turn 2 re-read of unchanged >512B file compacts to Turn 1 reference");
-    let turn2_stub = match turn2 {
-        RepeatedResultProjection::CompactModelOutput { model_output, .. } => {
-            assert!(model_output.contains("earlier call `turn1-call-1`"));
-            assert!(model_output.contains("2 times in a row"));
-            model_output
-        }
-        RepeatedResultProjection::AppendNote(_) => panic!("expected CompactModelOutput"),
-    };
-
-    // Seeding a Turn 2 stub followed by Turn 3 keeps `first_call_id = "turn1-call-1"` and increments count.
-    let mut turn2_facts = turn1_facts.clone();
-    turn2_facts.push(tool_turn(3, "model:2:0", "turn2-call-1"));
-    turn2_facts.push(fact(
-        4,
-        "tool.result",
-        "tool:2:0",
-        serde_json::json!({
-            "toolCallId": "turn2-call-1",
-            "output": turn2_stub,
-            "ok": true,
-        }),
-    ));
-    let repeats_after_stub = Mutex::new(seed_repeats_from_facts(&turn2_facts));
-    match observe_repeated_result(&repeats_after_stub, "turn3-call-1", "read", &args, &large)
-        .expect("Turn 3 still compacts to Turn 1 reference")
-    {
-        RepeatedResultProjection::CompactModelOutput { model_output, .. } => {
-            assert!(model_output.contains("earlier call `turn1-call-1`"));
-            assert!(model_output.contains("3 times in a row"));
-        }
-        RepeatedResultProjection::AppendNote(_) => panic!("expected CompactModelOutput"),
-    }
-
-    // After a compaction that drops the Turn 1 result, seeding clears old repeat state.
-    turn2_facts.push(fact(
-        5,
-        "compaction.done",
-        "compact:2",
-        serde_json::json!({ "kept": [] }),
-    ));
-    let repeats_compacted = Mutex::new(seed_repeats_from_facts(&turn2_facts));
-    assert!(
-        observe_repeated_result(
-            &repeats_compacted,
-            "turn3-after-compact",
-            "read",
-            &args,
-            &large
-        )
-        .is_none(),
-        "compaction that drops Turn 1 result must emit full text on next read"
-    );
 }
 
 #[test]
@@ -3303,7 +3143,7 @@ fn token_optimization_measurements_report() {
     };
 
     assert!(
-        standing.len() < 5_350,
+        standing.len() < 4_450,
         "standing prompt {} B",
         standing.len()
     );
@@ -3521,7 +3361,6 @@ fn tools_for_surface(
         reports: None,
         targeted_paths: None,
         pre_tool_hook_resolved: false,
-        repeats: Arc::default(),
         effect_dir: root.to_path_buf(),
     })
 }

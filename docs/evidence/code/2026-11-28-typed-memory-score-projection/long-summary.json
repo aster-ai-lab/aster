@@ -1,0 +1,71 @@
+{
+  "candidate": {
+    "trials": 2,
+    "total_tokens_median": 177901.0,
+    "input_tokens_median": 173146.5,
+    "uncached_input_tokens_median": 14876.5,
+    "complete_provider_receipts": 55,
+    "correct_reports": 12,
+    "protected_inputs_exact": 12,
+    "bound_verification": 12,
+    "strict_pass": 0,
+    "extraction_samples": [
+      {
+        "requests": 6,
+        "total_tokens": 7560,
+        "uncached": 3246
+      },
+      {
+        "requests": 6,
+        "total_tokens": 7497,
+        "uncached": 3863
+      }
+    ]
+  },
+  "release": {
+    "trials": 2,
+    "total_tokens_median": 181701.0,
+    "input_tokens_median": 177423.5,
+    "uncached_input_tokens_median": 15953.5,
+    "complete_provider_receipts": 56,
+    "correct_reports": 12,
+    "protected_inputs_exact": 12,
+    "bound_verification": 12,
+    "strict_pass": 0,
+    "extraction_samples": [
+      {
+        "requests": 6,
+        "total_tokens": 7851,
+        "uncached": 4036
+      },
+      {
+        "requests": 6,
+        "total_tokens": 7628,
+        "uncached": 3865
+      }
+    ]
+  },
+  "dsh": {
+    "trials": 2,
+    "total_tokens_median": 267191.5,
+    "input_tokens_median": 263172.0,
+    "uncached_input_tokens_median": 8132.0,
+    "complete_provider_receipts": 51,
+    "correct_reports": 12,
+    "protected_inputs_exact": 12,
+    "bound_verification": null,
+    "strict_pass": 1,
+    "extraction_samples": [
+      {
+        "requests": 0,
+        "total_tokens": 0,
+        "uncached": 0
+      },
+      {
+        "requests": 0,
+        "total_tokens": 0,
+        "uncached": 0
+      }
+    ]
+  }
+}

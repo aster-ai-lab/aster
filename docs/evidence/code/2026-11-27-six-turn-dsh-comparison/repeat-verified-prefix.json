@@ -1,0 +1,46 @@
+[
+  {
+    "trial": "1-release",
+    "arm": "release",
+    "matching_prefix_messages": 3,
+    "previous_messages": 6,
+    "matching_message_bytes": 7597,
+    "original_receipts": 2,
+    "original_receipt_bytes": 3938,
+    "post_repeat_input_tokens": 9301,
+    "post_repeat_cache_misses": 2133
+  },
+  {
+    "trial": "1-candidate",
+    "arm": "candidate",
+    "matching_prefix_messages": 6,
+    "previous_messages": 6,
+    "matching_message_bytes": 12626,
+    "original_receipts": 2,
+    "original_receipt_bytes": 3938,
+    "post_repeat_input_tokens": 9299,
+    "post_repeat_cache_misses": 211
+  },
+  {
+    "trial": "2-candidate",
+    "arm": "candidate",
+    "matching_prefix_messages": 6,
+    "previous_messages": 6,
+    "matching_message_bytes": 12665,
+    "original_receipts": 2,
+    "original_receipt_bytes": 3938,
+    "post_repeat_input_tokens": 9310,
+    "post_repeat_cache_misses": 222
+  },
+  {
+    "trial": "2-release",
+    "arm": "release",
+    "matching_prefix_messages": 3,
+    "previous_messages": 6,
+    "matching_message_bytes": 7597,
+    "original_receipts": 2,
+    "original_receipt_bytes": 3938,
+    "post_repeat_input_tokens": 9294,
+    "post_repeat_cache_misses": 2126
+  }
+]

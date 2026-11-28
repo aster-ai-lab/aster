@@ -1,0 +1,108 @@
+[
+  {
+    "arm": "release",
+    "label": "1-release",
+    "forms": [],
+    "shape_ok": false,
+    "response": "",
+    "permissions": [],
+    "passed": false,
+    "api_requests": 7,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 48926,
+      "completion_tokens": 1793,
+      "total_tokens": 50719,
+      "prompt_cache_hit_tokens": 41728,
+      "prompt_cache_miss_tokens": 7198
+    },
+    "tool_calls": {
+      "ask_user_form": 6
+    },
+    "primary_requests": 6
+  },
+  {
+    "arm": "candidate",
+    "label": "1-candidate",
+    "forms": [
+      {
+        "formId": "ask-form-4a52e76b-5bcd-4ba8-bd65-d48924bb8b66-run-8bd64748-6674-468b-a2d5-5d824aacef24-1",
+        "prompt": "请填写发运确认信息",
+        "spec": "{\"root\":\"form\",\"elements\":{\"form\":{\"type\":\"Form\",\"props\":{\"submitAction\":\"submit\"},\"children\":[\"title\",\"region\",\"quantity\",\"enabled\",\"chart\",\"submit\"]},\"title\":{\"type\":\"Text\",\"props\":{\"content\":\"发运确认\"}},\"region\":{\"type\":\"Select\",\"props\":{\"label\":\"region\",\"required\":true,\"options\":[\"北线\",\"南线\"],\"value\":{\"$bindState\":\"/form/region\"},\"placeholder\":\"请选择线路\"}},\"quantity\":{\"type\":\"Input\",\"props\":{\"label\":\"quantity\",\"type\":\"number\",\"min\":1,\"max\":9,\"step\":1,\"required\":true,\"value\":{\"$bindState\":\"/form/quantity\"}}},\"enabled\":{\"type\":\"Checkbox\",\"props\":{\"label\":\"enabled\",\"checked\":{\"$bindState\":\"/form/enabled\"}}},\"chart\":{\"type\":\"BarChart\",\"props\":{\"labels\":[\"North\",\"South\"],\"values\":[2,5]}},\"submit\":{\"type\":\"Button\",\"props\":{\"action\":\"submit\",\"label\":\"提交\"}}},\"state\":{\"form\":{\"region\":\"\",\"quantity\":1,\"enabled\":false}}}",
+        "format": "json-render",
+        "sessionId": "4a52e76b-5bcd-4ba8-bd65-d48924bb8b66"
+      }
+    ],
+    "shape_ok": true,
+    "response": "{\"region\":\"南线\",\"quantity\":7,\"enabled\":true}",
+    "permissions": [],
+    "passed": true,
+    "api_requests": 7,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 27160,
+      "completion_tokens": 1093,
+      "total_tokens": 28253,
+      "prompt_cache_hit_tokens": 22272,
+      "prompt_cache_miss_tokens": 4888
+    },
+    "tool_calls": {
+      "load_tool_definitions": 1,
+      "ask_user_form": 3
+    },
+    "primary_requests": 5
+  },
+  {
+    "arm": "candidate",
+    "label": "2-candidate",
+    "forms": [
+      {
+        "formId": "ask-form-f940a800-06de-48da-a233-f34ef3270d16-run-7f37843d-2fb7-49c8-a714-c03a0d4cd60e-1",
+        "prompt": "请填写发运确认信息",
+        "spec": "{\"root\":\"form\",\"elements\":{\"form\":{\"type\":\"Form\",\"props\":{\"submitAction\":\"submit\"},\"children\":[\"title\",\"region\",\"quantity\",\"enabled\",\"chart\",\"submit\"]},\"title\":{\"type\":\"Text\",\"props\":{\"content\":\"发运确认\"}},\"region\":{\"type\":\"Select\",\"props\":{\"label\":\"线路\",\"required\":true,\"options\":[\"北线\",\"南线\"],\"value\":{\"$bindState\":\"/form/region\"}}},\"quantity\":{\"type\":\"Input\",\"props\":{\"label\":\"数量\",\"type\":\"number\",\"required\":true,\"min\":1,\"max\":9,\"step\":1,\"value\":{\"$bindState\":\"/form/quantity\"}}},\"enabled\":{\"type\":\"Checkbox\",\"props\":{\"label\":\"启用\",\"checked\":{\"$bindState\":\"/form/enabled\"}}},\"chart\":{\"type\":\"BarChart\",\"props\":{\"labels\":[\"North\",\"South\"],\"values\":[2,5]}},\"submit\":{\"type\":\"Button\",\"props\":{\"action\":\"submit\",\"label\":\"提交\"}}},\"state\":{\"form\":{\"region\":\"\",\"quantity\":1,\"enabled\":false}}}",
+        "format": "json-render",
+        "sessionId": "f940a800-06de-48da-a233-f34ef3270d16"
+      }
+    ],
+    "shape_ok": true,
+    "response": "```json\n{\"region\":\"南线\",\"quantity\":7,\"enabled\":true}\n```",
+    "permissions": [],
+    "passed": true,
+    "api_requests": 4,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 15423,
+      "completion_tokens": 479,
+      "total_tokens": 15902,
+      "prompt_cache_hit_tokens": 11136,
+      "prompt_cache_miss_tokens": 4287
+    },
+    "tool_calls": {
+      "load_tool_definitions": 1,
+      "ask_user_form": 1
+    },
+    "primary_requests": 3
+  },
+  {
+    "arm": "release",
+    "label": "2-release",
+    "forms": [],
+    "shape_ok": false,
+    "response": "",
+    "permissions": [],
+    "passed": false,
+    "api_requests": 7,
+    "usage_complete": true,
+    "tokens": {
+      "prompt_tokens": 48666,
+      "completion_tokens": 1663,
+      "total_tokens": 50329,
+      "prompt_cache_hit_tokens": 41472,
+      "prompt_cache_miss_tokens": 7194
+    },
+    "tool_calls": {
+      "ask_user_form": 6
+    },
+    "primary_requests": 6
+  }
+]

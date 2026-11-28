@@ -1,0 +1,7 @@
+{
+  "limit": 9,
+  "binaries": {
+    "reference": "reference",
+    "candidate": "candidate"
+  }
+}

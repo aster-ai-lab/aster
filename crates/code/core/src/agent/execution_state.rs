@@ -341,7 +341,7 @@ impl ExecutionLoopState {
             .collect::<Vec<_>>()
             .join(" ")
             .to_lowercase();
-        let fingerprint = sha256::digest(normalized.as_bytes());
+        let fingerprint = crate::content_digest::sha256_hex(normalized.as_bytes());
         let repeated = self.last_incomplete_response_hash.as_deref() == Some(&fingerprint);
         self.last_incomplete_response_hash = Some(fingerprint);
         self.incomplete_response_stalled = repeated;

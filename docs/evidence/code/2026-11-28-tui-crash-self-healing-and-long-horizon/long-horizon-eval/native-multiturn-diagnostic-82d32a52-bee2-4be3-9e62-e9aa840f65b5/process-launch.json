@@ -1,0 +1,7 @@
+{
+  "pid": 87417,
+  "parent_pid": 87381,
+  "workspace": "/var/folders/t3/cjqzxlxs5yq7j1cwxw0tcth00000gn/T/.tmpi7I6Qc/workspace",
+  "binary": "/Volumes/GXF-Q-8T/aster/target/qualification/native-multiturn-diagnostic-82d32a52-bee2-4be3-9e62-e9aa840f65b5/aster-acp",
+  "scope": "actual Driver child; excludes build-id probes"
+}

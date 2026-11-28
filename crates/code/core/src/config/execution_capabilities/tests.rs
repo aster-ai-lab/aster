@@ -9,7 +9,7 @@ fn capability_modes_and_disabled_retrieval_roundtrip_through_acl() {
         .unwrap()
         .tool_presentation_profile
         .is_none());
-    for mode in ["adaptive", "direct", "code", "disabled"] {
+    for mode in ["adaptive", "deferred", "direct", "code", "disabled"] {
         let source = format!(
             "tool_presentation {{ mode = \"{mode}\" }}\nworkspace_retrieval {{ enabled = false\nlocal_cpu {{}}\n}}\n"
         );

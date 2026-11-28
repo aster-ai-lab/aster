@@ -288,7 +288,7 @@ fn cached_value_content(
             return Err(calculation_storage_error(
                 "use.office.spreadsheet_formula_storage_invalid",
                 "Nested Spreadsheet formula arrays cannot be written to OOXML cells.",
-            ))
+            ));
         }
     };
     Ok((

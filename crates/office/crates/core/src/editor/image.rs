@@ -224,7 +224,7 @@ fn insert_word_picture(
             return Err(editor_error(
                 "use.office.image_parent_unsupported",
                 "Native Word pictures require /body, a paragraph, or a table cell.",
-            ))
+            ));
         }
     };
     package.set_part(owner, edited)?;

@@ -74,7 +74,10 @@ impl RustRun {
         assets: &Path,
         deadline: std::time::Duration,
     ) -> Self {
-        let request = format!("/goal Complete the following task in at least two dependency-ordered stages. Accept each stage only with its current evidence. Preserve every requirement below.\n\n{}", fixture.request());
+        let request = format!(
+            "/goal Complete the following task in at least two dependency-ordered stages. Accept each stage only with its current evidence. Preserve every requirement below.\n\n{}",
+            fixture.request()
+        );
         Self::execute_request(driver, fixture, assets, deadline, &request, true).await
     }
 
@@ -239,7 +242,10 @@ fn wire_oracle_requires_failed_then_passing_exact_commands_and_bound_outcome() {
     let check = |code, text| json!({"update":{"sessionUpdate":"tool_call_update","rawOutput":{"command":LOCAL_CHECK,"exit_code":code,"output":text}}});
     let events = vec![
         check(101, "test result: FAILED. 0 passed; 3 failed"),
-        check(0, "test tests::formats_cents ... ok\ntest tests::quantity_rejects_zero ... ok\ntest tests::rounds_half_up ... ok\ntest extra::legitimate ... ok\ntest result: ok. 4 passed; 0 failed; 0 ignored"),
+        check(
+            0,
+            "test tests::formats_cents ... ok\ntest tests::quantity_rejects_zero ... ok\ntest tests::rounds_half_up ... ok\ntest extra::legitimate ... ok\ntest result: ok. 4 passed; 0 failed; 0 ignored",
+        ),
         json!({"method":"aster/turn/outcome","params":{"outcome":{"terminal":"verified","status":"passed"}}}),
     ];
     let valid = wire_checks(&events);

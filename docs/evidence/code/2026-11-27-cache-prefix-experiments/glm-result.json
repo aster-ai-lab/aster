@@ -1,0 +1,391 @@
+{
+  "campaign": "native-multiturn-diagnostic-f4fdbd04-5445-4f22-9436-0048fca61886",
+  "scope": "C01 native data six-turn diagnostic only; Rust compilation, LH01 and remaining variants stay unqualified",
+  "model": "glm-01/glm-5.3",
+  "pair_build_id": "aster-cli-pair-v1:eabcfad3d630729b5e8e9d2d539caef9d14bd2fb:aarch64-apple-darwin",
+  "acp_sha256": "1832ff37f95250221cd7c2af037c49255a7700439e2300f4b6dddf19d1349e30",
+  "aster_sha256": "2fb008cbc9501acc556733a45c1228e4010a35f8074781f50a11069d4253a41d",
+  "frozen_pair_directory": "/Volumes/GXF-Q-8T/aster/target/qualification/native-multiturn-diagnostic-f4fdbd04-5445-4f22-9436-0048fca61886",
+  "elapsed_ms": 209318,
+  "record": {
+    "campaign": "native-multiturn-diagnostic-f4fdbd04-5445-4f22-9436-0048fca61886",
+    "case": "C01",
+    "variant": "native-data-multiturn-disk-attested-real-diagnostic",
+    "seed": 2401,
+    "attempt": 1,
+    "started": true,
+    "status": "fail",
+    "failure_layer": "undetermined",
+    "checks": {
+      "identity": true,
+      "oracle": false,
+      "terminal": false,
+      "cleanup": true,
+      "current_artifact": false,
+      "side_effects": true
+    },
+    "tokens": null
+  },
+  "summary": {
+    "started_attempts": 1,
+    "first_attempts": 1,
+    "first_passed": 0,
+    "passed": 0,
+    "failed": 1,
+    "blocked": 0,
+    "cancelled": 0,
+    "planned": 0,
+    "not_run": 0,
+    "known_tokens": 0,
+    "unknown_usage_attempts": 1
+  },
+  "prompt_result": {
+    "Err": "prompt_error"
+  },
+  "turns": [],
+  "baseline_missing_artifact_refused": true,
+  "relay": {
+    "Ok": {
+      "protocol": "anthropic",
+      "listener_closed": true,
+      "upstream_calls": 11,
+      "rejected": 0,
+      "rejection_reasons": {},
+      "transport_failures": 0,
+      "protected_response_failures": 0,
+      "response_bytes": 0,
+      "statuses": {
+        "429": 11
+      },
+      "requests": [
+        {
+          "sequence": 1,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        },
+        {
+          "sequence": 2,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        },
+        {
+          "sequence": 3,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        },
+        {
+          "sequence": 4,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        },
+        {
+          "sequence": 5,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        },
+        {
+          "sequence": 6,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        },
+        {
+          "sequence": 7,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        },
+        {
+          "sequence": 8,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        },
+        {
+          "sequence": 9,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        },
+        {
+          "sequence": 10,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        },
+        {
+          "sequence": 11,
+          "serialized_request_bytes": 27283,
+          "output_token_limit": 4096,
+          "generation_options_sha256": "7d88dfcbc04ddcb8159d1e7869017b9ff140275584074febe904e9b0fcc1ec2a",
+          "messages": 1,
+          "message_bytes": 372,
+          "role_bytes": {
+            "system": 7310,
+            "user": 370
+          },
+          "shape_complete": true,
+          "system_sha256": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+          "system_prefix_sha256": {
+            "4096": "75c59e7f063dc15f1721deb666bf62a8c9fa53ec3750c16fd36adbeaf08f4aef",
+            "16384": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501",
+            "65536": "f961742900a1bae2138a126e7cd44e5c57e7921e611a99d02fc4f57725793501"
+          },
+          "tools": 26,
+          "native_deferred_catalog": false,
+          "tool_schema_bytes": 19519,
+          "tools_sha256": "613fc204744113a924977866ef8371fc1e5a4ff6f1462b53042368775013fb2e"
+        }
+      ],
+      "responses": {
+        "1": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        },
+        "2": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        },
+        "3": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        },
+        "4": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        },
+        "5": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        },
+        "6": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        },
+        "7": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        },
+        "8": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        },
+        "9": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        },
+        "10": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        },
+        "11": {
+          "http_status": 429,
+          "state": "missing",
+          "usage": null
+        }
+      }
+    }
+  },
+  "child_cleanup": {
+    "Ok": null
+  },
+  "tool_calls": 0,
+  "permission_requests": 0,
+  "raw_usage_presence_verified": false,
+  "fixture_seed": 2401,
+  "model_sampling_seed": "not supported by this relay profile",
+  "limits": {
+    "upstream_calls": 40,
+    "output_tokens_per_call": 4096,
+    "prompt_deadline_ms": 600000,
+    "workflow_deadline_ms": 1800000,
+    "relay_deadline_ms": 120000,
+    "trace_bytes": 8388608
+  },
+  "cleanup_scope": "owned ACP Unix group, settled tool statuses, wire task and relay connections; crash/separate-group variants remain unqualified"
+}

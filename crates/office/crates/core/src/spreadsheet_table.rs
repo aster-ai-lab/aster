@@ -42,7 +42,7 @@ impl NativeSpreadsheetTable {
                 return Err(semantic_table_error(
                     node,
                     format!("has unsupported style family '{family}'"),
-                ))
+                ));
             }
         };
         let columns = node

@@ -295,7 +295,7 @@ pub(super) fn tool_risk_type(tool_name: &str) -> ToolRiskType {
         "read" | "office_read" | "search" | "ls" | "code_symbols" | "code_navigation"
         | "code_diagnostics" | "generate_object" | "output_check" => ToolRiskType::ReadOnly,
         "write" | "edit" | "patch" | "download" | "office_file" => ToolRiskType::WorkspaceMutation,
-        "bash" => ToolRiskType::CommandExecution,
+        "bash" | "background" => ToolRiskType::CommandExecution,
         "git" => ToolRiskType::VersionControl,
         "web_search" | "web_fetch" => ToolRiskType::NetworkRead,
         "task" | "parallel_task" => ToolRiskType::Delegation,

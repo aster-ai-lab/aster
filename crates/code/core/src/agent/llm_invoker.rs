@@ -880,6 +880,10 @@ impl LlmInvoker {
 
 #[async_trait]
 impl LlmClient for LlmInvoker {
+    fn supports_deferred_tool_catalog(&self) -> bool {
+        self.inner.supports_deferred_tool_catalog()
+    }
+
     fn gateway_decision_auth(&self) -> Option<crate::llm::GatewayDecisionAuth> {
         self.inner.gateway_decision_auth()
     }

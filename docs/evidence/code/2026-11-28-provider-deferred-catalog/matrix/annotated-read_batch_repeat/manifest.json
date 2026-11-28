@@ -1,0 +1,49 @@
+{
+  "prompts": [
+    "Use one native read call with its files array to read catalog notes.txt and active.txt. Report the exact routing code and handoff.",
+    "Use one fresh native read call with its files array to read backup.txt and catalog notes.txt. Report the exact backup and routing code."
+  ],
+  "expected_markers": [
+    [
+      "NORTH-TALLY-5984",
+      "PLAZA-840K"
+    ],
+    [
+      "FERRY-237Q",
+      "NORTH-TALLY-5984"
+    ]
+  ],
+  "fixtures_sha256": {
+    "catalog notes.txt": "27e5cc1d786d4fde241434c7cf9473c8d0c0ccfeaea2d23d2724064476807dab",
+    "active.txt": "b90c16dea666c445b6b8adb4887265203a58db5de4bdbabce118ea1b69103242",
+    "backup.txt": "f45e17ea2cef9e85c0b2ed2a6196e069e4878bb44bed78b700070088a046c440"
+  },
+  "required_tool": "read",
+  "scenario": "read_batch_repeat",
+  "model": "deepseek-flash",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "approved_program": false,
+  "annotated_signatures": false,
+  "native_required": false,
+  "native_catalog": false,
+  "default_catalog": false,
+  "disk_content_attestation": false,
+  "reference_catalog": "full",
+  "cost_gate": false,
+  "expected_mutation_sha256": null,
+  "exact_count_allowed": false,
+  "orders": [
+    [
+      "release",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "release"
+    ]
+  ]
+}

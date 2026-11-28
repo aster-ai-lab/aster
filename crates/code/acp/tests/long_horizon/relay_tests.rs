@@ -59,7 +59,10 @@ impl Fake {
                     .as_ref()
                     .map(|value| format!("Retry-After: {value}\r\n"))
                     .unwrap_or_default();
-                let head = format!("HTTP/1.1 {status} Response\r\nContent-Type: {content_type}\r\nContent-Length: {}\r\n{retry}Connection: close\r\n\r\n", body.len());
+                let head = format!(
+                    "HTTP/1.1 {status} Response\r\nContent-Type: {content_type}\r\nContent-Length: {}\r\n{retry}Connection: close\r\n\r\n",
+                    body.len()
+                );
                 stream.write_all(head.as_bytes()).await.unwrap();
                 stream.write_all(&body).await.unwrap();
                 stream.shutdown().await.unwrap();
@@ -170,13 +173,21 @@ async fn native_messages_json_and_sse_keep_bytes_credentials_and_budgets_bound()
         let fake = Fake::start_protocol(Protocol::Anthropic, 200, data, streaming, None).await;
         let relay = Relay::start(fake.route(), 1, 512).await.unwrap();
         let payload = body(streaming).to_string();
-        let wrong_header = format!("POST /v1/messages HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {}\r\nContent-Length: {}\r\n\r\n{payload}", relay.key(), payload.len());
+        let wrong_header = format!(
+            "POST /v1/messages HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {}\r\nContent-Length: {}\r\n\r\n{payload}",
+            relay.key(),
+            payload.len()
+        );
         assert_eq!(
             status(&request(relay.endpoint(), wrong_header.as_bytes()).await),
             401
         );
         assert_eq!(fake.calls.load(Ordering::SeqCst), 0);
-        let native = format!("POST /v1/messages HTTP/1.1\r\nHost: 127.0.0.1\r\nx-api-key: {}\r\nContent-Length: {}\r\n\r\n{payload}", relay.key(), payload.len());
+        let native = format!(
+            "POST /v1/messages HTTP/1.1\r\nHost: 127.0.0.1\r\nx-api-key: {}\r\nContent-Length: {}\r\n\r\n{payload}",
+            relay.key(),
+            payload.len()
+        );
         let response = request(relay.endpoint(), native.as_bytes()).await;
         assert_eq!(status(&response), 200);
         assert!(response.ends_with(data));
@@ -604,7 +615,11 @@ async fn native_messages_stream_forwards_original_bytes_and_observes_final_usage
     let fake = Fake::start_protocol(Protocol::Anthropic, 200, payload, true, None).await;
     let relay = Relay::start(fake.route(), 1, 512).await.unwrap();
     let body = body(true).to_string();
-    let frame = format!("POST /v1/messages HTTP/1.1\r\nHost: 127.0.0.1\r\nx-api-key: {}\r\nContent-Length: {}\r\n\r\n{body}",relay.key(),body.len());
+    let frame = format!(
+        "POST /v1/messages HTTP/1.1\r\nHost: 127.0.0.1\r\nx-api-key: {}\r\nContent-Length: {}\r\n\r\n{body}",
+        relay.key(),
+        body.len()
+    );
     let response = request(relay.endpoint(), frame.as_bytes()).await;
     assert_eq!(status(&response), 200);
     assert!(response.ends_with(payload));

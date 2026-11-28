@@ -301,7 +301,9 @@ fn boundary_case(case: &str) -> LiveTui {
 }
 
 fn escape_prompt(path: &str) -> String {
-    format!("This is a one-shot diagnostic of the read tool's own path validation. Call read exactly once with file_path {path}. Do not infer or short-circuit the outcome; let the tool return its actual error. Do not retry or call other tools. Report the tool's result.")
+    format!(
+        "This is a one-shot diagnostic of the read tool's own path validation. Call read exactly once with file_path {path}. Do not infer or short-circuit the outcome; let the tool return its actual error. Do not retry or call other tools. Report the tool's result."
+    )
 }
 
 #[test]

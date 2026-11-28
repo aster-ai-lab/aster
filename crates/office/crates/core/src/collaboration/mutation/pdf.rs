@@ -318,7 +318,7 @@ fn read_pdf_form_values(
             _ => {
                 return Err(invalid_shared_pdf(
                     "The shared PDF form-value order contains a non-string identity.",
-                ))
+                ));
             }
         };
         validate_shared_pdf_identifier(&id, "form field")?;
@@ -360,7 +360,7 @@ fn read_pdf_form_values(
             _ => {
                 return Err(invalid_shared_pdf(
                     "The shared PDF form-value record contains a non-string field.",
-                ))
+                ));
             }
         };
         let previous = if path[0] == "id" {
@@ -410,7 +410,7 @@ pub(super) fn ordered_pdf_form_values(
             _ => {
                 return Err(invalid_shared_pdf(
                     "The shared PDF form-value order contains a non-string identity.",
-                ))
+                ));
             }
         };
         let Some(value) = values.get(&id) else {
@@ -522,7 +522,7 @@ pub(super) fn decoded_record_field_identity(
         _ => {
             return Err(invalid_shared_pdf(format!(
                 "The shared PDF {label} property identity has an unsupported kind."
-            )))
+            )));
         }
     };
     if field.len() < 2

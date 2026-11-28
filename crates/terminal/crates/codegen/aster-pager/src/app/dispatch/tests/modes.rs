@@ -324,12 +324,19 @@ fn slash_plan_desc_forwards_skill_token_ranges() {
         other => panic!("expected SetModeThenPrompt, got {other:?}"),
     }
     // The drained echo block carries the same ranges against the stripped desc
-    match &test_agent(&app, id).scrollback.get(0).unwrap().block {
-        RenderBlock::UserPrompt(b) => {
-            assert_eq!(b.skill_token_ranges, vec![6..18]);
-        }
-        other => panic!("expected UserPrompt, got {other:?}"),
-    }
+    let prompt = (0..test_agent(&app, id).scrollback.len())
+        .find_map(|index| {
+            match test_agent(&app, id)
+                .scrollback
+                .entry(index)
+                .map(|entry| &entry.block)
+            {
+                Some(RenderBlock::UserPrompt(block)) => Some(block),
+                _ => None,
+            }
+        })
+        .expect("user prompt");
+    assert_eq!(prompt.skill_token_ranges, vec![6..18]);
 }
 
 #[test]

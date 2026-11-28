@@ -57,6 +57,53 @@ async fn public_stream_end_preserves_mapped_usage_including_cache_tokens() {
     }
 }
 
+#[tokio::test]
+async fn prior_verification_pending_delivers_reply_once_without_end() {
+    use crate::harness_loop::{PriorVerificationPending, UnverifiedMutation};
+
+    let mut view = aster_effect::CodingView::empty();
+    view.assistant = Some("verification command was refused".into());
+    let settled = Ok(aster_effect::Settlement {
+        view,
+        log: Vec::new(),
+        steps: 0,
+        cut: aster_effect::cut_log(&[]),
+        trace: Vec::new(),
+    });
+    let mapped = Err(PriorVerificationPending(UnverifiedMutation {
+        digest: "fixture-effect".into(),
+        message: "previous verification is pending".into(),
+        host_contract_guidance: None,
+    })
+    .into());
+    for streamed_text in [false, true] {
+        let (tx, mut rx) = mpsc::channel(3);
+        host_events::emit_gated(
+            &tx,
+            &settled,
+            &mapped,
+            streamed_text,
+            run_admission::OriginalPublicationKind::Error,
+            "fixture-run",
+            None,
+            None,
+        )
+        .await;
+        drop(tx);
+        if !streamed_text {
+            assert!(
+                matches!(rx.recv().await, Some(AgentEvent::TextDelta { text })
+                if text == "verification command was refused")
+            );
+        }
+        assert!(matches!(
+            rx.recv().await,
+            Some(AgentEvent::PriorVerificationPending { .. })
+        ));
+        assert!(rx.recv().await.is_none());
+    }
+}
+
 struct TimedResponses(std::sync::Mutex<std::collections::VecDeque<crate::llm::LlmResponse>>);
 
 #[async_trait::async_trait]

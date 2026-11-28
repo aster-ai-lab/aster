@@ -1,0 +1,312 @@
+[
+  {
+    "label": "1-default",
+    "provider_tool_calls": {
+      "ask_user_form": 6
+    },
+    "passed": false,
+    "refusals": [
+      {
+        "form_sha256": "d3d497ac912b70f5a1f3563a9031450d6004b47dc730cae10679edda3bd585d4",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "form_sha256": "d3d497ac912b70f5a1f3563a9031450d6004b47dc730cae10679edda3bd585d4",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "form_sha256": "d3d497ac912b70f5a1f3563a9031450d6004b47dc730cae10679edda3bd585d4",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "form_sha256": "d3d497ac912b70f5a1f3563a9031450d6004b47dc730cae10679edda3bd585d4",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "form_sha256": "d3d497ac912b70f5a1f3563a9031450d6004b47dc730cae10679edda3bd585d4",
+        "candidate_nodes": [],
+        "refusal": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "form_sha256": "d3d497ac912b70f5a1f3563a9031450d6004b47dc730cae10679edda3bd585d4",
+        "candidate_nodes": [],
+        "refusal": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "label": "1-deferred",
+    "provider_tool_calls": {
+      "ask_user_form": 9,
+      "load_tool_definitions": 1
+    },
+    "passed": false,
+    "refusals": [
+      {
+        "form_sha256": "7ca99e0d3b2a9b5d94a75b9343845d02bed241ee091cb2c34a69f452d8ff53f2",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: unsupported component"
+      },
+      {
+        "form_sha256": "89a331333f18dbc4616e6729d8ecd127f25a5f03591277bb6ef52e6e554b05ea",
+        "candidate_nodes": [
+          {
+            "type": "Select",
+            "direction": null,
+            "gap": null,
+            "options": [
+              {
+                "label": "北线",
+                "value": "north"
+              },
+              {
+                "label": "南线",
+                "value": "south"
+              }
+            ]
+          }
+        ],
+        "refusal": "invalid JSON Render document: field requires $bindState"
+      },
+      {
+        "form_sha256": "bbb56fff6ea00e9f4cb9062e99705993a80f8279b97b8132e49a0e14f22d9358",
+        "candidate_nodes": [
+          {
+            "type": "Select",
+            "direction": null,
+            "gap": null,
+            "options": [
+              {
+                "label": "北线",
+                "value": "north"
+              },
+              {
+                "label": "南线",
+                "value": "south"
+              }
+            ]
+          }
+        ],
+        "refusal": "invalid JSON Render document: field state has the wrong type or size"
+      },
+      {
+        "form_sha256": "5d23e0fee0eec64d41122d71741087f141b5b94b75625a5228aa6bb9e4185d62",
+        "candidate_nodes": [
+          {
+            "type": "Select",
+            "direction": null,
+            "gap": null,
+            "options": [
+              {
+                "label": "北线",
+                "value": "north"
+              },
+              {
+                "label": "南线",
+                "value": "south"
+              }
+            ]
+          }
+        ],
+        "refusal": "invalid JSON Render document: invalid Select options or state"
+      },
+      {
+        "form_sha256": "7be0c8fe45df9d66bb53eecf5f74478f03335de8dcdc85e7de482b677c9a230a",
+        "candidate_nodes": [
+          {
+            "type": "Select",
+            "direction": null,
+            "gap": null,
+            "options": [
+              {
+                "label": "北线",
+                "value": "north"
+              },
+              {
+                "label": "南线",
+                "value": "south"
+              }
+            ]
+          }
+        ],
+        "refusal": "invalid JSON Render document: invalid Select options or state"
+      },
+      {
+        "form_sha256": "7be0c8fe45df9d66bb53eecf5f74478f03335de8dcdc85e7de482b677c9a230a",
+        "candidate_nodes": [
+          {
+            "type": "Select",
+            "direction": null,
+            "gap": null,
+            "options": [
+              {
+                "label": "北线",
+                "value": "north"
+              },
+              {
+                "label": "南线",
+                "value": "south"
+              }
+            ]
+          }
+        ],
+        "refusal": "invalid JSON Render document: invalid Select options or state"
+      },
+      {
+        "form_sha256": "7be0c8fe45df9d66bb53eecf5f74478f03335de8dcdc85e7de482b677c9a230a",
+        "candidate_nodes": [
+          {
+            "type": "Select",
+            "direction": null,
+            "gap": null,
+            "options": [
+              {
+                "label": "北线",
+                "value": "north"
+              },
+              {
+                "label": "南线",
+                "value": "south"
+              }
+            ]
+          }
+        ],
+        "refusal": "invalid JSON Render document: invalid Select options or state"
+      },
+      {
+        "form_sha256": "7be0c8fe45df9d66bb53eecf5f74478f03335de8dcdc85e7de482b677c9a230a",
+        "candidate_nodes": [
+          {
+            "type": "Select",
+            "direction": null,
+            "gap": null,
+            "options": [
+              {
+                "label": "北线",
+                "value": "north"
+              },
+              {
+                "label": "南线",
+                "value": "south"
+              }
+            ]
+          }
+        ],
+        "refusal": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "form_sha256": "7be0c8fe45df9d66bb53eecf5f74478f03335de8dcdc85e7de482b677c9a230a",
+        "candidate_nodes": [
+          {
+            "type": "Select",
+            "direction": null,
+            "gap": null,
+            "options": [
+              {
+                "label": "北线",
+                "value": "north"
+              },
+              {
+                "label": "南线",
+                "value": "south"
+              }
+            ]
+          }
+        ],
+        "refusal": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "label": "2-deferred",
+    "provider_tool_calls": {
+      "ask_user_form": 8
+    },
+    "passed": false,
+    "refusals": [
+      {
+        "form_sha256": "7ca99e0d3b2a9b5d94a75b9343845d02bed241ee091cb2c34a69f452d8ff53f2",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: unsupported component"
+      },
+      {
+        "form_sha256": "44dbb2d9a9935d80eb6f5ba82a9643cef32635ed4fcccb10757baab7cf95b6d4",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: unsupported component"
+      },
+      {
+        "form_sha256": "49b5e51ea8905816f02c82137ededac17dda2231d1d8519cdea8b81bd9df945d",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: unsupported component"
+      },
+      {
+        "form_sha256": "c8842e0cffb0701b85c76771480b06c0db0561572276d4c56886bcd3ba47c6d2",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: unsupported component"
+      },
+      {
+        "form_sha256": "7ca99e0d3b2a9b5d94a75b9343845d02bed241ee091cb2c34a69f452d8ff53f2",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: unsupported component"
+      },
+      {
+        "form_sha256": "7ca99e0d3b2a9b5d94a75b9343845d02bed241ee091cb2c34a69f452d8ff53f2",
+        "candidate_nodes": [],
+        "refusal": "invalid JSON Render document: unsupported component"
+      },
+      {
+        "form_sha256": "7ca99e0d3b2a9b5d94a75b9343845d02bed241ee091cb2c34a69f452d8ff53f2",
+        "candidate_nodes": [],
+        "refusal": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "form_sha256": "7ca99e0d3b2a9b5d94a75b9343845d02bed241ee091cb2c34a69f452d8ff53f2",
+        "candidate_nodes": [],
+        "refusal": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "label": "2-default",
+    "provider_tool_calls": {
+      "ask_user_form": 3
+    },
+    "passed": true,
+    "refusals": [
+      {
+        "form_sha256": "14fa2527dd99fb436bb186733360e95a317aeb633c2afd2b50b13cf051cb2050",
+        "candidate_nodes": [
+          {
+            "type": "Select",
+            "direction": null,
+            "gap": null,
+            "options": [
+              "北线",
+              "南线"
+            ]
+          }
+        ],
+        "refusal": "invalid JSON Render document: field requires $bindState"
+      },
+      {
+        "form_sha256": "de7605808d0d6d66560b810abbc0701a0c0390eb00bf8c99eff9d3cd2c95a5fa",
+        "candidate_nodes": [
+          {
+            "type": "Select",
+            "direction": null,
+            "gap": null,
+            "options": [
+              "北线",
+              "南线"
+            ]
+          }
+        ],
+        "refusal": "invalid JSON Render document: field state has the wrong type or size"
+      }
+    ]
+  }
+]

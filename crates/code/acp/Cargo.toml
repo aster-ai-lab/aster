@@ -1,10 +1,10 @@
 [package]
 name = "aster-acp"
-version = "9.3.2"
+version = "9.3.3"
 edition = "2021"
 authors = ["Aster Team"]
 license = "MIT"
-description = "ACP stdio agent over aster-core 9.3.2 for Aster desktop hosts"
+description = "ACP stdio agent over aster-core 9.3.3 for Aster desktop hosts"
 publish = false
 
 [[bin]]
@@ -31,7 +31,8 @@ uuid = {version = "1", features = ["v4"]}
 url = {workspace = true}
 aster-okf = {path = "../../okf"}
 aster-acl = {path = "../../acl"}
-aster-office = {path = "../../office/crates/core"}
+aster-office = {path = "../../office/crates/core", default-features = false}
+aster-fast-worktree = { path = "../../terminal/crates/codegen/aster-fast-worktree", features = ["metadata"] }
 unicode-segmentation = {workspace = true}
 aster-mermaid = {path = "../../terminal/crates/codegen/aster-mermaid", optional = true}
 cap-std = "=4.0.2"

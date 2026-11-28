@@ -4839,9 +4839,6 @@ pub async fn start_mcp_server(
         }
         acp::McpServer::Http(acp::McpServerHttp {
             name, url, headers, ..
-        })
-        | acp::McpServer::Sse(acp::McpServerSse {
-            name, url, headers, ..
         }) => {
             if let Some(mc) = meta_config {
                 tracing::info!(server = %name, %url, ?mc, "MCP http: meta config override");
@@ -4917,6 +4914,9 @@ pub async fn start_mcp_server(
                 }),
             }
         }
+        acp::McpServer::Sse(acp::McpServerSse { name, .. }) => Err(McpError::ClientError(format!(
+            "MCP server '{name}' uses legacy HTTP+SSE, which this transport does not support; configure Streamable HTTP instead"
+        ))),
         // TODO(acp-0.10): `McpServer` is #[non_exhaustive]; reject unknown transports.
         other => Err(McpError::ClientError(format!(
             "unsupported MCP server transport: {other:?}"

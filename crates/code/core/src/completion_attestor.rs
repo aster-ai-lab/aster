@@ -17,7 +17,7 @@
 
 use std::sync::Arc;
 
-use crate::harness_loop::MutationLedger;
+use crate::harness_loop::{MutationLedger, UnverifiedMutation};
 use crate::read_only_verifier::{accept_report, ReportAuthor};
 use crate::verification::{VerificationCheck, VerificationReport, VerificationStatus};
 
@@ -58,6 +58,12 @@ pub trait CompletionAttestor: Send + Sync {
     }
 }
 
+pub(crate) enum ModelVerificationPreview {
+    Verified,
+    DiskContentVerified,
+    Unverified(UnverifiedMutation),
+}
+
 fn attestation_paths(ledger: &MutationLedger) -> Vec<MutatedPathRecord> {
     ledger
         .paths()
@@ -89,10 +95,15 @@ pub(crate) fn merge_preview_report(
     attestor: Option<&Arc<dyn CompletionAttestor>>,
     ledger: &MutationLedger,
     reports: &mut Vec<VerificationReport>,
-) {
+) -> bool {
+    let previous_reports = reports.len();
     merge_report(attestor, ledger, reports, |attestor, ledger| {
         attestor.preview_ledger(ledger)
     });
+    // Only the current host preview can establish this specific check.
+    reports
+        .get(previous_reports)
+        .is_some_and(|report| *report == disk_content_report(ledger.digest()))
 }
 
 fn merge_report(

@@ -36,8 +36,12 @@ pub(crate) struct RetryableExternalFailure(pub(crate) aster_core::llm::Retryable
 
 impl std::fmt::Display for RetryableExternalFailure {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(formatter, "Provider request failed with HTTP {} after {} attempts; retry when the provider recovers",
-            self.0.status_code(), self.0.attempts())
+        write!(
+            formatter,
+            "Provider request failed with HTTP {} after {} attempts; retry when the provider recovers",
+            self.0.status_code(),
+            self.0.attempts()
+        )
     }
 }
 

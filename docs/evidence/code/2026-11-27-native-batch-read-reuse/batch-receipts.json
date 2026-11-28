@@ -1,0 +1,138 @@
+{
+  "trials": {
+    "1-release": {
+      "arm": "release",
+      "qualified_pass": true,
+      "total_tokens": 28567,
+      "actual_batch_receipts": [
+        {
+          "files": [
+            "catalog notes.txt",
+            "active.txt"
+          ],
+          "output_bytes": 4690,
+          "output_sha256": "4ae71e4197424a56ca289faa8ec0289e698df9045440d5f9308b82a816052596"
+        },
+        {
+          "files": [
+            "backup.txt",
+            "catalog notes.txt"
+          ],
+          "output_bytes": 4689,
+          "output_sha256": "e6d16d8b729682f31024e0794a36a8ce77a5462d3b72f1b36142f7aeef57f5c7"
+        }
+      ],
+      "turn_2_delivery_input_tokens": 8102,
+      "turn_2_delivery_tool_bytes": 9891,
+      "turn_2_delivery_batch_references": 0,
+      "turn_2_delivery_uncached_input_tokens": 1318
+    },
+    "1-candidate": {
+      "arm": "candidate",
+      "qualified_pass": true,
+      "total_tokens": 27446,
+      "actual_batch_receipts": [
+        {
+          "files": [
+            "catalog notes.txt",
+            "active.txt"
+          ],
+          "output_bytes": 4690,
+          "output_sha256": "4ae71e4197424a56ca289faa8ec0289e698df9045440d5f9308b82a816052596",
+          "section_identity": "sha256:2787bc044b9b9ca92484ebd8d31f9bd05779d83583770f23e4f50c2ef16f52f3",
+          "section_body_bytes": 4540,
+          "section_body_sha256": "d081881ee6becfd32a1a2d997e2549b6467d354771e6321ec56c20b40725c1fc"
+        },
+        {
+          "files": [
+            "backup.txt",
+            "catalog notes.txt"
+          ],
+          "output_bytes": 4689,
+          "output_sha256": "e6d16d8b729682f31024e0794a36a8ce77a5462d3b72f1b36142f7aeef57f5c7",
+          "section_identity": "sha256:2787bc044b9b9ca92484ebd8d31f9bd05779d83583770f23e4f50c2ef16f52f3",
+          "section_body_bytes": 4540,
+          "section_body_sha256": "d081881ee6becfd32a1a2d997e2549b6467d354771e6321ec56c20b40725c1fc"
+        }
+      ],
+      "turn_2_delivery_input_tokens": 6866,
+      "turn_2_delivery_tool_bytes": 5314,
+      "turn_2_delivery_batch_references": 1,
+      "turn_2_delivery_uncached_input_tokens": 210
+    },
+    "2-candidate": {
+      "arm": "candidate",
+      "qualified_pass": true,
+      "total_tokens": 27512,
+      "actual_batch_receipts": [
+        {
+          "files": [
+            "catalog notes.txt",
+            "active.txt"
+          ],
+          "output_bytes": 4690,
+          "output_sha256": "4ae71e4197424a56ca289faa8ec0289e698df9045440d5f9308b82a816052596",
+          "section_identity": "sha256:2787bc044b9b9ca92484ebd8d31f9bd05779d83583770f23e4f50c2ef16f52f3",
+          "section_body_bytes": 4540,
+          "section_body_sha256": "d081881ee6becfd32a1a2d997e2549b6467d354771e6321ec56c20b40725c1fc"
+        },
+        {
+          "files": [
+            "backup.txt",
+            "catalog notes.txt"
+          ],
+          "output_bytes": 4689,
+          "output_sha256": "e6d16d8b729682f31024e0794a36a8ce77a5462d3b72f1b36142f7aeef57f5c7",
+          "section_identity": "sha256:2787bc044b9b9ca92484ebd8d31f9bd05779d83583770f23e4f50c2ef16f52f3",
+          "section_body_bytes": 4540,
+          "section_body_sha256": "d081881ee6becfd32a1a2d997e2549b6467d354771e6321ec56c20b40725c1fc"
+        }
+      ],
+      "turn_2_delivery_input_tokens": 6894,
+      "turn_2_delivery_tool_bytes": 5314,
+      "turn_2_delivery_batch_references": 1,
+      "turn_2_delivery_uncached_input_tokens": 238
+    },
+    "2-release": {
+      "arm": "release",
+      "qualified_pass": true,
+      "total_tokens": 28639,
+      "actual_batch_receipts": [
+        {
+          "files": [
+            "catalog notes.txt",
+            "active.txt"
+          ],
+          "output_bytes": 4690,
+          "output_sha256": "4ae71e4197424a56ca289faa8ec0289e698df9045440d5f9308b82a816052596"
+        },
+        {
+          "files": [
+            "backup.txt",
+            "catalog notes.txt"
+          ],
+          "output_bytes": 4689,
+          "output_sha256": "e6d16d8b729682f31024e0794a36a8ce77a5462d3b72f1b36142f7aeef57f5c7"
+        }
+      ],
+      "turn_2_delivery_input_tokens": 8120,
+      "turn_2_delivery_tool_bytes": 9891,
+      "turn_2_delivery_batch_references": 0,
+      "turn_2_delivery_uncached_input_tokens": 1336
+    }
+  },
+  "medians": {
+    "release": {
+      "total_tokens": 28603.0,
+      "turn_2_delivery_input_tokens": 8111.0,
+      "turn_2_delivery_tool_bytes": 9891.0,
+      "turn_2_delivery_uncached_input_tokens": 1327.0
+    },
+    "candidate": {
+      "total_tokens": 27479.0,
+      "turn_2_delivery_input_tokens": 6880.0,
+      "turn_2_delivery_tool_bytes": 5314.0,
+      "turn_2_delivery_uncached_input_tokens": 224.0
+    }
+  }
+}

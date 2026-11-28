@@ -1,0 +1,82 @@
+{
+  "source_sha256": "b033f820ffe429ec62824e5b7e6a5a8c060cf988fb1d8e355fba416579964618",
+  "tools": 26,
+  "cases": [
+    {
+      "variant": "two-system",
+      "index": 1,
+      "status": 200,
+      "path": "/tmp/aster-prefix-fixture/dry river",
+      "correct_path": true,
+      "reply": "/tmp/aster-prefix-fixture/dry river",
+      "calls": 0,
+      "usage": {
+        "prompt_tokens": 7910,
+        "completion_tokens": 12,
+        "total_tokens": 7922,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 7910
+      }
+    },
+    {
+      "variant": "two-system",
+      "index": 2,
+      "status": 200,
+      "path": "/tmp/aster-prefix-fixture/青石",
+      "correct_path": true,
+      "reply": "/tmp/aster-prefix-fixture/青石",
+      "calls": 0,
+      "usage": {
+        "prompt_tokens": 7910,
+        "completion_tokens": 12,
+        "total_tokens": 7922,
+        "prompt_tokens_details": {
+          "cached_tokens": 7552
+        },
+        "prompt_cache_hit_tokens": 7552,
+        "prompt_cache_miss_tokens": 358
+      }
+    },
+    {
+      "variant": "single-system",
+      "index": 1,
+      "status": 200,
+      "path": "/tmp/aster-prefix-fixture/dry river",
+      "correct_path": true,
+      "reply": "/tmp/aster-prefix-fixture/dry river",
+      "calls": 0,
+      "usage": {
+        "prompt_tokens": 7909,
+        "completion_tokens": 12,
+        "total_tokens": 7921,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 7909
+      }
+    },
+    {
+      "variant": "single-system",
+      "index": 2,
+      "status": 200,
+      "path": "/tmp/aster-prefix-fixture/青石",
+      "correct_path": true,
+      "reply": "/tmp/aster-prefix-fixture/青石",
+      "calls": 0,
+      "usage": {
+        "prompt_tokens": 7909,
+        "completion_tokens": 12,
+        "total_tokens": 7921,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "prompt_cache_hit_tokens": 1408,
+        "prompt_cache_miss_tokens": 6501
+      }
+    }
+  ]
+}

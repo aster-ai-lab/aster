@@ -261,6 +261,12 @@ pub(crate) fn uses_anthropic_messages_api(provider: &str, base_url: Option<&str>
 
 /// Create LLM client with full configuration (supports custom base_url)
 pub fn create_client_with_config(mut config: LlmConfig) -> Arc<dyn LlmClient> {
+    #[cfg(feature = "quark-account")]
+    if config.provider == super::quark_account::PROVIDER_NAME {
+        return Arc::new(super::quark_account::QuarkAccountClient::from_config(
+            config,
+        ));
+    }
     config.reasoning_capabilities = config.reasoning_capabilities.or_else(|| {
         crate::config::documented_at(config.protocol, &config.model, config.base_url.as_deref())
     });

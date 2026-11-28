@@ -2,6 +2,8 @@
 //!
 //! Used by the installers and npm postinstall; must stay side-effect free (no network, auth, tracing, or tokio).
 
+use std::io::{ErrorKind, Write as _};
+
 use clap::CommandFactory as _;
 use clap_complete::{Shell, generate};
 
@@ -11,22 +13,27 @@ use crate::app::PagerArgs;
 pub fn run(shell: Shell) {
     // Completion scripts must register the executable users actually invoke.
     let mut cmd = PagerArgs::command();
-    if shell != Shell::Zsh {
-        generate(shell, &mut cmd, "aster", &mut std::io::stdout());
-        return;
-    }
-    // zsh needs post-processing (see fix_zsh_root_prompt_positional).
     let mut buf = Vec::new();
     generate(shell, &mut cmd, "aster", &mut buf);
-    match String::from_utf8(buf) {
-        Ok(script) => print!("{}", fix_zsh_root_prompt_positional(&script)),
-        // clap_complete output is generated from Rust strings, so this arm is unreachable in practice
-        // But the installers run this command, so emit the unmodified script rather than panic
-        Err(e) => {
-            use std::io::Write as _;
-            let _ = std::io::stdout().write_all(e.as_bytes());
-        }
+    if shell == Shell::Zsh {
+        // zsh needs post-processing (see fix_zsh_root_prompt_positional).
+        buf = match String::from_utf8(buf) {
+            Ok(script) => fix_zsh_root_prompt_positional(&script).into_bytes(),
+            // clap_complete output is generated from Rust strings, so this arm is unreachable in practice.
+            Err(error) => error.into_bytes(),
+        };
     }
+    if let Err(error) = write_completion(std::io::stdout().lock(), &buf)
+        && error.kind() != ErrorKind::BrokenPipe
+    {
+        eprintln!("aster completions: failed to write output: {error}");
+        std::process::exit(1);
+    }
+}
+
+fn write_completion(mut writer: impl std::io::Write, bytes: &[u8]) -> std::io::Result<()> {
+    writer.write_all(bytes)?;
+    writer.flush()
 }
 
 /// Work around clap_complete's broken zsh output for an optional free-form positional (`[PROMPT]`) preceding the
@@ -61,6 +68,24 @@ fn fix_zsh_root_prompt_positional(script: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn closed_output_is_a_broken_pipe_not_a_generator_panic() {
+        struct ClosedPipe;
+
+        impl std::io::Write for ClosedPipe {
+            fn write(&mut self, _bytes: &[u8]) -> std::io::Result<usize> {
+                Err(std::io::Error::from(ErrorKind::BrokenPipe))
+            }
+
+            fn flush(&mut self) -> std::io::Result<()> {
+                Ok(())
+            }
+        }
+
+        let error = write_completion(ClosedPipe, b"completion").unwrap_err();
+        assert_eq!(error.kind(), ErrorKind::BrokenPipe);
+    }
 
     /// Generate the zsh completion script exactly like `run` does.
     fn zsh_script() -> String {

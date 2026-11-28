@@ -6,8 +6,9 @@
 use std::collections::HashMap;
 
 use aster_acl::Block;
-use aster_core::config::AccountImport;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
+
+use super::AccountImport;
 
 use super::document::{ConfigDraft, ModelDraft, ProviderDraft};
 use crate::views::modal_window::ModalWindowState;

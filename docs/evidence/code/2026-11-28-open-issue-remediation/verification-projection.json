@@ -1,0 +1,272 @@
+{
+  "source": ".aster/sessions/2026-11-28/eb630455-44f7-4879-aa41-90a6fc719784/eb630455-44f7-4879-aa41-90a6fc719784.jsonl",
+  "selected": "Receipts at or after seq 594 plus the earlier bound report. No report or effect_digest was synthesized or edited.",
+  "records": [
+    {
+      "seq": 320,
+      "tool_call_id": "call_44ee909a1af44e43942333ad1a61f06d",
+      "exit_code": 0,
+      "outcome": "succeeded",
+      "command": "test -f Cargo.lock && cargo test --locked -p aster-acp --lib disk_attestor_is_installed_for_host_sessions_except_source_review",
+      "report": {
+        "schema": "aster.verification_report.v1",
+        "subject": "shell:rust:test",
+        "status": "passed",
+        "checks": [
+          {
+            "id": "rust:test",
+            "kind": "test",
+            "description": "Run Rust tests",
+            "status": "passed",
+            "required": true,
+            "suggested_tools": [
+              "bash"
+            ]
+          }
+        ],
+        "effect_digest": "8f39ee176662862a9c1c263e64ba4041ae5bc08b439bd134a8ab04d7a6d08ce6"
+      },
+      "effect_paths": [
+        "crates/browser/src/quark_search.rs",
+        "docs/evidence/code/2026-11-27-covered-read-recovery/summary.json",
+        "docs/evidence/code/2026-11-27-cross-tool-recovery/OUTCOME.md",
+        "docs/evidence/code/2026-11-27-deepseek-harness-token-comparison/OUTCOME.md",
+        "docs/evidence/code/2026-11-27-deepseek-harness-token-comparison/manifest.json",
+        "docs/evidence/code/2026-11-27-deepseek-tool-schema-bounds/ablation.json",
+        "docs/evidence/code/2026-11-27-deepseek-tool-schema-bounds/compact-diagnostic.json",
+        "docs/evidence/code/2026-11-27-deepseek-tool-schema-bounds/frozen/manifest.json",
+        "docs/evidence/code/2026-11-27-deepseek-tool-schema-bounds/initial-repeated/manifest.json",
+        "docs/evidence/code/2026-11-27-deepseek-tool-schema-bounds/native-kimi.txt",
+        "docs/evidence/code/2026-11-27-native-tool-definition-expansion/long-before-usage-drain/adaptive/model-profile.json",
+        "docs/evidence/code/2026-11-27-native-tool-definition-expansion/long/adaptive/usage-drain.json",
+        "docs/evidence/code/2026-11-27-native-tool-definition-expansion/long/deferred/usage-drain.json"
+      ],
+      "observation_completeness": "complete"
+    },
+    {
+      "seq": 594,
+      "tool_call_id": "call_d2f460d517214b1a9c039f88b87dbce9",
+      "exit_code": 0,
+      "outcome": "succeeded",
+      "command": "test -f Cargo.lock && cargo test --locked -p aster-core --lib porcelain::tests::a_nested_registered_worktree_observation_stays_bounded -- --exact --nocapture && cargo test --locked -p aster-acp --lib disk_attestor_is_installed_for_host_sessions_except_source_review && cargo test --locked -p aster-studio --lib agent_plane::schedule && cargo test --locked -p aster-studio --lib agent_browser_runtime",
+      "report": {
+        "schema": "aster.verification_report.v1",
+        "subject": "shell:rust:test",
+        "status": "passed",
+        "checks": [
+          {
+            "id": "rust:test",
+            "kind": "test",
+            "description": "Run Rust tests",
+            "status": "passed",
+            "required": true,
+            "suggested_tools": [
+              "bash"
+            ]
+          }
+        ]
+      },
+      "effect_paths": [
+        "crates/effect/src/coding.rs",
+        "crates/effect/src/coding/revalidation_tests.rs",
+        "docs/evidence/code/2026-11-27-deepseek-tool-schema-bounds/actual-wire-schema-replay.json",
+        "docs/evidence/code/2026-11-27-deepseek-tool-schema-bounds/initial-repeated/manifest.json",
+        "docs/evidence/code/2026-11-27-goal-plan-token-amortization/memory-reopen.json",
+        "docs/evidence/code/2026-11-27-goal-plan-token-amortization/planning-observed/failures.json",
+        "docs/evidence/code/2026-11-27-native-tool-definition-expansion/long/adaptive/usage-drain.json",
+        "docs/evidence/code/2026-11-27-native-tool-definition-expansion/long/deferred/usage-drain.json"
+      ],
+      "observation_completeness": "complete"
+    },
+    {
+      "seq": 611,
+      "tool_call_id": "call_cd2d367a60724bab99c5a2bcbcdd418a",
+      "exit_code": 0,
+      "outcome": "succeeded",
+      "command": "test -f Cargo.lock && cargo test --locked -p aster-core --lib porcelain::tests::a_nested_registered_worktree_observation_stays_bounded -- --exact --nocapture && cargo test --locked -p aster-acp --lib disk_attestor_is_installed_for_host_sessions_except_source_review && cargo test --locked -p aster-studio --lib agent_plane::schedule && cargo test --locked -p aster-studio --lib agent_browser_runtime",
+      "report": {
+        "schema": "aster.verification_report.v1",
+        "subject": "shell:rust:test",
+        "status": "passed",
+        "checks": [
+          {
+            "id": "rust:test",
+            "kind": "test",
+            "description": "Run Rust tests",
+            "status": "passed",
+            "required": true,
+            "suggested_tools": [
+              "bash"
+            ]
+          }
+        ]
+      },
+      "effect_paths": [],
+      "observation_completeness": "complete"
+    },
+    {
+      "seq": 620,
+      "tool_call_id": "call_f1941908246d4e9eb1f37bb79de08565",
+      "exit_code": 101,
+      "outcome": "failed",
+      "command": "test -f Cargo.lock && cargo test --locked -p aster-acp --test boundary_e2e e_worktree -- --exact --nocapture && cargo test --locked -p aster-studio --lib agent_plane::schedule && cargo test --locked -p aster-studio --lib agent_browser_runtime",
+      "report": {
+        "schema": "aster.verification_report.v1",
+        "subject": "shell:rust:test",
+        "status": "failed",
+        "checks": [
+          {
+            "id": "rust:test",
+            "kind": "test",
+            "description": "Run Rust tests",
+            "status": "failed",
+            "required": true,
+            "suggested_tools": [
+              "bash"
+            ],
+            "residual_risk": "verification command exited with code 101, expected 0: cargo test"
+          }
+        ]
+      },
+      "effect_paths": [],
+      "observation_completeness": "complete"
+    },
+    {
+      "seq": 629,
+      "tool_call_id": "call_7c12a1148ac2466f8f52a59df5f5b106",
+      "exit_code": 101,
+      "outcome": "failed",
+      "command": "test -f Cargo.lock && cargo test --locked -p aster-acp --test boundary_e2e e_worktree -- --exact --nocapture",
+      "report": {
+        "schema": "aster.verification_report.v1",
+        "subject": "shell:rust:test",
+        "status": "failed",
+        "checks": [
+          {
+            "id": "rust:test",
+            "kind": "test",
+            "description": "Run Rust tests",
+            "status": "failed",
+            "required": true,
+            "suggested_tools": [
+              "bash"
+            ],
+            "residual_risk": "verification command exited with code 101, expected 0: cargo test"
+          }
+        ]
+      },
+      "effect_paths": [],
+      "observation_completeness": "complete"
+    },
+    {
+      "seq": 638,
+      "tool_call_id": "call_9040704b73ca49de8ebf00d8df93c820",
+      "exit_code": 101,
+      "outcome": "failed",
+      "command": "test -f Cargo.lock && cargo test --locked -p aster-acp --test boundary_e2e e_worktree -- --exact --nocapture",
+      "report": {
+        "schema": "aster.verification_report.v1",
+        "subject": "shell:rust:test",
+        "status": "failed",
+        "checks": [
+          {
+            "id": "rust:test",
+            "kind": "test",
+            "description": "Run Rust tests",
+            "status": "failed",
+            "required": true,
+            "suggested_tools": [
+              "bash"
+            ],
+            "residual_risk": "verification command exited with code 101, expected 0: cargo test"
+          }
+        ]
+      },
+      "effect_paths": [],
+      "observation_completeness": "complete"
+    },
+    {
+      "seq": 644,
+      "tool_call_id": "call_28b150be53324ec59bc64e2813cca260",
+      "exit_code": 101,
+      "outcome": "failed",
+      "command": "test -f Cargo.lock && cargo test --locked -p aster-acp --test boundary_e2e e_worktree -- --exact --nocapture",
+      "report": {
+        "schema": "aster.verification_report.v1",
+        "subject": "shell:rust:test",
+        "status": "failed",
+        "checks": [
+          {
+            "id": "rust:test",
+            "kind": "test",
+            "description": "Run Rust tests",
+            "status": "failed",
+            "required": true,
+            "suggested_tools": [
+              "bash"
+            ],
+            "residual_risk": "verification command exited with code 101, expected 0: cargo test"
+          }
+        ]
+      },
+      "effect_paths": [],
+      "observation_completeness": "complete"
+    },
+    {
+      "seq": 678,
+      "tool_call_id": "call_3d07e6bc8fac4b36b1bcac34770cd360",
+      "exit_code": 0,
+      "outcome": "succeeded",
+      "command": "test -f Cargo.lock && cargo test --locked -p aster-core --lib porcelain::tests::a_nested_registered_worktree_observation_stays_bounded -- --exact --nocapture && cargo test --locked -p aster-acp --lib disk_attestor_is_installed_for_host_sessions_except_source_review && cargo test --locked -p aster-studio --lib agent_plane::schedule && cargo test --locked -p aster-studio --lib agent_browser_runtime",
+      "report": {
+        "schema": "aster.verification_report.v1",
+        "subject": "shell:rust:test",
+        "status": "passed",
+        "checks": [
+          {
+            "id": "rust:test",
+            "kind": "test",
+            "description": "Run Rust tests",
+            "status": "passed",
+            "required": true,
+            "suggested_tools": [
+              "bash"
+            ]
+          }
+        ]
+      },
+      "effect_paths": [],
+      "observation_completeness": "complete"
+    },
+    {
+      "seq": 775,
+      "tool_call_id": "call_b8df70107c114285a9ea75f87e339be3",
+      "exit_code": 0,
+      "outcome": "succeeded",
+      "command": "python3 - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('.aster/sessions/2026-11-28/eb630455-44f7-4879-aa41-90a6fc719784/eb630455-44f7-4879-aa41-90a6fc719784.jsonl')\nrows=[]\nfor line in p.open():\n    row=json.loads(line)\n    text=json.dumps(row,ensure_ascii=False)\n    if row.get('type') in ('tool.prepared','tool.result') and ('test -f Cargo.lock' in text or 'f721777f4c239b2929519c7c844387046e01ae6705104a5c1b08d11c4c5d9e3f' in text):\n        if row['type']=='tool.prepared':\n            prep=row['payload']['prepared']\n            print('PREP',row['seq'],prep['identity']['tool_call_id'],prep['tool_name'])\n        else:\n            receipt=row['payload']['receipt']\n            output=json.loads(receipt['output']) if receipt.get('output','').startswith('{') else {}\n            md=output.get('metadata') or {}\n            changes=receipt.get('effects',{}).get('changes',[])\n            print('RESULT',row['seq'],receipt['identity']['tool_call_id'], 'exit=',receipt.get('exit_code'),'outcome=',receipt.get('outcome'),'complete=',receipt.get('effects',{}).get('completeness'))\n            print('COMMAND',md.get('verification_shell_command'))\n            print('REPORT',json.dumps(md.get('verification_report'),ensure_ascii=False))\n            print('CHANGES',[(c.get('path'),c.get('after',{}).get('kind'),c.get('after',{}).get('content_digest')) for c in changes][:60])\n            print('UNRESOLVED',receipt.get('effects',{}).get('unresolved_external_operations'))\nPY",
+      "report": {},
+      "effect_paths": [],
+      "observation_completeness": "complete"
+    },
+    {
+      "seq": 778,
+      "tool_call_id": "call_34f4fb5bfb014ad4b8a6acd69bd9301c",
+      "exit_code": 0,
+      "outcome": "succeeded",
+      "command": "python3 - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('.aster/sessions/2026-11-28/eb630455-44f7-4879-aa41-90a6fc719784/eb630455-44f7-4879-aa41-90a6fc719784.jsonl')\nfor line in p.open():\n    row=json.loads(line)\n    if row.get('type')!='tool.result': continue\n    receipt=row['payload']['receipt']\n    try: out=json.loads(receipt['output'])\n    except: continue\n    md=out.get('metadata') or {}\n    cmd=md.get('verification_shell_command','')\n    if 'test -f Cargo.lock' not in cmd: continue\n    rep=md.get('verification_report') or {}\n    if receipt.get('exit_code')==0:\n        changes=receipt.get('effects',{}).get('changes',[])\n        print(row['seq'], 'digest=',rep.get('effect_digest'), 'changes=',len(changes))\n        print(' ',cmd[:280])\n        print(' ',[(c['path'],c.get('after',{}).get('kind')) for c in changes][:12])\nPY",
+      "report": {},
+      "effect_paths": [],
+      "observation_completeness": "complete"
+    },
+    {
+      "seq": 781,
+      "tool_call_id": "call_66286be787b8410191a04a23d45a1940",
+      "exit_code": 0,
+      "outcome": "succeeded",
+      "command": "python3 - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('.aster/sessions/2026-11-28/eb630455-44f7-4879-aa41-90a6fc719784/eb630455-44f7-4879-aa41-90a6fc719784.jsonl')\nfor line in p.open():\n    row=json.loads(line)\n    if row.get('type')!='tool.result': continue\n    receipt=row['payload']['receipt']\n    try: out=json.loads(receipt['output'])\n    except: continue\n    md=out.get('metadata') or {}\n    cmd=md.get('verification_shell_command','')\n    if 'test -f Cargo.lock' not in cmd: continue\n    rep=md.get('verification_report') or {}\n    if receipt.get('exit_code')==0:\n        print(row['seq'], 'turn/cycle',receipt['identity']['turn'],receipt['identity']['cycle'], 'digest=',rep.get('effect_digest'),'paths=',len(receipt['effects']['changes']), 'complete=',receipt['effects']['completeness'])\n        if row['seq'] in (611,678,594,462):\n            print(json.dumps(receipt,ensure_ascii=False,indent=2)[:20000])\nPY",
+      "report": {},
+      "effect_paths": [],
+      "observation_completeness": "complete"
+    }
+  ]
+}

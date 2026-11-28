@@ -147,27 +147,21 @@ impl crate::agent::TurnEngine {
             },
         )
         .await;
-        let goal = if let Some(current) = current_goal {
-            Some(current.goal.clone())
-        } else if let Some(analysis) = analysis.as_ref().filter(|_| self.config.goal_tracking) {
-            Some(analysis.goal.clone())
-        } else if self.config.goal_tracking {
-            Some(
-                self.extract_goal_scoped(prompt, Some(session_id), event_tx, cancel)
-                    .await?,
+        let (goal, plan) = if let Some(current) = current_goal {
+            (
+                Some(current.goal.clone()),
+                current
+                    .plan
+                    .clone()
+                    .ok_or_else(|| anyhow::anyhow!("admitted Goal plan is absent"))?,
+            )
+        } else if let Some(analysis) = analysis {
+            (
+                self.config.goal_tracking.then_some(analysis.goal),
+                analysis.execution_plan,
             )
         } else {
-            None
-        };
-        let plan = if let Some(current) = current_goal {
-            current
-                .plan
-                .clone()
-                .ok_or_else(|| anyhow::anyhow!("admitted Goal plan is absent"))?
-        } else if let Some(analysis) = analysis {
-            analysis.execution_plan
-        } else {
-            self.plan_scoped(prompt, Some(session_id), event_tx, cancel)
+            self.plan_with_optional_goal(prompt, session_id, event_tx, cancel)
                 .await?
         };
         if let Some(goal) = goal {
@@ -230,6 +224,58 @@ impl crate::agent::TurnEngine {
         if let (Some(store), Some(run_id)) = (run_store, run_id) {
             store.record_event(run_id, event).await;
         }
+    }
+
+    async fn plan_with_optional_goal(
+        &self,
+        prompt: &str,
+        session_id: &str,
+        event_tx: &Option<mpsc::Sender<AgentEvent>>,
+        cancel: &CancellationToken,
+    ) -> Result<(Option<AgentGoal>, ExecutionPlan)> {
+        let session_id = Some(session_id);
+        if !self.config.goal_tracking {
+            return Ok((
+                None,
+                self.plan_scoped(prompt, session_id, event_tx, cancel)
+                    .await?,
+            ));
+        }
+        // Leave custom per-call admission on the two original request shapes.
+        let (mut goal, plan) = if self.config.budget_guard.is_none() {
+            let operation =
+                self.begin_capability_operation(0, cancel, "goal and plan orchestration")?;
+            let client =
+                self.scoped_llm_client_for_parts(session_id, event_tx, operation.cancellation());
+            let language = self.product_output_language(prompt);
+            let result =
+                LlmPlanner::create_goal_and_plan(&client, prompt, language.as_deref()).await;
+            operation.close().await?;
+            match result {
+                Ok(parts) => parts,
+                Err(error) if Self::planning_control_error(&error, cancel) => return Err(error),
+                Err(error) => {
+                    tracing::debug!(%error, "Combined goal and plan request failed");
+                    (None, None)
+                }
+            }
+        } else {
+            (None, None)
+        };
+        if goal.is_none() {
+            goal = Some(
+                self.extract_goal_scoped(prompt, session_id, event_tx, cancel)
+                    .await?,
+            );
+        }
+        let plan = match plan {
+            Some(plan) => plan,
+            None => {
+                self.plan_scoped(prompt, session_id, event_tx, cancel)
+                    .await?
+            }
+        };
+        Ok((goal, plan))
     }
 
     async fn plan_scoped(

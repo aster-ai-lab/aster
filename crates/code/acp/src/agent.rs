@@ -44,6 +44,7 @@ mod tool_render;
 mod turn;
 mod unattended_turn;
 mod workspace_scope;
+mod worktree_methods;
 
 use emit::{context_usage, note_child_progress};
 #[cfg(test)]
@@ -326,11 +327,11 @@ fn session_capability_note(
     mcp_servers: usize,
     memory: &str,
 ) -> String {
+    // The search tool's schema reports the currently callable modes.
     let retrieval = if semantic {
-        "search modes: grep, glob, bm25, semantic, hybrid.\n\
-         If the index is degraded, semantic leaves the tool definition; hybrid retains available channels."
+        "If the index is degraded, semantic leaves the tool definition; hybrid retains available channels."
     } else {
-        "search modes: grep, glob, bm25, hybrid.\nSemantic retrieval is disabled."
+        "Semantic retrieval is disabled."
     };
     format!(
         "Session capabilities:\n\
@@ -922,11 +923,9 @@ impl AsterCodeAgent {
     ) -> acp::Result<SessionOptions> {
         let max_tool_rounds = config.max_tool_rounds.unwrap_or(0);
         let count_guideline = if max_tool_rounds == 0 {
-            "Tool calls have no count limit. Stop when the user's outcome is done.".to_owned()
+            "Tool calls have no count limit.".to_owned()
         } else {
-            format!(
-                "Tool execution count limit: tool_rounds={max_tool_rounds}. Stop when the user's outcome is done."
-            )
+            format!("Tool execution count limit: tool_rounds={max_tool_rounds}.")
         };
         let guidelines = slots.guidelines.get_or_insert_with(String::new);
         if !guidelines.is_empty() {
@@ -1070,6 +1069,7 @@ fn note_tool_row(painted: &mut HashSet<String>, id: &str) -> ToolRowPaint {
 struct TurnState {
     observer: Option<crate::run_observation::Observer>,
     turn_failure: Option<String>,
+    prior_verification_pending: bool,
     reconciliation: Option<aster_core::harness_loop::ToolEffectUnresolved>,
     saw_text: bool,
     delta_text: String,
@@ -1116,14 +1116,10 @@ struct ChildProgress {
 
 /// Always-on turn boundary. The skill command is an example, not a matcher.
 const SESSION_OUTCOME_BOUNDARY: &str = "\
-Finish the user's outcome in this turn. Do not read or explain the product \
-implementation merely to run an operation; inspect/explain it only when the user \
-asks for explanation, diagnosis, review or modification. Give known host commands \
-for usage asks. For execution requests, perform authorized actions with exposed \
-tools and report actual results (naming a command alone does not execute it). \
-Verify deliverables against authoritative sources/criteria and stop once checks \
-pass. If requirements conflict, explain the conflict and ask which takes priority \
-instead of dropping constraints or inventing facts.";
+Finish the user's outcome in this turn. Inspect product internals for explanation, diagnosis, \
+review, or modification. Run operations directly. Give known host commands for usage questions. \
+For execution requests, perform authorized actions and report observed results. Explain competing \
+requirements and ask which takes priority. Stop when the user's outcome is done.";
 
 const HOST_PARALLEL_TASKS: usize = 8;
 const HOST_CONTINUATION_TURNS: u32 = 8;

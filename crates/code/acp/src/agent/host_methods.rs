@@ -34,11 +34,17 @@ pub(super) enum HostMethod {
     SessionBackgroundTasks,
     SessionBackgroundTaskStop,
     SubagentCancel,
+    WorktreeList,
+    WorktreeGc,
+    WorktreeDbPath,
+    WorktreeCreate,
+    WorktreeResume,
+    Health,
 }
 
 impl HostMethod {
     #[cfg(test)]
-    pub(super) const ALL: [Self; 24] = [
+    pub(super) const ALL: [Self; 30] = [
         Self::ModelsList,
         Self::FollowUp,
         Self::GoalImport,
@@ -63,6 +69,12 @@ impl HostMethod {
         Self::SessionBackgroundTasks,
         Self::SessionBackgroundTaskStop,
         Self::SubagentCancel,
+        Self::WorktreeList,
+        Self::WorktreeGc,
+        Self::WorktreeDbPath,
+        Self::WorktreeCreate,
+        Self::WorktreeResume,
+        Self::Health,
     ];
 
     /// The wire method, or `None` outside the closed set. Compaction and
@@ -95,6 +107,12 @@ impl HostMethod {
             "aster/session/background-tasks/v1" => Self::SessionBackgroundTasks,
             "aster/session/background-tasks/stop/v1" => Self::SessionBackgroundTaskStop,
             "aster/subagent/cancel" => Self::SubagentCancel,
+            "aster/git/worktree/list" => Self::WorktreeList,
+            "aster/git/worktree/gc" => Self::WorktreeGc,
+            "aster/git/worktree/db/path" => Self::WorktreeDbPath,
+            "aster/git/worktree/create_from_worktree_sync" => Self::WorktreeCreate,
+            "aster/git/worktree/resume_session" => Self::WorktreeResume,
+            "aster/health" => Self::Health,
             _ if method.starts_with("aster/compact_conversation") => Self::CompactConversation,
             _ if method.starts_with("aster/interject") => Self::Interject,
             _ => return None,
@@ -128,6 +146,12 @@ impl HostMethod {
             Self::SessionBackgroundTasks => "aster/session/background-tasks/v1",
             Self::SessionBackgroundTaskStop => "aster/session/background-tasks/stop/v1",
             Self::SubagentCancel => "aster/subagent/cancel",
+            Self::WorktreeList => "aster/git/worktree/list",
+            Self::WorktreeGc => "aster/git/worktree/gc",
+            Self::WorktreeDbPath => "aster/git/worktree/db/path",
+            Self::WorktreeCreate => "aster/git/worktree/create_from_worktree_sync",
+            Self::WorktreeResume => "aster/git/worktree/resume_session",
+            Self::Health => "aster/health",
         }
     }
 }
@@ -397,6 +421,14 @@ impl AsterCodeAgent {
             HostMethod::SessionBackgroundTasks => self.handle_background_tasks(args).await,
             HostMethod::SessionBackgroundTaskStop => self.handle_background_task_stop(args).await,
             HostMethod::SubagentCancel => self.handle_subagent_cancel(args).await,
+            HostMethod::WorktreeList => super::worktree_methods::list(args).await,
+            HostMethod::WorktreeGc => super::worktree_methods::gc(args).await,
+            HostMethod::WorktreeDbPath => super::worktree_methods::db_path(args),
+            HostMethod::WorktreeCreate => super::worktree_methods::unsupported("create worktree"),
+            HostMethod::WorktreeResume => {
+                super::worktree_methods::unsupported("resume a session in a worktree")
+            }
+            HostMethod::Health => ext_json(serde_json::json!({ "ok": true })),
         }
     }
 

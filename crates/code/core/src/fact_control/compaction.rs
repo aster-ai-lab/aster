@@ -37,7 +37,6 @@ pub(super) struct SessionCompact {
     pub(super) budget: crate::compaction::CompactionBudget,
     pub(super) fixed_prompt_tokens: Arc<AtomicU64>,
     pub(super) prompt_tokens: Arc<AtomicU64>,
-    pub(super) repeats: Arc<Mutex<std::collections::HashMap<String, RepeatObservation>>>,
 }
 
 impl Compactor for SessionCompact {
@@ -62,7 +61,6 @@ impl Compactor for SessionCompact {
         let window = budget.max_context_tokens as u64;
         let fixed_tokens = self.fixed_prompt_tokens.load(Ordering::SeqCst) as usize;
         let used = self.prompt_tokens.load(Ordering::SeqCst);
-        let repeats = Arc::clone(&self.repeats);
         let messages = messages.to_vec();
         let kept = kept.to_vec();
         let retain_source = artifacts.is_some();
@@ -226,12 +224,6 @@ impl Compactor for SessionCompact {
                         .await;
                 }
             }
-            // Compaction may drop earlier calls, so reset repeat back-references
-            // so future identical outputs re-emit full bytes instead of dangling.
-            repeats
-                .lock()
-                .unwrap_or_else(std::sync::PoisonError::into_inner)
-                .clear();
             Ok(summary)
         })
     }

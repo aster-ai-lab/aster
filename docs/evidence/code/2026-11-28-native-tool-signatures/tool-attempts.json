@@ -1,0 +1,716 @@
+[
+  {
+    "experiment": "signature",
+    "scenario": "program_approved",
+    "trial": "1-candidate",
+    "attempts": [
+      {
+        "fields": [
+          "source"
+        ],
+        "outcome": "failed",
+        "diagnostic": "Invalid arguments for tool 'program': $: \"type\" is a required property; $: {\"source\":\"async function run(ctx, inputs) { return { marker: [38 * 7, \\\"VY\\\"].join(\\\"-\\\") }; }\"} is not valid under any of the schemas listed in the 'oneOf' keyword [permanent - change the arguments before retrying]"
+      },
+      {
+        "fields": [
+          "type",
+          "source"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "signature",
+    "scenario": "program_approved",
+    "trial": "1-release",
+    "attempts": [
+      {
+        "fields": [
+          "type",
+          "source"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "signature",
+    "scenario": "program_approved",
+    "trial": "2-candidate",
+    "attempts": [
+      {
+        "fields": [
+          "source"
+        ],
+        "outcome": "failed",
+        "diagnostic": "Invalid arguments for tool 'program': $: \"type\" is a required property; $: {\"source\":\"async function run(ctx, inputs) { return { marker: [38 * 7, \\\"VY\\\"].join(\\\"-\\\") }; }\"} is not valid under any of the schemas listed in the 'oneOf' keyword [permanent - change the arguments before retrying]"
+      },
+      {
+        "fields": [
+          "type",
+          "source"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "signature",
+    "scenario": "program_approved",
+    "trial": "2-release",
+    "attempts": [
+      {
+        "fields": [
+          "type",
+          "source"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "discriminator",
+    "scenario": "program_approved",
+    "trial": "1-candidate",
+    "attempts": [
+      {
+        "fields": [
+          "type",
+          "source"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "discriminator",
+    "scenario": "program_approved",
+    "trial": "1-release",
+    "attempts": [
+      {
+        "fields": [
+          "type",
+          "source"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "discriminator",
+    "scenario": "program_approved",
+    "trial": "2-candidate",
+    "attempts": [
+      {
+        "fields": [
+          "type",
+          "source"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "discriminator",
+    "scenario": "program_approved",
+    "trial": "2-release",
+    "attempts": [
+      {
+        "fields": [
+          "type",
+          "source"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "discriminator",
+    "scenario": "form",
+    "trial": "1-candidate",
+    "attempts": [
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "experiment": "discriminator",
+    "scenario": "form",
+    "trial": "1-release",
+    "attempts": [
+      {
+        "fields": [
+          "prompt",
+          "form"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: field requires $bindState"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: field state has the wrong type or size"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "discriminator",
+    "scenario": "form",
+    "trial": "2-candidate",
+    "attempts": [
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "experiment": "discriminator",
+    "scenario": "form",
+    "trial": "2-release",
+    "attempts": [
+      {
+        "fields": [
+          "prompt",
+          "form"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "experiment": "form-native-isolation",
+    "scenario": "form",
+    "trial": "1-candidate",
+    "attempts": [
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "experiment": "form-native-isolation",
+    "scenario": "form",
+    "trial": "1-release",
+    "attempts": [
+      {
+        "fields": [
+          "prompt",
+          "form"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "experiment": "form-native-isolation",
+    "scenario": "form",
+    "trial": "2-candidate",
+    "attempts": [
+      {
+        "fields": [
+          "prompt",
+          "form"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: field requires $bindState"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: field state has the wrong type or size"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "form-native-isolation",
+    "scenario": "form",
+    "trial": "2-release",
+    "attempts": [
+      {
+        "fields": [
+          "prompt",
+          "form"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "experiment": "failure-fallback",
+    "scenario": "form",
+    "trial": "1-candidate",
+    "attempts": [
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "experiment": "failure-fallback",
+    "scenario": "form",
+    "trial": "1-release",
+    "attempts": [
+      {
+        "fields": [
+          "prompt",
+          "form"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: document bound exceeded"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: field requires $bindState"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: field state has the wrong type or size"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "succeeded",
+        "diagnostic": null
+      }
+    ]
+  },
+  {
+    "experiment": "failure-fallback",
+    "scenario": "form",
+    "trial": "2-candidate",
+    "attempts": [
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  },
+  {
+    "experiment": "failure-fallback",
+    "scenario": "form",
+    "trial": "2-release",
+    "attempts": [
+      {
+        "fields": [
+          "prompt",
+          "form"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "failed",
+        "diagnostic": "invalid JSON Render document: expected root/elements/state"
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 3 times with identical arguments. Change your approach instead of repeating this call."
+      },
+      {
+        "fields": [
+          "form",
+          "prompt"
+        ],
+        "outcome": "denied",
+        "diagnostic": "Tool 'ask_user_form' has been called 4 times with identical arguments. Change your approach instead of repeating this call."
+      }
+    ]
+  }
+]

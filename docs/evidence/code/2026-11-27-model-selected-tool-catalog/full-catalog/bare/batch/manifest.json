@@ -1,0 +1,39 @@
+{
+  "prompts": [
+    "Read provider.conf and mirror.conf together using one native batch of two read calls. Report the exact provider and mirror values.",
+    "Read policy.conf, then report its approval value together with the prior mirror value."
+  ],
+  "expected_markers": [
+    [
+      "copper-47VX",
+      "amber-52LH"
+    ],
+    [
+      "cedar-19QN",
+      "amber-52LH"
+    ]
+  ],
+  "fixtures_sha256": {
+    "provider.conf": "abd3db5fb5e20908a611981a598d2b99fdfb21fec3292c1ca969763adb0b7fd6",
+    "mirror.conf": "c924c51a2e7224a04d821a9ac257e91a1d187fe852600dd0b7897a9dbda361bb",
+    "policy.conf": "993e592b139decbe637b9fca285639a21a6fed18803e1c1222ca04cd2eafad8a"
+  },
+  "required_tool": "batch",
+  "scenario": "batch",
+  "model": "deepseek-flash",
+  "controls": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 1024
+  },
+  "orders": [
+    [
+      "release",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "release"
+    ]
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "trials": {
+    "1-release": {
+      "arm": "release",
+      "total_tokens": 34970,
+      "classification_calls": 1,
+      "classification_tokens": 262,
+      "memory_extraction_calls": 2,
+      "exact_command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg",
+      "command_exit_code": 0,
+      "verified_effect_digest": "046e67e0a546825245cf6193a26d9c5b7789a1d49b7cf75b079c7299c5737b67"
+    },
+    "1-candidate": {
+      "arm": "candidate",
+      "total_tokens": 34714,
+      "classification_calls": 0,
+      "classification_tokens": 0,
+      "memory_extraction_calls": 2,
+      "exact_command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg",
+      "command_exit_code": 0,
+      "verified_effect_digest": "046e67e0a546825245cf6193a26d9c5b7789a1d49b7cf75b079c7299c5737b67"
+    },
+    "2-candidate": {
+      "arm": "candidate",
+      "total_tokens": 34724,
+      "classification_calls": 0,
+      "classification_tokens": 0,
+      "memory_extraction_calls": 2,
+      "exact_command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg",
+      "command_exit_code": 0,
+      "verified_effect_digest": "046e67e0a546825245cf6193a26d9c5b7789a1d49b7cf75b079c7299c5737b67"
+    },
+    "2-release": {
+      "arm": "release",
+      "total_tokens": 34986,
+      "classification_calls": 1,
+      "classification_tokens": 262,
+      "memory_extraction_calls": 2,
+      "exact_command": "test -f service.cfg && grep -Fx 'workers=12' service.cfg",
+      "command_exit_code": 0,
+      "verified_effect_digest": "046e67e0a546825245cf6193a26d9c5b7789a1d49b7cf75b079c7299c5737b67"
+    }
+  },
+  "medians": {
+    "release": {
+      "total_tokens": 34978.0,
+      "classification_calls": 1.0,
+      "classification_tokens": 262.0,
+      "memory_extraction_calls": 2.0
+    },
+    "candidate": {
+      "total_tokens": 34719.0,
+      "classification_calls": 0.0,
+      "classification_tokens": 0.0,
+      "memory_extraction_calls": 2.0
+    }
+  }
+}

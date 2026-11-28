@@ -312,7 +312,7 @@ impl crate::agent::TurnEngine {
         let intent = self
             .run_intent_classification(prompt, Some(session_id), event_tx, cancel)
             .await?
-            .unwrap_or(crate::prompts::AgentStyle::GeneralPurpose);
+            .and_then(crate::loop_checkpoint::ReadOnlySynthesisIntent::from_style);
         self.fact_resolve_deferred_read_only_synthesis(intent);
         Ok(())
     }

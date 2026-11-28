@@ -1,0 +1,358 @@
+[
+  {
+    "arm": "reference",
+    "max_items": 1,
+    "shapes": [
+      0,
+      4
+    ],
+    "requests": [
+      {
+        "label": "reference-1-0",
+        "related_count": 0,
+        "stored": true,
+        "prompt_tokens": 465,
+        "completion_tokens": 226,
+        "total_tokens": 691,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 465,
+        "request": {
+          "user_prompt_bytes": 1733,
+          "related_rows": [],
+          "proposal": "{\"items\":[{\"memory_type\":\"semantic\",\"content\":\"Cedar 项目的发布流程已正式更新：容器重建改为星期三 09:30 UTC，替代此前星期五 18:00 UTC 的安排；签名、清单和通知流程继续照常使用。\",\"importance\":0.95,\"confidence\":0.98,\"tags\":[\"cedar\",\"release-workflow\",\"container-rebuild\",\"schedule\"],\"source\":\"preference\",\"scope\":\"workspace\",\"reason\":\"用户明确要求长期记住，未来涉及 Cedar 发布排期时需使用新时间并知道旧安排已作废。\",\"evolution\":{\"kind\":\"preference\",\"pattern_key\":\"cedar.release.container_rebuild_schedule\",\"title\":\"Cedar 容器重建时间\",\"summary\":\"Cedar 容器重建固定在星期三 09:30 UTC，取代原星期五 18:00 UTC 安排。\",\"instructions\":[\"Cedar 容器重建安排在星期三 09:30 UTC。\",\"不要使用旧的星期五 18:00 UTC 容器重建安排。\",\"签名、清单和通知流程保持原样不变。\"]}}]}"
+        }
+      },
+      {
+        "label": "reference-1-4",
+        "related_count": 4,
+        "stored": false,
+        "prompt_tokens": 755,
+        "completion_tokens": 240,
+        "total_tokens": 995,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 755,
+        "request": {
+          "user_prompt_bytes": 2860,
+          "related_rows": [
+            {
+              "id": "@1",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC."
+            },
+            {
+              "id": "@2",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team."
+            },
+            {
+              "id": "@3",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow stores final review checklists in the regional audit diary."
+            },
+            {
+              "id": "@4",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6."
+            }
+          ],
+          "proposal": "{\"items\":[{\"memory_type\":\"procedural\",\"content\":\"Cedar 项目的发布流程中，容器重建已改为每周三 09:30 UTC（替代此前星期五 18:00 UTC 的安排）；签名、清单和通知流程保持不变。\",\"importance\":0.95,\"confidence\":0.97,\"tags\":[\"cedar\",\"release-workflow\",\"container-rebuild\",\"schedule\"],\"source\":\"preference\",\"scope\":\"workspace\",\"reason\":\"这是用户明确要求长期记住的发布流程变更，未来执行 Cedar 发布时必须使用新的容器重建时间。\",\"supersedes\":[\"@1\"],\"conflicts_with\":[],\"evolution\":{\"kind\":\"skill\",\"pattern_key\":\"cedar.release.container_rebuild_schedule\",\"title\":\"Cedar 容器重建时间\",\"summary\":\"Cedar 发布流程的容器重建改为每周三 09:30 UTC，签名、清单和通知流程不变。\",\"instructions\":[\"Cedar 容器重建安排在每周三 09:30 UTC 执行。\",\"不要使用旧的星期五 18:00 UTC 容器重建安排。\",\"签名、清单和通知流程继续按原有方式执行。\"]}}]}"
+        }
+      }
+    ]
+  },
+  {
+    "arm": "candidate",
+    "max_items": 2,
+    "shapes": [
+      0,
+      4
+    ],
+    "requests": [
+      {
+        "label": "candidate-2-0",
+        "related_count": 0,
+        "stored": true,
+        "prompt_tokens": 462,
+        "completion_tokens": 243,
+        "total_tokens": 705,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 462,
+        "request": {
+          "user_prompt_bytes": 1742,
+          "related_rows": [],
+          "proposal": "{\"items\":[{\"memory_type\":\"procedural\",\"content\":\"Cedar 项目的发布流程已正式更新：容器重建改为星期三 09:30 UTC，替代此前星期五 18:00 UTC 的容器重建安排；签名、清单和通知流程继续照常使用。\",\"importance\":0.95,\"confidence\":0.98,\"tags\":[\"cedar\",\"release-workflow\",\"container-rebuild\",\"schedule\"],\"source\":\"decision\",\"scope\":\"workspace\",\"reason\":\"这是用户明确要求长期记住的发布流程变更，未来执行 Cedar 发布时必须使用新的容器重建时间，避免沿用已废弃的星期五 18:00 UTC 安排。\",\"evolution\":{\"kind\":\"skill\",\"pattern_key\":\"cedar.release.container_rebuild_schedule\",\"title\":\"Cedar 容器重建时间\",\"summary\":\"Cedar 发布流程的容器重建已改为星期三 09:30 UTC，替代星期五 18:00 UTC。\",\"instructions\":[\"Cedar 容器重建安排在星期三 09:30 UTC 执行。\",\"不要使用旧的星期五 18:00 UTC 容器重建安排。\",\"签名、清单和通知流程保持原样继续执行。\"]}}]}"
+        }
+      },
+      {
+        "label": "candidate-2-4",
+        "related_count": 4,
+        "stored": true,
+        "prompt_tokens": 750,
+        "completion_tokens": 244,
+        "total_tokens": 994,
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 366,
+        "request": {
+          "user_prompt_bytes": 2864,
+          "related_rows": [
+            {
+              "id": "@1",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC."
+            },
+            {
+              "id": "@2",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team."
+            },
+            {
+              "id": "@3",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow stores final review checklists in the regional audit diary."
+            },
+            {
+              "id": "@4",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6."
+            }
+          ],
+          "proposal": "{\"items\":[{\"memory_type\":\"procedural\",\"content\":\"Cedar 项目的发布流程中，容器重建已正式改为每周星期三 09:30 UTC；此安排替代此前星期五 18:00 UTC 的容器重建时间。签名、清单和通知流程保持不变。\",\"importance\":0.95,\"confidence\":0.97,\"tags\":[\"cedar\",\"release-workflow\",\"container-rebuild\",\"schedule\"],\"source\":\"decision\",\"scope\":\"workspace\",\"reason\":\"这是用户明确要求长期记住的正式流程变更，未来执行 Cedar 发布时必须使用新的容器重建时间。\",\"evolution\":{\"kind\":\"skill\",\"pattern_key\":\"cedar.release.container_rebuild_schedule\",\"title\":\"Cedar 容器重建时间\",\"summary\":\"Cedar 发布流程的容器重建定于每周星期三 09:30 UTC，签名、清单和通知流程照常。\",\"instructions\":[\"执行 Cedar 发布时，将容器重建安排在每周星期三 09:30 UTC。\",\"不要使用旧的星期五 18:00 UTC 容器重建安排。\",\"签名、清单和通知流程继续按原有方式执行。\"]},\"supersedes\":[\"@1\"]}]}"
+        }
+      }
+    ]
+  },
+  {
+    "arm": "candidate",
+    "max_items": 3,
+    "shapes": [
+      4,
+      0
+    ],
+    "requests": [
+      {
+        "label": "candidate-3-4",
+        "related_count": 4,
+        "stored": true,
+        "prompt_tokens": 750,
+        "completion_tokens": 248,
+        "total_tokens": 998,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 750,
+        "request": {
+          "user_prompt_bytes": 2864,
+          "related_rows": [
+            {
+              "id": "@1",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC."
+            },
+            {
+              "id": "@2",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team."
+            },
+            {
+              "id": "@3",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow stores final review checklists in the regional audit diary."
+            },
+            {
+              "id": "@4",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6."
+            }
+          ],
+          "proposal": "{\"items\":[{\"memory_type\":\"procedural\",\"content\":\"Cedar 项目的发布流程中，容器重建已改为每周三 09:30 UTC；此安排替代此前每周五 18:00 UTC 的容器重建安排。签名、清单和通知流程继续照常使用。\",\"importance\":0.95,\"confidence\":0.97,\"tags\":[\"cedar\",\"release-workflow\",\"container-rebuild\",\"schedule\"],\"source\":\"decision\",\"scope\":\"workspace\",\"reason\":\"这是用户明确要求长期记住的正式流程变更，未来执行 Cedar 发布时必须使用新的容器重建时间。\",\"supersedes\":[\"@1\"],\"evolution\":{\"kind\":\"skill\",\"pattern_key\":\"cedar.release.container_rebuild_schedule\",\"title\":\"Cedar 容器重建时间\",\"summary\":\"Cedar 发布流程的容器重建固定在每周三 09:30 UTC，替代原周五 18:00 UTC 安排。\",\"instructions\":[\"执行 Cedar 发布时，将容器重建安排在每周三 09:30 UTC。\",\"不要沿用旧的每周五 18:00 UTC 容器重建安排。\",\"签名、清单和通知流程继续按原有流程执行。\"]}}]}"
+        }
+      },
+      {
+        "label": "candidate-3-0",
+        "related_count": 0,
+        "stored": true,
+        "prompt_tokens": 462,
+        "completion_tokens": 228,
+        "total_tokens": 690,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 206,
+        "request": {
+          "user_prompt_bytes": 1742,
+          "related_rows": [],
+          "proposal": "{\"items\":[{\"memory_type\":\"procedural\",\"content\":\"Cedar 项目的发布流程已正式更新：容器重建改为星期三 09:30 UTC，替代此前星期五 18:00 UTC 的容器重建安排；签名、清单和通知流程继续照常使用。\",\"importance\":0.95,\"confidence\":0.98,\"tags\":[\"cedar\",\"release-workflow\",\"container-rebuild\",\"schedule\"],\"source\":\"decision\",\"scope\":\"workspace\",\"reason\":\"这是用户明确要求长期记住的发布流程变更，未来涉及 Cedar 发布排期时必须使用新时间而非旧的星期五安排。\",\"evolution\":{\"kind\":\"skill\",\"pattern_key\":\"cedar.release.container_rebuild_schedule\",\"title\":\"Cedar 容器重建时间\",\"summary\":\"Cedar 容器重建已改为星期三 09:30 UTC，取代星期五 18:00 UTC。\",\"instructions\":[\"Cedar 容器重建安排在星期三 09:30 UTC。\",\"不要使用旧的星期五 18:00 UTC 容器重建安排。\",\"签名、清单和通知流程保持原样继续使用。\"]}}]}"
+        }
+      }
+    ]
+  },
+  {
+    "arm": "reference",
+    "max_items": 4,
+    "shapes": [
+      4,
+      0
+    ],
+    "requests": [
+      {
+        "label": "reference-4-4",
+        "related_count": 4,
+        "stored": false,
+        "prompt_tokens": 755,
+        "completion_tokens": 245,
+        "total_tokens": 1000,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 755,
+        "request": {
+          "user_prompt_bytes": 2860,
+          "related_rows": [
+            {
+              "id": "@1",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow runs the container rebuild on Friday at 18:00 UTC."
+            },
+            {
+              "id": "@2",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow sends the stage-specific handbook link to the duty team."
+            },
+            {
+              "id": "@3",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow stores final review checklists in the regional audit diary."
+            },
+            {
+              "id": "@4",
+              "type": "procedural",
+              "importance": 0.9200000166893005,
+              "source": "workflow",
+              "tags": [
+                "llm",
+                "extracted",
+                "workflow"
+              ],
+              "content": "The Cedar release workflow signs provenance attestations with builder identity RIVER-6."
+            }
+          ],
+          "proposal": "{\"items\":[{\"memory_type\":\"procedural\",\"content\":\"Cedar 项目的发布流程中，容器重建安排在星期三 09:30 UTC；签名、清单和通知流程继续照常使用。此安排替代此前星期五 18:00 UTC 的容器重建时间。\",\"importance\":0.95,\"confidence\":0.97,\"tags\":[\"cedar\",\"release-workflow\",\"container-rebuild\",\"schedule\"],\"source\":\"preference\",\"scope\":\"workspace\",\"reason\":\"用户明确要求长期记住 Cedar 发布流程的正式更新，未来执行发布时需按新时间安排。\",\"supersedes\":[\"@1\"],\"conflicts_with\":[],\"evolution\":{\"kind\":\"preference\",\"pattern_key\":\"cedar.release.container_rebuild_schedule\",\"title\":\"Cedar 容器重建时间\",\"summary\":\"Cedar 发布流程的容器重建改为星期三 09:30 UTC，替代星期五 18:00 UTC。\",\"instructions\":[\"Cedar 发布流程的容器重建安排在星期三 09:30 UTC。\",\"不要使用旧的星期五 18:00 UTC 容器重建安排。\",\"签名、清单和通知流程继续照常使用。\"]}}]}"
+        }
+      },
+      {
+        "label": "reference-4-0",
+        "related_count": 0,
+        "stored": true,
+        "prompt_tokens": 465,
+        "completion_tokens": 220,
+        "total_tokens": 685,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 465,
+        "request": {
+          "user_prompt_bytes": 1733,
+          "related_rows": [],
+          "proposal": "{\"items\":[{\"memory_type\":\"semantic\",\"content\":\"Cedar 项目的发布流程已正式更新：容器重建改为星期三 09:30 UTC，替代此前星期五 18:00 UTC 的安排；签名、清单和通知流程继续照常使用。\",\"importance\":0.95,\"confidence\":0.98,\"tags\":[\"cedar\",\"release\",\"container-rebuild\",\"schedule\"],\"source\":\"preference\",\"scope\":\"workspace\",\"reason\":\"这是用户明确要求长期记住的发布流程变更，未来涉及 Cedar 发布排期时必须以新时间为准。\",\"evolution\":{\"kind\":\"preference\",\"pattern_key\":\"cedar.release.container_rebuild_schedule\",\"title\":\"Cedar 容器重建时间\",\"summary\":\"Cedar 容器重建固定在星期三 09:30 UTC，取代旧的星期五 18:00 UTC。\",\"instructions\":[\"Cedar 容器重建安排在星期三 09:30 UTC。\",\"不要使用旧的星期五 18:00 UTC 容器重建安排。\",\"签名、清单和通知流程保持原样不变。\"]}}]}"
+        }
+      }
+    ]
+  }
+]

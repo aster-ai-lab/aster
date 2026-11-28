@@ -828,9 +828,9 @@ async fn streaming_split_cr_does_not_emit_partial_event() {
 
     let wire = openai_hello_sse("\r\n");
     let blank = wire.find("\r\n\r\n").expect("crlf blank line");
-    let head = wire[..blank + 3].to_string();
-    assert!(head.ends_with('\r'), "the held suffix is a bare CR");
-    let tail = wire[blank + 3..].to_string();
+    let head = wire[..blank + 1].to_string();
+    assert!(head.ends_with('\r'), "the held suffix is the data-line CR");
+    let tail = wire[blank + 1..].to_string();
 
     let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
     let parked = std::sync::Arc::new(tokio::sync::Notify::new());
@@ -1679,4 +1679,150 @@ fn openai_convert_tools_strips_examples_and_preserves_schema() {
         .get("additionalProperties")
         .is_none());
     assert_eq!(params["required"], serde_json::json!(["file_path"]));
+}
+
+#[test]
+fn tool_schema_projection_preserves_data_and_names_inside_schema_maps() {
+    use serde_json::json;
+
+    let literal = json!({"examples": ["real data"], "maximum": 1_000_000});
+    let extension = json!({"items": {"examples": [1], "minLength": 1}});
+    let tool = ToolDefinition {
+        name: "custom".into(),
+        description: "Accept named data".into(),
+        parameters: json!({
+            "type": "object",
+            "properties": {
+                "examples": {"type": "string", "examples": ["annotation"]},
+                "default": {"type": "object", "default": literal, "enum": [literal]},
+                "format": {"const": literal},
+                "categorized": {"items": {"anyOf": [{"type": "string", "examples": ["annotation"]}, false]}}
+            },
+            "$defs": {"examples": {"type": "number", "examples": [1]}},
+            "x-data": extension
+        }),
+    };
+    let converted = make_client().convert_tools(&[tool]);
+    let params = &converted[0]["function"]["parameters"];
+    assert_eq!(params["properties"]["examples"], json!({"type": "string"}));
+    assert_eq!(params["properties"]["default"]["default"], literal);
+    assert_eq!(params["properties"]["default"]["enum"][0], literal);
+    assert_eq!(params["properties"]["format"]["const"], literal);
+    assert_eq!(
+        params["properties"]["categorized"]["items"]["anyOf"],
+        json!([{"type":"string"}, false])
+    );
+    assert_eq!(params["$defs"]["examples"], json!({"type":"number"}));
+    assert_eq!(params["x-data"], extension);
+}
+
+#[test]
+fn deepseek_structured_chat_projects_only_types_implied_by_literal_values() {
+    use serde_json::json;
+
+    let tools = [ToolDefinition {
+        name: "evaluate".into(),
+        description: "Evaluate the declared mode".into(),
+        parameters: json!({
+            "type": "object",
+            "properties": {
+                "mode": {"type": "string", "enum": ["fast", "verified"], "description": "Evaluation mode", "default": "verified"},
+                "method": {"type": "string", "const": "source"},
+                "mixed": {"type": "string", "enum": ["default", 1]},
+                "number": {"type": "integer", "enum": [1, 2]},
+                "optional": {"type": ["string", "null"], "enum": ["review", null]}
+            },
+            "required": ["mode"]
+        }),
+    }];
+    let baseline = make_client().convert_tools(&tools);
+    assert_eq!(baseline[0]["function"]["parameters"], tools[0].parameters);
+    let client = OpenAiClient::new("fixture".into(), "deepseek-flash".into());
+    let directive = structured::StructuredDirective {
+        force_tool: Some("evaluate".to_owned()),
+        response_format: None,
+        validation_schema: Some(tools[0].parameters.clone()),
+    };
+    let request = client.build_chat_request(&[], None, &tools, Some(&directive));
+    let params = &request["tools"][0]["function"]["parameters"];
+    let mut expected = tools[0].parameters.clone();
+    for field in ["mode", "method"] {
+        expected["properties"][field]
+            .as_object_mut()
+            .unwrap()
+            .remove("type");
+    }
+    assert_eq!(params, &expected);
+
+    let original = jsonschema::draft202012::options()
+        .build(&tools[0].parameters)
+        .unwrap();
+    let wire = jsonschema::draft202012::options().build(params).unwrap();
+    for (value, valid) in [
+        (
+            json!({"mode":"fast", "method":"source", "optional":null}),
+            true,
+        ),
+        (
+            json!({"mode":"verified", "mixed":"default", "number":2}),
+            true,
+        ),
+        (json!({"mode":true}), false),
+        (json!({"mode":"other"}), false),
+        (json!({"mode":"fast", "method":"unknown"}), false),
+        (json!({"mode":"fast", "mixed":1}), false),
+    ] {
+        assert_eq!(original.is_valid(&value), valid, "{value}");
+        assert_eq!(wire.is_valid(&value), valid, "{value}");
+    }
+}
+
+#[test]
+fn deepseek_regular_tools_keep_all_typed_fields_and_exact_bounds() {
+    use serde_json::json;
+
+    let parameters = json!({
+        "type": "object",
+        "properties": {
+            "offset": {"type": "integer", "minimum": -10, "maximum": 99, "description": "Offset."},
+            "labels": {"type": "array", "maxItems": 3, "items": {"type": "string", "maxLength": 32}},
+            "cursor": {"type": "object", "properties": {"row": {"type": "integer", "minimum": 0}}},
+            "ratio": {"type": "number", "minimum": 0.5, "maximum": 2},
+            "payload": {"type": "object", "default": {"minimum": 7, "maximum": 13}},
+        },
+        "required": ["offset"],
+        "x-extension": {"type": "integer", "maximum": 13}
+    });
+    let tools = [ToolDefinition {
+        name: "bounded_tool".into(),
+        description: "Inspect bounded data".into(),
+        parameters: parameters.clone(),
+    }];
+    let client = OpenAiClient::new("fixture".into(), "deepseek-flash".into());
+    let request = client.build_chat_request(&[Message::user("inspect")], None, &tools, None);
+    let function = &request["tools"][0]["function"];
+    assert_eq!(function["name"], "bounded_tool");
+    assert_eq!(function["description"], "Inspect bounded data");
+    assert_eq!(
+        function["parameters"],
+        json!({
+            "properties": {
+                "offset": {"type": "integer", "description": "Offset. (-10–99)"},
+                "labels": {"type": "array", "description": "≤3 items", "items": {"type": "string", "description": "≤32 chars"}},
+                "cursor": {"type": "object", "properties": {"row": {"type": "integer", "description": "≥0"}}},
+                "ratio": {"type": "number", "minimum": 0.5, "maximum": 2},
+                "payload": {"type": "object", "default": {"minimum": 7, "maximum": 13}},
+            },
+            "required": ["offset"],
+            "x-extension": {"type": "integer", "maximum": 13}
+        })
+    );
+    let directive = structured::StructuredDirective {
+        force_tool: Some("bounded_tool".into()),
+        response_format: None,
+        validation_schema: Some(parameters.clone()),
+    };
+    let request = client.build_chat_request(&[], None, &tools, Some(&directive));
+    assert_eq!(request["tools"][0]["function"]["parameters"], parameters);
+    assert_eq!(tools[0].parameters, parameters);
 }

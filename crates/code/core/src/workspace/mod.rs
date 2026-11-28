@@ -596,6 +596,13 @@ pub trait WorkspaceCommandRunner: Send + Sync {
         None
     }
 
+    /// Whether [`Self::exec`] supports Run-owned background execution with
+    /// streaming output, final capture accounting, and process-group cleanup
+    /// when its execution future is dropped.
+    fn supports_background_execution(&self) -> bool {
+        false
+    }
+
     async fn exec(&self, request: CommandRequest) -> Result<CommandOutput>;
 
     /// Cooperatively cancel an owned command and return its original terminal.

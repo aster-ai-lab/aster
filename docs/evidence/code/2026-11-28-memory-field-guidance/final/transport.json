@@ -1,0 +1,502 @@
+[
+  {
+    "arm": "reference",
+    "case": "short-1",
+    "passed": true,
+    "request_sha256": "dbefdecb8b9c69a216687d213a65e856f93d4f1657c3c6223a2a3686547681c4",
+    "system_sha256": "3ed3659a6d343427dd8857942dac1fa4fed64e0ec868ac7f3e95a63b314d32e4",
+    "evidence_sha256": "1e10246bdb51a3c5fe34d1d6f1e39dd3a2c67525286a4b5ff34fe0fa9a715218",
+    "usage": {
+      "prompt_tokens": 531,
+      "completion_tokens": 5,
+      "total_tokens": 536,
+      "prompt_tokens_details": {
+        "cached_tokens": 384
+      },
+      "prompt_cache_hit_tokens": 384,
+      "prompt_cache_miss_tokens": 147
+    },
+    "response": {
+      "items": []
+    }
+  },
+  {
+    "arm": "candidate",
+    "case": "short-1",
+    "passed": true,
+    "request_sha256": "ef40ff2d89e94a5408355a0f6dff4d10c4dcd6cc0c6f86734d22bb1402af8be2",
+    "system_sha256": "a8cb919e8d15bee5a970addec477efa8bcc0b980f478031f959f23e81debd922",
+    "evidence_sha256": "1e10246bdb51a3c5fe34d1d6f1e39dd3a2c67525286a4b5ff34fe0fa9a715218",
+    "usage": {
+      "prompt_tokens": 491,
+      "completion_tokens": 5,
+      "total_tokens": 496,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 491
+    },
+    "response": {
+      "items": []
+    }
+  },
+  {
+    "arm": "candidate",
+    "case": "short-2",
+    "passed": true,
+    "request_sha256": "1ca507d26085f0716c85ed43a82f7e0dace050ae1f78c396e1d1d30763c9b82e",
+    "system_sha256": "a8cb919e8d15bee5a970addec477efa8bcc0b980f478031f959f23e81debd922",
+    "evidence_sha256": "e0c68d5ac8f4e4a638ada706c0624e0cc06732ae8104239487953d6661a75a4f",
+    "usage": {
+      "prompt_tokens": 426,
+      "completion_tokens": 5,
+      "total_tokens": 431,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 298
+    },
+    "response": {
+      "items": []
+    }
+  },
+  {
+    "arm": "reference",
+    "case": "short-2",
+    "passed": true,
+    "request_sha256": "3a7a54cb2507e8345b188a8a5c9c5e0b93b01a99eabd7dc16ad35bb71f15e32c",
+    "system_sha256": "3ed3659a6d343427dd8857942dac1fa4fed64e0ec868ac7f3e95a63b314d32e4",
+    "evidence_sha256": "e0c68d5ac8f4e4a638ada706c0624e0cc06732ae8104239487953d6661a75a4f",
+    "usage": {
+      "prompt_tokens": 466,
+      "completion_tokens": 5,
+      "total_tokens": 471,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 210
+    },
+    "response": {
+      "items": []
+    }
+  },
+  {
+    "arm": "reference",
+    "case": "project_fact",
+    "passed": true,
+    "request_sha256": "6dd32036f307cf0b37a95ccc947568c7d29786502007d550d3d002f1763a1a76",
+    "system_sha256": "3ed3659a6d343427dd8857942dac1fa4fed64e0ec868ac7f3e95a63b314d32e4",
+    "evidence_sha256": "f5a7af6639a82f1045575f95f6805c18e489d9c94aa6aefc0a41361b25bd2a00",
+    "usage": {
+      "prompt_tokens": 471,
+      "completion_tokens": 289,
+      "total_tokens": 760,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 215
+    },
+    "response": {
+      "items": [
+        {
+          "memory_type": "semantic",
+          "content": "En el proyecto Cobalto, el lector inicializa el perfil COBALT-BOOT-62 antes de abrir su índice; es una propiedad estable del proyecto, no una instrucción de sesión.",
+          "importance": 0.92,
+          "confidence": 0.96,
+          "tags": [
+            "cobalto",
+            "cobalt-boot-62",
+            "lector",
+            "inicializacion",
+            "arquitectura"
+          ],
+          "source": "project_fact",
+          "scope": "workspace",
+          "reason": "Evita que futuras sesiones asuman un orden de inicialización distinto o traten el perfil como configuración temporal.",
+          "evolution": {
+            "kind": "okf",
+            "pattern_key": "cobalto.lector.perfil.cobalt-boot-62",
+            "title": "Perfil COBALT-BOOT-62 en el lector",
+            "summary": "El lector de Cobalto inicializa el perfil COBALT-BOOT-62 antes de abrir su índice.",
+            "instructions": [
+              "Asume que el lector de Cobalto inicializa COBALT-BOOT-62 antes de abrir el índice.",
+              "Trata COBALT-BOOT-62 como propiedad estable del proyecto, no como ajuste de sesión.",
+              "No reordenes la inicialización del perfil y la apertura del índice sin confirmarlo."
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "arm": "candidate",
+    "case": "project_fact",
+    "passed": true,
+    "request_sha256": "d2428ae4f270f70424839f79a1dbe5b6db8e6b2726c738b07a7e0a6ab585cb78",
+    "system_sha256": "a8cb919e8d15bee5a970addec477efa8bcc0b980f478031f959f23e81debd922",
+    "evidence_sha256": "f5a7af6639a82f1045575f95f6805c18e489d9c94aa6aefc0a41361b25bd2a00",
+    "usage": {
+      "prompt_tokens": 431,
+      "completion_tokens": 130,
+      "total_tokens": 561,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 303
+    },
+    "response": {
+      "items": [
+        {
+          "content": "En el proyecto Cobalto, el lector inicializa el perfil COBALT-BOOT-62 antes de abrir su índice; es una propiedad estable del proyecto.",
+          "memory_type": "semantic",
+          "source": "project_fact",
+          "importance": 0.95,
+          "confidence": 0.98,
+          "tags": [
+            "cobalto",
+            "COBALT-BOOT-62",
+            "lector",
+            "índice"
+          ],
+          "scope": "workspace",
+          "reason": "Hecho estable del proyecto que debe aplicarse en futuras sesiones al trabajar con el lector de Cobalto.",
+          "evolution": null
+        }
+      ]
+    }
+  },
+  {
+    "arm": "candidate",
+    "case": "failure",
+    "passed": true,
+    "request_sha256": "fd17b0877e7c2c4e9c8daa024f0fb588eba78c383a0c32937c2ddd6583fd7c3a",
+    "system_sha256": "a8cb919e8d15bee5a970addec477efa8bcc0b980f478031f959f23e81debd922",
+    "evidence_sha256": "590dffcf89b020d15d5bc58480fc829639d93a2fb434a732f239574ff604a9bf",
+    "usage": {
+      "prompt_tokens": 435,
+      "completion_tokens": 261,
+      "total_tokens": 696,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 307
+    },
+    "response": {
+      "items": [
+        {
+          "content": "榉树项目出现 BEECH-LOCK-49 时，通常原因是读写锁迁移后，在关闭句柄之前就启动了新索引。预防与修复：先关闭前一个句柄，再启动新索引；以后遇到该错误先核对这个顺序。",
+          "memory_type": "procedural",
+          "source": "failure",
+          "importance": 0.95,
+          "confidence": 0.95,
+          "tags": [
+            "榉树",
+            "BEECH-LOCK-49",
+            "读写锁迁移",
+            "句柄",
+            "故障排查"
+          ],
+          "scope": "workspace",
+          "reason": "用户明确要求长期保留该故障原因与预防顺序，后续遇到同一错误可直接按此诊断。",
+          "evolution": {
+            "kind": "skill",
+            "pattern_key": "beech-lock-49-handle-order",
+            "title": "BEECH-LOCK-49 句柄关闭顺序",
+            "summary": "榉树项目出现 BEECH-LOCK-49 时，先核对是否在关闭旧句柄前启动了新索引。",
+            "instructions": [
+              "遇到 BEECH-LOCK-49 先检查读写锁迁移后的句柄与索引启动顺序。",
+              "确认是否在关闭前一个句柄之前就启动了新索引。",
+              "修复方式：先关闭前一个句柄，再启动新索引。"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "arm": "reference",
+    "case": "failure",
+    "passed": true,
+    "request_sha256": "3912e1b6d7a59bf8e8f639e5ab22e9bd879c2f701df76a7326520f2bac254998",
+    "system_sha256": "3ed3659a6d343427dd8857942dac1fa4fed64e0ec868ac7f3e95a63b314d32e4",
+    "evidence_sha256": "590dffcf89b020d15d5bc58480fc829639d93a2fb434a732f239574ff604a9bf",
+    "usage": {
+      "prompt_tokens": 475,
+      "completion_tokens": 268,
+      "total_tokens": 743,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 219
+    },
+    "response": {
+      "items": [
+        {
+          "memory_type": "procedural",
+          "content": "榉树项目读写锁迁移后若测试出现 BEECH-LOCK-49，通常是因为在关闭句柄之前就启动了新索引；正确顺序是先关闭前一个句柄，再启动新索引。以后遇到该错误，先核对这个顺序。",
+          "importance": 0.95,
+          "confidence": 0.97,
+          "tags": [
+            "榉树",
+            "BEECH-LOCK-49",
+            "读写锁迁移",
+            "句柄顺序",
+            "故障排查"
+          ],
+          "source": "failure",
+          "scope": "workspace",
+          "reason": "用户明确要求长期保留该故障原因与预防措施，后续遇到 BEECH-LOCK-49 可直接按此顺序排查。",
+          "evolution": {
+            "kind": "skill",
+            "pattern_key": "beech.lock49.handle.close.before.new.index",
+            "title": "BEECH-LOCK-49 句柄顺序排查",
+            "summary": "榉树项目出现 BEECH-LOCK-49 时，先核对是否在关闭旧句柄前启动了新索引。",
+            "instructions": [
+              "遇到 BEECH-LOCK-49 时，先检查启动新索引与关闭旧句柄的先后顺序。",
+              "确保先关闭前一个句柄，再启动新索引。",
+              "修复后重跑读写锁迁移相关测试确认错误消失。"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "arm": "reference",
+    "case": "ephemeral",
+    "passed": true,
+    "request_sha256": "5673a3c893a7740db093fb72c8e5c521efe4f16ecddebd482101555800053b08",
+    "system_sha256": "3ed3659a6d343427dd8857942dac1fa4fed64e0ec868ac7f3e95a63b314d32e4",
+    "evidence_sha256": "f96e574c0044f5c270e2be931237ccdc4b24b67c97957b46556a29a6a55ab2cf",
+    "usage": {
+      "prompt_tokens": 448,
+      "completion_tokens": 5,
+      "total_tokens": 453,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 192
+    },
+    "response": {
+      "items": []
+    }
+  },
+  {
+    "arm": "candidate",
+    "case": "ephemeral",
+    "passed": true,
+    "request_sha256": "c07c6e7ef7a60177ec23f35087549cb5086d0582c9c16ff9d89f1ba71792fea5",
+    "system_sha256": "a8cb919e8d15bee5a970addec477efa8bcc0b980f478031f959f23e81debd922",
+    "evidence_sha256": "f96e574c0044f5c270e2be931237ccdc4b24b67c97957b46556a29a6a55ab2cf",
+    "usage": {
+      "prompt_tokens": 408,
+      "completion_tokens": 5,
+      "total_tokens": 413,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 280
+    },
+    "response": {
+      "items": []
+    }
+  },
+  {
+    "arm": "candidate",
+    "case": "preference",
+    "passed": true,
+    "request_sha256": "e793468a4ee9263b896e795ba8ba1bc6773b92e18bf69dd1c5e3c0981d0d15a8",
+    "system_sha256": "a8cb919e8d15bee5a970addec477efa8bcc0b980f478031f959f23e81debd922",
+    "evidence_sha256": "214fe81d74c5f946862af3fe70282dc470fe8d0aa00ad78a2268a2c0f8a73d10",
+    "usage": {
+      "prompt_tokens": 396,
+      "completion_tokens": 186,
+      "total_tokens": 582,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 268
+    },
+    "response": {
+      "items": [
+        {
+          "content": "砂柳项目的示例日志必须以 SAND-BOX-70 作为开场标记。",
+          "memory_type": "semantic",
+          "source": "preference",
+          "importance": 0.95,
+          "confidence": 0.98,
+          "tags": [
+            "砂柳项目",
+            "日志",
+            "标记",
+            "SAND-BOX-70"
+          ],
+          "scope": "workspace",
+          "reason": "用户明确要求长期记住，未来生成该项目示例日志时需遵守此标记约定。",
+          "evolution": {
+            "kind": "preference",
+            "pattern_key": "shaliu_example_log_opening_marker",
+            "title": "砂柳示例日志开场标记",
+            "summary": "砂柳项目的示例日志统一以 SAND-BOX-70 作为开场标记。",
+            "instructions": [
+              "生成砂柳项目的示例日志时，第一行使用 SAND-BOX-70 作为开场标记。",
+              "该约定仅适用于砂柳项目，不要推广到其他项目。"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "arm": "reference",
+    "case": "preference",
+    "passed": true,
+    "request_sha256": "a43cab176e645d79f798a91ffad3542752b428329c2a0f67d8e152e97b7c282b",
+    "system_sha256": "3ed3659a6d343427dd8857942dac1fa4fed64e0ec868ac7f3e95a63b314d32e4",
+    "evidence_sha256": "214fe81d74c5f946862af3fe70282dc470fe8d0aa00ad78a2268a2c0f8a73d10",
+    "usage": {
+      "prompt_tokens": 436,
+      "completion_tokens": 181,
+      "total_tokens": 617,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 180
+    },
+    "response": {
+      "items": [
+        {
+          "memory_type": "semantic",
+          "content": "砂柳项目的示例日志必须以 SAND-BOX-70 作为开场标记。",
+          "importance": 0.95,
+          "confidence": 0.98,
+          "tags": [
+            "砂柳项目",
+            "示例日志",
+            "标记",
+            "偏好"
+          ],
+          "source": "preference",
+          "scope": "workspace",
+          "reason": "用户明确要求长期记住该项目的日志标记约定，后续生成示例日志时需遵守。",
+          "evolution": {
+            "kind": "preference",
+            "pattern_key": "shaliu.sample.log.opening.marker",
+            "title": "砂柳日志开场标记",
+            "summary": "砂柳项目的示例日志统一以 SAND-BOX-70 作为开场标记。",
+            "instructions": [
+              "生成砂柳项目的示例日志时，第一行使用 SAND-BOX-70 作为开场标记。",
+              "该标记仅适用于砂柳项目，不要用于其他项目。"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "arm": "reference",
+    "case": "workflow",
+    "passed": true,
+    "request_sha256": "99bc4c6c3b667e0861a53564f2f79bc19ceacb1ae01454e3951eaa71a5e71b67",
+    "system_sha256": "3ed3659a6d343427dd8857942dac1fa4fed64e0ec868ac7f3e95a63b314d32e4",
+    "evidence_sha256": "fc5612eb370f0c80e022e2470a412de3c744e8675b005f86444fc788bd6ad974",
+    "usage": {
+      "prompt_tokens": 436,
+      "completion_tokens": 192,
+      "total_tokens": 628,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 180
+    },
+    "response": {
+      "items": [
+        {
+          "memory_type": "procedural",
+          "content": "Standard future Fir instrument workflow: check baseline FIRTAG-94 before calibrating; if baseline drift exceeds three units, repeat the baseline measurement before proceeding.",
+          "importance": 0.92,
+          "confidence": 0.95,
+          "tags": [
+            "fir",
+            "instrument",
+            "baseline",
+            "calibration",
+            "firtag-94"
+          ],
+          "source": "workflow",
+          "scope": "workspace",
+          "reason": "Explicit remember request defining a durable calibration workflow for future Fir instrument sessions.",
+          "evolution": {
+            "kind": "skill",
+            "pattern_key": "fir.instrument.baseline_check",
+            "title": "Fir baseline check before calibration",
+            "summary": "Check FIRTAG-94 baseline before calibrating and repeat baseline if drift exceeds three units.",
+            "instructions": [
+              "Before calibrating a Fir instrument, check baseline FIRTAG-94.",
+              "If baseline drift exceeds three units, repeat the baseline measurement before calibrating."
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "arm": "candidate",
+    "case": "workflow",
+    "passed": true,
+    "request_sha256": "b61e3d79cc68dc232ccb5189560102dc6085f4c9e224fc6a1cc0258114d53a4d",
+    "system_sha256": "a8cb919e8d15bee5a970addec477efa8bcc0b980f478031f959f23e81debd922",
+    "evidence_sha256": "fc5612eb370f0c80e022e2470a412de3c744e8675b005f86444fc788bd6ad974",
+    "usage": {
+      "prompt_tokens": 396,
+      "completion_tokens": 185,
+      "total_tokens": 581,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 268
+    },
+    "response": {
+      "items": [
+        {
+          "content": "Standard future Fir instrument workflow: check baseline FIRTAG-94 before calibrating; repeat the baseline if drift exceeds three units.",
+          "memory_type": "procedural",
+          "source": "workflow",
+          "importance": 0.95,
+          "confidence": 0.98,
+          "tags": [
+            "fir",
+            "firtag-94",
+            "calibration",
+            "baseline"
+          ],
+          "scope": "workspace",
+          "reason": "Defines the required pre-calibration baseline check and drift threshold for future Fir instrument work.",
+          "evolution": {
+            "kind": "skill",
+            "pattern_key": "fir-instrument-baseline-check",
+            "title": "Fir baseline check before calibration",
+            "summary": "Check FIRTAG-94 baseline before calibrating and repeat baseline if drift exceeds three units.",
+            "instructions": [
+              "Before calibrating a Fir instrument, check baseline FIRTAG-94.",
+              "If baseline drift exceeds three units, repeat the baseline measurement."
+            ]
+          }
+        }
+      ]
+    }
+  }
+]

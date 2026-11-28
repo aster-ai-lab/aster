@@ -1,0 +1,2 @@
+{"trial": "1-release", "turn": 1, "status": 200, "models": ["deepseek-flash"], "usage": [{"prompt_tokens": 7637, "completion_tokens": 113, "total_tokens": 7750, "prompt_cache_hit_tokens": 1152, "prompt_cache_miss_tokens": 6485}], "tool_calls": ["read", "read", "bash"], "tool_definitions": 26, "parallel_native_messages": [0], "stream": true}
+{"trial": "1-release", "turn": 1, "status": 400, "models": [], "usage": [], "tool_calls": [], "tool_definitions": 26, "parallel_native_messages": [0, 0, 1, 1, 1], "stream": true, "error": "invalid_request_error"}

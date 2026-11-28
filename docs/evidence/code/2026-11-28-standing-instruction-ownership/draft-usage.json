@@ -1,0 +1,92 @@
+[
+  {
+    "arm": "reference",
+    "system_bytes": 7359,
+    "usage": {
+      "prompt_tokens": 7202,
+      "completion_tokens": 1,
+      "total_tokens": 7203,
+      "prompt_tokens_details": {
+        "cached_tokens": 7040
+      },
+      "prompt_cache_hit_tokens": 7040,
+      "prompt_cache_miss_tokens": 162
+    },
+    "request_sha256": "0315a91aaef11e3f30fe249fc5ea8dbebb8b2cb7d9f0b872bad6a316e20b8dd8"
+  },
+  {
+    "arm": "core",
+    "system_bytes": 7187,
+    "usage": {
+      "prompt_tokens": 7165,
+      "completion_tokens": 1,
+      "total_tokens": 7166,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 7165
+    },
+    "request_sha256": "4a6465d00603a9bc110a047ce490cacec127eedccfd305e0dc6a3e7b4e13872b"
+  },
+  {
+    "arm": "policy",
+    "system_bytes": 7256,
+    "usage": {
+      "prompt_tokens": 7178,
+      "completion_tokens": 1,
+      "total_tokens": 7179,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 6410
+    },
+    "request_sha256": "3713c03fb14ee544797c630fbda49bdfcb588fa0f53b6595aa0cd55743736ab3"
+  },
+  {
+    "arm": "combined",
+    "system_bytes": 7084,
+    "usage": {
+      "prompt_tokens": 7141,
+      "completion_tokens": 1,
+      "total_tokens": 7142,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 6373
+    },
+    "request_sha256": "561ab3ff07e27bc4c988caedd0536b5a41f7627366a9707628513f27b9128237"
+  },
+  {
+    "arm": "combined",
+    "system_bytes": 7084,
+    "usage": {
+      "prompt_tokens": 7141,
+      "completion_tokens": 1,
+      "total_tokens": 7142,
+      "prompt_tokens_details": {
+        "cached_tokens": 6912
+      },
+      "prompt_cache_hit_tokens": 6912,
+      "prompt_cache_miss_tokens": 229
+    },
+    "request_sha256": "561ab3ff07e27bc4c988caedd0536b5a41f7627366a9707628513f27b9128237"
+  },
+  {
+    "arm": "reference",
+    "system_bytes": 7359,
+    "usage": {
+      "prompt_tokens": 7202,
+      "completion_tokens": 1,
+      "total_tokens": 7203,
+      "prompt_tokens_details": {
+        "cached_tokens": 7040
+      },
+      "prompt_cache_hit_tokens": 7040,
+      "prompt_cache_miss_tokens": 162
+    },
+    "request_sha256": "0315a91aaef11e3f30fe249fc5ea8dbebb8b2cb7d9f0b872bad6a316e20b8dd8"
+  }
+]

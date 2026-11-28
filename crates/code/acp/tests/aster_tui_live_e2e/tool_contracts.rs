@@ -138,7 +138,9 @@ fn kimi_ls_and_search_use_actual_scoped_bounded_workspace_results() {
     tui.record("search-bounded-page", "files_with_matches applies limit=1, excludes the later file and returns a real continuation cursor");
 
     let missing = format!("NO-MATCH-{}", uuid::Uuid::new_v4());
-    let prompt = format!("Call search exactly once with mode='grep', query='{missing}', path='中文 目录', context=0 and limit=1. Report its actual no-match result. Do not retry, call other tools or modify files.");
+    let prompt = format!(
+        "Call search exactly once with mode='grep', query='{missing}', path='中文 目录', context=0 and limit=1. Report its actual no-match result. Do not retry, call other tools or modify files."
+    );
     let facts = tui.turn(&prompt, None);
     let refused = one_result(&facts, "search");
     assert_eq!(refused["exit_code"], 1);
@@ -146,7 +148,9 @@ fn kimi_ls_and_search_use_actual_scoped_bounded_workspace_results() {
         .as_str()
         .unwrap()
         .contains("supported only with output_mode"));
-    let prompt = format!("Call search exactly once with mode='grep', query='{missing}', path='中文 目录' and context=0. Omit limit and cursor. Report its actual no-match result. Do not retry, call other tools or modify files.");
+    let prompt = format!(
+        "Call search exactly once with mode='grep', query='{missing}', path='中文 目录' and context=0. Omit limit and cursor. Report its actual no-match result. Do not retry, call other tools or modify files."
+    );
     let facts = tui.turn(&prompt, None);
     let empty = one_result(&facts, "search");
     assert_eq!(empty["exit_code"], 0);
@@ -179,13 +183,17 @@ fn kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers() {
     let (name, script, command) = if cfg!(windows) {
         (
             "probe script.ps1",
-            format!("[Console]::Out.WriteLine('{stdout}')\n[Console]::Error.WriteLine('{stderr}')\n[Console]::Out.WriteLine('CWD=' + (Get-Location).Path)\nexit 7\n"),
+            format!(
+                "[Console]::Out.WriteLine('{stdout}')\n[Console]::Error.WriteLine('{stderr}')\n[Console]::Out.WriteLine('CWD=' + (Get-Location).Path)\nexit 7\n"
+            ),
             "& './probe script.ps1'",
         )
     } else {
         (
             "probe script.sh",
-            format!("printf '%s\\n' '{stdout}'\nprintf '%s\\n' '{stderr}' >&2\nprintf 'CWD=%s\\n' \"$PWD\"\nexit 7\n"),
+            format!(
+                "printf '%s\\n' '{stdout}'\nprintf '%s\\n' '{stderr}' >&2\nprintf 'CWD=%s\\n' \"$PWD\"\nexit 7\n"
+            ),
             "/bin/sh './probe script.sh'",
         )
     };
@@ -196,7 +204,9 @@ fn kimi_native_shell_preserves_nonzero_stdout_stderr_cwd_and_recovers() {
     tui.dismiss();
     tui.command("/yolo");
     tui.wait_for("yolo", 8);
-    let prompt = format!("Use bash exactly once to run this exact command: {command}. The script intentionally fails. Report the actual exit code and quote both output streams and its CWD line. Do not retry, repair files or call other tools.");
+    let prompt = format!(
+        "Use bash exactly once to run this exact command: {command}. The script intentionally fails. Report the actual exit code and quote both output streams and its CWD line. Do not retry, repair files or call other tools."
+    );
     let facts = tui.turn(&prompt, None);
     let result = one_result(&facts, "bash");
     assert_eq!(result["exit_code"], 7);
@@ -253,7 +263,9 @@ fn kimi_send_now_cancels_running_tool_and_preserves_verification_obligations() {
     } else {
         "printf started > started.txt; sleep 8; printf late > late.txt"
     };
-    let initial = format!("Use bash exactly once to run this exact command: {script}. Then reply ORIGINAL-COMPLETED. Do not call any other tool.");
+    let initial = format!(
+        "Use bash exactly once to run this exact command: {script}. Then reply ORIGINAL-COMPLETED. Do not call any other tool."
+    );
     let followup = "Reply only SEND-NOW-OWNED. Do not call any tool.";
     tui.launch_default(&[]);
     tui.wait_for("Aster", 45);

@@ -1,3 +1,2 @@
 ## Response Format
-- Preserve essential state across compaction; keep progress notes brief and useful. Match latest message language (keep code/paths/URLs/quotes verbatim); use standard Markdown without private chain-of-thought.
-- Lead with outcome, decisive checks, unverified/blocked gaps, and next step; cite verified paths/facts in source order; omit unchanged status or internal IDs unless requested.
+Keep progress brief and use standard Markdown without private chain-of-thought. Match the latest request's language. Keep code, paths, URLs, and quotes verbatim. Lead with outcome, decisive checks, gaps, and next step. Cite evidence in source order. Omit unchanged status and internal IDs unless requested.

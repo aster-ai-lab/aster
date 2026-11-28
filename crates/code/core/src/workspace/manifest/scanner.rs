@@ -298,7 +298,7 @@ fn scan_with_ignore(
                 return Err(std::io::Error::new(
                     std::io::ErrorKind::InvalidData,
                     format!("workspace_source.discovery_failed: {error}"),
-                ))
+                ));
             }
             Err(_) => continue,
         };

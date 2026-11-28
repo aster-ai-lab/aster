@@ -631,7 +631,7 @@ impl Tool for BackgroundTool {
                 },
                 "timeout_ms": {
                     "type": "integer",
-                    "description": "Tail wait ms (default 5000, max 30000)."
+                    "description": "Tail wait ms for wait_for (default 5000) or next output/exit when wait_for is omitted (max 30000)."
                 }
             },
             "required": ["action", "name"]
@@ -654,7 +654,7 @@ impl Tool for BackgroundTool {
         sandbox.validate_execution_available()?;
         anyhow::ensure!(
             sandbox.supports_background_execution(),
-            "this sandbox backend does not support background execution"
+            "this sandbox backend does not support background execution; run commands in the foreground with 'bash' instead and do not retry 'background'"
         );
         Ok(())
     }
@@ -877,9 +877,8 @@ impl BackgroundTool {
             )));
         };
         let wait_for = args.get("wait_for").and_then(|v| v.as_str());
-        let timeout_ms = args
-            .get("timeout_ms")
-            .and_then(|v| v.as_u64())
+        let explicit_timeout_ms = args.get("timeout_ms").and_then(|v| v.as_u64());
+        let timeout_ms = explicit_timeout_ms
             .unwrap_or(5_000)
             .min(BG_TAIL_MAX_WAIT_MS);
         if let Some(pattern) = wait_for {
@@ -902,6 +901,23 @@ impl BackgroundTool {
                     break;
                 }
                 if tokio::time::Instant::now() >= deadline {
+                    break;
+                }
+                let remaining = deadline.saturating_duration_since(tokio::time::Instant::now());
+                let _ = tokio::time::timeout(remaining, notified).await;
+            }
+        } else if let Some(wait_ms) = explicit_timeout_ms.filter(|&ms| ms > 0) {
+            let initial_emitted = task.emitted.load(std::sync::atomic::Ordering::Relaxed);
+            let deadline = tokio::time::Instant::now()
+                + Duration::from_millis(wait_ms.min(BG_TAIL_MAX_WAIT_MS));
+            loop {
+                let notified = task.notify.notified();
+                tokio::pin!(notified);
+                notified.as_mut().enable();
+                if task.emitted.load(std::sync::atomic::Ordering::Relaxed) > initial_emitted
+                    || task.status().is_some()
+                    || tokio::time::Instant::now() >= deadline
+                {
                     break;
                 }
                 let remaining = deadline.saturating_duration_since(tokio::time::Instant::now());

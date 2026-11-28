@@ -304,6 +304,11 @@ fn reconciliation_wire_error_carries_an_action_and_refuses_retry() {
     let data = error.data.unwrap();
     assert_eq!(data["kind"], "tool_effect_unresolved");
     assert_eq!(data["retryable"], false);
-    assert_eq!(data["recovery"]["action"], "reconcile_tool_effects");
+    assert_eq!(data["recovery"]["action"], "manual_review");
+    assert_eq!(data["recovery"]["automaticRecovery"], false);
     assert_eq!(data["recovery"]["obligationIds"][0], "exact-invocation-1");
+    let instructions = data["recovery"]["instructions"].as_str().unwrap();
+    assert!(instructions.contains("use the read tool"));
+    assert!(instructions.contains("start a new session"));
+    assert!(instructions.contains("no reconcile_tool_effects RPC"));
 }

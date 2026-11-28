@@ -21,8 +21,16 @@ fn preview_does_not_consume_a_legacy_hosts_final_attestation() {
         Some(&serde_json::json!({"file_path":"result.txt", "after":"original"})),
     );
     let mut reports = Vec::new();
-    merge_preview_report(Some(&attestor), &ledger, &mut reports);
-    merge_preview_report(Some(&attestor), &ledger, &mut reports);
+    assert!(!merge_preview_report(
+        Some(&attestor),
+        &ledger,
+        &mut reports
+    ));
+    assert!(!merge_preview_report(
+        Some(&attestor),
+        &ledger,
+        &mut reports
+    ));
     assert!(reports.is_empty());
     assert_eq!(calls.load(Ordering::SeqCst), 0);
     merge_attested_report(Some(&attestor), &ledger, &mut reports);
@@ -43,7 +51,7 @@ fn disk_preview_rechecks_the_current_bytes() {
     let attestor: Arc<dyn CompletionAttestor> =
         Arc::new(DiskContentAttestor::new(workspace.path()));
     let mut reports = Vec::new();
-    merge_preview_report(Some(&attestor), &ledger, &mut reports);
+    assert!(merge_preview_report(Some(&attestor), &ledger, &mut reports));
     assert_eq!(reports.len(), 1);
     assert!(matches!(
         crate::harness_loop::decide_with_observations(&ledger, &reports, &[], false, &[]),
@@ -52,7 +60,14 @@ fn disk_preview_rechecks_the_current_bytes() {
         )
     ));
     std::fs::write(workspace.path().join(path), "changed").unwrap();
-    let mut current_reports = Vec::new();
-    merge_preview_report(Some(&attestor), &ledger, &mut current_reports);
-    assert!(current_reports.is_empty());
+    assert!(!merge_preview_report(
+        Some(&attestor),
+        &ledger,
+        &mut reports
+    ));
+    assert_eq!(
+        reports.len(),
+        1,
+        "the retained report is not a fresh preview"
+    );
 }

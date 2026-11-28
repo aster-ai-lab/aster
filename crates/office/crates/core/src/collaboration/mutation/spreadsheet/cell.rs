@@ -174,7 +174,7 @@ fn validate_batch_changes(
                 return Err(invalid_spreadsheet_mutation(format!(
                     "Deleting Spreadsheet cell '{}:{}' requires an expected cell value.",
                     change.row, change.column
-                )))
+                )));
             }
             None => {}
         }
@@ -209,12 +209,12 @@ fn apply_cell_changes(
                     (None, Some(_)) => {
                         return Err(spreadsheet_match_conflict(format!(
                             "{label} is no longer blank."
-                        )))
+                        )));
                     }
                     (Some(_), None) => {
                         return Err(spreadsheet_match_conflict(format!(
                             "{label} no longer exists."
-                        )))
+                        )));
                     }
                     _ => {}
                 }

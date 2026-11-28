@@ -15,8 +15,9 @@ pub(super) use helpers::{
 };
 pub(crate) use helpers::{
     EffectMeta, RestoreProgressMsg, SessionFlags, SessionRpcError, acp_send_bounded, compact_error,
-    is_disk_full_error, parse_worktree_restore_payload, parse_worktree_strategy_summary,
-    persist_permission_mode_and_notify, persist_setting, sanitize_user_error,
+    is_disk_full_error, parse_session_load_resume_flags, parse_worktree_restore_payload,
+    parse_worktree_strategy_summary, persist_permission_mode_and_notify, persist_setting,
+    sanitize_user_error,
 };
 #[cfg(feature = "local-workspace")]
 pub(crate) use helpers::reject_non_fs_only_advertised_tools;
@@ -43,7 +44,6 @@ use actions::PermissionModePersist;
 #[cfg(test)]
 use agent::AgentId;
 use crate::unified_log as ulog;
-use aster_shell::sampling::error::http_status_from_error;
 use aster_shell::session::{ExtMethodResult, SessionInfoResponse};
 /// The shell's `aster/feedback/upload-trace` params. `intent` is omitted (not null) when absent, so a legacy upload's request stays byte-identical to the pre-intent shape.
 /// absent, so a legacy upload's request stays byte-identical to the pre-intent shape.
@@ -1342,17 +1342,7 @@ pub(crate) fn execute(
                         ),
                     );
                     log_prompt_result(&session_id, &result);
-                    let http_status = result
-                        .as_ref()
-                        .err()
-                        .and_then(http_status_from_error);
-                    TaskResult::PromptResponse {
-                        agent_id,
-                        result: result
-                            .map_err(|e| format_acp_error(&e, is_api_key_auth)),
-                        http_status,
-                        prompt_id: Some(prompt_id),
-                    }
+                    prompt_response_result(agent_id, result, is_api_key_auth, prompt_id)
                 });
         }
         Effect::ExecutePlan {
@@ -1395,18 +1385,33 @@ pub(crate) fn execute(
                         .meta(meta.as_object().cloned());
                     let result = acp_send(req, &tx).await;
                     log_prompt_result(&session_id, &result);
-                    let http_status = result
-                        .as_ref()
-                        .err()
-                        .and_then(http_status_from_error);
-                    TaskResult::PromptResponse {
-                        agent_id,
-                        result: result
-                            .map_err(|e| format_acp_error(&e, is_api_key_auth)),
-                        http_status,
-                        prompt_id: Some(prompt_id),
-                    }
+                    prompt_response_result(agent_id, result, is_api_key_auth, prompt_id)
                 });
+        }
+        Effect::ResumeInterruptedTurn {
+            agent_id,
+            session_id,
+            prompt_id,
+        } => {
+            let tx = acp_tx.clone();
+            let screen_mode = session_flags.screen_mode_label;
+            let permission_posture = session_flags.permission_posture();
+            let is_api_key_auth = session_flags.is_api_key_auth;
+            tasks.spawn(async move {
+                let prompt = vec![acp::ContentBlock::Text(acp::TextContent::new(String::new()))];
+                let mut meta = prompt_request_meta(&prompt_id, screen_mode, permission_posture);
+                if let Some(map) = meta.as_object_mut() {
+                    map.insert(
+                        "aster/resumeInterruptedTurn".into(),
+                        serde_json::Value::Bool(true),
+                    );
+                }
+                let req = acp::PromptRequest::new(session_id.clone(), prompt)
+                    .meta(meta.as_object().cloned());
+                let result = acp_send(req, &tx).await;
+                log_prompt_result(&session_id, &result);
+                prompt_response_result(agent_id, result, is_api_key_auth, prompt_id)
+            });
         }
         Effect::SendPromptBlocks { agent_id, session_id, blocks, prompt_id }
         | Effect::SendPromptNow { agent_id, session_id, blocks, prompt_id } => {
@@ -1463,17 +1468,7 @@ pub(crate) fn execute(
                             blocks,
                         };
                     }
-                    let http_status = result
-                        .as_ref()
-                        .err()
-                        .and_then(http_status_from_error);
-                    TaskResult::PromptResponse {
-                        agent_id,
-                        result: result
-                            .map_err(|e| format_acp_error(&e, is_api_key_auth)),
-                        http_status,
-                        prompt_id: Some(prompt_id),
-                    }
+                    prompt_response_result(agent_id, result, is_api_key_auth, prompt_id)
                 });
         }
         Effect::SendBashCommand { agent_id, session_id, command, prompt_id } => {
@@ -1526,17 +1521,7 @@ pub(crate) fn execute(
                         ),
                     );
                     log_prompt_result(&session_id, &result);
-                    let http_status = result
-                        .as_ref()
-                        .err()
-                        .and_then(http_status_from_error);
-                    TaskResult::PromptResponse {
-                        agent_id,
-                        result: result
-                            .map_err(|e| format_acp_error(&e, is_api_key_auth)),
-                        http_status,
-                        prompt_id: Some(prompt_id),
-                    }
+                    prompt_response_result(agent_id, result, is_api_key_auth, prompt_id)
                 });
         }
         Effect::CancelTurn {
@@ -1816,17 +1801,7 @@ pub(crate) fn execute(
                         );
                     let result = acp_send(req, &tx).await;
                     log_prompt_result(&session_id, &result);
-                    let http_status = result
-                        .as_ref()
-                        .err()
-                        .and_then(http_status_from_error);
-                    TaskResult::PromptResponse {
-                        agent_id,
-                        result: result
-                            .map_err(|e| format_acp_error(&e, is_api_key_auth)),
-                        http_status,
-                        prompt_id: Some(prompt_id),
-                    }
+                    prompt_response_result(agent_id, result, is_api_key_auth, prompt_id)
                 });
         }
         Effect::Compact { agent_id, session_id, user_context } => {

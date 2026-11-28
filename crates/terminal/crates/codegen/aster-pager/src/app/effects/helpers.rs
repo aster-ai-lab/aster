@@ -292,6 +292,32 @@ pub(super) fn format_acp_error(err: &acp::Error, is_api_key_auth: bool) -> Strin
         )
         .message()
 }
+
+pub(super) fn prompt_response_result(
+    agent_id: AgentId,
+    result: acp::Result<acp::PromptResponse>,
+    is_api_key_auth: bool,
+    prompt_id: String,
+) -> TaskResult {
+    use crate::app::error_display::{WireErrorType, wire_error_kind};
+
+    if let Err(error) = &result
+        && wire_error_kind(error_kind_str_from_error(error)) == Some(WireErrorType::PriorVerificationPending)
+    {
+        return TaskResult::PromptVerificationPending {
+            agent_id,
+            message: error_data_detail(error).unwrap_or_else(|| error.message.clone()),
+            prompt_id,
+        };
+    }
+    let http_status = result.as_ref().err().and_then(http_status_from_error);
+    TaskResult::PromptResponse {
+        agent_id,
+        result: result.map_err(|error| format_acp_error(&error, is_api_key_auth)),
+        http_status,
+        prompt_id: Some(prompt_id),
+    }
+}
 /// Detail string carried in the error's `data` payload, if any.
 fn error_data_detail(err: &acp::Error) -> Option<String> {
     err.data.as_ref().and_then(error_detail_from_data)
@@ -426,6 +452,23 @@ pub(crate) fn parse_session_memory_mode(
         .and_then(|meta| meta.get(aster_shell::session::MEMORY_MODE_META_KEY))
         .cloned()
         .and_then(|value| serde_json::from_value(value).ok())
+}
+/// Recovery metadata parsed from `LoadSessionResponse._meta` after reconnect/restart:
+/// `(interrupted_turn_resumable, interrupted_turn_unresolved_tool, active_goal_resumable)`.
+pub(crate) fn parse_session_load_resume_flags(
+    resp_meta: Option<&acp::Meta>,
+) -> (bool, bool, bool) {
+    let flag = |key: &str| {
+        resp_meta
+            .and_then(|meta| meta.get(key))
+            .and_then(|value| value.as_bool())
+            .unwrap_or(false)
+    };
+    (
+        flag("interruptedTurnResumable"),
+        flag("interruptedTurnUnresolvedTool"),
+        flag("activeGoalResumable"),
+    )
 }
 /// Whether `raw` is (or wraps) a disk-full / ENOSPC failure.
 pub(crate) fn is_disk_full_error(raw: &str) -> bool {

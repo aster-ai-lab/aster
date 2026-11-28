@@ -141,7 +141,7 @@ impl DocumentStore {
         path: &WorkspacePath,
         saved_content: &str,
     ) -> Result<DocumentObservation, DocumentStoreError> {
-        let content_hash = sha256::digest(saved_content.as_bytes());
+        let content_hash = crate::content_digest::sha256_hex(saved_content.as_bytes());
         let mut state = self.state.lock().await;
         let touch = state.next_touch();
 

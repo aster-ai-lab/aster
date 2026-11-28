@@ -55,6 +55,7 @@ pub(crate) struct SseEventScan {
     index: usize,
     line_start: usize,
     event_start: usize,
+    pending_cr: bool,
 }
 
 /// Remove every complete SSE event from the front of `buffer`.
@@ -63,8 +64,9 @@ pub(crate) struct SseEventScan {
 /// spec-shaped frame `data: ...\r\n\r\n` is one event. Searching for the two
 /// bytes `\n\n` misses that frame: the newlines are separated by `\r`.
 ///
-/// A trailing CR waits for a possible LF — including a blank CR that may still
-/// grow into a CRLF terminator. `eof` flushes a final CR (blank or not).
+/// A nonblank trailing CR waits for a possible LF so CRLF frame bytes stay
+/// intact. A blank trailing CR already terminates the event and is emitted
+/// immediately; its optional LF is discarded on the next call.
 pub(crate) fn take_sse_events(buffer: &mut String, eof: bool) -> Vec<String> {
     take_sse_events_scanned(buffer, &mut SseEventScan::default(), eof)
 }
@@ -79,6 +81,15 @@ pub(crate) fn take_sse_events_scanned(
     let mut events = Vec::new();
     let bytes = buffer.as_bytes();
     while scan.index < bytes.len() {
+        if scan.pending_cr {
+            scan.pending_cr = false;
+            if bytes[scan.index] == b'\n' {
+                scan.index += 1;
+                scan.line_start = scan.index;
+                scan.event_start = scan.index;
+                continue;
+            }
+        }
         while scan.index < bytes.len() && bytes[scan.index] != b'\n' && bytes[scan.index] != b'\r' {
             scan.index += 1;
         }
@@ -86,22 +97,17 @@ pub(crate) fn take_sse_events_scanned(
             break;
         }
         let blank = scan.index == scan.line_start;
-        let ending_len = if bytes[scan.index] == b'\r' {
-            if scan.index + 1 == bytes.len() {
-                // Hold every trailing CR until the next byte or eof so a split
-                // `\r\n` blank terminator cannot emit a partial event.
-                if !eof {
-                    break;
-                }
-                1
-            } else if bytes[scan.index + 1] == b'\n' {
-                2
-            } else {
-                1
-            }
+        let trailing_cr = bytes[scan.index] == b'\r' && scan.index + 1 == bytes.len();
+        if trailing_cr && !blank && !eof {
+            break;
+        }
+        let ending_len = if bytes[scan.index] == b'\r' && bytes.get(scan.index + 1) == Some(&b'\n')
+        {
+            2
         } else {
             1
         };
+        scan.pending_cr = trailing_cr && blank;
         scan.index += ending_len;
         if blank {
             if scan.line_start > scan.event_start {

@@ -12,10 +12,12 @@ use aster_use_core::{UseError, UseResult, UseSessionId};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "collaboration")]
 mod collaboration;
 mod command;
 mod discovery;
 mod editor;
+#[cfg(feature = "install")]
 mod install;
 mod issues;
 mod layout;
@@ -37,6 +39,7 @@ mod xml;
 mod xml_edit;
 mod xml_tree;
 
+#[cfg(feature = "collaboration")]
 pub use collaboration::{
     export_document_replica, export_pdf_replica, export_presentation_replica,
     export_spreadsheet_replica, import_document_snapshot, live_replica_blocks_office_session,
@@ -126,6 +129,7 @@ pub use editor::{
     MAX_NATIVE_OFFICE_TEXT_SCOPE_CELLS, MAX_NATIVE_SPREADSHEET_IMPORT_BYTES,
     MAX_NATIVE_SPREADSHEET_IMPORT_CELLS,
 };
+#[cfg(feature = "install")]
 pub use install::{install_office_cli, repair_office_cli, uninstall_managed_office_cli};
 pub use issues::{
     NativeOfficeIssue, NativeOfficeIssueCategory, NativeOfficeIssueFilter,

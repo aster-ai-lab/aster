@@ -120,6 +120,18 @@ pub(super) async fn owned_conversation_worker(
                         .unwrap_or_default();
                     (prompt, Vec::new(), None, false, None, checkpoint, true)
                 }
+                OwnedConversationRequest::ResumeInterruptedTurn => {
+                    let state = crate::fact_control::inspect_interrupted_turn(
+                        &captured.preparation.workspace,
+                        &captured.preparation.session_id,
+                    )?;
+                    if state != crate::fact_control::InterruptedTurnState::Resumable {
+                        return Err(CodeError::Session(
+                            "no safely resumable interrupted turn".to_owned(),
+                        ));
+                    }
+                    (String::new(), Vec::new(), None, false, None, None, true)
+                }
             };
             if let Some(checkpoint) = &resolved.5 {
                 captured
@@ -421,6 +433,23 @@ pub(super) async fn settle_owned_fact(
         mode,
     } = execution;
     let mut current_goal = None;
+    let prior_mutation_digest = pinned
+        .parts
+        .surface
+        .as_ref()
+        .filter(|_| {
+            mode == run_admission::ExecutionMode::Streaming
+                && !ordinary
+                && exact.is_none()
+                && checkpoint.is_none()
+        })
+        .and_then(|surface| {
+            let ledger = surface
+                .ledger
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            (!ledger.is_empty()).then(|| ledger.digest().to_owned())
+        });
     let settled = async {
         let fact = pinned.parts.open()?;
         current_goal = fact.current_goal().cloned();
@@ -441,8 +470,11 @@ pub(super) async fn settle_owned_fact(
                     seed.pop();
                 }
                 fact.seed_recovery_history(&seed, &prompt)?;
+                fact.resume().await
+            } else {
+                let settled = fact.resume().await?;
+                settle_confirmations(&fact, settled, &pinned.parts).await
             }
-            fact.resume().await
         } else if checkpoint.is_some() {
             fact.resume().await
         } else {
@@ -533,8 +565,25 @@ pub(super) async fn settle_owned_fact(
         }
     }
     original.seal_original_controls().await?;
-    mapped =
-        mapped.and_then(|result| gate_result(&pinned.parts, result, goal_attestation.as_deref()));
+    mapped = mapped.and_then(|result| {
+        let status_reply = current_goal.is_none()
+            && result.tool_calls_count == 0
+            && result.forced_stop.is_none()
+            && !result.text.trim().is_empty();
+        let outcome = gate_result(&pinned.parts, result, goal_attestation.as_deref());
+        match (outcome, prior_mutation_digest.as_deref()) {
+            (Err(error), Some(digest)) if status_reply => {
+                match error.downcast::<crate::harness_loop::UnverifiedMutation>() {
+                    Ok(unverified) if unverified.digest == digest => {
+                        Err(crate::harness_loop::PriorVerificationPending(unverified).into())
+                    }
+                    Ok(unverified) => Err(unverified.into()),
+                    Err(error) => Err(error),
+                }
+            }
+            (outcome, _) => outcome,
+        }
+    });
     if mapped.is_ok() {
         if let (Some(surface), Some(prepared)) = (&pinned.parts.surface, accepted_step) {
             if let Err(error) = crate::fact_control::commit_goal_step(

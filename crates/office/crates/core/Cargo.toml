@@ -10,12 +10,14 @@ rust-version = "1.85"
 publish = false
 
 [features]
-default = []
+default = ["collaboration", "install"]
+collaboration = ["dep:yrs"]
+install = ["dep:reqwest"]
 pdfium = ["dep:libloading", "dep:pdfium-render", "dep:png"]
 
 [dependencies]
 zip = {version = "2", default-features = false, features = ["deflate"]}
-yrs = {version = "=0.27.3", features = ["sync"]}
+yrs = {version = "=0.27.3", features = ["sync"], optional = true}
 url = {version = "2"}
 tokio = {version = "1", features = ["fs", "io-std", "io-util", "macros", "net", "rt-multi-thread", "process", "signal", "sync", "time"]}
 tempfile = {version = "3"}
@@ -23,7 +25,7 @@ sha2 = {version = "0.10"}
 serde_json = {version = "1"}
 serde = {version = "1", features = ["derive"]}
 ryu-js = {version = "1"}
-reqwest = {version = "0.12", default-features = false, features = ["rustls-tls", "stream"]}
+reqwest = {version = "0.12", default-features = false, features = ["rustls-tls", "stream"], optional = true}
 regex = {version = "1"}
 quick-xml = {version = "0.38"}
 png = {version = "0.17", optional = true}

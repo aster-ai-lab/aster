@@ -976,9 +976,9 @@ mod tests {
     async fn codex_login_split_cr_does_not_emit_partial_event() {
         let wire = codex_hello_sse("\r\n");
         let blank = wire.find("\r\n\r\n").expect("crlf blank line");
-        let head = wire[..blank + 3].to_string();
-        assert!(head.ends_with('\r'), "the held suffix is a bare CR");
-        let tail = wire[blank + 3..].to_string();
+        let head = wire[..blank + 1].to_string();
+        assert!(head.ends_with('\r'), "the held suffix is the data-line CR");
+        let tail = wire[blank + 1..].to_string();
 
         let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
         let parked = std::sync::Arc::new(tokio::sync::Notify::new());

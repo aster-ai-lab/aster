@@ -57,7 +57,7 @@ pub(in crate::collaboration) fn table_origin(
         _ => {
             return Err(invalid_spreadsheet_mutation(
                 "The supplied mutation is not a Spreadsheet table frame.",
-            ))
+            ));
         }
     };
     let id = table_id_of(mutation)?;
@@ -99,7 +99,7 @@ pub(super) fn validate_table_mutation(
         _ => {
             return Err(invalid_spreadsheet_mutation(
                 "The supplied mutation is not a Spreadsheet table frame.",
-            ))
+            ));
         }
     }
     Ok(())
@@ -125,12 +125,12 @@ pub(super) fn apply_table_mutation(
         Some(_) => {
             return Err(invalid_shared_spreadsheet(format!(
                 "Shared Spreadsheet sheet '{sheet_id}' is not a typed map."
-            )))
+            )));
         }
         None => {
             return Err(spreadsheet_match_conflict(format!(
                 "Spreadsheet sheet ID '{sheet_id}' does not exist."
-            )))
+            )));
         }
     };
     let live = read_tables(&record, &transaction)?;
@@ -340,7 +340,7 @@ fn commit_table(
                     _ => {
                         return Err(invalid_shared_spreadsheet(
                             "A shared Spreadsheet table is not a typed map.",
-                        ))
+                        ));
                     }
                 }
             };
@@ -515,7 +515,7 @@ fn read_flat_record<T: ReadTxn>(map: &yrs::MapRef, transaction: &T) -> UseResult
             _ => {
                 return Err(invalid_shared_spreadsheet(
                     "A shared Spreadsheet table field is not a flat JSON value.",
-                ))
+                ));
             }
         };
         fields.push(DecodedFlatJsonEntry { kind, path, value });

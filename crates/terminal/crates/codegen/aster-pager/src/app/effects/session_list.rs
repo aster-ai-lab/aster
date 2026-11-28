@@ -8,11 +8,11 @@ use crate::app::roster::{RosterActivity, RosterEntry, RosterOrigin};
 use crate::views::session_picker::repo_name_from_cwd;
 use crate::views::session_picker_surface::SessionPickerHost;
 use agent_client_protocol as acp;
-use serde_json::Value;
-use std::collections::HashSet;
 use aster_shell::session::resolve_local_session_ids_any_cwd;
 use aster_shell::session::unified_list::ListScope;
 use aster_tools::implementations::skills::skill::extract_skill_display_text;
+use serde_json::Value;
+use std::collections::HashSet;
 /// Which rows the local-storage lookup applies to; the store is walked at most once either way.
 #[derive(Debug, Clone, Copy)]
 pub(super) enum LocalPresence {

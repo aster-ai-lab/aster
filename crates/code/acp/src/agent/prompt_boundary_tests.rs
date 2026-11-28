@@ -4,7 +4,8 @@ use super::*;
 fn prompt_boundary_default_accepts_source_analysis_without_studio_recipes() {
     let options = AsterCodeAgent::core_session_options("prompt-boundary", "controlled/model", None);
     let prompt = options.prompt_slots.unwrap().build();
-    assert!(prompt.contains("explanation, diagnosis, review or modification"));
+    assert!(prompt
+        .contains("Inspect product internals for explanation, diagnosis, review, or modification"));
     for domain in [
         "office_read",
         "date_span",
@@ -39,13 +40,20 @@ fn prompt_boundary_office_guidance_follows_admitted_host_scope() {
 
 #[test]
 fn prompt_boundary_engineering_distinguishes_dispatcher_from_reviewer() {
-    let policy = crate::engineering::named_policy("engineering-v1").unwrap();
-    assert!(policy.instructions().contains("primary session"));
-    assert!(policy.instructions().contains("delegated reviewer"));
-    assert!(policy
-        .instructions()
-        .contains("inspect the target directly"));
-    assert!(policy.instructions().contains("Do not delegate again"));
+    for name in [
+        "engineering-v1",
+        "engineering-v2",
+        "engineering-v3",
+        "engineering-v4",
+    ] {
+        let policy = crate::engineering::named_policy(name).unwrap();
+        assert!(policy.instructions().contains("primary session"));
+        assert!(policy.instructions().contains("delegated reviewer"));
+        assert!(policy
+            .instructions()
+            .contains("inspect the target directly"));
+        assert!(policy.instructions().contains("Do not delegate again"));
+    }
 }
 
 #[test]

@@ -1,0 +1,61 @@
+{
+  "batches": [
+    {
+      "version": 1,
+      "units": 189,
+      "subtotal_cents": 76580,
+      "discount_cents": 383,
+      "tax_cents": 5715,
+      "total_cents": 81912
+    },
+    {
+      "version": 2,
+      "units": 237,
+      "subtotal_cents": 96185,
+      "discount_cents": 962,
+      "tax_cents": 7142,
+      "total_cents": 102365
+    },
+    {
+      "version": 3,
+      "units": 285,
+      "subtotal_cents": 115886,
+      "discount_cents": 1738,
+      "tax_cents": 8561,
+      "total_cents": 122709
+    },
+    {
+      "version": 4,
+      "units": 333,
+      "subtotal_cents": 135683,
+      "discount_cents": 2714,
+      "tax_cents": 9973,
+      "total_cents": 142942
+    },
+    {
+      "version": 5,
+      "units": 381,
+      "subtotal_cents": 155576,
+      "discount_cents": 3889,
+      "tax_cents": 11377,
+      "total_cents": 163064
+    },
+    {
+      "version": 6,
+      "units": 429,
+      "subtotal_cents": 175565,
+      "discount_cents": 5267,
+      "tax_cents": 12772,
+      "total_cents": 183070
+    },
+    {
+      "version": 7,
+      "units": 477,
+      "subtotal_cents": 195650,
+      "discount_cents": 6848,
+      "tax_cents": 14160,
+      "total_cents": 202962
+    }
+  ],
+  "total_cents": 999024
+}

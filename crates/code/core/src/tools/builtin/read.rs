@@ -4,7 +4,7 @@ use crate::llm::Attachment;
 use crate::text::truncate_utf8;
 use crate::tools::types::{Tool, ToolContext, ToolOutput};
 use crate::tools::{MAX_LINE_LENGTH, MAX_OUTPUT_SIZE, MAX_READ_LINES};
-use crate::workspace::{escape_control_chars_for_display, WorkspaceTextRange};
+use crate::workspace::{escape_control_chars_for_display, WorkspaceError, WorkspaceTextRange};
 use anyhow::Result;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
@@ -99,6 +99,141 @@ struct BatchReadEntry {
     byte_offset: usize,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     limit: Option<usize>,
+}
+
+pub(crate) const BATCH_READ_LAYOUT_KEY: &str = "aster_read_batch_sections_v1";
+pub(crate) const TEXT_READ_LAYOUT_KEY: &str = "aster_read_text_layout_v1";
+pub(crate) const MIN_REUSABLE_BATCH_READ_SECTION_BYTES: usize = 512;
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct TextReadLayout {
+    path: String,
+    offset: usize,
+    byte_offset: usize,
+    line_count: usize,
+    numbered_bytes: usize,
+    output_digest: String,
+}
+
+pub(crate) struct TextReadPage<'a> {
+    layout: &'a TextReadLayout,
+    lines: Vec<&'a str>,
+    boundary: &'a str,
+}
+
+impl TextReadLayout {
+    pub(crate) fn page<'a>(&'a self, output: &'a str) -> Option<TextReadPage<'a>> {
+        if !(1..=MAX_READ_LINES).contains(&self.line_count)
+            || self.output_digest != text_read_output_digest(output)
+        {
+            return None;
+        }
+        let numbered = output.get(..self.numbered_bytes)?.strip_suffix('\n')?;
+        let lines = numbered
+            .split('\n')
+            .enumerate()
+            .map(|(index, line)| {
+                let (label, text) = line.split_once('\t')?;
+                let number = self.offset.checked_add(index)?.checked_add(1)?;
+                (label.trim().parse::<usize>().ok()? == number).then_some(text)
+            })
+            .collect::<Option<Vec<_>>>()?;
+        (lines.len() == self.line_count).then_some(TextReadPage {
+            layout: self,
+            lines,
+            boundary: &output[self.numbered_bytes..],
+        })
+    }
+}
+
+impl<'a> TextReadPage<'a> {
+    pub(crate) fn path(&self) -> &'a str {
+        &self.layout.path
+    }
+
+    pub(crate) fn numbered_bytes(&self) -> usize {
+        self.layout.numbered_bytes
+    }
+
+    pub(crate) fn has_same_boundary(&self, current: &Self) -> bool {
+        self.boundary == current.boundary
+    }
+
+    pub(crate) fn range(&self) -> (usize, usize, usize) {
+        (
+            self.layout.offset + 1,
+            self.layout.offset + self.lines.len(),
+            self.layout.byte_offset,
+        )
+    }
+
+    pub(crate) fn covers(&self, current: &Self) -> bool {
+        let Some(skip) = current.layout.offset.checked_sub(self.layout.offset) else {
+            return false;
+        };
+        let Some((earlier, later)) = self
+            .lines
+            .get(skip..skip.saturating_add(current.lines.len()))
+            .and_then(|lines| lines.split_first())
+        else {
+            return false;
+        };
+        let earlier_offset = if skip == 0 {
+            self.layout.byte_offset
+        } else {
+            0
+        };
+        let Some(delta) = current.layout.byte_offset.checked_sub(earlier_offset) else {
+            return false;
+        };
+        earlier.get(delta..) == Some(current.lines[0]) && later == &current.lines[1..]
+    }
+}
+
+fn text_read_output_digest(output: &str) -> String {
+    crate::content_digest::digest_bytes("aster.code.text-read-output.v1", output.as_bytes())
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub(crate) struct BatchReadLayout {
+    output_digest: String,
+    sections: Vec<BatchReadSection>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub(crate) struct BatchReadSection {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub(crate) identity: Option<String>,
+    pub(crate) bytes: std::ops::Range<usize>,
+    pub(crate) body_start: usize,
+}
+
+impl BatchReadLayout {
+    pub(crate) fn sections_for(&self, output: &str) -> Option<&[BatchReadSection]> {
+        if self.sections.len() > MAX_BATCH_READ_FILES
+            || self.output_digest != batch_read_output_digest(output)
+        {
+            return None;
+        }
+        let mut end = 0;
+        for section in &self.sections {
+            if section.bytes.start < end
+                || section.body_start <= section.bytes.start
+                || section.body_start >= section.bytes.end
+                || output.get(section.bytes.clone()).is_none()
+                || !output.is_char_boundary(section.body_start)
+            {
+                return None;
+            }
+            end = section.bytes.end;
+        }
+        Some(&self.sections)
+    }
+}
+
+fn batch_read_output_digest(output: &str) -> String {
+    crate::content_digest::digest_bytes("aster.code.batch-read-output.v1", output.as_bytes())
 }
 
 fn is_zero(value: &usize) -> bool {
@@ -303,6 +438,9 @@ impl Tool for ReadTool {
         let (range, final_line_ending) = match read_range(ctx, &workspace_path, offset, limit).await
         {
             Ok(range) => range,
+            Err(WorkspaceError::NotFound { .. }) => {
+                return Ok(missing_path_error(workspace_path.as_str()));
+            }
             Err(e) => {
                 return Ok(ToolOutput::error(format_read_file_error(
                     &ctx.workspace_services.display_path(&workspace_path),
@@ -373,6 +511,7 @@ impl Tool for ReadTool {
             .with_metadata(metadata));
         }
 
+        let numbered_bytes = page.text.len();
         let mut output = page.text;
         if let Some(ending) = final_line_ending {
             output.push_str(ending.notice());
@@ -384,6 +523,24 @@ impl Tool for ReadTool {
             ));
         }
         metadata["range"]["output_bytes"] = serde_json::json!(output.len());
+        if page.returned > 0
+            && range.lines[..page.returned]
+                .iter()
+                .enumerate()
+                .all(|(index, line)| {
+                    let skipped = if index == 0 { byte_offset } else { 0 };
+                    line.len() - skipped <= MAX_LINE_LENGTH
+                })
+        {
+            metadata[TEXT_READ_LAYOUT_KEY] = serde_json::to_value(TextReadLayout {
+                path: workspace_path.as_str().to_owned(),
+                offset,
+                byte_offset,
+                line_count: page.returned,
+                numbered_bytes,
+                output_digest: text_read_output_digest(&output),
+            })?;
+        }
         Ok(ToolOutput::success(output).with_metadata(metadata))
     }
 }
@@ -467,7 +624,7 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
         },
         ReadError {
             display_path: String,
-            error: String,
+            error: WorkspaceError,
         },
         ResolveError {
             display_path: String,
@@ -491,7 +648,7 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
                     },
                     Err(error) => EntryFetch::ReadError {
                         display_path,
-                        error: error.to_string(),
+                        error,
                     },
                 }
             }
@@ -536,10 +693,11 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
                 display_path,
                 error,
             } => {
-                let segment = format!(
-                    "=== {display_path} ===\n{}",
-                    format_read_file_error(&display_path, &error)
-                );
+                let detail = match error {
+                    WorkspaceError::NotFound { .. } => missing_path_message(&display_path),
+                    error => format_read_file_error(&display_path, &error.to_string()),
+                };
+                let segment = format!("=== {display_path} ===\n{detail}");
                 if !accept_batch_message(
                     &mut segments,
                     &mut progress,
@@ -604,7 +762,7 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
                 break;
             }
             successful_files += 1;
-            source_anchors.push(workspace_path.as_str().to_string());
+            source_anchors.push((index, workspace_path));
             continue;
         }
 
@@ -677,7 +835,7 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
         segments.push(batch_content_segment(&display_path, &lines[..shown]));
         returned_lines += shown;
         successful_files += 1;
-        source_anchors.push(workspace_path.as_str().to_string());
+        source_anchors.push((index, workspace_path));
         if shown < lines.len() {
             discarded_bytes = discarded_bytes.saturating_add(joined_line_bytes(&lines[shown..]));
         }
@@ -691,8 +849,8 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
     let continuation = batch_continuation(&progress);
     let counts = BatchCounts::of(&progress, &entries);
     let truncated = !continuation.is_empty();
-    let metadata = serde_json::json!({
-        "source_anchors": source_anchors,
+    let mut metadata = serde_json::json!({
+        "source_anchors": source_anchors.iter().map(|(_, path)| path).collect::<Vec<_>>(),
         "batch": {
             "status": if truncated {
                 "partial"
@@ -715,6 +873,52 @@ async fn execute_batch_read(args: &serde_json::Value, ctx: &ToolContext) -> Resu
             "continuation": continuation,
         }
     });
+    let mut offset = 0;
+    let starts = segments
+        .iter()
+        .map(|segment| {
+            let start = offset;
+            offset += segment.len() + 2;
+            start
+        })
+        .collect::<Vec<_>>();
+    // Partial sections can supply formatting bounds. Only complete reads can
+    // supply a section identity for reuse as earlier evidence.
+    let sections = source_anchors
+        .iter()
+        .filter_map(|(index, path)| {
+            let segment = &segments[*index];
+            let start = starts[*index];
+            let header_bytes = segment.find('\n')? + 1;
+            let body = &segment[header_bytes..];
+            let reusable =
+                progress[*index].is_none() && body.len() > MIN_REUSABLE_BATCH_READ_SECTION_BYTES;
+            if !reusable && !body.starts_with(' ') {
+                return None;
+            }
+            let entry = &entries[*index];
+            let identity = reusable
+                .then(|| {
+                    crate::content_digest::digest_json(
+                        "aster.code.batch-read-section.v1",
+                        &(path, entry.offset, entry.byte_offset, entry.limit),
+                    )
+                })
+                .transpose()
+                .ok()?;
+            Some(BatchReadSection {
+                identity,
+                bytes: start..start + segment.len(),
+                body_start: start + header_bytes,
+            })
+        })
+        .collect::<Vec<_>>();
+    if !sections.is_empty() {
+        metadata[BATCH_READ_LAYOUT_KEY] = serde_json::to_value(BatchReadLayout {
+            output_digest: batch_read_output_digest(&content),
+            sections,
+        })?;
+    }
 
     if successful_files > 0 || truncated {
         Ok(ToolOutput::success(content).with_metadata(metadata))
@@ -996,8 +1200,9 @@ pub(crate) fn read_image_file(
         );
     };
     let display = ctx.workspace_services.display_path(&workspace_path);
-    let resolved = match aster_common::tools::resolve_path(root, workspace_path.as_str()) {
+    let resolved = match aster_common::tools::resolve_read_path(root, workspace_path.as_str()) {
         Ok(path) => path,
+        Err(error) if error.is_not_found() => return missing_path_error(workspace_path.as_str()),
         Err(error) => {
             return ToolOutput::error(format!("Failed to resolve path: {error}"));
         }
@@ -1127,6 +1332,16 @@ fn format_read_file_error(display_path: &str, error: &str) -> String {
         "Failed to read file {display_path}: {}",
         read_error_detail(error)
     )
+}
+
+fn missing_path_message(display_path: &str) -> String {
+    format!("Failed to read file {display_path}: no file found at this exact workspace path.")
+}
+
+fn missing_path_error(path: &str) -> ToolOutput {
+    ToolOutput::error(missing_path_message(&escape_control_chars_for_display(
+        path,
+    )))
 }
 
 async fn read_range(

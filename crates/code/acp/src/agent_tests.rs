@@ -227,13 +227,14 @@ fn empty_registry_still_states_the_product_boundary() {
         .prompt_slots
         .and_then(|slots| slots.guidelines)
         .expect("session boundary");
-    assert!(text.contains("Do not read or explain the product implementation"));
     assert!(text.contains("Finish the user's outcome in this turn."));
     for rule in [
-        "explanation, diagnosis, review or modification",
+        "explanation, diagnosis, review, or modification",
+        "Run operations directly",
+        "Give known host commands for usage questions",
         "For execution requests, perform",
-        "naming a command alone does not execute it",
-        "explain the conflict and ask which takes priority",
+        "report observed results",
+        "ask which takes priority",
     ] {
         assert!(text.contains(rule), "missing session guidance: {rule}");
     }

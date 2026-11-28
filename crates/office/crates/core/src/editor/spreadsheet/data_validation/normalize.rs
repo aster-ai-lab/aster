@@ -153,7 +153,9 @@ fn excel_date_serial(value: &str, date_1904: bool) -> UseResult<i64> {
     {
         return Err(editor_error(
             "use.office.spreadsheet_validation_date_invalid",
-            format!("Data-validation date '{value}' is not a valid YYYY-MM-DD date from 1900 through 9999."),
+            format!(
+                "Data-validation date '{value}' is not a valid YYYY-MM-DD date from 1900 through 9999."
+            ),
         ));
     }
     let baseline = days_from_civil(1899, 12, 31);
@@ -223,7 +225,9 @@ fn excel_time_fraction(value: &str) -> UseResult<String> {
 fn invalid_time(value: &str) -> aster_use_core::UseError {
     editor_error(
         "use.office.spreadsheet_validation_time_invalid",
-        format!("Data-validation time '{value}' must be HH:MM or HH:MM:SS from 00:00:00 through 23:59:59."),
+        format!(
+            "Data-validation time '{value}' must be HH:MM or HH:MM:SS from 00:00:00 through 23:59:59."
+        ),
     )
 }
 

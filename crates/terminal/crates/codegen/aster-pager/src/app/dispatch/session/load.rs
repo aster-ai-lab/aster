@@ -1291,7 +1291,10 @@ pub(in crate::app::dispatch) fn handle_session_loaded(
                 sid,
                 &info.parent_sid,
                 info.worktree,
-                crate::views::dashboard::session_switch_hint_command(app.screen_mode.is_minimal()),
+                crate::views::dashboard::session_switch_hint_command(
+                    app.screen_mode.is_minimal(),
+                    app.is_aster,
+                ),
             );
             agent.scrollback.push_block(RenderBlock::system(banner));
         }

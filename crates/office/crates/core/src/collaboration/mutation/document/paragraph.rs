@@ -274,7 +274,7 @@ fn deletable_paragraph_text<T: ReadTxn>(
                 _ => {
                     return Err(document_structure_conflict(
                         "A paragraph containing inline embeds cannot be deleted by this mutation.",
-                    ))
+                    ));
                 }
             }
         }
@@ -332,7 +332,7 @@ fn editable_paragraph_text<T: ReadTxn>(
                 _ => {
                     return Err(document_structure_conflict(
                         "A paragraph containing inline embeds cannot be replaced by this mutation.",
-                    ))
+                    ));
                 }
             }
         }

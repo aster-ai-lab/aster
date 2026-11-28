@@ -139,7 +139,7 @@ impl NativeSpreadsheetConditionalFormat {
                 return Err(invalid_node(
                     node,
                     format!("has unsupported rule type '{value}'"),
-                ))
+                ));
             }
         };
         validate_known_properties(node, rule_type)?;
@@ -229,7 +229,7 @@ fn threshold(
             return Err(invalid_node(
                 node,
                 format!("contains unknown threshold kind '{kind}'"),
-            ))
+            ));
         }
     };
     Ok(NativeSpreadsheetConditionalFormatThreshold { kind, value })

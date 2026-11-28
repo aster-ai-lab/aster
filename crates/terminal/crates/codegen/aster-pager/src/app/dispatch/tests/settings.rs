@@ -1429,6 +1429,7 @@ fn set_max_thoughts_width_clamps_out_of_range() {
     assert_eq!(app.current_ui.max_thoughts_width, 500);
     let _ = dispatch(Action::SetMaxThoughtsWidth(200), &mut app);
     assert_eq!(app.current_ui.max_thoughts_width, 200);
+    assert_eq!(crate::appearance::cache::load_max_thoughts_width(), 200);
 }
 #[test]
 fn pr13_set_show_tips_emits_persist_with_rollback() {

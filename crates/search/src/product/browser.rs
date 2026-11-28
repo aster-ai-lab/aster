@@ -46,6 +46,8 @@ pub enum HeadlessBrowser {
     Moli,
     /// Installed Chrome, Chromium, or a previously managed Chrome runtime.
     Chrome,
+    /// Existing logged-in Quark through its local CDP endpoint.
+    Quark,
     /// Explicit Lightpanda runtime.
     Lightpanda,
 }
@@ -56,6 +58,7 @@ impl HeadlessBrowser {
         match self {
             Self::Moli => "moli",
             Self::Chrome => "chrome",
+            Self::Quark => "quark",
             Self::Lightpanda => "lightpanda",
         }
     }
@@ -71,6 +74,9 @@ pub struct HeadlessRuntime {
     pub max_tabs: Option<usize>,
     /// Extra launch arguments for Chrome-compatible backends.
     pub launch_args: Vec<String>,
+    /// Validated loopback endpoint when Quark is selected.
+    #[cfg(feature = "headless")]
+    pub cdp_endpoint: Option<crate::aster_use_browser::LocalCdpEndpoint>,
 }
 
 /// A runtime the host may still be provisioning. The cascade awaits it only
@@ -84,9 +90,11 @@ use std::{sync::Arc, time::Duration};
 use futures::future::join_all;
 
 #[cfg(feature = "headless")]
-use crate::aster_use_browser::{BrowserPool, BrowserPoolConfig, BrowserProvider, PageRenderer};
+use crate::aster_use_browser::{
+    BrowserPool, BrowserPoolConfig, BrowserProvider, LocalCdpEndpoint, PageRenderer,
+};
 #[cfg(feature = "headless")]
-use crate::engines::{Baidu, BingBrowser, BraveBrowser, Google};
+use crate::engines::{Baidu, BingBrowser, BraveBrowser, Google, Quark};
 #[cfg(feature = "headless")]
 use crate::product::sources::configured_engine_config;
 #[cfg(feature = "headless")]
@@ -328,7 +336,7 @@ fn configure_one_headless_engine(
     let fetcher = || -> Arc<dyn PageFetcher> {
         Arc::new(
             BrowserFetcher::from_renderer(Arc::clone(&renderer))
-                .with_wait(headless_wait_strategy())
+                .with_wait(headless_wait_strategy(shortcut))
                 .with_timeout(render_budget)
                 .with_total_timeout(render_budget)
                 .with_retries(request.browser_max_retries, 100)
@@ -353,6 +361,11 @@ fn configure_one_headless_engine(
         }
         "brave_browser" => {
             let engine = BraveBrowser::new(fetcher());
+            let engine_config = configured_engine_config(request.config, engine.config().clone());
+            search.add_engine(engine.with_config(engine_config));
+        }
+        "quark" => {
+            let engine = Quark::new(fetcher());
             let engine_config = configured_engine_config(request.config, engine.config().clone());
             search.add_engine(engine.with_config(engine_config));
         }
@@ -405,6 +418,14 @@ fn browser_pool_config(
             BrowserProvider::DiscoveredChrome,
             BrowserProvider::ChromeExecutable,
         ),
+        HeadlessBrowser::Quark => match runtime.cdp_endpoint.clone() {
+            Some(endpoint) => BrowserProvider::ExistingCdp(endpoint),
+            None => BrowserProvider::ExistingCdp(
+                LocalCdpEndpoint::parse("http://127.0.0.1:9222").map_err(|error| {
+                    EngineFailure::new("quark", "invalid_cdp_endpoint", error.message)
+                })?,
+            ),
+        },
         HeadlessBrowser::Lightpanda => lightpanda_provider(runtime.executable.clone())?,
     };
     let defaults = BrowserPoolConfig::default();
@@ -456,8 +477,14 @@ fn lightpanda_provider(_executable: Option<PathBuf>) -> Result<BrowserProvider, 
 }
 
 #[cfg(feature = "headless")]
-fn headless_wait_strategy() -> WaitStrategy {
-    WaitStrategy::Load
+fn headless_wait_strategy(shortcut: &str) -> WaitStrategy {
+    if shortcut == "quark" {
+        // Quark's logged-in desktop page hydrates structured result cards after
+        // the document load event. The BrowserFetcher's deadline still bounds it.
+        WaitStrategy::Delay { ms: 3_000 }
+    } else {
+        WaitStrategy::Load
+    }
 }
 
 #[cfg(feature = "headless")]
@@ -602,6 +629,7 @@ mod tests {
             executable: Some(PathBuf::from("/opt/host/browser")),
             max_tabs: Some(2),
             launch_args: vec!["--lang=en".to_string()],
+            cdp_endpoint: None,
         };
 
         let moli = moli_pool_config(None, &runtime);
@@ -620,8 +648,23 @@ mod tests {
 
     #[cfg(feature = "headless")]
     #[test]
+    fn quark_uses_the_default_logged_in_loopback_browser() {
+        let config = browser_pool_config(None, HeadlessBrowser::Quark, &HeadlessRuntime::default())
+            .expect("default Quark endpoint");
+        let BrowserProvider::ExistingCdp(endpoint) = config.provider else {
+            panic!("Quark must attach instead of launching a browser");
+        };
+        assert_eq!(endpoint.as_str(), "http://127.0.0.1:9222/");
+    }
+
+    #[cfg(feature = "headless")]
+    #[test]
     fn headless_search_readiness_does_not_depend_on_provider_dom_selectors() {
-        assert!(matches!(headless_wait_strategy(), WaitStrategy::Load));
+        assert!(matches!(headless_wait_strategy("g"), WaitStrategy::Load));
+        assert!(matches!(
+            headless_wait_strategy("quark"),
+            WaitStrategy::Delay { ms: 3_000 }
+        ));
     }
 
     #[cfg(feature = "headless")]

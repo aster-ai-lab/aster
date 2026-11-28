@@ -1,0 +1,8 @@
+{
+  "tool_count": 26,
+  "tool_catalog_sha256": "44bbf3504dfa03601a1046f09bb48dc34509a96cf20c0165fd5cb2ced633848a",
+  "tool_names_order_descriptions_and_schemas_equal": true,
+  "non_system_messages_equal": true,
+  "baseline_system_prompt_bytes": 10571,
+  "candidate_system_prompt_bytes": 9093
+}

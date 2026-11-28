@@ -160,7 +160,7 @@ impl crate::CompletionAttestor for ExpectedSource {
         let bytes = std::fs::read(self.root.join("source.txt")).ok()?;
         if paths.len() != 1
             || paths[0].path != "source.txt"
-            || paths[0].content_digest != sha256::digest(&bytes)
+            || paths[0].content_digest != crate::content_digest::sha256_hex(&bytes)
             || bytes != self.expected.as_bytes()
         {
             return None;

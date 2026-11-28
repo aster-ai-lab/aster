@@ -1220,3 +1220,127 @@ async fn auto_planning_on_the_fact_path_follows_the_pre_analysis_decision() {
         );
     }
 }
+
+struct ExplicitPlanningClient {
+    calls: std::sync::Mutex<Vec<&'static str>>,
+    invalid_part: Option<&'static str>,
+}
+
+#[async_trait::async_trait]
+impl crate::llm::LlmClient for ExplicitPlanningClient {
+    async fn complete(
+        &self,
+        messages: &[crate::llm::Message],
+        system: Option<&str>,
+        tools: &[crate::llm::ToolDefinition],
+    ) -> anyhow::Result<crate::llm::LlmResponse> {
+        use serde_json::json;
+
+        assert!(tools.is_empty());
+        assert_eq!(
+            messages[0].text(),
+            "Organize the archive and verify the inventory."
+        );
+        let system = system.unwrap_or_default();
+        let goal =
+            json!({"description":"Organize the archive","success_criteria":["Inventory checked"]});
+        let plan = json!({
+            "goal":"Arrange the archive",
+            "complexity":"Medium",
+            "steps":[{"id":"inspect","description":"Inspect the archive"}, {
+                "id":"verify","description":"Verify inventory","dependencies":["inspect"],
+                "success_criteria":"Inventory matches the archive"
+            }]
+        });
+        let (kind, response) =
+            if system.starts_with(crate::prompts::LLM_GOAL_EXTRACT_SYSTEM.trim_end()) {
+                ("goal", goal)
+            } else if system.starts_with(crate::prompts::LLM_PLAN_SYSTEM.trim_end()) {
+                ("plan", plan)
+            } else {
+                assert!(system.starts_with("Extract the primary goal and plan its execution."));
+                let mut combined = json!({"goal":goal,"plan":plan});
+                match self.invalid_part {
+                    Some("goal") => combined["goal"]["success_criteria"] = json!("wrong type"),
+                    Some("plan") => combined["plan"]["steps"][1]["id"] = json!("inspect"),
+                    _ => {}
+                }
+                ("combined", combined)
+            };
+        self.calls.lock().unwrap().push(kind);
+        Ok(scripted_text_response(&response.to_string()))
+    }
+
+    async fn complete_streaming(
+        &self,
+        messages: &[crate::llm::Message],
+        system: Option<&str>,
+        tools: &[crate::llm::ToolDefinition],
+        cancel: tokio_util::sync::CancellationToken,
+    ) -> anyhow::Result<mpsc::Receiver<crate::llm::StreamEvent>> {
+        self.calls.lock().unwrap().push("turn");
+        StaticStreamingClient::new("Inventory checked.")
+            .complete_streaming(messages, system, tools, cancel)
+            .await
+    }
+}
+
+#[tokio::test]
+async fn explicit_planning_reuses_each_valid_part_of_the_combined_goal_and_plan() {
+    for (invalid_part, guarded, expected) in [
+        (None, false, &["combined", "turn"][..]),
+        (Some("goal"), false, &["combined", "goal", "turn"][..]),
+        (Some("plan"), false, &["combined", "plan", "turn"][..]),
+        (None, true, &["goal", "plan", "turn"][..]),
+    ] {
+        let workspace = tempfile::tempdir().unwrap();
+        let agent = Agent::from_config(test_config()).await.unwrap();
+        let client = Arc::new(ExplicitPlanningClient {
+            calls: Default::default(),
+            invalid_part,
+        });
+        let mut options = SessionOptions::new()
+            .with_planning_mode(crate::prompts::PlanningMode::Enabled)
+            .with_goal_tracking(true)
+            .with_verifier(false)
+            .with_continuation(false);
+        if guarded {
+            options = options.with_budget_guard(Arc::new(crate::budget::NoopBudgetGuard));
+        }
+        let session = agent
+            .build_session(
+                workspace.path().display().to_string(),
+                client.clone(),
+                &options,
+            )
+            .unwrap();
+        let (mut events, handle) = session
+            .stream("Organize the archive and verify the inventory.", None)
+            .await
+            .unwrap();
+        let mut goal = None;
+        let mut plan = None;
+        while let Some(event) = events.recv().await {
+            match event {
+                AgentEvent::GoalExtracted { goal: value } => goal = Some(value),
+                AgentEvent::PlanningEnd { plan: value, .. } => plan = Some(value),
+                AgentEvent::End { .. } => break,
+                AgentEvent::Error { message } => panic!("{message}"),
+                _ => {}
+            }
+        }
+        handle.await.unwrap();
+        let goal = goal.expect("goal event");
+        let plan = plan.expect("plan event");
+        assert_eq!(goal.description, "Organize the archive");
+        assert_eq!(goal.success_criteria, ["Inventory checked"]);
+        assert_eq!(plan.goal, "Arrange the archive");
+        assert_eq!(plan.steps[1].dependencies, ["inspect"]);
+        assert_eq!(
+            plan.steps[1].success_criteria.as_deref(),
+            Some("Inventory matches the archive")
+        );
+        assert_eq!(*client.calls.lock().unwrap(), expected);
+        session.close().await;
+    }
+}

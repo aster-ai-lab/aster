@@ -51,14 +51,21 @@ pub fn media_open_button_col(content_width: u16, is_video: bool) -> u16 {
 /// Width reserved for the timestamp on message blocks.
 ///
 /// Matches the constant in `EntryRenderer::timestamp_reserved()`.
-fn timestamp_reserved_for_block(block: &RenderBlock, appearance: &AppearanceConfig) -> u16 {
+pub(crate) fn timestamp_reserved_for_block(
+    block: &RenderBlock,
+    appearance: &AppearanceConfig,
+    content_width: u16,
+) -> u16 {
+    const RESERVED: u16 = 10;
+    // A narrow message keeps its text: never surrender half or more of its content to the clock.
     if appearance.show_timestamps
+        && content_width >= RESERVED * 2
         && matches!(
             block,
             RenderBlock::UserPrompt(_) | RenderBlock::AgentMessage(_) | RenderBlock::Btw(_)
         )
     {
-        10
+        RESERVED
     } else {
         0
     }
@@ -413,7 +420,11 @@ pub(crate) fn render_scrolled_entries_with_selection_boundaries(
 
         // Use cached output for selection model building. Must use the same effective width as the renderer (reduced by
         // timestamp reservation for message blocks) to avoid cache thrashing.
-        let ts_reserved = timestamp_reserved_for_block(&entry.block, appearance);
+        let ts_reserved = timestamp_reserved_for_block(
+            &entry.block,
+            appearance,
+            entry_row_layout.content_width(),
+        );
         let content_width = entry_row_layout.content_width().saturating_sub(ts_reserved);
         entry.ensure_cached(content_width, appearance, is_selected, cwd);
         let cached_rendered = entry.cached_rendered_output_ref();

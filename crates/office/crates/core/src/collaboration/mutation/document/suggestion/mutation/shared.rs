@@ -94,7 +94,7 @@ pub(super) fn resolve_suggestion_target<T: ReadTxn>(
             _ => {
                 return Err(structure_conflict(
                     "A native Document suggestion requires at most one text node and no inline objects.",
-                ))
+                ));
             }
         }
     }

@@ -771,7 +771,7 @@ fn on_disk_content_digest(workspace: &std::path::Path, relative: &str) -> Option
     }
     let path = workspace.join(relative);
     let bytes = std::fs::read(&path).ok()?;
-    Some(sha256::digest(bytes))
+    Some(crate::content_digest::sha256_hex(bytes))
 }
 
 #[cfg(test)]
